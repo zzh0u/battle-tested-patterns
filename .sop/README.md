@@ -12,3 +12,4 @@ Follow the relevant SOP before starting work to ensure consistency and quality.
 | 05 | [PR Review](05-pr-review.md) | Reviewing pull requests |
 | 06 | [Broken Link Fix](06-broken-link-fix.md) | Fixing dead source URLs |
 | 07 | [CI/CD Verification](07-ci-cd-verification.md) | Post-push CI checks, secrets config, security audit |
+| 08 | [Release](08-release.md) | Tagging a version release (includes AI agent pre-review) |
