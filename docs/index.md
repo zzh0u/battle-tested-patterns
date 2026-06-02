@@ -11,10 +11,7 @@ hero:
       link: /guide/what-is-this
     - theme: alt
       text: Browse Patterns
-      link: /patterns/bitmask
-    - theme: alt
-      text: GitHub
-      link: https://github.com/Totoro-jam/battle-tested-patterns
+      link: /patterns/bitmask/
 
 features:
   - icon: 🔗

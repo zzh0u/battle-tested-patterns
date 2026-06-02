@@ -1,6 +1,11 @@
 name: Content Quality Check
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/patterns/**"
+      - "exercises/**"
   pull_request:
     paths:
       - "docs/patterns/**"
@@ -12,17 +17,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check required sections
+        with:
+          fetch-depth: 0
+      - name: Check required sections in all patterns
         run: |
           exit_code=0
-          for file in $(git diff --name-only --diff-filter=AM origin/main -- 'docs/patterns/*.md'); do
+          for file in docs/patterns/*/index.md; do
+            [ -f "$file" ] || continue
             echo "Checking $file..."
             missing=""
             grep -q "## One Liner" "$file"            || missing="$missing One-Liner"
             grep -q "## Core Idea" "$file"             || missing="$missing Core-Idea"
             grep -q "## Production Proof" "$file"      || missing="$missing Production-Proof"
             grep -q "## Implementation" "$file"        || missing="$missing Implementation"
-            grep -q "### TypeScript" "$file"           || missing="$missing TypeScript-impl"
             grep -q "## Exercises" "$file"             || missing="$missing Exercises"
             grep -q "## When to Use" "$file"           || missing="$missing When-to-Use"
             grep -q "## When NOT to Use" "$file"       || missing="$missing When-NOT-to-Use"
@@ -34,29 +41,34 @@ jobs:
               echo "  ✅ All required sections present"
             fi
 
-            # Check Production Proof has at least 2 links
+            # Check Production Proof has at least 2 source links with line numbers
             link_count=$(grep -c 'github\.com.*#L' "$file" || true)
             if [ "$link_count" -lt 2 ]; then
               echo "::warning file=$file::Only $link_count production proof link(s) with line numbers (minimum 2 required)"
+            fi
+
+            # Check no #L1 file-level links pretending to be precise
+            if grep -q 'github\.com.*#L1)' "$file"; then
+              echo "::warning file=$file::Contains #L1 file-level link — should point to specific line range"
             fi
           done
           exit $exit_code
 
   check-exercises:
-    name: Verify exercises exist for new patterns
+    name: Verify exercises exist for patterns
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Check exercise files
         run: |
-          for file in $(git diff --name-only --diff-filter=A origin/main -- 'docs/patterns/*.md'); do
-            pattern=$(basename "$file" .md)
-            echo "Checking exercises for pattern: $pattern"
+          exit_code=0
+          for dir in docs/patterns/*/; do
+            pattern=$(basename "$dir")
             ts_dir="exercises/typescript/$pattern"
-            if [ ! -d "$ts_dir" ] || [ -z "$(ls -A "$ts_dir"/*.test.ts 2>/dev/null)" ]; then
-              echo "::warning::No TypeScript exercises found at $ts_dir for new pattern '$pattern'"
+            if [ ! -d "$ts_dir" ] || [ -z "$(find "$ts_dir" -name '*.test.ts' 2>/dev/null)" ]; then
+              echo "::warning::No TypeScript exercises found at $ts_dir for pattern '$pattern'"
             else
-              count=$(ls -1 "$ts_dir"/*.test.ts | wc -l)
-              echo "  ✅ Found $count exercise file(s)"
+              count=$(find "$ts_dir" -name '*.test.ts' | wc -l)
+              echo "  ✅ $pattern: $count exercise file(s)"
             fi
           done

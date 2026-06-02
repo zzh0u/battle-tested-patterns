@@ -31,6 +31,10 @@ React 的协调器用此确定要创建、更新或删除哪些 DOM 节点。Git
 
 ## 实现
 
+::: info 关于算法
+下面的实现使用**贪心前向扫描**——简单清晰，适合学习。生产系统如 Git 使用 [Myers 差异算法](https://blog.jcoglan.com/2017/02/12/the-myers-diff-algorithm-part-1/)保证最小编辑序列。React 使用基于 key 的方法，专为 UI 列表协调优化。
+:::
+
 ::: code-group
 
 ```typescript [TypeScript]

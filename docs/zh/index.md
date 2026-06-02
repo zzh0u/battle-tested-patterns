@@ -12,9 +12,6 @@ hero:
     - theme: alt
       text: 浏览模式
       link: /zh/patterns/bitmask/
-    - theme: alt
-      text: GitHub
-      link: https://github.com/Totoro-jam/battle-tested-patterns
 
 features:
   - icon: 🔗

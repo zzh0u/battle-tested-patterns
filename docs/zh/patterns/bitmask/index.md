@@ -140,6 +140,34 @@ HasFlag(editor, Read)    // true
 HasFlag(editor, Delete)  // false
 ```
 
+```python [Python]
+# Python: 原生位运算，整数无大小限制
+READ    = 1 << 0  # 0b0001
+WRITE   = 1 << 1  # 0b0010
+EXECUTE = 1 << 2  # 0b0100
+DELETE  = 1 << 3  # 0b1000
+
+def has_flag(flags: int, flag: int) -> bool:
+    return (flags & flag) == flag
+
+def has_any(flags: int, mask: int) -> bool:
+    return (flags & mask) != 0
+
+def set_flag(flags: int, flag: int) -> int:
+    return flags | flag
+
+def clear_flag(flags: int, flag: int) -> int:
+    return flags & ~flag
+
+def toggle_flag(flags: int, flag: int) -> int:
+    return flags ^ flag
+
+# 用法
+editor = READ | WRITE
+assert has_flag(editor, READ)       # True
+assert not has_flag(editor, DELETE)  # True
+```
+
 :::
 
 ## 练习

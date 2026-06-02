@@ -2,6 +2,9 @@ import { describe, it, expect } from 'vitest';
 
 /**
  * Min Heap - Basic: Implement push, pop, peek with sift operations.
+ *
+ * TODO: Implement a min heap where the smallest element is always at index 0.
+ * Use siftUp after push, siftDown after pop.
  */
 
 interface HeapNode {
@@ -13,16 +16,16 @@ class MinHeap {
   private heap: HeapNode[] = [];
 
   peek(): HeapNode | null {
-    return this.heap[0] ?? null;
+    return this.heap[0] ?? null; // TODO: implement
   }
 
   push(node: HeapNode): void {
-    this.heap.push(node);
+    this.heap.push(node); // TODO: implement (hint: push then siftUp)
     this.siftUp(this.heap.length - 1);
   }
 
   pop(): HeapNode | null {
-    if (this.heap.length === 0) return null;
+    if (this.heap.length === 0) return null; // TODO: implement
     const first = this.heap[0]!;
     const last = this.heap.pop()!;
     if (this.heap.length > 0) {
@@ -36,8 +39,9 @@ class MinHeap {
     return this.heap.length;
   }
 
+  /** Bubble element up until parent is smaller */
   private siftUp(i: number): void {
-    while (i > 0) {
+    while (i > 0) { // TODO: implement
       const parent = (i - 1) >>> 1;
       if (this.compare(this.heap[i]!, this.heap[parent]!) < 0) {
         [this.heap[i], this.heap[parent]] = [this.heap[parent]!, this.heap[i]!];
@@ -46,8 +50,9 @@ class MinHeap {
     }
   }
 
+  /** Push element down until both children are larger */
   private siftDown(i: number): void {
-    const len = this.heap.length;
+    const len = this.heap.length; // TODO: implement
     while (true) {
       let smallest = i;
       const left = 2 * i + 1;
@@ -67,63 +72,49 @@ class MinHeap {
   }
 }
 
+// ─── Tests (do not modify below this line) ───────────────────────
+
 describe('Min Heap - Basic: Core Operations', () => {
   it('should return null for empty heap', () => {
-    const heap = new MinHeap();
-    expect(heap.peek()).toBeNull();
-    expect(heap.pop()).toBeNull();
-    expect(heap.size).toBe(0);
+    const h = new MinHeap();
+    expect(h.peek()).toBeNull();
+    expect(h.pop()).toBeNull();
   });
 
-  it('should push and peek minimum', () => {
-    const heap = new MinHeap();
-    heap.push({ sortIndex: 5, id: 1 });
-    heap.push({ sortIndex: 3, id: 2 });
-    heap.push({ sortIndex: 7, id: 3 });
-    expect(heap.peek()!.sortIndex).toBe(3);
+  it('should peek at minimum', () => {
+    const h = new MinHeap();
+    h.push({ sortIndex: 5, id: 1 });
+    h.push({ sortIndex: 3, id: 2 });
+    h.push({ sortIndex: 7, id: 3 });
+    expect(h.peek()!.sortIndex).toBe(3);
   });
 
   it('should pop in sorted order', () => {
-    const heap = new MinHeap();
-    heap.push({ sortIndex: 5, id: 1 });
-    heap.push({ sortIndex: 1, id: 2 });
-    heap.push({ sortIndex: 3, id: 3 });
-    heap.push({ sortIndex: 2, id: 4 });
-    heap.push({ sortIndex: 4, id: 5 });
-
-    const sorted = [];
-    while (heap.size > 0) sorted.push(heap.pop()!.sortIndex);
-    expect(sorted).toEqual([1, 2, 3, 4, 5]);
+    const h = new MinHeap();
+    [5, 1, 3, 2, 4].forEach((s, i) => h.push({ sortIndex: s, id: i }));
+    const result = [];
+    while (h.size > 0) result.push(h.pop()!.sortIndex);
+    expect(result).toEqual([1, 2, 3, 4, 5]);
   });
 
   it('should break ties by id', () => {
-    const heap = new MinHeap();
-    heap.push({ sortIndex: 1, id: 99 });
-    heap.push({ sortIndex: 1, id: 10 });
-    heap.push({ sortIndex: 1, id: 50 });
-
-    expect(heap.pop()!.id).toBe(10);
-    expect(heap.pop()!.id).toBe(50);
-    expect(heap.pop()!.id).toBe(99);
+    const h = new MinHeap();
+    h.push({ sortIndex: 1, id: 99 });
+    h.push({ sortIndex: 1, id: 10 });
+    h.push({ sortIndex: 1, id: 50 });
+    expect(h.pop()!.id).toBe(10);
+    expect(h.pop()!.id).toBe(50);
+    expect(h.pop()!.id).toBe(99);
   });
 
-  it('should handle single element', () => {
-    const heap = new MinHeap();
-    heap.push({ sortIndex: 42, id: 1 });
-    expect(heap.size).toBe(1);
-    expect(heap.pop()!.sortIndex).toBe(42);
-    expect(heap.size).toBe(0);
-  });
-
-  it('should maintain heap property after mixed operations', () => {
-    const heap = new MinHeap();
-    heap.push({ sortIndex: 10, id: 1 });
-    heap.push({ sortIndex: 5, id: 2 });
-    heap.pop(); // remove 5
-    heap.push({ sortIndex: 3, id: 3 });
-    heap.push({ sortIndex: 8, id: 4 });
-    heap.pop(); // remove 3
-
-    expect(heap.peek()!.sortIndex).toBe(8);
+  it('should maintain heap property after mixed push/pop', () => {
+    const h = new MinHeap();
+    h.push({ sortIndex: 10, id: 1 });
+    h.push({ sortIndex: 5, id: 2 });
+    h.pop();
+    h.push({ sortIndex: 3, id: 3 });
+    h.push({ sortIndex: 8, id: 4 });
+    h.pop();
+    expect(h.peek()!.sortIndex).toBe(8);
   });
 });

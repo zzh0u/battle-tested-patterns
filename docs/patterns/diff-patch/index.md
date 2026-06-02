@@ -31,6 +31,10 @@ React's reconciler uses this to determine which DOM nodes to create, update, or 
 
 ## Implementation
 
+::: info Note on algorithm
+The implementation below uses a **greedy forward scan** — simple and clear for learning. Production systems like Git use [Myers' diff algorithm](https://blog.jcoglan.com/2017/02/12/the-myers-diff-algorithm-part-1/) which guarantees a minimum edit sequence. React uses a key-based approach optimized for UI list reconciliation, not general-purpose diffing.
+:::
+
 ::: code-group
 
 ```typescript [TypeScript]

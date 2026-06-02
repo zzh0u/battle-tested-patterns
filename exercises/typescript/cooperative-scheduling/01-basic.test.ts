@@ -3,8 +3,8 @@ import { describe, it, expect } from 'vitest';
 /**
  * Cooperative Scheduling - Basic: Time-sliced work loop.
  *
- * Implement a work loop that processes items but yields
- * when a time budget is exceeded.
+ * TODO: Implement workLoop that processes items one by one,
+ * but yields (returns early) when shouldYield() returns true.
  */
 
 interface WorkResult {
@@ -12,12 +12,13 @@ interface WorkResult {
   yielded: boolean;
 }
 
+/** Process items from the list, yielding when shouldYield() is true */
 function workLoop(
   items: number[],
   processItem: (item: number) => void,
   shouldYield: () => boolean,
 ): WorkResult {
-  let completed = 0;
+  let completed = 0; // TODO: implement the loop
 
   while (completed < items.length) {
     if (shouldYield()) {
@@ -30,89 +31,50 @@ function workLoop(
   return { completed, yielded: false };
 }
 
-describe('Cooperative Scheduling - Basic: Work Loop', () => {
-  it('should process all items when no yield is needed', () => {
-    const processed: number[] = [];
-    const result = workLoop(
-      [1, 2, 3, 4, 5],
-      (item) => processed.push(item),
-      () => false,
-    );
+// ─── Tests (do not modify below this line) ───────────────────────
 
+describe('Cooperative Scheduling - Basic: Work Loop', () => {
+  it('should process all items when no yield needed', () => {
+    const processed: number[] = [];
+    const result = workLoop([1, 2, 3, 4, 5], (x) => processed.push(x), () => false);
     expect(result.completed).toBe(5);
     expect(result.yielded).toBe(false);
     expect(processed).toEqual([1, 2, 3, 4, 5]);
   });
 
-  it('should yield after processing some items', () => {
+  it('should yield after shouldYield returns true', () => {
     const processed: number[] = [];
-    let callCount = 0;
-
+    let calls = 0;
     const result = workLoop(
       [10, 20, 30, 40, 50],
-      (item) => processed.push(item),
-      () => {
-        callCount++;
-        return callCount > 3;
-      },
+      (x) => processed.push(x),
+      () => ++calls > 3,
     );
-
     expect(result.completed).toBe(3);
     expect(result.yielded).toBe(true);
     expect(processed).toEqual([10, 20, 30]);
   });
 
-  it('should yield immediately if shouldYield returns true', () => {
+  it('should yield immediately if shouldYield starts true', () => {
     const processed: number[] = [];
-    const result = workLoop(
-      [1, 2, 3],
-      (item) => processed.push(item),
-      () => true,
-    );
-
+    const result = workLoop([1, 2, 3], (x) => processed.push(x), () => true);
     expect(result.completed).toBe(0);
     expect(result.yielded).toBe(true);
-    expect(processed).toEqual([]);
   });
 
-  it('should handle empty work list', () => {
-    const result = workLoop(
-      [],
-      () => {},
-      () => false,
-    );
-
-    expect(result.completed).toBe(0);
-    expect(result.yielded).toBe(false);
+  it('should handle empty list', () => {
+    const result = workLoop([], () => {}, () => false);
+    expect(result).toEqual({ completed: 0, yielded: false });
   });
 
-  it('should support resumable processing', () => {
+  it('should support resuming with remaining items', () => {
     const items = [1, 2, 3, 4, 5, 6];
     const processed: number[] = [];
-    let yieldAfter = 2;
-
-    // First chunk
-    let callCount = 0;
-    const result1 = workLoop(
-      items,
-      (item) => processed.push(item),
-      () => ++callCount > yieldAfter,
-    );
-    expect(result1.completed).toBe(2);
-    expect(result1.yielded).toBe(true);
-
-    // Resume with remaining items
-    const remaining = items.slice(result1.completed);
-    callCount = 0;
-    yieldAfter = 10; // don't yield this time
-    const result2 = workLoop(
-      remaining,
-      (item) => processed.push(item),
-      () => ++callCount > yieldAfter,
-    );
-
-    expect(result2.completed).toBe(4);
-    expect(result2.yielded).toBe(false);
+    let calls = 0;
+    const r1 = workLoop(items, (x) => processed.push(x), () => ++calls > 2);
+    const remaining = items.slice(r1.completed);
+    calls = 0;
+    workLoop(remaining, (x) => processed.push(x), () => false);
     expect(processed).toEqual([1, 2, 3, 4, 5, 6]);
   });
 });

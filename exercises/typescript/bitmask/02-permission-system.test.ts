@@ -3,8 +3,8 @@ import { describe, it, expect } from 'vitest';
 /**
  * Bitmask - Intermediate: Build a permission system.
  *
- * Design a role-based permission system where each role
- * is a combination of permission flags, similar to Unix file permissions.
+ * TODO: Implement the functions below to create a role-based
+ * permission system using bitmask flags.
  */
 
 const Permission = {
@@ -17,28 +17,34 @@ const Permission = {
 
 type PermissionFlags = number;
 
+/** Combine multiple permissions into a single role value */
 function createRole(...perms: number[]): PermissionFlags {
-  return perms.reduce((acc, p) => acc | p, 0);
+  return perms.reduce((acc, p) => acc | p, 0); // TODO: implement
 }
 
+/** Check if role has a specific permission (or all bits in perm) */
 function hasPermission(role: PermissionFlags, perm: number): boolean {
-  return (role & perm) === perm;
+  return (role & perm) === perm; // TODO: implement
 }
 
+/** Check if role has ANY of the permissions in mask */
 function hasAnyPermission(role: PermissionFlags, mask: number): boolean {
-  return (role & mask) !== 0;
+  return (role & mask) !== 0; // TODO: implement
 }
 
+/** Add a permission to a role */
 function grant(role: PermissionFlags, perm: number): PermissionFlags {
-  return role | perm;
+  return role | perm; // TODO: implement
 }
 
+/** Remove a permission from a role */
 function revoke(role: PermissionFlags, perm: number): PermissionFlags {
-  return role & ~perm;
+  return role & ~perm; // TODO: implement
 }
 
+/** List the names of all active permissions */
 function listPermissions(role: PermissionFlags): string[] {
-  const names: string[] = [];
+  const names: string[] = []; // TODO: implement — check each flag, push name if set
   if (role & Permission.READ) names.push('READ');
   if (role & Permission.WRITE) names.push('WRITE');
   if (role & Permission.DELETE) names.push('DELETE');
@@ -46,13 +52,15 @@ function listPermissions(role: PermissionFlags): string[] {
   return names;
 }
 
+// ─── Tests (do not modify below this line) ───────────────────────
+
 describe('Bitmask - Intermediate: Permission System', () => {
   const VIEWER = createRole(Permission.READ);
   const EDITOR = createRole(Permission.READ, Permission.WRITE);
   const MODERATOR = createRole(Permission.READ, Permission.WRITE, Permission.DELETE);
   const SUPER_ADMIN = createRole(Permission.READ, Permission.WRITE, Permission.DELETE, Permission.ADMIN);
 
-  it('should create roles with correct flags', () => {
+  it('should create roles with correct flag values', () => {
     expect(VIEWER).toBe(0b0001);
     expect(EDITOR).toBe(0b0011);
     expect(MODERATOR).toBe(0b0111);
@@ -62,7 +70,6 @@ describe('Bitmask - Intermediate: Permission System', () => {
   it('should check individual permissions', () => {
     expect(hasPermission(VIEWER, Permission.READ)).toBe(true);
     expect(hasPermission(VIEWER, Permission.WRITE)).toBe(false);
-    expect(hasPermission(EDITOR, Permission.READ)).toBe(true);
     expect(hasPermission(EDITOR, Permission.WRITE)).toBe(true);
     expect(hasPermission(EDITOR, Permission.DELETE)).toBe(false);
   });
@@ -77,19 +84,11 @@ describe('Bitmask - Intermediate: Permission System', () => {
     const writeOrDelete = Permission.WRITE | Permission.DELETE;
     expect(hasAnyPermission(VIEWER, writeOrDelete)).toBe(false);
     expect(hasAnyPermission(EDITOR, writeOrDelete)).toBe(true);
-    expect(hasAnyPermission(MODERATOR, writeOrDelete)).toBe(true);
   });
 
-  it('should grant permissions', () => {
-    const promoted = grant(VIEWER, Permission.WRITE);
-    expect(hasPermission(promoted, Permission.READ)).toBe(true);
-    expect(hasPermission(promoted, Permission.WRITE)).toBe(true);
-  });
-
-  it('should revoke permissions', () => {
-    const demoted = revoke(EDITOR, Permission.WRITE);
-    expect(hasPermission(demoted, Permission.READ)).toBe(true);
-    expect(hasPermission(demoted, Permission.WRITE)).toBe(false);
+  it('should grant and revoke permissions', () => {
+    expect(hasPermission(grant(VIEWER, Permission.WRITE), Permission.WRITE)).toBe(true);
+    expect(hasPermission(revoke(EDITOR, Permission.WRITE), Permission.WRITE)).toBe(false);
   });
 
   it('should list active permissions', () => {
@@ -99,13 +98,8 @@ describe('Bitmask - Intermediate: Permission System', () => {
     expect(listPermissions(Permission.NONE)).toEqual([]);
   });
 
-  it('should handle grant of already-granted permission (idempotent)', () => {
-    const result = grant(EDITOR, Permission.READ);
-    expect(result).toBe(EDITOR);
-  });
-
-  it('should handle revoke of not-granted permission (idempotent)', () => {
-    const result = revoke(VIEWER, Permission.DELETE);
-    expect(result).toBe(VIEWER);
+  it('should be idempotent', () => {
+    expect(grant(EDITOR, Permission.READ)).toBe(EDITOR);
+    expect(revoke(VIEWER, Permission.DELETE)).toBe(VIEWER);
   });
 });

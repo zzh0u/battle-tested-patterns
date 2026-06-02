@@ -24,6 +24,7 @@ export default withMermaid(defineConfig({
               text: 'Introduction',
               items: [
                 { text: 'What is This?', link: '/guide/what-is-this' },
+                { text: 'Pattern Connections', link: '/guide/pattern-connections' },
                 { text: 'How to Contribute', link: '/guide/how-to-contribute' },
               ],
             },
@@ -68,6 +69,7 @@ export default withMermaid(defineConfig({
               text: '入门',
               items: [
                 { text: '这是什么？', link: '/zh/guide/what-is-this' },
+                { text: '模式如何协作', link: '/zh/guide/pattern-connections' },
                 { text: '如何贡献', link: '/zh/guide/how-to-contribute' },
               ],
             },
