@@ -4,7 +4,10 @@ packages:
   - "playground"
 
 allowBuilds:
-  esbuild: set this to true or false
+  esbuild: true
 
 onlyBuiltDependencies:
   - esbuild
+
+overrides:
+  debug: "4.4.0"
