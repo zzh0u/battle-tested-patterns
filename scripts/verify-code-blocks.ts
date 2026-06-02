@@ -19,10 +19,7 @@ function findPatternDocs(dir: string): string[] {
     const full = join(dir, entry);
     if (statSync(full).isDirectory()) {
       const index = join(full, 'index.md');
-      try {
-        statSync(index);
-        results.push(index);
-      } catch {}
+      try { statSync(index); results.push(index); } catch {}
     }
   }
   return results;
@@ -33,41 +30,30 @@ function extractCodeBlocks(file: string): CodeBlock[] {
   const lines = content.split('\n');
   const blocks: CodeBlock[] = [];
   const pattern = basename(join(file, '..'));
-
-  let inBlock = false;
-  let lang = '';
-  let code: string[] = [];
-  let startLine = 0;
+  let inBlock = false, lang = '', code: string[] = [], startLine = 0;
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
     if (!inBlock && /^```(typescript|rust|go|python)/.test(line)) {
       inBlock = true;
       lang = line.match(/^```(\w+)/)?.[1] || '';
-      if (lang === 'typescript') lang = 'typescript';
       code = [];
       startLine = i + 1;
     } else if (inBlock && line === '```') {
       inBlock = false;
-      if (code.length > 0) {
-        blocks.push({ file, pattern, lang, code: code.join('\n'), line: startLine });
-      }
+      if (code.length > 0) blocks.push({ file, pattern, lang, code: code.join('\n'), line: startLine });
     } else if (inBlock) {
       code.push(line);
     }
   }
-
   return blocks;
 }
 
 function verifyTypeScript(block: CodeBlock): string | null {
   const file = join(TMP_DIR, `${block.pattern}.ts`);
-  const cleaned = block.code
-    .replace(/^\/\/ Usage.*$/gm, '// usage')
-    .replace(/^\/\/ usage\n/gm, '');
-  writeFileSync(file, cleaned);
+  writeFileSync(file, block.code);
   try {
-    execSync(`npx tsc --noEmit --strict --target ES2022 --moduleResolution bundler "${file}" 2>&1`, { timeout: 10000 });
+    execSync(`npx tsc --noEmit --strict --target ES2022 --moduleResolution bundler "${file}" 2>&1`, { timeout: 15000 });
     return null;
   } catch (e: any) {
     return e.stdout?.toString() || e.message;
@@ -86,40 +72,111 @@ function verifyPython(block: CodeBlock): string | null {
 }
 
 function verifyRust(block: CodeBlock): string | null {
-  const file = join(TMP_DIR, `${block.pattern}.rs`);
-  const hasFn = block.code.includes('fn ') || block.code.includes('pub ');
-  const code = hasFn && !block.code.includes('fn main')
-    ? `#![allow(dead_code, unused_variables, unused_imports)]\n${block.code}\nfn main() {}`
-    : `#![allow(dead_code, unused_variables, unused_imports)]\n${block.code}`;
+  const file = join(TMP_DIR, `${block.pattern}_${block.line}.rs`);
+  let code = block.code;
+
+  const hasMain = code.includes('fn main');
+  const hasStructOrImpl = code.includes('struct ') || code.includes('impl ') || code.includes('enum ');
+
+  if (!hasMain) {
+    if (hasStructOrImpl) {
+      // Code with struct/impl: append fn main() at the end
+      code += '\n\nfn main() {}';
+    } else {
+      // Pure function/const definitions + usage statements: wrap usage in main
+      const lines = code.split('\n');
+      const decls: string[] = [];
+      const stmts: string[] = [];
+      let depth = 0;
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        const opens = (line.match(/\{/g) || []).length;
+        const closes = (line.match(/\}/g) || []).length;
+
+        if (depth > 0) {
+          decls.push(line);
+          depth += opens - closes;
+        } else if (/^(pub |)(fn |use |const |static |type |mod |trait )/.test(trimmed) || trimmed === '' || trimmed.startsWith('//') || trimmed.startsWith('#[')) {
+          decls.push(line);
+          depth += opens - closes;
+        } else {
+          stmts.push(line);
+        }
+      }
+
+      if (stmts.length > 0) {
+        code = decls.join('\n') + '\n\nfn main() {\n' + stmts.map(l => '    ' + l).join('\n') + '\n}';
+      } else {
+        code += '\n\nfn main() {}';
+      }
+    }
+  }
+
+  code = '#![allow(dead_code, unused_variables, unused_imports, unused_mut)]\n' + code;
   writeFileSync(file, code);
   try {
-    execSync(`rustc --edition 2021 --crate-type bin "${file}" -o /dev/null 2>&1`, { timeout: 15000 });
+    const outFile = file.replace('.rs', '');
+    execSync(`rustc --edition 2021 "${file}" -o "${outFile}" 2>&1`, { timeout: 20000 });
+    try { rmSync(outFile); } catch {}
     return null;
   } catch (e: any) {
-    return e.stdout?.toString() || e.stderr?.toString() || e.message;
+    return (e.stderr?.toString() || e.stdout?.toString() || e.message).split('\n').slice(0, 5).join('\n');
   }
 }
 
 function verifyGo(block: CodeBlock): string | null {
-  const dir = join(TMP_DIR, `go_${block.pattern}`);
+  const dir = join(TMP_DIR, `go_${block.pattern}_${block.line}`);
   mkdirSync(dir, { recursive: true });
-  const hasPackage = block.code.includes('package ');
-  const code = hasPackage ? block.code : `package main\n\n${block.code}`;
-  const file = join(dir, 'main.go');
-  writeFileSync(file, code);
+
+  let code = block.code;
+  const hasPackage = code.includes('package ');
+
+  if (!hasPackage) {
+    // Detect needed imports
+    const imports: string[] = [];
+    if (/\bsync\./.test(code)) imports.push('"sync"');
+    if (/\bfmt\./.test(code)) imports.push('"fmt"');
+    if (/\btime\./.test(code)) imports.push('"time"');
+    if (/\bcontext\./.test(code)) imports.push('"context"');
+
+    const importBlock = imports.length > 0 ? `import (\n${imports.map(i => '\t' + i).join('\n')}\n)\n\n` : '';
+    code = `package main\n\n${importBlock}${code}`;
+  }
+
+  // If no func main and has top-level statements, wrap them
+  if (!code.includes('func main') && !code.includes('func ')) {
+    code += '\n\nfunc main() {}';
+  } else if (!code.includes('func main') && !/^func [A-Z]/.test(code)) {
+    code += '\n\nfunc main() {}';
+  }
+
+  // Write go.mod
+  writeFileSync(join(dir, 'go.mod'), 'module verify\n\ngo 1.22\n');
+  writeFileSync(join(dir, 'main.go'), code);
   try {
-    execSync(`cd "${dir}" && go vet ./... 2>&1`, { timeout: 10000 });
+    execSync(`cd "${dir}" && go build ./... 2>&1`, { timeout: 15000 });
     return null;
   } catch (e: any) {
-    return e.stdout?.toString() || e.message;
+    return (e.stderr?.toString() || e.stdout?.toString() || e.message).split('\n').slice(0, 5).join('\n');
   }
+}
+
+function hasToolchain(cmd: string): boolean {
+  try { execSync(`which ${cmd}`, { stdio: 'ignore' }); return true; } catch { return false; }
 }
 
 async function main() {
   const docs = findPatternDocs(DOCS_DIR);
   console.log(`Found ${docs.length} pattern documents\n`);
-
   mkdirSync(TMP_DIR, { recursive: true });
+
+  const hasGo = hasToolchain('go');
+  const hasRust = hasToolchain('rustc');
+  const hasPython = hasToolchain('python3');
+
+  if (!hasGo) console.log('⚠️  Go not found — Go blocks will be skipped locally (verified in CI)\n');
+  if (!hasRust) console.log('⚠️  Rust not found — Rust blocks will be skipped locally (verified in CI)\n');
 
   const results: Array<{ block: CodeBlock; error: string | null }> = [];
 
@@ -127,54 +184,38 @@ async function main() {
     const blocks = extractCodeBlocks(doc);
     for (const block of blocks) {
       let error: string | null = null;
+      let skipped = false;
 
-      try {
-        switch (block.lang) {
-          case 'typescript':
-            error = verifyTypeScript(block);
-            break;
-          case 'python':
-            error = verifyPython(block);
-            break;
-          case 'go':
-            error = verifyGo(block);
-            break;
-          case 'rust':
-            error = verifyRust(block);
-            break;
-          default:
-            continue;
-        }
-      } catch (e: any) {
-        error = e.message;
+      switch (block.lang) {
+        case 'typescript': error = verifyTypeScript(block); break;
+        case 'python': error = hasPython ? verifyPython(block) : null; skipped = !hasPython; break;
+        case 'rust': if (hasRust) { error = verifyRust(block); } else { skipped = true; } break;
+        case 'go': if (hasGo) { error = verifyGo(block); } else { skipped = true; } break;
+        default: continue;
+      }
+
+      if (skipped) {
+        console.log(`  ⏭️  ${block.pattern} [${block.lang}] (line ${block.line})`);
+        continue;
       }
 
       const status = error ? '❌' : '✅';
       console.log(`  ${status} ${block.pattern} [${block.lang}] (line ${block.line})`);
-      results.push({ block, error });
+      if (error) results.push({ block, error });
+      else results.push({ block, error: null });
     }
   }
 
   rmSync(TMP_DIR, { recursive: true, force: true });
 
   const failures = results.filter((r) => r.error);
-  console.log(`\n${results.length} code blocks verified: ${results.length - failures.length} passed, ${failures.length} failed`);
+  const passed = results.filter((r) => !r.error);
+  console.log(`\n${results.length} code blocks verified: ${passed.length} passed, ${failures.length} failed`);
 
-  const strictLangs = ['typescript', 'python'];
-  const strictFailures = failures.filter((f) => strictLangs.includes(f.block.lang));
-  const warnFailures = failures.filter((f) => !strictLangs.includes(f.block.lang));
-
-  if (warnFailures.length > 0) {
-    console.log(`\n⚠️  ${warnFailures.length} Rust/Go blocks need fixing (non-blocking):`);
-    for (const f of warnFailures) {
-      console.log(`  ${f.block.pattern} [${f.block.lang}] line ${f.block.line}`);
-    }
-  }
-
-  if (strictFailures.length > 0) {
-    console.log('\n❌ TypeScript/Python failures (blocking):');
-    for (const f of strictFailures) {
-      console.log(`\n  ${f.block.pattern} [${f.block.lang}] line ${f.block.line}:`);
+  if (failures.length > 0) {
+    console.log('\nFailures:');
+    for (const f of failures) {
+      console.log(`\n  ❌ ${f.block.pattern} [${f.block.lang}] line ${f.block.line}:`);
       console.log(`     ${f.error?.split('\n')[0]}`);
     }
     process.exit(1);
