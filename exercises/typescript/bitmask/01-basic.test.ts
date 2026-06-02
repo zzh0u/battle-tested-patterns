@@ -3,76 +3,101 @@ import { describe, it, expect } from 'vitest';
 /**
  * Bitmask - Basic: Fundamental bitwise flag operations.
  *
- * Learn to set, check, clear, and toggle individual flags
- * packed into a single integer using bitwise operators.
+ * TODO: Implement the functions below using bitwise operators.
+ * Run `pnpm test` to check your work — all tests should pass.
+ *
+ * Hint: OR (|), AND (&), NOT (~), XOR (^)
  */
 
-// Define flags as powers of 2
 const FLAGS = {
-  READ: 1 << 0, // 0b0001
-  WRITE: 1 << 1, // 0b0010
+  READ: 1 << 0,    // 0b0001
+  WRITE: 1 << 1,   // 0b0010
   EXECUTE: 1 << 2, // 0b0100
-  DELETE: 1 << 3, // 0b1000
+  DELETE: 1 << 3,  // 0b1000
 } as const;
 
+// TODO: Implement these functions
+
+/** Set a flag on the given flags value */
+function setFlag(flags: number, flag: number): number {
+  return flags | flag; // TODO: implement (hint: use OR)
+}
+
+/** Check if a specific flag is set */
+function hasFlag(flags: number, flag: number): boolean {
+  return (flags & flag) !== 0; // TODO: implement (hint: use AND)
+}
+
+/** Remove a flag from the given flags value */
+function clearFlag(flags: number, flag: number): number {
+  return flags & ~flag; // TODO: implement (hint: use AND + NOT)
+}
+
+/** Toggle a flag on/off */
+function toggleFlag(flags: number, flag: number): number {
+  return flags ^ flag; // TODO: implement (hint: use XOR)
+}
+
+/** Check if ALL flags in a mask are set */
+function hasAll(flags: number, mask: number): boolean {
+  return (flags & mask) === mask; // TODO: implement
+}
+
+/** Check if ANY flag in a mask is set */
+function hasAny(flags: number, mask: number): boolean {
+  return (flags & mask) !== 0; // TODO: implement
+}
+
+// ─── Tests (do not modify below this line) ───────────────────────
+
 describe('Bitmask - Basic: Bitwise Flag Operations', () => {
-  it('should set a single flag using OR', () => {
-    let permissions = 0;
-    permissions = permissions | FLAGS.READ;
-    expect(permissions).toBe(1);
-    expect(permissions & FLAGS.READ).toBeTruthy();
+  it('should set a single flag', () => {
+    expect(setFlag(0, FLAGS.READ)).toBe(1);
+    expect(hasFlag(setFlag(0, FLAGS.READ), FLAGS.READ)).toBe(true);
   });
 
   it('should set multiple flags', () => {
-    const permissions = FLAGS.READ | FLAGS.WRITE;
-    expect(permissions).toBe(0b0011);
-    expect(permissions & FLAGS.READ).toBeTruthy();
-    expect(permissions & FLAGS.WRITE).toBeTruthy();
-    expect(permissions & FLAGS.EXECUTE).toBeFalsy();
+    const perms = setFlag(setFlag(0, FLAGS.READ), FLAGS.WRITE);
+    expect(perms).toBe(0b0011);
+    expect(hasFlag(perms, FLAGS.READ)).toBe(true);
+    expect(hasFlag(perms, FLAGS.WRITE)).toBe(true);
+    expect(hasFlag(perms, FLAGS.EXECUTE)).toBe(false);
   });
 
-  it('should check if a flag is set using AND', () => {
-    const permissions = FLAGS.READ | FLAGS.EXECUTE;
-    expect((permissions & FLAGS.READ) !== 0).toBe(true);
-    expect((permissions & FLAGS.WRITE) !== 0).toBe(false);
-    expect((permissions & FLAGS.EXECUTE) !== 0).toBe(true);
+  it('should clear a flag', () => {
+    const perms = FLAGS.READ | FLAGS.WRITE | FLAGS.EXECUTE;
+    const result = clearFlag(perms, FLAGS.WRITE);
+    expect(hasFlag(result, FLAGS.READ)).toBe(true);
+    expect(hasFlag(result, FLAGS.WRITE)).toBe(false);
+    expect(hasFlag(result, FLAGS.EXECUTE)).toBe(true);
   });
 
-  it('should clear a flag using AND + NOT', () => {
-    let permissions = FLAGS.READ | FLAGS.WRITE | FLAGS.EXECUTE;
-    permissions = permissions & ~FLAGS.WRITE;
-    expect(permissions & FLAGS.READ).toBeTruthy();
-    expect(permissions & FLAGS.WRITE).toBeFalsy();
-    expect(permissions & FLAGS.EXECUTE).toBeTruthy();
-  });
-
-  it('should toggle a flag using XOR', () => {
-    let permissions = FLAGS.READ;
-
-    // Toggle WRITE on
-    permissions = permissions ^ FLAGS.WRITE;
-    expect(permissions & FLAGS.WRITE).toBeTruthy();
-
-    // Toggle WRITE off
-    permissions = permissions ^ FLAGS.WRITE;
-    expect(permissions & FLAGS.WRITE).toBeFalsy();
+  it('should toggle a flag on and off', () => {
+    let perms = FLAGS.READ;
+    perms = toggleFlag(perms, FLAGS.WRITE);
+    expect(hasFlag(perms, FLAGS.WRITE)).toBe(true);
+    perms = toggleFlag(perms, FLAGS.WRITE);
+    expect(hasFlag(perms, FLAGS.WRITE)).toBe(false);
   });
 
   it('should check if all flags in a mask are set', () => {
     const required = FLAGS.READ | FLAGS.WRITE;
-    const userPerms = FLAGS.READ | FLAGS.WRITE | FLAGS.EXECUTE;
-    const insufficientPerms = FLAGS.READ;
-
-    expect((userPerms & required) === required).toBe(true);
-    expect((insufficientPerms & required) === required).toBe(false);
+    expect(hasAll(FLAGS.READ | FLAGS.WRITE | FLAGS.EXECUTE, required)).toBe(true);
+    expect(hasAll(FLAGS.READ, required)).toBe(false);
   });
 
   it('should check if any flag in a mask is set', () => {
-    const dangerousOps = FLAGS.WRITE | FLAGS.DELETE;
-    const readOnly = FLAGS.READ;
-    const editor = FLAGS.READ | FLAGS.WRITE;
+    const dangerous = FLAGS.WRITE | FLAGS.DELETE;
+    expect(hasAny(FLAGS.READ, dangerous)).toBe(false);
+    expect(hasAny(FLAGS.READ | FLAGS.WRITE, dangerous)).toBe(true);
+  });
 
-    expect((readOnly & dangerousOps) !== 0).toBe(false);
-    expect((editor & dangerousOps) !== 0).toBe(true);
+  it('should be idempotent — setting an already-set flag changes nothing', () => {
+    const perms = FLAGS.READ | FLAGS.WRITE;
+    expect(setFlag(perms, FLAGS.READ)).toBe(perms);
+  });
+
+  it('should be idempotent — clearing an unset flag changes nothing', () => {
+    expect(clearFlag(FLAGS.READ, FLAGS.DELETE)).toBe(FLAGS.READ);
   });
 });
