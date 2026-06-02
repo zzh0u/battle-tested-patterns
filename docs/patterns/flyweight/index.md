@@ -25,7 +25,7 @@ Two requests for `"hello"` get the **same object** — not a copy. This is why `
 | Project | Source | Usage |
 |---------|--------|-------|
 | Python (CPython) | [longobject.c#L61-L75](https://github.com/python/cpython/blob/main/Objects/longobject.c#L61-L75) | `get_small_int` returns pre-cached integer objects for -5 to 256. `a = 42; b = 42; a is b` is `True` because both reference the same cached object. This avoids millions of integer allocations in typical programs. |
-| Kubernetes | [backoff.go#L30-L50](https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/util/wait/backoff.go#L30-L50) | Go's `sync.Pool` and string interning are used throughout Kubernetes to reduce GC pressure in the API server handling thousands of concurrent requests. |
+| Go stdlib | [pool.go#L52-L97](https://github.com/golang/go/blob/master/src/sync/pool.go#L52-L97) | `sync.Pool` is the flyweight pattern applied to temporary objects — `Get()` returns a cached instance instead of allocating, `Put()` returns it for reuse. Used in `fmt.Fprintf`, `encoding/json`, and HTTP handlers to share buffers. |
 
 ::: info Note
 Java's `String.intern()`, JavaScript engine string tables (V8), and Rust's `&'static str` all implement variations of this pattern. The JVM interns all string literals automatically.

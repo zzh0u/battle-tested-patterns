@@ -72,6 +72,6 @@ first_10 = [next(evens) for _ in range(10)]
 - **随机访问** — 迭代器是顺序的，用数组做索引访问
 - **多次遍历** — 大多数迭代器是一次性的
 
-## Also Used In
+## 其他使用者
 
 Java Streams, C# LINQ, Haskell lazy lists, Kotlin Sequences, Swift `LazySequence`.

@@ -60,14 +60,21 @@ flowchart TD
 | **State Machine** | Observer | State transitions emit events; observers react to state changes (XState + React) |
 | **Copy-on-Write** | Double Buffering | Both defer the cost of duplication — CoW at the data level, double buffering at the structure level (Git + React Fiber) |
 | **Observer** | State Machine | Subscribers listen for state transitions; the machine emits events on each change (Redux = state machine + observer) |
+| **Iterator** | Batch Processing | Lazily iterate a source, batch items before flushing (Kafka consumer groups) |
+| **Semaphore** | Object Pool | A pool of N resources guarded by a semaphore of N permits (database connection pool) |
+| **Retry with Backoff** | Observer | Retry emits events on each attempt; observers log, alert, or circuit-break (gRPC interceptors) |
+| **Flyweight** | Object Pool | Both reuse objects — flyweight for immutable value sharing, object pool for mutable instance recycling |
+| **Batch Processing** | Retry with Backoff | Batch fails → retry the entire batch with backoff (Kafka producer retries) |
 
 ## The Bigger Picture
 
-These 10 patterns aren't 10 isolated tricks. They're a **toolkit** that production systems mix and match:
+These 15 patterns aren't 15 isolated tricks. They're a **toolkit** that production systems mix and match:
 
-- **React** uses 5 of them in a single render cycle
+- **React** uses 5 of them in a single render cycle (bitmask + double buffering + scheduling + heap + diff)
 - **LMAX Disruptor** combines object pool + ring buffer for 6M orders/sec
 - **Git** uses copy-on-write + diff/patch for its entire data model
-- **Linux kernel** uses bitmask + min heap + ring buffer + state machine across subsystems
+- **Linux kernel** uses bitmask + min heap + ring buffer + state machine + semaphore across subsystems
+- **Kafka** combines batch processing + retry with backoff + ring buffer for throughput
+- **Kubernetes** uses retry with backoff + state machine + semaphore for pod lifecycle
 
 Understanding how they compose is what makes the difference between knowing a pattern and knowing when to reach for it.

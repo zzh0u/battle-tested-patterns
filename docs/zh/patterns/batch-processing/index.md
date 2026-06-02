@@ -92,6 +92,6 @@ class BatchProcessor:
 - **延迟敏感** — 批处理增加延迟
 - **小量级** — 很少超过 1 个项时，批处理增加复杂性无收益
 
-## Also Used In
+## 其他使用者
 
 React `unstable_batchedUpdates`, DataLoader (GraphQL N+1), Redis Pipeline, Elasticsearch Bulk API.
