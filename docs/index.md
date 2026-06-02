@@ -37,3 +37,6 @@ features:
 | [Cooperative Scheduling](/patterns/cooperative-scheduling/) | Voluntarily yield control to stay responsive | React, Go Runtime |
 | [Min Heap](/patterns/min-heap/) | O(1) access to the highest-priority item | React Scheduler, Linux CFS, Node.js |
 | [Diff / Patch](/patterns/diff-patch/) | Compute minimal changes between two states | React Reconciler, Git |
+| [Object Pool](/patterns/object-pool/) | Pre-allocate and reuse objects to avoid GC | Go sync.Pool, Godot Engine |
+| [Ring Buffer](/patterns/ring-buffer/) | Fixed-size circular queue, zero allocation | LMAX Disruptor, Linux ftrace |
+| [State Machine](/patterns/state-machine/) | Explicit states + transitions, impossible states unrepresentable | XState, Linux TCP |

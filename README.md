@@ -6,7 +6,9 @@
 
 Every pattern backed by precise GitHub source links · Multi-language · Runnable exercises
 
-[📖 Docs](https://totoro-jam.github.io/battle-tested-patterns/) · [📖 中文文档](https://totoro-jam.github.io/battle-tested-patterns/zh/) · English | [简体中文](README.zh-CN.md)
+[📖 Documentation](https://totoro-jam.github.io/battle-tested-patterns/) · [📖 中文文档](https://totoro-jam.github.io/battle-tested-patterns/zh/)
+
+English | [简体中文](README.zh-CN.md)
 
 [![CI](https://github.com/Totoro-jam/battle-tested-patterns/actions/workflows/ci.yml/badge.svg)](https://github.com/Totoro-jam/battle-tested-patterns/actions/workflows/ci.yml)
 [![Deploy](https://github.com/Totoro-jam/battle-tested-patterns/actions/workflows/deploy.yml/badge.svg)](https://github.com/Totoro-jam/battle-tested-patterns/actions/workflows/deploy.yml)
@@ -32,7 +34,10 @@ This project: **code-level techniques from React, Linux, Go, Chromium — each w
 | [**Double Buffering**](https://totoro-jam.github.io/battle-tested-patterns/patterns/double-buffering/) | Swap two copies atomically, zero allocation | [React Fiber](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactFiber.js#L327-L355) · SDL | TS Rust Go Py |
 | [**Cooperative Scheduling**](https://totoro-jam.github.io/battle-tested-patterns/patterns/cooperative-scheduling/) | Yield control between work chunks to stay responsive | [React Scheduler](https://github.com/facebook/react/blob/main/packages/scheduler/src/forks/Scheduler.js#L1) · [Go Runtime](https://github.com/golang/go/blob/master/src/runtime/proc.go#L1) | TS Rust Go Py |
 | [**Min Heap**](https://totoro-jam.github.io/battle-tested-patterns/patterns/min-heap/) | O(1) peek at highest priority, O(log n) push/pop | [React MinHeap](https://github.com/facebook/react/blob/main/packages/scheduler/src/SchedulerMinHeap.js#L17-L90) · Linux CFS | TS Rust Go Py |
-| [**Diff / Patch**](https://totoro-jam.github.io/battle-tested-patterns/patterns/diff-patch/) | Compute minimal edits between two sequences | [React Reconciler](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactChildFiber.js#L1) · [Git](https://github.com/git/git/blob/master/diff.c#L1) | TS Rust Go Py |
+| [**Diff / Patch**](https://totoro-jam.github.io/battle-tested-patterns/patterns/diff-patch/) | Compute minimal edits between two sequences | [React Reconciler](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactChildFiber.js#L1169-L1340) · [Git](https://github.com/git/git/blob/master/diff.c#L5020-L5060) | TS Rust Go Py |
+| [**Object Pool**](https://totoro-jam.github.io/battle-tested-patterns/patterns/object-pool/) | Pre-allocate and reuse to avoid GC pressure | [Go sync.Pool](https://github.com/golang/go/blob/master/src/sync/pool.go#L52-L97) · [Godot](https://github.com/godotengine/godot/blob/master/core/templates/pooled_list.h#L35-L100) | TS Rust Go Py |
+| [**Ring Buffer**](https://totoro-jam.github.io/battle-tested-patterns/patterns/ring-buffer/) | Fixed-size circular queue, zero allocation | [LMAX Disruptor](https://github.com/LMAX-Exchange/disruptor/blob/master/src/main/java/com/lmax/disruptor/RingBuffer.java#L84-L130) · [Linux](https://github.com/torvalds/linux/blob/master/include/linux/ring_buffer.h#L12-L70) | TS Rust Go Py |
+| [**State Machine**](https://totoro-jam.github.io/battle-tested-patterns/patterns/state-machine/) | Explicit states, impossible transitions unrepresentable | [XState](https://github.com/statelyai/xstate/blob/main/packages/core/src/StateMachine.ts#L58-L120) · [Linux TCP](https://github.com/torvalds/linux/blob/master/net/ipv4/tcp_input.c#L4865-L4920) | TS Rust Go Py |
 
 > Every "Proven In" link goes to the **exact lines** in the source code. Not a directory. Not a file. The lines.
 

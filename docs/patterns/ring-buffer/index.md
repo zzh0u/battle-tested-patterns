@@ -1,0 +1,198 @@
+# Pattern: Ring Buffer (Circular Buffer)
+
+## One Liner
+
+A fixed-size buffer that wraps around using modular arithmetic, enabling constant-time enqueue and dequeue without memory allocation.
+
+## Core Idea
+
+A ring buffer uses a fixed array with two pointers — `head` (next read position) and `tail` (next write position). When either pointer reaches the end, it wraps to the beginning. No shifting, no resizing, no allocation.
+
+```text
+  Capacity: 8       head=2, tail=6
+
+  ┌───┬───┬───┬───┬───┬───┬───┬───┐
+  │   │   │ A │ B │ C │ D │   │   │
+  └───┴───┴─▲─┴───┴───┴─▲─┴───┴───┘
+            │            │
+          head         tail
+
+  Write 'E' at tail (index 6), then tail = (6+1) % 8 = 7
+  Read 'A' at head (index 2), then head = (2+1) % 8 = 3
+```
+
+The wrap-around `index % capacity` is what makes it "ring" — it never runs out of space in the array, it just overwrites old data (or blocks, depending on the implementation).
+
+## Production Proof
+
+| Project | Source | Usage |
+|---------|--------|-------|
+| LMAX Disruptor | [RingBuffer.java#L84-L130](https://github.com/LMAX-Exchange/disruptor/blob/master/src/main/java/com/lmax/disruptor/RingBuffer.java#L84-L130) | The Disruptor's `RingBuffer` is the core data structure behind LMAX Exchange — processes 6 million orders per second. Uses power-of-2 sizing for bitwise modulo (`sequence & (bufferSize - 1)`). |
+| Linux Kernel | [ring_buffer.h#L12-L70](https://github.com/torvalds/linux/blob/master/include/linux/ring_buffer.h#L12-L70) | The kernel's tracing subsystem (ftrace) uses ring buffers for lock-free event logging. `ring_buffer_event` records are written in a circular fashion with per-CPU buffers for zero-contention. |
+
+## Implementation
+
+::: code-group
+
+```typescript [TypeScript]
+class RingBuffer<T> {
+  private buffer: (T | undefined)[];
+  private head = 0;
+  private tail = 0;
+  private count = 0;
+  private capacity: number;
+
+  constructor(capacity: number) {
+    this.capacity = capacity;
+    this.buffer = new Array(capacity);
+  }
+
+  enqueue(item: T): boolean {
+    if (this.count === this.capacity) return false;
+    this.buffer[this.tail] = item;
+    this.tail = (this.tail + 1) % this.capacity;
+    this.count++;
+    return true;
+  }
+
+  dequeue(): T | undefined {
+    if (this.count === 0) return undefined;
+    const item = this.buffer[this.head];
+    this.buffer[this.head] = undefined;
+    this.head = (this.head + 1) % this.capacity;
+    this.count--;
+    return item;
+  }
+
+  peek(): T | undefined {
+    return this.count > 0 ? this.buffer[this.head] : undefined;
+  }
+
+  get size(): number { return this.count; }
+  get isFull(): boolean { return this.count === this.capacity; }
+  get isEmpty(): boolean { return this.count === 0; }
+}
+```
+
+```rust [Rust]
+pub struct RingBuffer<T> {
+    buffer: Vec<Option<T>>,
+    head: usize,
+    tail: usize,
+    count: usize,
+    capacity: usize,
+}
+
+impl<T> RingBuffer<T> {
+    pub fn new(capacity: usize) -> Self {
+        let mut buffer = Vec::with_capacity(capacity);
+        buffer.resize_with(capacity, || None);
+        RingBuffer { buffer, head: 0, tail: 0, count: 0, capacity }
+    }
+
+    pub fn enqueue(&mut self, item: T) -> bool {
+        if self.count == self.capacity { return false; }
+        self.buffer[self.tail] = Some(item);
+        self.tail = (self.tail + 1) % self.capacity;
+        self.count += 1;
+        true
+    }
+
+    pub fn dequeue(&mut self) -> Option<T> {
+        if self.count == 0 { return None; }
+        let item = self.buffer[self.head].take();
+        self.head = (self.head + 1) % self.capacity;
+        self.count -= 1;
+        item
+    }
+
+    pub fn len(&self) -> usize { self.count }
+    pub fn is_full(&self) -> bool { self.count == self.capacity }
+}
+```
+
+```go [Go]
+type RingBuffer[T any] struct {
+	buf  []T
+	head int
+	tail int
+	cnt  int
+	cap  int
+}
+
+func NewRingBuffer[T any](capacity int) *RingBuffer[T] {
+	return &RingBuffer[T]{buf: make([]T, capacity), cap: capacity}
+}
+
+func (r *RingBuffer[T]) Enqueue(item T) bool {
+	if r.cnt == r.cap { return false }
+	r.buf[r.tail] = item
+	r.tail = (r.tail + 1) % r.cap
+	r.cnt++
+	return true
+}
+
+func (r *RingBuffer[T]) Dequeue() (T, bool) {
+	var zero T
+	if r.cnt == 0 { return zero, false }
+	item := r.buf[r.head]
+	r.head = (r.head + 1) % r.cap
+	r.cnt--
+	return item, true
+}
+
+func (r *RingBuffer[T]) Len() int { return r.cnt }
+```
+
+```python [Python]
+class RingBuffer:
+    def __init__(self, capacity: int):
+        self._buf = [None] * capacity
+        self._head = 0
+        self._tail = 0
+        self._count = 0
+        self._cap = capacity
+
+    def enqueue(self, item) -> bool:
+        if self._count == self._cap:
+            return False
+        self._buf[self._tail] = item
+        self._tail = (self._tail + 1) % self._cap
+        self._count += 1
+        return True
+
+    def dequeue(self):
+        if self._count == 0:
+            return None
+        item = self._buf[self._head]
+        self._head = (self._head + 1) % self._cap
+        self._count -= 1
+        return item
+
+    def __len__(self):
+        return self._count
+```
+
+:::
+
+## Exercises
+
+| Level | Exercise | File |
+|-------|----------|------|
+| Basic | Implement a ring buffer with enqueue/dequeue | `exercises/typescript/ring-buffer/01-basic.test.ts` |
+
+Run exercises: `pnpm test`
+
+## When to Use
+
+- **Fixed-size queues** — bounded producer-consumer buffers
+- **Streaming data** — log buffers, audio/video frames, network packets
+- **Lock-free concurrency** — with atomic head/tail, enables wait-free SPSC queues
+- **Overwrite-oldest semantics** — telemetry, recent-N caches
+- **Embedded / real-time** — no heap allocation, deterministic timing
+
+## When NOT to Use
+
+- **Unbounded growth** — if you can't predict maximum size, use a linked list or `Vec`/`deque`
+- **Random access by key** — ring buffers are sequential; use a hash map
+- **Variable-size elements** — packing different-sized items is complex; use a message queue

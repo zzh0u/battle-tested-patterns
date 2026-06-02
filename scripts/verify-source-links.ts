@@ -1,14 +1,52 @@
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
-const PATTERNS_DIR = join(import.meta.dirname, '..', 'docs', 'patterns');
-const GITHUB_URL_RE = /https:\/\/github\.com\/[^\s)]+#L\d+/g;
+const DOCS_DIR = join(import.meta.dirname, '..', 'docs');
+const GITHUB_URL_RE = /https:\/\/github\.com\/[^\s)>\]]+/g;
 
 interface LinkResult {
   file: string;
   url: string;
   status: number | 'error';
   ok: boolean;
+  isProductionProof: boolean;
+  hasLineNumber: boolean;
+}
+
+function findMarkdownFiles(dir: string): string[] {
+  const results: string[] = [];
+  for (const entry of readdirSync(dir)) {
+    const full = join(dir, entry);
+    if (entry === 'node_modules' || entry === '.vitepress') continue;
+    if (statSync(full).isDirectory()) {
+      results.push(...findMarkdownFiles(full));
+    } else if (entry.endsWith('.md')) {
+      results.push(full);
+    }
+  }
+  return results;
+}
+
+function extractLinks(content: string): Array<{ url: string; isProductionProof: boolean }> {
+  const links: Array<{ url: string; isProductionProof: boolean }> = [];
+  const lines = content.split('\n');
+  let inProofSection = false;
+
+  for (const line of lines) {
+    if (/^## Production Proof|^## 生产验证/.test(line)) {
+      inProofSection = true;
+    } else if (/^## /.test(line)) {
+      inProofSection = false;
+    }
+
+    const urls = line.match(GITHUB_URL_RE) || [];
+    for (const rawUrl of urls) {
+      const url = rawUrl.replace(/[)>\]]+$/, '');
+      links.push({ url, isProductionProof: inProofSection });
+    }
+  }
+
+  return links;
 }
 
 async function checkUrl(url: string): Promise<{ status: number | 'error'; ok: boolean }> {
@@ -22,60 +60,61 @@ async function checkUrl(url: string): Promise<{ status: number | 'error'; ok: bo
 
 async function main() {
   const isCI = process.argv.includes('--ci');
-  let files: string[];
-
-  try {
-    files = readdirSync(PATTERNS_DIR)
-      .filter((f) => f.endsWith('.md'))
-      .map((f) => join(PATTERNS_DIR, f));
-  } catch {
-    console.log('No pattern files found in docs/patterns/. Nothing to verify.');
-    process.exit(0);
-  }
+  const files = findMarkdownFiles(DOCS_DIR);
 
   if (files.length === 0) {
-    console.log('No pattern files found. Nothing to verify.');
+    console.log('No markdown files found.');
     process.exit(0);
   }
 
+  console.log(`Scanning ${files.length} files for GitHub links...\n`);
+
   const results: LinkResult[] = [];
+  const seen = new Set<string>();
 
   for (const file of files) {
     const content = readFileSync(file, 'utf-8');
-    const urls = content.match(GITHUB_URL_RE) || [];
+    const links = extractLinks(content);
 
-    for (const url of urls) {
-      const cleanUrl = url.replace(/[)>\]]+$/, '');
-      console.log(`  Checking: ${cleanUrl}`);
-      const { status, ok } = await checkUrl(cleanUrl);
-      results.push({
-        file: file.replace(process.cwd() + '/', ''),
-        url: cleanUrl,
-        status,
-        ok,
-      });
+    for (const { url, isProductionProof } of links) {
+      if (seen.has(url)) continue;
+      seen.add(url);
+
+      const hasLineNumber = /#L\d+/.test(url) && !url.endsWith('#L1');
+
+      const { status, ok } = await checkUrl(url);
+      results.push({ file: file.replace(process.cwd() + '/', ''), url, status, ok, isProductionProof, hasLineNumber });
     }
   }
 
   console.log('\n--- Results ---\n');
 
   const broken = results.filter((r) => !r.ok);
-  const valid = results.filter((r) => r.ok);
+  const impreciseProofs = results.filter((r) => r.ok && r.isProductionProof && !r.hasLineNumber);
+  const validProofs = results.filter((r) => r.ok && r.isProductionProof && r.hasLineNumber);
+  const otherLinks = results.filter((r) => r.ok && !r.isProductionProof);
 
-  for (const r of valid) {
-    console.log(`  ✅ ${r.status} ${r.url}`);
+  for (const r of validProofs) {
+    console.log(`  ✅ [proof]  ${r.url}`);
   }
-
+  for (const r of otherLinks) {
+    console.log(`  ✅ [other]  ${r.url}`);
+  }
+  for (const r of impreciseProofs) {
+    console.log(`  ⚠️  [proof]  ${r.url} — missing line numbers`);
+  }
   for (const r of broken) {
     console.log(`  ❌ ${r.status} ${r.url} (in ${r.file})`);
   }
 
-  console.log(`\nTotal: ${results.length} links, ${valid.length} valid, ${broken.length} broken`);
+  console.log(`\n${results.length} unique links:`);
+  console.log(`  ✅ ${validProofs.length} production proofs (precise)`);
+  console.log(`  ✅ ${otherLinks.length} other links`);
+  if (impreciseProofs.length) console.log(`  ⚠️  ${impreciseProofs.length} production proofs without line numbers`);
+  if (broken.length) console.log(`  ❌ ${broken.length} broken`);
 
   if (broken.length > 0) {
-    if (isCI) {
-      console.log('\nBroken links detected. See SOP 06 for fix instructions.');
-    }
+    if (isCI) console.log('\nSee .sop/06-broken-link-fix.md');
     process.exit(1);
   }
 }

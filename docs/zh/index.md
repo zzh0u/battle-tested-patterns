@@ -37,3 +37,6 @@ features:
 | [协作调度 (Cooperative Scheduling)](/zh/patterns/cooperative-scheduling/) | 主动让出控制权以保持响应 | React, Go Runtime |
 | [最小堆 (Min Heap)](/zh/patterns/min-heap/) | O(1) 访问最高优先级元素 | React Scheduler, Linux CFS, Node.js |
 | [差异/补丁 (Diff/Patch)](/zh/patterns/diff-patch/) | 计算两个状态之间的最小变更 | React Reconciler, Git |
+| [对象池 (Object Pool)](/zh/patterns/object-pool/) | 预分配并复用对象，避免 GC | Go sync.Pool, Godot |
+| [环形缓冲区 (Ring Buffer)](/zh/patterns/ring-buffer/) | 固定大小循环队列，零分配 | LMAX Disruptor, Linux ftrace |
+| [状态机 (State Machine)](/zh/patterns/state-machine/) | 显式状态+转换，不可能状态不可表达 | XState, Linux TCP |

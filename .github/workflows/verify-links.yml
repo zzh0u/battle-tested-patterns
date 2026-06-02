@@ -1,6 +1,11 @@
 name: Verify Source Links
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/patterns/**"
+      - "docs/by-project/**"
   schedule:
     - cron: "23 3 * * 1" # Every Monday at 03:23 UTC
   workflow_dispatch:
@@ -24,21 +29,36 @@ jobs:
       - name: Verify all source links
         id: verify
         run: |
+          set -o pipefail
           pnpm verify-links --ci 2>&1 | tee verify-output.txt
-          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
         continue-on-error: true
       - name: Create issue for broken links
-        if: steps.verify.outputs.exit_code != '0'
+        if: failure()
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
             const output = fs.readFileSync('verify-output.txt', 'utf8');
             const today = new Date().toISOString().split('T')[0];
-            await github.rest.issues.create({
+            const existingIssues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `🔗 Broken source links detected (${today})`,
-              body: `## Automated Link Verification Report\n\nThe weekly link check found broken URLs:\n\n\`\`\`\n${output}\n\`\`\`\n\nPlease follow [SOP 06: Broken Link Fix](.sop/06-broken-link-fix.md) to resolve.`,
-              labels: ['broken-link', 'automated']
+              labels: 'broken-link',
+              state: 'open',
             });
+            if (existingIssues.data.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existingIssues.data[0].number,
+                body: `## Update (${today})\n\n\`\`\`\n${output}\n\`\`\``,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `🔗 Broken source links detected (${today})`,
+                body: `## Automated Link Verification Report\n\n\`\`\`\n${output}\n\`\`\`\n\nFollow [SOP 06](.sop/06-broken-link-fix.md) to fix.`,
+                labels: ['broken-link', 'automated'],
+              });
+            }
