@@ -7,51 +7,98 @@ export default defineConfig({
 
   base: '/battle-tested-patterns/',
 
-  head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/battle-tested-patterns/logo.svg' }],
-  ],
+  locales: {
+    root: {
+      label: 'English',
+      lang: 'en',
+      themeConfig: {
+        nav: [
+          { text: 'Guide', link: '/guide/what-is-this' },
+          { text: 'Patterns', link: '/patterns/bitmask/' },
+          { text: 'By Project', link: '/by-project/react' },
+        ],
+        sidebar: {
+          '/guide/': [
+            {
+              text: 'Introduction',
+              items: [
+                { text: 'What is This?', link: '/guide/what-is-this' },
+                { text: 'How to Contribute', link: '/guide/how-to-contribute' },
+              ],
+            },
+          ],
+          '/patterns/': [
+            {
+              text: 'Patterns',
+              items: [
+                { text: 'Bitmask', link: '/patterns/bitmask/' },
+                { text: 'Double Buffering', link: '/patterns/double-buffering/' },
+                { text: 'Cooperative Scheduling', link: '/patterns/cooperative-scheduling/' },
+                { text: 'Min Heap', link: '/patterns/min-heap/' },
+                { text: 'Diff / Patch', link: '/patterns/diff-patch/' },
+              ],
+            },
+          ],
+          '/by-project/': [
+            {
+              text: 'By Source Project',
+              items: [
+                { text: 'React', link: '/by-project/react' },
+                { text: 'Linux Kernel', link: '/by-project/linux' },
+                { text: 'Go Runtime', link: '/by-project/go-runtime' },
+              ],
+            },
+          ],
+        },
+      },
+    },
+    zh: {
+      label: '简体中文',
+      lang: 'zh-CN',
+      themeConfig: {
+        nav: [
+          { text: '指南', link: '/zh/guide/what-is-this' },
+          { text: '模式', link: '/zh/patterns/bitmask/' },
+          { text: '按项目', link: '/zh/by-project/react' },
+        ],
+        sidebar: {
+          '/zh/guide/': [
+            {
+              text: '入门',
+              items: [
+                { text: '这是什么？', link: '/zh/guide/what-is-this' },
+                { text: '如何贡献', link: '/zh/guide/how-to-contribute' },
+              ],
+            },
+          ],
+          '/zh/patterns/': [
+            {
+              text: '编程模式',
+              items: [
+                { text: '位掩码 (Bitmask)', link: '/zh/patterns/bitmask/' },
+                { text: '双缓冲 (Double Buffering)', link: '/zh/patterns/double-buffering/' },
+                { text: '协作调度 (Cooperative Scheduling)', link: '/zh/patterns/cooperative-scheduling/' },
+                { text: '最小堆 (Min Heap)', link: '/zh/patterns/min-heap/' },
+                { text: '差异/补丁 (Diff/Patch)', link: '/zh/patterns/diff-patch/' },
+              ],
+            },
+          ],
+          '/zh/by-project/': [
+            {
+              text: '按来源项目',
+              items: [
+                { text: 'React', link: '/zh/by-project/react' },
+                { text: 'Linux 内核', link: '/zh/by-project/linux' },
+                { text: 'Go Runtime', link: '/zh/by-project/go-runtime' },
+              ],
+            },
+          ],
+        },
+      },
+    },
+  },
 
   themeConfig: {
-    nav: [
-      { text: 'Guide', link: '/guide/what-is-this' },
-      { text: 'Patterns', link: '/patterns/bitmask/' },
-      { text: 'By Project', link: '/by-project/react' },
-    ],
-
-    sidebar: {
-      '/guide/': [
-        {
-          text: 'Introduction',
-          items: [
-            { text: 'What is This?', link: '/guide/what-is-this' },
-            { text: 'How to Contribute', link: '/guide/how-to-contribute' },
-          ],
-        },
-      ],
-      '/patterns/': [
-        {
-          text: 'Patterns',
-          items: [
-            { text: 'Bitmask', link: '/patterns/bitmask/' },
-            { text: 'Double Buffering', link: '/patterns/double-buffering/' },
-            { text: 'Cooperative Scheduling', link: '/patterns/cooperative-scheduling/' },
-            { text: 'Min Heap', link: '/patterns/min-heap/' },
-            { text: 'Diff / Patch', link: '/patterns/diff-patch/' },
-          ],
-        },
-      ],
-      '/by-project/': [
-        {
-          text: 'By Source Project',
-          items: [
-            { text: 'React', link: '/by-project/react' },
-            { text: 'Linux Kernel', link: '/by-project/linux' },
-            { text: 'Go Runtime', link: '/by-project/go-runtime' },
-          ],
-        },
-      ],
-    },
-
     socialLinks: [
       { icon: 'github', link: 'https://github.com/Totoro-jam/battle-tested-patterns' },
     ],
