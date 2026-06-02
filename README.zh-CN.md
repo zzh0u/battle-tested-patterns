@@ -41,6 +41,9 @@
 | [**状态机**](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/state-machine/) | 显式状态，不可能的转换不存在 | [XState](https://github.com/statelyai/xstate/blob/main/packages/core/src/StateMachine.ts#L58-L120) · [Linux TCP](https://github.com/torvalds/linux/blob/master/net/ipv4/tcp_input.c#L4865-L4920) | TS Rust Go Py |
 | [**写时复制**](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/copy-on-write/) | 引用共享，修改时才复制 | [Git objects](https://github.com/git/git/blob/master/object-file.c#L719-L730) · [Rust Cow](https://github.com/rust-lang/rust/blob/main/library/alloc/src/borrow.rs#L169-L220) | TS Rust Go Py |
 | [**观察者**](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/observer/) | 订阅事件，生产者消费者解耦 | [Node EventEmitter](https://github.com/nodejs/node/blob/main/lib/events.js#L456-L520) · [Redux](https://github.com/reduxjs/redux/blob/master/src/createStore.ts#L211-L280) | TS Rust Go Py |
+| [**迭代器**](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/iterator/) | 惰性序列，零中间分配 | [Rust Iterator](https://github.com/rust-lang/rust/blob/main/library/core/src/iter/traits/iterator.rs#L68-L112) · [Python gen](https://github.com/python/cpython/blob/main/Objects/genobject.c) | TS Rust Go Py |
+| [**信号量**](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/semaphore/) | 计数器限制并发 | [Linux](https://github.com/torvalds/linux/blob/master/include/linux/semaphore.h#L15-L55) · [Go x/sync](https://github.com/golang/sync/blob/master/semaphore/semaphore.go) | TS Rust Go Py |
+| [**批处理**](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/batch-processing/) | 累积操作批量执行 | [Kafka](https://github.com/apache/kafka/blob/trunk/clients/src/main/java/org/apache/kafka/clients/producer/internals/RecordAccumulator.java#L69-L120) | TS Go Py |
 
 > 每个"验证来源"链接都指向源代码的**精确行号**。不是目录，不是文件，是行。
 

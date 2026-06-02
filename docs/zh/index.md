@@ -42,3 +42,6 @@ features:
 | [状态机 (State Machine)](/zh/patterns/state-machine/) | 显式状态+转换，不可能状态不可表达 | XState, Linux TCP |
 | [写时复制 (Copy-on-Write)](/zh/patterns/copy-on-write/) | 引用共享，修改时才复制 | Git 对象, Rust Cow |
 | [观察者 (Observer)](/zh/patterns/observer/) | 订阅事件，通知时无耦合 | Node EventEmitter, Redux |
+| [迭代器 (Iterator)](/zh/patterns/iterator/) | 惰性处理序列，零中间分配 | Rust Iterator, Python 生成器 |
+| [信号量 (Semaphore)](/zh/patterns/semaphore/) | 用计数器限制并发操作 | Linux 内核, Go x/sync |
+| [批处理 (Batch Processing)](/zh/patterns/batch-processing/) | 累积操作批量执行提升吞吐 | Kafka, React batched setState |
