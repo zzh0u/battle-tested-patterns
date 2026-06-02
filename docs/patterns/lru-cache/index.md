@@ -1,0 +1,195 @@
+# Pattern: LRU Cache
+
+## One Liner
+
+Evict the least recently used entry when the cache is full — O(1) get and put using a hash map plus a doubly linked list.
+
+## Core Idea
+
+An LRU cache combines a hash map (for O(1) key lookup) with a doubly linked list (for O(1) recency tracking). On every access, the entry moves to the front. When the cache exceeds capacity, the entry at the back (least recently used) is evicted.
+
+```text
+  Most Recent                                    Least Recent
+  ┌─────┐    ┌─────┐    ┌─────┐    ┌─────┐    ┌─────┐
+  │  E  │◄──►│  D  │◄──►│  C  │◄──►│  B  │◄──►│  A  │  ← evict this
+  └─────┘    └─────┘    └─────┘    └─────┘    └─────┘
+
+  get("B") → move B to front:
+  ┌─────┐    ┌─────┐    ┌─────┐    ┌─────┐    ┌─────┐
+  │  B  │◄──►│  E  │◄──►│  D  │◄──►│  C  │◄──►│  A  │
+  └─────┘    └─────┘    └─────┘    └─────┘    └─────┘
+
+  put("F") with capacity=5 → evict A, add F to front
+```
+
+| Property | Value |
+|----------|-------|
+| get | O(1) — hash map lookup + move to front |
+| put | O(1) — hash map insert + evict if over capacity |
+| Eviction policy | Least Recently Used (tail of list) |
+| Space | O(capacity) |
+
+## Production Proof
+
+| Project | Source | Usage |
+|---------|--------|-------|
+| Go groupcache | [lru.go#L28-L76](https://github.com/golang/groupcache/blob/master/lru/lru.go#L28-L76) | `Cache` struct with `container/list` doubly linked list and a map. `Add` (L52) moves existing entries to front; `Get` (L64) moves accessed entries to front; `RemoveOldest` (L72) evicts from back. By Brad Fitzpatrick (memcached creator). |
+| Linux Kernel | [list_lru.h#L15-L55](https://github.com/torvalds/linux/blob/master/include/linux/list_lru.h#L15-L55) | `list_lru` — kernel LRU list used by the slab allocator, dentry cache, and inode cache for memory reclaim. Per-node and per-memcg isolation for NUMA-aware eviction. |
+
+## Implementation
+
+::: code-group
+
+```typescript [TypeScript]
+class LRUCache<K, V> {
+  private map = new Map<K, V>();
+
+  constructor(private capacity: number) {}
+
+  get(key: K): V | undefined {
+    if (!this.map.has(key)) return undefined;
+    const value = this.map.get(key)!;
+    this.map.delete(key);
+    this.map.set(key, value);
+    return value;
+  }
+
+  put(key: K, value: V): void {
+    if (this.map.has(key)) this.map.delete(key);
+    this.map.set(key, value);
+    if (this.map.size > this.capacity) {
+      const oldest = this.map.keys().next().value!;
+      this.map.delete(oldest);
+    }
+  }
+}
+```
+
+```go [Go]
+type entry struct {
+	key   string
+	value any
+}
+
+type LRUCache struct {
+	capacity int
+	ll       *list.List
+	cache    map[string]*list.Element
+}
+
+func NewLRUCache(capacity int) *LRUCache {
+	return &LRUCache{capacity: capacity, ll: list.New(), cache: make(map[string]*list.Element)}
+}
+
+func (c *LRUCache) Get(key string) (any, bool) {
+	if ele, ok := c.cache[key]; ok {
+		c.ll.MoveToFront(ele)
+		return ele.Value.(*entry).value, true
+	}
+	return nil, false
+}
+
+func (c *LRUCache) Put(key string, value any) {
+	if ele, ok := c.cache[key]; ok {
+		c.ll.MoveToFront(ele)
+		ele.Value.(*entry).value = value
+		return
+	}
+	ele := c.ll.PushFront(&entry{key, value})
+	c.cache[key] = ele
+	if c.ll.Len() > c.capacity {
+		oldest := c.ll.Back()
+		c.ll.Remove(oldest)
+		delete(c.cache, oldest.Value.(*entry).key)
+	}
+}
+```
+
+```python [Python]
+from collections import OrderedDict
+
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.cache: OrderedDict[str, object] = OrderedDict()
+
+    def get(self, key: str):
+        if key not in self.cache:
+            return None
+        self.cache.move_to_end(key)
+        return self.cache[key]
+
+    def put(self, key: str, value: object) -> None:
+        if key in self.cache:
+            self.cache.move_to_end(key)
+        self.cache[key] = value
+        if len(self.cache) > self.capacity:
+            self.cache.popitem(last=False)
+```
+
+```rust [Rust]
+use std::collections::HashMap;
+
+pub struct LRUCache {
+    capacity: usize,
+    order: Vec<String>,
+    map: HashMap<String, String>,
+}
+
+impl LRUCache {
+    pub fn new(capacity: usize) -> Self {
+        LRUCache { capacity, order: Vec::new(), map: HashMap::new() }
+    }
+
+    pub fn get(&mut self, key: &str) -> Option<&str> {
+        if !self.map.contains_key(key) { return None; }
+        self.order.retain(|k| k != key);
+        self.order.push(key.to_string());
+        self.map.get(key).map(|v| v.as_str())
+    }
+
+    pub fn put(&mut self, key: &str, value: &str) {
+        self.order.retain(|k| k != key);
+        self.order.push(key.to_string());
+        self.map.insert(key.to_string(), value.to_string());
+        if self.map.len() > self.capacity {
+            if let Some(oldest) = self.order.first().cloned() {
+                self.order.remove(0);
+                self.map.remove(&oldest);
+            }
+        }
+    }
+}
+```
+
+:::
+
+## Exercises
+
+| Level | Exercise | File |
+|-------|----------|------|
+| Basic | Implement an LRU cache with get/put and eviction | `exercises/typescript/lru-cache/01-basic.test.ts` |
+
+Run exercises: `pnpm test`
+
+## When to Use
+
+- **Database query caching** — cache hot queries, evict cold ones
+- **DNS resolution** — cache recent lookups
+- **Web browsers** — page/resource cache with bounded memory
+- **API response caching** — keep frequently requested responses warm
+- **Operating systems** — page cache, dentry cache, inode cache
+
+## When NOT to Use
+
+- **Scan-resistant workloads** — a full table scan evicts all useful entries (use LRU-K or ARC instead)
+- **Time-based expiration needed** — LRU evicts by access recency, not age (add TTL layer separately)
+- **Frequency matters more** — if popular items get evicted by a burst of unique requests, use LFU
+- **Unbounded growth OK** — if memory isn't constrained, a simple hash map is simpler
+
+## More Production Uses
+
+- [Redis](https://github.com/redis/redis) — `maxmemory-policy allkeys-lru` for LRU eviction
+- [Guava Cache](https://github.com/google/guava) — `CacheBuilder.maximumSize()` with LRU eviction
+- [Python functools](https://github.com/python/cpython) — `@lru_cache` decorator
+- [Caffeine](https://github.com/ben-manes/caffeine) — high-performance Java cache (Window TinyLfu, inspired by LRU)

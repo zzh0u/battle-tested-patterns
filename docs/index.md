@@ -52,3 +52,8 @@ features:
 | [Arena Allocator](/patterns/arena-allocator/) | Bump-allocate in a region, free all at once | Rust bumpalo, jemalloc |
 | [Backpressure](/patterns/backpressure/) | Slow producers when consumers can't keep up | Node.js Streams, Reactive Streams |
 | [Write-Ahead Log](/patterns/write-ahead-log/) | Log mutations before applying for crash recovery | etcd, PostgreSQL |
+| [LRU Cache](/patterns/lru-cache/) | Evict least recently used, O(1) get and put | Go groupcache, Linux kernel |
+| [Consistent Hashing](/patterns/consistent-hashing/) | Add/remove nodes remaps only ~1/n keys | Go groupcache, HAProxy |
+| [Trie (Prefix Tree)](/patterns/trie/) | O(k) lookup by key length, shared prefixes share nodes | Linux FIB, Redis rax |
+| [Skip List](/patterns/skip-list/) | Probabilistic O(log n) sorted structure | Redis sorted sets, LevelDB |
+| [Rate Limiter](/patterns/rate-limiter/) | Token bucket controls throughput with burst capacity | Go x/time/rate, Nginx |

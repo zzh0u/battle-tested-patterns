@@ -52,3 +52,8 @@ features:
 | [Arena 分配器](/zh/patterns/arena-allocator/) | 区域内推进指针分配，一次性释放 | Rust bumpalo, jemalloc |
 | [背压 (Backpressure)](/zh/patterns/backpressure/) | 消费者跟不上时减慢生产者 | Node.js Streams, Reactive Streams |
 | [预写日志 (WAL)](/zh/patterns/write-ahead-log/) | 应用前先记录变更，崩溃可恢复 | etcd, PostgreSQL |
+| [LRU 缓存](/zh/patterns/lru-cache/) | 淘汰最近最少使用，O(1) get/put | Go groupcache, Linux 内核 |
+| [一致性哈希](/zh/patterns/consistent-hashing/) | 添加/移除节点只重映射约 1/n 的键 | Go groupcache, HAProxy |
+| [Trie 前缀树](/zh/patterns/trie/) | 按键长度 O(k) 查找，共享前缀共享节点 | Linux FIB, Redis rax |
+| [跳表](/zh/patterns/skip-list/) | 概率 O(log n) 有序结构 | Redis 有序集合, LevelDB |
+| [限流器](/zh/patterns/rate-limiter/) | 令牌桶控制吞吐量，支持突发 | Go x/time/rate, Nginx |

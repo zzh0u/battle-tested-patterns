@@ -139,6 +139,15 @@ function verifyGo(block: CodeBlock): string | null {
     if (/\bfmt\./.test(code)) imports.push('"fmt"');
     if (/\btime\./.test(code)) imports.push('"time"');
     if (/\bcontext\./.test(code)) imports.push('"context"');
+    if (/\bsort\./.test(code)) imports.push('"sort"');
+    if (/\brand\./.test(code)) imports.push('"math/rand"');
+    if (/\blist\./.test(code)) imports.push('"container/list"');
+    if (/\bbisect\./.test(code)) imports.push('"sort"');
+    if (/\bstrconv\./.test(code)) imports.push('"strconv"');
+    if (/\bmath\./.test(code)) imports.push('"math"');
+    if (/\bio\./.test(code)) imports.push('"io"');
+    if (/\bbytes\./.test(code)) imports.push('"bytes"');
+    if (/\bstrings\./.test(code)) imports.push('"strings"');
 
     const importBlock = imports.length > 0 ? `import (\n${imports.map(i => '\t' + i).join('\n')}\n)\n\n` : '';
     code = `package main\n\n${importBlock}${code}`;
