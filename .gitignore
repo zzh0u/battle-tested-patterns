@@ -32,3 +32,6 @@ coverage/
 
 # Temp
 tmp/
+
+# Local Claude settings (not committed)
+.claude/settings.local.json
