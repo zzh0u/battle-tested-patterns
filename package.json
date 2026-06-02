@@ -18,6 +18,7 @@
     "lint": "markdownlint 'docs/**/*.md' --ignore 'docs/node_modules' --config .markdownlint.json",
     "typecheck": "pnpm --filter exercises typecheck",
     "verify-links": "tsx scripts/verify-source-links.ts",
+    "verify-code": "tsx scripts/verify-code-blocks.ts",
     "changelog": "changelogen --output CHANGELOG.md"
   },
   "devDependencies": {

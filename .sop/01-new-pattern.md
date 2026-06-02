@@ -79,6 +79,7 @@ Include implementations in the `:::code-group` block:
 - [ ] TypeScript (required)
 - [ ] At least one of: Rust / Go / Python / C
 - [ ] Each implementation is idiomatic to its language (follow SOP 03)
+- [ ] Verify all code blocks compile: `pnpm verify-code`
 
 ### 5. Design Exercises
 
