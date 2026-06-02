@@ -2,13 +2,11 @@
 
 # Battle-Tested Patterns
 
-**Production-proven programming patterns from React, Linux, Go, Chromium, and more.**
+**Code-level programming patterns extracted from production codebases.**
 
-Precise source links · Multi-language examples · Runnable exercises
+Every pattern backed by precise GitHub source links · Multi-language · Runnable exercises
 
-[📖 Documentation](https://totoro-jam.github.io/battle-tested-patterns/) · [📖 中文文档](https://totoro-jam.github.io/battle-tested-patterns/zh/)
-
-English | [简体中文](README.zh-CN.md)
+[📖 Docs](https://totoro-jam.github.io/battle-tested-patterns/) · [📖 中文文档](https://totoro-jam.github.io/battle-tested-patterns/zh/) · English | [简体中文](README.zh-CN.md)
 
 [![CI](https://github.com/Totoro-jam/battle-tested-patterns/actions/workflows/ci.yml/badge.svg)](https://github.com/Totoro-jam/battle-tested-patterns/actions/workflows/ci.yml)
 [![Deploy](https://github.com/Totoro-jam/battle-tested-patterns/actions/workflows/deploy.yml/badge.svg)](https://github.com/Totoro-jam/battle-tested-patterns/actions/workflows/deploy.yml)
@@ -16,98 +14,76 @@ English | [简体中文](README.zh-CN.md)
 
 </div>
 
----
+## The Gap This Fills
 
-## Why This Exists
+| What exists | What's missing |
+|------------|----------------|
+| Design patterns books | Too abstract, too OOP-centric |
+| Algorithm repos | Disconnected from real engineering |
+| System design guides | Architecture-level, not code-level |
 
-Design patterns books are too abstract. Algorithm repos are disconnected from engineering. System design guides don't touch code-level techniques.
-
-This project fills the gap: **code-level patterns extracted from production source code**, each backed by verifiable GitHub links.
-
-## What Makes This Different
-
-- **🔗 Production Proof** — Every pattern links to the exact lines in React, Linux, Go, or Chromium where it's used. No hand-waving.
-- **🌍 Multi-Language** — Idiomatic implementations in TypeScript, Rust, and Go. Not line-by-line translations.
-- **🧪 Runnable Exercises** — Progressive difficulty (basic → intermediate → advanced) with test suites.
-- **🎮 Official Playgrounds** — One-click links to TypeScript, Go, Rust, and Python official playgrounds for each pattern.
+This project: **code-level techniques from React, Linux, Go, Chromium — each with verifiable source links**.
 
 ## Patterns
 
-| Pattern | Key Insight | Source Projects | Languages |
-|---------|------------|-----------------|-----------|
-| [Bitmask](https://totoro-jam.github.io/battle-tested-patterns/patterns/bitmask/) | Pack multiple flags into a single integer | React, Linux, Go | TS, Rust, Go, Python |
-| Double Buffering | Swap between two copies for atomic updates | React Fiber, PostgreSQL | TS, Rust, Go, Python |
-| Cooperative Scheduling | Voluntarily yield control to stay responsive | React, Go Runtime | TS, Rust, Go, Python |
-| Min Heap | O(1) access to the highest-priority item | React Scheduler, Linux CFS | TS, Rust, Go, Python |
-| Diff / Patch | Compute minimal changes between two states | React Reconciler, Git | TS, Rust, Go, Python |
+| Pattern | What It Does | Proven In | Langs |
+|---------|-------------|-----------|-------|
+| [**Bitmask**](https://totoro-jam.github.io/battle-tested-patterns/patterns/bitmask/) | Pack N flags into one integer, check any combo in O(1) | [React Flags](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactFiberFlags.js#L14-L36) · [Linux stat.h](https://github.com/torvalds/linux/blob/master/include/uapi/linux/stat.h#L25-L33) | TS Rust Go Py |
+| [**Double Buffering**](https://totoro-jam.github.io/battle-tested-patterns/patterns/double-buffering/) | Swap two copies atomically, zero allocation | [React Fiber](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactFiber.js#L327-L355) · SDL | TS Rust Go Py |
+| [**Cooperative Scheduling**](https://totoro-jam.github.io/battle-tested-patterns/patterns/cooperative-scheduling/) | Yield control between work chunks to stay responsive | [React Scheduler](https://github.com/facebook/react/blob/main/packages/scheduler/src/forks/Scheduler.js#L1) · [Go Runtime](https://github.com/golang/go/blob/master/src/runtime/proc.go#L1) | TS Rust Go Py |
+| [**Min Heap**](https://totoro-jam.github.io/battle-tested-patterns/patterns/min-heap/) | O(1) peek at highest priority, O(log n) push/pop | [React MinHeap](https://github.com/facebook/react/blob/main/packages/scheduler/src/SchedulerMinHeap.js#L17-L90) · Linux CFS | TS Rust Go Py |
+| [**Diff / Patch**](https://totoro-jam.github.io/battle-tested-patterns/patterns/diff-patch/) | Compute minimal edits between two sequences | [React Reconciler](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactChildFiber.js#L1) · [Git](https://github.com/git/git/blob/master/diff.c#L1) | TS Rust Go Py |
+
+> Every "Proven In" link goes to the **exact lines** in the source code. Not a directory. Not a file. The lines.
+
+## What a Pattern Looks Like
+
+Each pattern follows a consistent structure — here's a taste from **Bitmask**:
+
+```text
+  Bit position:  7   6   5   4   3   2   1   0
+                ┌───┬───┬───┬───┬───┬───┬───┬───┐
+  Flags:        │   │   │   │ SN│ CB│ RF│ UP│ PL│
+                └───┴───┴───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┘
+                              │   │   │   │   └─ Placement  (1 << 0)
+                              │   │   │   └──── Update     (1 << 1)
+                              │   │   └──────── Ref        (1 << 2)
+                              │   └──────────── Callback   (1 << 3)
+                              └──────────────── Snapshot   (1 << 4)
+```
+
+Implementations in 4 languages, each idiomatic:
+
+```typescript
+// TypeScript                          // Python
+const READ  = 1 << 0;                  READ  = 1 << 0
+const WRITE = 1 << 1;                  WRITE = 1 << 1
+const perms = READ | WRITE;            perms = READ | WRITE
+(perms & READ) !== 0;  // true         bool(perms & READ)  # True
+```
+
+Then exercises at 3 difficulty levels — all with tests you can run.
 
 ## Quick Start
 
 ```bash
-# Clone and install
 git clone https://github.com/Totoro-jam/battle-tested-patterns.git
-cd battle-tested-patterns
-pnpm install
+cd battle-tested-patterns && pnpm install
 
-# Run exercises
-pnpm test                              # TypeScript (Vitest)
-cd exercises/rust && cargo test        # Rust
-cd exercises/go && go test ./...       # Go
-
-# Start docs site locally
-pnpm dev
+pnpm test                         # TypeScript exercises (Vitest)
+cd exercises/rust && cargo test   # Rust exercises
+cd exercises/go && go test ./...  # Go exercises
+pnpm dev                          # Local docs site
 ```
-
-## Project Structure
-
-```
-battle-tested-patterns/
-├── docs/                 # VitePress documentation site (en + zh)
-│   ├── patterns/         #   Pattern pages (one dir per pattern)
-│   └── zh/               #   Chinese translation
-├── exercises/            # Runnable exercises
-│   ├── typescript/       #   Vitest test files
-│   ├── rust/             #   Cargo project
-│   └── go/               #   Go module
-├── .sop/                 # Standard Operating Procedures
-├── .claude/skills/       # AI agent skills
-└── .github/workflows/    # CI/CD pipelines
-```
-
-## Source Link Standard
-
-Every production proof must be a precise GitHub URL to specific lines:
-
-```
-✅ https://github.com/facebook/react/blob/main/.../ReactFiberFlags.js#L14-L36
-✅ https://github.com/torvalds/linux/blob/master/.../stat.h#L25-L33
-❌ Directory-level links (not precise enough)
-❌ Unverified URLs
-```
-
-Links are automatically checked weekly via CI. Broken links trigger an Issue.
 
 ## Contributing
 
-We welcome contributions! See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for details.
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md). The bar is intentionally high:
 
-**In short:**
-1. Every pattern needs ≥ 2 production proofs with verified source links
-2. TypeScript implementation required + at least one other language
-3. At least 2 exercise test files with difficulty labels
-4. All tests pass, no lint errors
-
-## Tech Stack
-
-| Layer | Tool |
-|-------|------|
-| Monorepo | pnpm workspace |
-| Docs | VitePress → GitHub Pages |
-| Tests | Vitest · cargo test · go test |
-| Commits | Conventional Commits + commitlint |
-| Changelog | changelogen (auto-generated) |
-| CI/CD | GitHub Actions (6 workflows) |
-| AI | Claude Code skills + git guardrails |
+1. **≥ 2 production proofs** with verified, line-number-precise source links
+2. **TypeScript + ≥ 1 other language** — idiomatic, not translated
+3. **≥ 2 exercises** with tests that pass
+4. Source links checked weekly by CI — broken links auto-open an Issue
 
 ## License
 

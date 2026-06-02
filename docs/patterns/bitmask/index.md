@@ -25,9 +25,13 @@ Instead of using an array of booleans or an object with multiple fields, a bitma
 | Want to... | Write | Why it works |
 |------------|-------|-------------|
 | Set a flag | `flags \|= FLAG` | OR turns the bit on, others unchanged |
-| Check a flag | `flags & FLAG` | AND isolates the bit — nonzero = set |
+| Check a flag | `(flags & FLAG) !== 0` | AND isolates the bit — nonzero = set |
 | Clear a flag | `flags &= ~FLAG` | AND with inverted mask turns bit off |
 | Toggle a flag | `flags ^= FLAG` | XOR flips the bit |
+| Combine flags | `flags = A \| B \| C` | OR merges multiple flags into one value |
+| Check ALL of mask | `(flags & mask) === mask` | True only if every bit in mask is set |
+| Check ANY of mask | `(flags & mask) !== 0` | True if at least one bit in mask is set |
+| Count set bits | `n.toString(2).split('1').length - 1` | Population count (popcnt) |
 
 Key insight: a single `&` operation can check any combination of flags simultaneously — no loops, no branching.
 
