@@ -9,55 +9,39 @@ When reviewing a pull request that adds or modifies patterns, exercises, or docu
 ### 1. Content Accuracy
 
 - [ ] Production Proof links are valid (click each one)
-- [ ] Code descriptions match what the linked source code actually does
+- [ ] Links are precise to line numbers (not `#L1`)
+- [ ] Code descriptions match what the linked source actually does
 - [ ] No fabricated claims about project usage
-- [ ] Technical explanations are correct
 
 ### 2. Template Compliance
 
-- [ ] All required sections present (One Liner, Core Idea, Production Proof, Implementation, Exercises, When to Use, When NOT to Use)
+- [ ] All required sections present (One Liner → Core Idea → Production Proof → Implementation → Exercises → When to Use → When NOT to Use → Also Used In)
 - [ ] One Liner ≤ 30 English words
-- [ ] Core Idea includes a visual diagram
-- [ ] Production Proof has ≥ 2 projects with line-number-precise links
+- [ ] Core Idea includes a diagram (Mermaid, ASCII, or table)
+- [ ] Production Proof has ≥ 2 projects with line-precise links
+- [ ] "Also Used In" section lists additional projects
 
-### 3. Code Quality
+### 3. Multi-Language
 
 - [ ] TypeScript implementation present (required)
-- [ ] ≥ 1 other language implementation
-- [ ] Each language is idiomatic (not mechanical translation)
-- [ ] Code compiles and runs
-- [ ] No lint errors
-- [ ] TypeScript strict mode passes
+- [ ] ≥ 1 other language (Rust / Go / Python / C)
+- [ ] Each implementation is idiomatic (not mechanical translation)
+- [ ] Code uses `::: code-group` format in the document
 
 ### 4. Exercises
 
-- [ ] ≥ 2 test files with difficulty labels
-- [ ] All tests pass
-- [ ] Test descriptions are clear
+- [ ] ≥ 1 TypeScript exercise file with TODO-stub format
+- [ ] Tests pass (`pnpm test`)
+- [ ] Separator line between stubs and tests
 
-### 5. CI Status
+### 5. Navigation & Sync
 
-- [ ] All CI checks pass
-- [ ] No new warnings introduced
+- [ ] Sidebar updated in `config.ts` (both English and Chinese)
+- [ ] Homepage pattern table updated (`docs/index.md` + `docs/zh/index.md`)
+- [ ] README pattern table updated (`README.md` + `README.zh-CN.md`)
+- [ ] Chinese translation exists (`docs/zh/patterns/<name>/index.md`)
+- [ ] By-project pages updated if new source project
 
-## Review Response Template
+### 6. CI Status
 
-```markdown
-## Review Summary
-
-### ✅ Strengths
-- ...
-
-### 🔧 Required Changes
-- ...
-
-### 💡 Suggestions (optional)
-- ...
-
-### Checklist
-- [ ] Content accuracy verified
-- [ ] Template compliance checked
-- [ ] Code quality reviewed
-- [ ] Exercises tested
-- [ ] CI green
-```
+- [ ] All CI checks pass (CI, Content Quality, Verify Links, Deploy)

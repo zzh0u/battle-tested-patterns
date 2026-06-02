@@ -3,61 +3,47 @@
 ## Trigger
 
 - Before submitting a new pattern or updating Production Proof sections
-- During weekly automated link verification (CI)
+- During automated link verification (CI on push + weekly cron)
 - When a broken-link Issue is opened
 
-## Prerequisites
+## Quick Method
 
-- `curl` available in the environment
-- Network access to github.com
-
-## Steps
-
-### 1. Extract Links
-
-Collect all GitHub URLs from the pattern document's Production Proof table.
-
-### 2. Verify Each Link
-
-For each URL:
-
-```bash
-curl -sI "https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactFiberFlags.js#L18-L22" | head -1
-```
-
-Expected: `HTTP/2 200` or `HTTP/1.1 200`
-
-### 3. Verify Content Accuracy
-
-- Open the link in a browser
-- Confirm the code at the specified lines matches what the pattern document describes
-- Confirm the usage description in the Production Proof table is accurate
-
-### 4. Check Branch Target
-
-- [ ] Link targets `main` or `master` branch (not a feature branch)
-- [ ] If using a commit SHA permalink, verify the commit is on the default branch
-
-### 5. Link Format Validation
-
-Valid format:
-```
-https://github.com/{org}/{repo}/blob/{branch}/{path}#L{start}-L{end}
-```
-
-Invalid:
-- Directory links (`/tree/main/packages/`) — not precise enough
-- Branch links to non-default branches — may be deleted
-- Links without line numbers — not precise enough
-
-## Automated Verification
-
-Run the project script:
 ```bash
 pnpm verify-links
 ```
 
-This extracts all GitHub URLs from `docs/patterns/*.md` and checks HTTP status.
+This scans all `docs/` markdown files, extracts GitHub URLs, checks HTTP status, and distinguishes Production Proof links (require line numbers) from other links.
+
+## Manual Verification Steps
+
+### 1. Check HTTP Status
+
+```bash
+curl -sI "<url>" | head -1
+```
+
+Expected: `HTTP/2 200`
+
+### 2. Verify Precision
+
+Production Proof links must include line numbers:
+
+```text
+✅ https://github.com/org/repo/blob/main/path/file.ext#L42-L80
+❌ https://github.com/org/repo/blob/main/path/file.ext#L1  (file-level)
+❌ https://github.com/org/repo/tree/main/path/  (directory)
+```
+
+### 3. Verify Content
+
+- Open the link in browser
+- Confirm the code at the specified lines actually demonstrates the pattern
+- Confirm the usage description in the table is accurate
+
+### 4. Check Branch
+
+- Must target `main` or `master` (not a feature branch)
+- Consider commit SHA permalinks for stability
 
 ## When a Link is Broken
 

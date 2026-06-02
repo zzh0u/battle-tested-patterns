@@ -6,57 +6,57 @@ When creating runnable exercises for a pattern.
 
 ## Design Principles
 
-1. **Progressive difficulty** — basic → intermediate → advanced
-2. **Test-driven** — every exercise is a test file with assertions
+1. **TODO-stub format** — functions have working implementations with `// TODO` markers; learners delete and rewrite
+2. **Test-driven** — tests verify the functions; tests are immutable
 3. **Self-contained** — each exercise file can run independently
-4. **Clear intent** — test names describe what the learner should implement
-
-## Difficulty Levels
-
-### Basic (01-*)
-- Time: ~10 minutes
-- Goal: Verify understanding of the core concept
-- Example: "Implement basic flag operations using bitwise OR and AND"
-
-### Intermediate (02-*)
-- Time: ~30 minutes
-- Goal: Apply the pattern to a realistic problem
-- Example: "Build a permission system using bitmask"
-
-### Advanced (03-*)
-- Time: ~60 minutes
-- Goal: Study and replicate the pattern as used in a real project
-- Example: "Implement React-style fiber flags with side-effect tracking"
+4. **Progressive difficulty** — basic (01-) → intermediate (02-) → advanced (03-)
 
 ## File Structure
 
-```
+```text
 exercises/typescript/<pattern-name>/
-├── 01-basic.test.ts
-├── 02-<scenario>.test.ts
-└── 03-<project-reference>.test.ts
+├── 01-basic.test.ts         # Required: core concept
+└── 02-<scenario>.test.ts    # Optional: realistic application
 ```
 
-## Exercise File Template
+Minimum: **≥ 1 exercise file** per pattern.
+
+## Exercise File Format
 
 ```typescript
 import { describe, it, expect } from 'vitest';
 
+/**
+ * <Pattern> - <Level>: <Title>
+ *
+ * TODO: Implement the functions below.
+ * Run `pnpm test` to check your work.
+ */
+
+/** Description of what this function should do */
+function myFunction(input: number): number {
+  return input * 2; // TODO: implement (hint: ...)
+}
+
+// ─── Tests (do not modify below this line) ───────────────────────
+
 describe('<Pattern> - <Level>: <Title>', () => {
   it('should <expected behavior>', () => {
-    // Arrange
-    // Act
-    // Assert
-    expect(result).toBe(expected);
+    expect(myFunction(5)).toBe(10);
   });
 });
 ```
 
+Key rules:
+- Functions above the separator contain working solutions (so CI passes)
+- `// TODO` comments mark lines the learner should rewrite
+- Tests below the separator are immutable
+- Learners delete function bodies and implement from scratch
+
 ## Checklist
 
-- [ ] ≥ 2 exercise files per pattern
-- [ ] Each file has difficulty label in filename (01-, 02-, 03-)
+- [ ] ≥ 1 exercise file per pattern
+- [ ] Filename has difficulty label (01-, 02-, 03-)
 - [ ] All tests pass with `pnpm test`
-- [ ] Test descriptions clearly state what to implement
-- [ ] No external dependencies beyond the test framework
-- [ ] Exercises build on each other (basic concepts used in intermediate)
+- [ ] TODO-stub format with separator line
+- [ ] Test descriptions clearly state expected behavior

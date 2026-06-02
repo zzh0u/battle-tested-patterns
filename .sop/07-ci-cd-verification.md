@@ -1,90 +1,49 @@
-# SOP 07: CI/CD Verification & Secrets Configuration
+# SOP 07: CI/CD Verification
 
 ## Trigger
 
-- After every commit + push to remote
+- After every push to remote
 - When setting up the repository for the first time
-- When CI/CD workflows fail
+- When CI workflows fail
 
-## Required GitHub Repository Settings
+## Active Workflows
 
-### 1. GitHub Pages
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| `ci.yml` | push + PR | Lint, typecheck, tests (TS + Rust + Go), docs build |
+| `deploy.yml` | push to main | Build VitePress → deploy GitHub Pages |
+| `content-quality.yml` | push + PR (patterns/exercises changed) | Check template completeness, detect #L1 links |
+| `verify-links.yml` | push (patterns changed) + weekly cron | HTTP check all production proof links |
+| `release.yml` | push tag `v*` | Generate release notes, create GitHub Release |
 
-Go to **Settings → Pages**:
-- Source: **GitHub Actions** (not "Deploy from a branch")
-- This is required for `deploy.yml` to work
+## Required Repository Settings
 
-### 2. Repository Permissions
+### GitHub Pages
+```
+Settings → Pages → Source → "GitHub Actions"
+```
 
-Go to **Settings → Actions → General**:
-- Workflow permissions: **Read and write permissions**
-- Allow GitHub Actions to create and approve pull requests: **checked**
-- This is required for `changelog.yml` to commit back to the repo
+### Branch Protection (recommended)
+```
+Settings → Branches → Add rule for "main"
+  → Require status checks: CI, Content Quality Check
+  → Block force pushes
+```
 
-### 3. Secrets & Variables
+### Permissions
+All workflows declare their own `permissions` block — the repository default stays at "Read repository contents" (minimum privilege).
 
-Currently no custom secrets are required. All workflows use `GITHUB_TOKEN` which is automatically provided.
+## Post-Push Verification
 
-If you add workflows that need custom secrets in the future:
+- [ ] Go to Actions tab — all triggered workflows green
+- [ ] If any fails, click into it and read the error log
+- [ ] Fix locally, commit, push again
 
-| Secret Name | Where to Configure | Used By |
-|-------------|-------------------|---------|
-| `GITHUB_TOKEN` | Auto-provided | All workflows |
+## Common Failures
 
-> **Security Note**: Never add secrets that grant write access to external systems
-> unless absolutely necessary. Prefer read-only tokens where possible.
-
-## Post-Push Verification Checklist
-
-After every push, verify:
-
-- [ ] Go to **Actions** tab on GitHub
-- [ ] Check all triggered workflows are green:
-  - `CI` — lint, typecheck, tests pass
-  - `Deploy to GitHub Pages` — docs site builds and deploys (main branch only)
-  - `Update Changelog` — CHANGELOG.md updated (main branch only)
-- [ ] If any workflow fails, click into it to read the error log
-- [ ] Fix the issue locally, commit, and push again
-
-## Common CI Failures & Fixes
-
-### "Permission denied" in changelog.yml
-**Cause**: Repository doesn't allow Actions to push commits.
-**Fix**: Settings → Actions → General → Workflow permissions → "Read and write permissions"
-
-### deploy.yml fails with "Pages not enabled"
-**Cause**: GitHub Pages not configured.
-**Fix**: Settings → Pages → Source → "GitHub Actions"
-
-### test-rust or test-go fails with "no files found"
-**Cause**: Rust/Go exercise directories are empty or missing Cargo.toml/go.mod.
-**Fix**: Ensure `exercises/rust/Cargo.toml` and `exercises/go/go.mod` exist with valid content.
-
-### verify-links.yml can't create Issues
-**Cause**: Workflow lacks `issues: write` permission.
-**Fix**: Already configured in the workflow file. If still failing, check repository Actions permissions.
-
-## Security Audit Checklist
-
-- [ ] No secrets stored in code (no `.env` files committed)
-- [ ] `GITHUB_TOKEN` permissions are minimal (scoped per workflow)
-- [ ] No third-party Actions with `write` permissions to secrets
-- [ ] Workflows use pinned Action versions (`@v4`, not `@main`)
-- [ ] No `pull_request_target` trigger (prevents fork-based attacks)
-- [ ] Dependabot or similar enabled for Action version updates
-- [ ] Branch protection rules on `main`:
-  - Require PR reviews before merging
-  - Require status checks to pass
-  - No force pushes allowed
-
-## First-Time Setup Checklist
-
-After creating the remote repository and pushing the first commit:
-
-1. [ ] **GitHub Pages**: Settings → Pages → Source → "GitHub Actions"
-2. [ ] **Actions permissions**: Settings → Actions → General → "Read and write permissions"
-3. [ ] **Branch protection**: Settings → Branches → Add rule for `main`
-   - Require status checks: `Lint & Typecheck`, `Test (TypeScript)`, `Build Docs`
-   - Require PR reviews (optional for solo projects)
-4. [ ] **Verify first deploy**: Push to main → check Actions → verify site at `https://<user>.github.io/battle-tested-patterns/`
-5. [ ] **Verify link checker**: Manually trigger `Verify Source Links` workflow → confirm it runs
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `ERR_PNPM_TARBALL_INTEGRITY` | npm CDN served different tarball | `pnpm store prune`, delete lockfile, reinstall |
+| `Pages not enabled` | GitHub Pages not configured | Settings → Pages → "GitHub Actions" |
+| `Permission denied` pushing changelog | Workflow lacks write permission | Check `permissions: contents: write` in workflow |
+| Markdown lint errors in `node_modules` | Lint command missing `--ignore` | Use `--ignore docs/node_modules` |
