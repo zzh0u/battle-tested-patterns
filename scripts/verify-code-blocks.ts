@@ -159,9 +159,12 @@ function verifyGo(block: CodeBlock): string | null {
       if (goDepth > 0) {
         goDecls.push(line);
         goDepth += opens - closes;
-      } else if (/^(package |import |func |type |const |var |\/\/)/.test(trimmed) || trimmed === '' || trimmed === ')' || trimmed.startsWith('//')) {
+      } else if (/^(package |import |func |type |const |var |\/\/|\)|	)/.test(trimmed) || /^\t/.test(line) || trimmed === '' || /^    /.test(line)) {
         goDecls.push(line);
         goDepth += opens - closes;
+      } else if (/^[A-Z]/.test(trimmed) && goDepth === 0) {
+        // Exported function call or type at package level — likely a statement
+        goStmts.push(line);
       } else {
         goStmts.push(line);
       }
@@ -229,14 +232,14 @@ async function main() {
     }
   }
 
-  rmSync(TMP_DIR, { recursive: true, force: true });
+  try { rmSync(TMP_DIR, { recursive: true, force: true }); } catch {}
 
   const failures = results.filter((r) => r.error);
   const passed = results.filter((r) => !r.error);
 
   // Go blocks are warnings (auto-import detection is imperfect)
   // TS, Python, Rust are strict (blocking)
-  const strictLangs = ['typescript', 'python', 'rust'];
+  const strictLangs = ['typescript', 'python', 'rust', 'go'];
   const strictFails = failures.filter((f) => strictLangs.includes(f.block.lang));
   const warnFails = failures.filter((f) => !strictLangs.includes(f.block.lang));
 

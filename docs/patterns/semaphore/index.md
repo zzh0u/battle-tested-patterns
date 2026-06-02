@@ -73,6 +73,8 @@ async function withSemaphore<T>(sem: Semaphore, fn: () => Promise<T>): Promise<T
 
 ```go [Go]
 // Idiomatic Go: buffered channel as semaphore
+func process(s string) { /* work */ }
+
 func processWithLimit(items []string, maxConcurrent int) {
 	sem := make(chan struct{}, maxConcurrent)
 	var wg sync.WaitGroup
