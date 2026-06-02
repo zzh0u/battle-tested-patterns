@@ -144,11 +144,34 @@ function verifyGo(block: CodeBlock): string | null {
     code = `package main\n\n${importBlock}${code}`;
   }
 
-  // If no func main and has top-level statements, wrap them
-  if (!code.includes('func main') && !code.includes('func ')) {
-    code += '\n\nfunc main() {}';
-  } else if (!code.includes('func main') && !/^func [A-Z]/.test(code)) {
-    code += '\n\nfunc main() {}';
+  // Wrap top-level statements (like x := ...) in func main
+  if (!code.includes('func main')) {
+    const goLines = code.split('\n');
+    const goDecls: string[] = [];
+    const goStmts: string[] = [];
+    let goDepth = 0;
+
+    for (const line of goLines) {
+      const trimmed = line.trim();
+      const opens = (line.match(/\{/g) || []).length;
+      const closes = (line.match(/\}/g) || []).length;
+
+      if (goDepth > 0) {
+        goDecls.push(line);
+        goDepth += opens - closes;
+      } else if (/^(package |import |func |type |const |var |\/\/)/.test(trimmed) || trimmed === '' || trimmed === ')' || trimmed.startsWith('//')) {
+        goDecls.push(line);
+        goDepth += opens - closes;
+      } else {
+        goStmts.push(line);
+      }
+    }
+
+    if (goStmts.length > 0) {
+      code = goDecls.join('\n') + '\n\nfunc main() {\n' + goStmts.map(l => '\t' + l).join('\n') + '\n}';
+    } else {
+      code += '\n\nfunc main() {}';
+    }
   }
 
   // Write go.mod
