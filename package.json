@@ -15,7 +15,7 @@
     "preview": "pnpm --filter docs preview",
     "test": "pnpm --filter exercises test",
     "test:ts": "pnpm --filter exercises test",
-    "lint": "markdownlint 'docs/**/*.md' --config .markdownlint.json",
+    "lint": "markdownlint 'docs/**/*.md' --ignore 'docs/node_modules' --config .markdownlint.json",
     "typecheck": "pnpm --filter exercises typecheck",
     "verify-links": "tsx scripts/verify-source-links.ts",
     "changelog": "changelogen --output CHANGELOG.md"

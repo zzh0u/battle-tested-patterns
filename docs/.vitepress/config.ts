@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress';
+import { withMermaid } from 'vitepress-plugin-mermaid';
 
-export default defineConfig({
+export default withMermaid(defineConfig({
   title: 'Battle-Tested Patterns',
   description:
     'Battle-tested programming patterns from production codebases. Multi-language examples, precise source links, interactive playground.',
@@ -117,4 +118,6 @@ export default defineConfig({
       copyright: 'Copyright © 2026 Totoro-jam',
     },
   },
-});
+
+  mermaid: {},
+}));

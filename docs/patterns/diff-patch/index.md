@@ -124,6 +124,39 @@ pub fn patch<T: Clone>(ops: &[Op<T>]) -> Vec<T> {
 }
 ```
 
+```python [Python]
+from typing import TypeVar, List, Tuple, Literal
+
+T = TypeVar("T")
+Op = Tuple[Literal["keep", "insert", "delete"], T]
+
+def diff(old: List[T], new: List[T]) -> List[Op]:
+    ops: List[Op] = []
+    oi, ni = 0, 0
+
+    while oi < len(old) and ni < len(new):
+        if old[oi] == new[ni]:
+            ops.append(("keep", old[oi]))
+            oi += 1; ni += 1
+        elif old[oi] not in new[ni:]:
+            ops.append(("delete", old[oi]))
+            oi += 1
+        else:
+            ops.append(("insert", new[ni]))
+            ni += 1
+
+    while oi < len(old): ops.append(("delete", old[oi])); oi += 1
+    while ni < len(new): ops.append(("insert", new[ni])); ni += 1
+    return ops
+
+def patch(ops: List[Op]) -> List[T]:
+    return [val for op_type, val in ops if op_type != "delete"]
+
+# Usage
+ops = diff(["a", "b", "c", "d"], ["a", "c", "e", "d"])
+assert patch(ops) == ["a", "c", "e", "d"]
+```
+
 :::
 
 ## Exercises
@@ -149,3 +182,82 @@ Run exercises: `pnpm test`
 - **Unordered sets** — diff assumes order matters; for sets, use set intersection/difference
 - **Real-time streaming** — if items arrive one at a time, an incremental approach is better than batch diffing
 - **Large lists without keys** — without stable identifiers, diff degrades to O(n²)
+
+## Try It
+
+<script setup>
+const diffLangs = {
+  typescript: `// Diff/Patch: compute minimal changes between two lists
+function diff(oldList, newList) {
+  var ops = [];
+  var oi = 0, ni = 0;
+  while (oi < oldList.length && ni < newList.length) {
+    if (oldList[oi] === newList[ni]) {
+      ops.push({ type: "keep", value: oldList[oi] });
+      oi++; ni++;
+    } else if (newList.slice(ni).indexOf(oldList[oi]) === -1) {
+      ops.push({ type: "delete", value: oldList[oi] });
+      oi++;
+    } else {
+      ops.push({ type: "insert", value: newList[ni] });
+      ni++;
+    }
+  }
+  while (oi < oldList.length) { ops.push({ type: "delete", value: oldList[oi] }); oi++; }
+  while (ni < newList.length) { ops.push({ type: "insert", value: newList[ni] }); ni++; }
+  return ops;
+}
+
+function patch(ops) {
+  return ops.filter(function(op) { return op.type !== "delete"; }).map(function(op) { return op.value; });
+}
+
+// Test: insert + delete
+var ops = diff(["a", "b", "c", "d"], ["a", "c", "e", "d"]);
+console.log("Ops: " + JSON.stringify(ops.map(function(o) { return o.type + " " + o.value; })));
+
+var result = patch(ops);
+assertEquals(JSON.stringify(result), JSON.stringify(["a","c","e","d"]), "patch reconstructs new list");
+
+// Test: identical lists
+var ops2 = diff([1,2,3], [1,2,3]);
+assertEquals(ops2.every(function(o) { return o.type === "keep"; }), true, "identical = all keeps");
+
+// Test: empty to populated
+var ops3 = diff([], ["x", "y"]);
+assertEquals(ops3.length, 2, "2 inserts");
+assertEquals(patch(ops3).length, 2, "patch produces 2 items");
+
+console.log("All assertions passed!");`,
+  python: `# Diff/Patch: compute minimal changes between two lists
+def diff(old_list, new_list):
+    ops = []
+    oi, ni = 0, 0
+    while oi < len(old_list) and ni < len(new_list):
+        if old_list[oi] == new_list[ni]:
+            ops.append(("keep", old_list[oi]))
+            oi += 1; ni += 1
+        elif old_list[oi] not in new_list[ni:]:
+            ops.append(("delete", old_list[oi]))
+            oi += 1
+        else:
+            ops.append(("insert", new_list[ni]))
+            ni += 1
+    while oi < len(old_list):
+        ops.append(("delete", old_list[oi])); oi += 1
+    while ni < len(new_list):
+        ops.append(("insert", new_list[ni])); ni += 1
+    return ops
+
+def patch(ops):
+    return [v for t, v in ops if t != "delete"]
+
+ops = diff(["a","b","c","d"], ["a","c","e","d"])
+result = patch(ops)
+assert result == ["a","c","e","d"], f"got {result}"
+
+print("All assertions passed!")`
+};
+</script>
+
+<CodePlayground title="Diff/Patch Playground" :languages="diffLangs" />

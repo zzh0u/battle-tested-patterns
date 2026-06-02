@@ -207,6 +207,69 @@ func (h *MinHeap) less(i, j int) bool {
 }
 ```
 
+```python [Python]
+import heapq
+
+# Python's heapq module implements a min heap on a list
+heap = []
+
+heapq.heappush(heap, (10, "low-priority"))
+heapq.heappush(heap, (1, "urgent"))
+heapq.heappush(heap, (5, "medium"))
+
+# peek: heap[0] is always the minimum
+assert heap[0] == (1, "urgent")
+
+# pop in priority order
+assert heapq.heappop(heap) == (1, "urgent")
+assert heapq.heappop(heap) == (5, "medium")
+assert heapq.heappop(heap) == (10, "low-priority")
+
+# Custom: from-scratch implementation
+class MinHeap:
+    def __init__(self):
+        self._data = []
+
+    def push(self, val):
+        self._data.append(val)
+        self._sift_up(len(self._data) - 1)
+
+    def pop(self):
+        if not self._data:
+            return None
+        self._data[0], self._data[-1] = self._data[-1], self._data[0]
+        val = self._data.pop()
+        if self._data:
+            self._sift_down(0)
+        return val
+
+    def peek(self):
+        return self._data[0] if self._data else None
+
+    def _sift_up(self, i):
+        while i > 0:
+            parent = (i - 1) // 2
+            if self._data[i] < self._data[parent]:
+                self._data[i], self._data[parent] = self._data[parent], self._data[i]
+                i = parent
+            else:
+                break
+
+    def _sift_down(self, i):
+        n = len(self._data)
+        while True:
+            smallest, left, right = i, 2*i+1, 2*i+2
+            if left < n and self._data[left] < self._data[smallest]:
+                smallest = left
+            if right < n and self._data[right] < self._data[smallest]:
+                smallest = right
+            if smallest != i:
+                self._data[i], self._data[smallest] = self._data[smallest], self._data[i]
+                i = smallest
+            else:
+                break
+```
+
 :::
 
 ## Exercises
@@ -232,3 +295,81 @@ Run exercises: `pnpm test` · `cargo test` · `go test ./...`
 - **Sorted iteration** — if you need all elements in order, sort once; repeated pop is O(n log n)
 - **Small fixed sets** — for < 10 elements, a linear scan is simpler and often faster
 - **Need stable ordering** — equal-priority items may change order across operations
+
+## Try It
+
+<script setup>
+const heapLangs = {
+  typescript: `// Min Heap: always access the smallest element in O(1)
+function MinHeap() {
+  var heap = [];
+
+  function siftUp(i) {
+    while (i > 0) {
+      var parent = (i - 1) >>> 1;
+      if (heap[i] < heap[parent]) {
+        var tmp = heap[i]; heap[i] = heap[parent]; heap[parent] = tmp;
+        i = parent;
+      } else break;
+    }
+  }
+
+  function siftDown(i) {
+    var len = heap.length;
+    while (true) {
+      var smallest = i, left = 2*i+1, right = 2*i+2;
+      if (left < len && heap[left] < heap[smallest]) smallest = left;
+      if (right < len && heap[right] < heap[smallest]) smallest = right;
+      if (smallest !== i) {
+        var tmp = heap[i]; heap[i] = heap[smallest]; heap[smallest] = tmp;
+        i = smallest;
+      } else break;
+    }
+  }
+
+  return {
+    push: function(val) { heap.push(val); siftUp(heap.length - 1); },
+    pop: function() {
+      if (!heap.length) return null;
+      var min = heap[0];
+      var last = heap.pop();
+      if (heap.length) { heap[0] = last; siftDown(0); }
+      return min;
+    },
+    peek: function() { return heap[0]; },
+    size: function() { return heap.length; },
+  };
+}
+
+var h = MinHeap();
+h.push(5); h.push(1); h.push(3); h.push(2); h.push(4);
+
+assertEquals(h.peek(), 1, "peek returns minimum");
+assertEquals(h.pop(), 1, "pop returns 1");
+assertEquals(h.pop(), 2, "pop returns 2");
+assertEquals(h.pop(), 3, "pop returns 3");
+assertEquals(h.pop(), 4, "pop returns 4");
+assertEquals(h.pop(), 5, "pop returns 5");
+assertEquals(h.size(), 0, "heap is empty");
+
+console.log("All assertions passed!");`,
+  python: `# Min Heap: always access the smallest element in O(1)
+import heapq
+
+h = []
+for val in [5, 1, 3, 2, 4]:
+    heapq.heappush(h, val)
+
+assert h[0] == 1, "peek returns minimum"
+assert heapq.heappop(h) == 1, "pop returns 1"
+assert heapq.heappop(h) == 2, "pop returns 2"
+assert heapq.heappop(h) == 3, "pop returns 3"
+assert heapq.heappop(h) == 4, "pop returns 4"
+assert heapq.heappop(h) == 5, "pop returns 5"
+assert len(h) == 0, "heap is empty"
+
+print("All assertions passed!")`
+};
+</script>
+
+<CodePlayground title="Min Heap Playground" :languages="heapLangs" />

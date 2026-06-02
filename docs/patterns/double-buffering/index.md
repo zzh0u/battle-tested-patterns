@@ -138,6 +138,29 @@ func (db *DoubleBuffer[T]) Swap() {
 }
 ```
 
+```python [Python]
+class DoubleBuffer:
+    def __init__(self, create_buffer):
+        self._buffers = [create_buffer(), create_buffer()]
+        self._current = 0
+
+    def current(self):
+        return self._buffers[self._current]
+
+    def next(self):
+        return self._buffers[1 - self._current]
+
+    def swap(self):
+        self._current = 1 - self._current
+
+# Usage
+buf = DoubleBuffer(lambda: {"pixels": [0, 0]})
+buf.next()["pixels"] = [255, 128]  # write to back buffer
+assert buf.current()["pixels"] == [0, 0]  # front unchanged
+buf.swap()
+assert buf.current()["pixels"] == [255, 128]  # now visible
+```
+
 :::
 
 ## Exercises
@@ -162,3 +185,68 @@ Run exercises: `pnpm test`
 - **Simple state updates** — if your state is a single value and updates are atomic, double buffering adds unnecessary complexity
 - **Memory-constrained environments** — you're paying 2x memory cost
 - **Frequent partial reads** — if readers need real-time access to in-progress writes, double buffering hides updates until the swap
+
+## Try It
+
+<script setup>
+const dbLangs = {
+  typescript: `// Double Buffer: swap between two copies
+function createDoubleBuffer(a, b) {
+  var current = 0;
+  var buffers = [a, b];
+  return {
+    read: function() { return buffers[current]; },
+    write: function() { return buffers[1 - current]; },
+    swap: function() { current = 1 - current; },
+  };
+}
+
+var buf = createDoubleBuffer({ frame: "A" }, { frame: "B" });
+
+assert(buf.read().frame === "A", "initial read is A");
+assert(buf.write().frame === "B", "back buffer is B");
+
+// Write to back buffer
+buf.write().frame = "A-updated";
+
+// Front buffer unchanged
+assert(buf.read().frame === "A", "front still A before swap");
+
+// Swap
+buf.swap();
+assert(buf.read().frame === "A-updated", "after swap, read sees update");
+
+// Swap back — zero allocation, same objects reused
+buf.swap();
+assert(buf.read().frame === "A", "original object reused");
+
+console.log("All assertions passed!");`,
+  python: `# Double Buffer: swap between two copies
+class DoubleBuffer:
+    def __init__(self, a, b):
+        self._buffers = [a, b]
+        self._current = 0
+
+    def read(self):
+        return self._buffers[self._current]
+
+    def write(self):
+        return self._buffers[1 - self._current]
+
+    def swap(self):
+        self._current = 1 - self._current
+
+buf = DoubleBuffer({"frame": "A"}, {"frame": "B"})
+assert buf.read()["frame"] == "A", "initial read is A"
+
+buf.write()["frame"] = "A-updated"
+assert buf.read()["frame"] == "A", "front unchanged before swap"
+
+buf.swap()
+assert buf.read()["frame"] == "A-updated", "after swap sees update"
+
+print("All assertions passed!")`
+};
+</script>
+
+<CodePlayground title="Double Buffering Playground" :languages="dbLangs" />

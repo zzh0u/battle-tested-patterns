@@ -8,23 +8,29 @@ Pack multiple boolean flags into a single integer and manipulate them with bitwi
 
 Instead of using an array of booleans or an object with multiple fields, a bitmask encodes each flag as a single bit in an integer. This gives you O(1) set/check/clear/toggle and trivial combination of multiple flags.
 
-```text
-Bit position:   7  6  5  4  3  2  1  0
-                ┌──┬──┬──┬──┬──┬──┬──┬──┐
-Flags:          │  │  │  │SN│CB│RF│UP│PL│
-                └──┴──┴──┴──┴──┴──┴──┴──┘
-                         │  │  │  │  └─ Placement    (1 << 0 = 0b00000001)
-                         │  │  │  └──── Update       (1 << 1 = 0b00000010)
-                         │  │  └─────── Ref          (1 << 2 = 0b00000100)
-                         │  └────────── Callback     (1 << 3 = 0b00001000)
-                         └───────────── Snapshot     (1 << 4 = 0b00010000)
-
-Set flag:     flags |=  FLAG     (OR turns bit on)
-Check flag:   flags &   FLAG     (AND isolates bit)
-Clear flag:   flags &= ~FLAG     (AND NOT turns bit off)
-Toggle flag:  flags ^=  FLAG     (XOR flips bit)
-Combine:      flags |= A | B    (OR merges multiple flags)
+```mermaid
+graph LR
+    subgraph "8-bit Flag Register"
+        B7["7: —"] --- B6["6: —"] --- B5["5: —"] --- B4["4: SN"]
+        B4 --- B3["3: CB"] --- B2["2: RF"] --- B1["1: UP"] --- B0["0: PL"]
+    end
 ```
+
+| Bit | Flag | Value | Binary |
+|-----|------|-------|--------|
+| 0 | Placement | `1 << 0` | `00000001` |
+| 1 | Update | `1 << 1` | `00000010` |
+| 2 | Ref | `1 << 2` | `00000100` |
+| 3 | Callback | `1 << 3` | `00001000` |
+| 4 | Snapshot | `1 << 4` | `00010000` |
+
+| Operation | Syntax | Effect |
+|-----------|--------|--------|
+| Set flag | `flags \|= FLAG` | OR turns bit on |
+| Check flag | `flags & FLAG` | AND isolates bit |
+| Clear flag | `flags &= ~FLAG` | AND NOT turns bit off |
+| Toggle flag | `flags ^= FLAG` | XOR flips bit |
+| Combine | `flags \|= A \| B` | OR merges multiple flags |
 
 Key insight: a single `&` operation can check any combination of flags simultaneously — no loops, no branching.
 
@@ -142,6 +148,34 @@ HasFlag(editor, Read)    // true
 HasFlag(editor, Delete)  // false
 ```
 
+```python [Python]
+# Python: native bitwise operators, no size limit on integers
+READ    = 1 << 0  # 0b0001
+WRITE   = 1 << 1  # 0b0010
+EXECUTE = 1 << 2  # 0b0100
+DELETE  = 1 << 3  # 0b1000
+
+def has_flag(flags: int, flag: int) -> bool:
+    return (flags & flag) == flag
+
+def has_any(flags: int, mask: int) -> bool:
+    return (flags & mask) != 0
+
+def set_flag(flags: int, flag: int) -> int:
+    return flags | flag
+
+def clear_flag(flags: int, flag: int) -> int:
+    return flags & ~flag
+
+def toggle_flag(flags: int, flag: int) -> int:
+    return flags ^ flag
+
+# Usage
+editor = READ | WRITE
+assert has_flag(editor, READ)       # True
+assert not has_flag(editor, DELETE)  # True
+```
+
 :::
 
 ## Exercises
@@ -172,37 +206,66 @@ Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...
 ## Try It
 
 <script setup>
-const bitmaskCode = [
-  '// Define permission flags as powers of 2',
-  'var READ    = 1 << 0;  // 0b0001',
-  'var WRITE   = 1 << 1;  // 0b0010',
-  'var EXECUTE = 1 << 2;  // 0b0100',
-  'var DELETE  = 1 << 3;  // 0b1000',
-  '',
-  '// Combine flags with OR',
-  'var editor = READ | WRITE;',
-  '',
-  '// Check with AND',
-  'assert((editor & READ) !== 0, "editor has READ");',
-  'assert((editor & WRITE) !== 0, "editor has WRITE");',
-  'assert((editor & EXECUTE) === 0, "editor does NOT have EXECUTE");',
-  '',
-  '// Check all flags at once',
-  'var required = READ | WRITE;',
-  'assertEquals((editor & required) === required, true, "editor has all required permissions");',
-  '',
-  '// Clear a flag with AND NOT',
-  'editor = editor & ~WRITE;',
-  'assert((editor & WRITE) === 0, "WRITE cleared");',
-  '',
-  '// Toggle with XOR',
-  'editor = editor ^ EXECUTE;',
-  'assert((editor & EXECUTE) !== 0, "EXECUTE toggled on");',
-  'editor = editor ^ EXECUTE;',
-  'assert((editor & EXECUTE) === 0, "EXECUTE toggled off");',
-  '',
-  'console.log("All assertions passed!");',
-].join('\n');
+const bitmaskLangs = {
+  typescript: `// Define permission flags as powers of 2
+var READ    = 1 << 0;  // 0b0001
+var WRITE   = 1 << 1;  // 0b0010
+var EXECUTE = 1 << 2;  // 0b0100
+var DELETE  = 1 << 3;  // 0b1000
+
+// Combine flags with OR
+var editor = READ | WRITE;
+
+// Check with AND
+assert((editor & READ) !== 0, "editor has READ");
+assert((editor & WRITE) !== 0, "editor has WRITE");
+assert((editor & EXECUTE) === 0, "editor does NOT have EXECUTE");
+
+// Check all flags at once
+var required = READ | WRITE;
+assertEquals((editor & required) === required, true, "editor has all required permissions");
+
+// Clear a flag with AND NOT
+editor = editor & ~WRITE;
+assert((editor & WRITE) === 0, "WRITE cleared");
+
+// Toggle with XOR
+editor = editor ^ EXECUTE;
+assert((editor & EXECUTE) !== 0, "EXECUTE toggled on");
+editor = editor ^ EXECUTE;
+assert((editor & EXECUTE) === 0, "EXECUTE toggled off");
+
+console.log("All assertions passed!");`,
+  python: `# Define permission flags as powers of 2
+READ    = 1 << 0  # 0b0001
+WRITE   = 1 << 1  # 0b0010
+EXECUTE = 1 << 2  # 0b0100
+DELETE  = 1 << 3  # 0b1000
+
+# Combine flags with OR
+editor = READ | WRITE
+
+# Check with AND
+assert editor & READ,     "editor has READ"
+assert editor & WRITE,    "editor has WRITE"
+assert not (editor & EXECUTE), "editor does NOT have EXECUTE"
+
+# Check all flags at once
+required = READ | WRITE
+assert (editor & required) == required, "editor has all required"
+
+# Clear a flag with AND NOT
+editor = editor & ~WRITE
+assert not (editor & WRITE), "WRITE cleared"
+
+# Toggle with XOR
+editor = editor ^ EXECUTE
+assert editor & EXECUTE, "EXECUTE toggled on"
+editor = editor ^ EXECUTE
+assert not (editor & EXECUTE), "EXECUTE toggled off"
+
+print("All assertions passed!")`
+};
 </script>
 
-<CodePlayground title="Bitmask Playground" lang="typescript" :code="bitmaskCode" />
+<CodePlayground title="Bitmask Playground" :languages="bitmaskLangs" />

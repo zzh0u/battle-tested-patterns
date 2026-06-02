@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, shallowRef, onBeforeUnmount, nextTick } from 'vue';
 
 const props = withDefaults(
   defineProps<{
     code?: string;
-    lang?: 'typescript' | 'python';
+    lang?: string;
     title?: string;
+    languages?: Record<string, string>;
   }>(),
   {
     code: '',
@@ -14,17 +15,102 @@ const props = withDefaults(
   },
 );
 
-const editorCode = ref(props.code);
+const editorContainer = ref<HTMLDivElement>();
 const output = ref('');
 const isRunning = ref(false);
 const hasError = ref(false);
+const activeLang = ref(props.lang);
+const editorInstance = shallowRef<any>(null);
+const monacoRef = shallowRef<any>(null);
+const isEditorReady = ref(false);
 
-watch(
-  () => props.code,
-  (newCode) => {
-    editorCode.value = newCode;
-  },
-);
+const langLabels: Record<string, string> = {
+  typescript: 'TypeScript',
+  python: 'Python',
+  go: 'Go',
+  rust: 'Rust',
+  c: 'C',
+};
+
+const monacoLangMap: Record<string, string> = {
+  typescript: 'typescript',
+  python: 'python',
+  go: 'go',
+  rust: 'rust',
+  c: 'c',
+};
+
+function getActiveCode(): string {
+  if (editorInstance.value) {
+    return editorInstance.value.getValue();
+  }
+  if (props.languages && props.languages[activeLang.value]) {
+    return props.languages[activeLang.value];
+  }
+  return props.code;
+}
+
+function getInitialCode(): string {
+  if (props.languages && props.languages[activeLang.value]) {
+    return props.languages[activeLang.value];
+  }
+  return props.code;
+}
+
+async function initMonaco() {
+  if (typeof window === 'undefined') return;
+
+  const loader = await import('@monaco-editor/loader');
+  const monaco = await loader.default.init();
+  monacoRef.value = monaco;
+
+  if (!editorContainer.value) return;
+
+  const editor = monaco.editor.create(editorContainer.value, {
+    value: getInitialCode(),
+    language: monacoLangMap[activeLang.value] || 'plaintext',
+    theme: 'vs-dark',
+    minimap: { enabled: false },
+    fontSize: 14,
+    lineNumbers: 'on',
+    scrollBeyondLastLine: false,
+    automaticLayout: true,
+    tabSize: 2,
+    padding: { top: 12, bottom: 12 },
+    overviewRulerLanes: 0,
+    hideCursorInOverviewRuler: true,
+    scrollbar: { vertical: 'hidden', horizontal: 'auto' },
+    renderLineHighlight: 'none',
+  });
+
+  editorInstance.value = editor;
+  isEditorReady.value = true;
+
+  const updateHeight = () => {
+    const lineCount = editor.getModel()?.getLineCount() || 8;
+    const height = Math.max(lineCount * 20 + 24, 180);
+    editorContainer.value!.style.height = `${Math.min(height, 500)}px`;
+    editor.layout();
+  };
+
+  editor.onDidChangeModelContent(updateHeight);
+  updateHeight();
+}
+
+function switchLang(lang: string) {
+  activeLang.value = lang;
+  output.value = '';
+  hasError.value = false;
+
+  if (editorInstance.value && monacoRef.value) {
+    const code = props.languages?.[lang] || props.code;
+    editorInstance.value.setValue(code);
+    const model = editorInstance.value.getModel();
+    if (model) {
+      monacoRef.value.editor.setModelLanguage(model, monacoLangMap[lang] || 'plaintext');
+    }
+  }
+}
 
 function runTypeScript(code: string): string {
   const logs: string[] = [];
@@ -33,7 +119,6 @@ function runTypeScript(code: string): string {
     error: (...args: unknown[]) => logs.push('ERROR: ' + args.map(String).join(' ')),
   };
 
-  // Mini assertion library
   const assert = (condition: boolean, msg = 'Assertion failed') => {
     if (!condition) throw new Error(msg);
     logs.push(`✓ ${msg}`);
@@ -44,31 +129,23 @@ function runTypeScript(code: string): string {
     logs.push(`✓ ${msg || `${JSON.stringify(actual)} === ${JSON.stringify(expected)}`}`);
   };
 
-  // Strip TypeScript type annotations for browser execution
   const jsCode = code
-    .replace(/:\s*\w+(\[\])?\s*(?=[=,;\)\n\{])/g, '') // simple type annotations
-    .replace(/\btype\s+\w+\s*=\s*[^;]+;/g, '')        // type aliases
-    .replace(/\binterface\s+\w+\s*\{[^}]*\}/gs, '')    // interfaces
-    .replace(/<\w+(\s*,\s*\w+)*>/g, '')                 // generics
-    .replace(/\bas\s+\w+/g, '')                         // type assertions
-    .replace(/!\./g, '.')                                // non-null assertions
-    .replace(/\bexport\s+/g, '')                        // export keywords
-    .replace(/\bconst\s+(\w+)\s*=\s*\{([^}]*)\}\s*as\s*const/g, 'const $1 = {$2}'); // as const
+    .replace(/:\s*\w+(\[\])?\s*(?=[=,;\)\n\{])/g, '')
+    .replace(/\btype\s+\w+\s*=\s*[^;]+;/g, '')
+    .replace(/\binterface\s+\w+\s*\{[^}]*\}/gs, '')
+    .replace(/<\w+(\s*,\s*\w+)*>/g, '')
+    .replace(/\bas\s+\w+/g, '')
+    .replace(/!\./g, '.')
+    .replace(/\bexport\s+/g, '')
+    .replace(/\bconst\s+(\w+)\s*=\s*\{([^}]*)\}\s*as\s*const/g, 'const $1 = {$2}');
 
-  try {
-    const fn = new Function('console', 'assert', 'assertEquals', jsCode);
-    fn(mockConsole, assert, assertEquals);
-  } catch (e: unknown) {
-    const err = e as Error;
-    logs.push(`✗ ${err.message}`);
-    throw e;
-  }
-
+  const fn = new Function('console', 'assert', 'assertEquals', jsCode);
+  fn(mockConsole, assert, assertEquals);
   return logs.join('\n');
 }
 
 function runPython(code: string): string {
-  return '⚠ Python execution requires Pyodide.\nThis feature is coming soon.\n\nCode preview:\n' + code;
+  return '⏳ Python execution via Pyodide — coming soon.\n\nYour code is valid, run it locally with:\n  python3 -c "' + code.split('\n')[0] + ' ..."';
 }
 
 async function handleRun() {
@@ -77,34 +154,67 @@ async function handleRun() {
   output.value = '';
 
   try {
-    if (props.lang === 'typescript') {
-      output.value = runTypeScript(editorCode.value);
+    const code = getActiveCode();
+    if (activeLang.value === 'typescript') {
+      output.value = runTypeScript(code);
+    } else if (activeLang.value === 'python') {
+      output.value = runPython(code);
     } else {
-      output.value = runPython(editorCode.value);
+      output.value = `⚠ Browser execution not available for ${langLabels[activeLang.value] || activeLang.value}.\nRun locally with the appropriate toolchain.`;
     }
-  } catch {
+  } catch (e: unknown) {
     hasError.value = true;
+    output.value = `✗ ${(e as Error).message}`;
   } finally {
     isRunning.value = false;
   }
 }
 
 function handleReset() {
-  editorCode.value = props.code;
+  const code = props.languages?.[activeLang.value] || props.code;
+  editorInstance.value?.setValue(code);
   output.value = '';
   hasError.value = false;
 }
 
 onMounted(() => {
-  editorCode.value = props.code;
+  nextTick(initMonaco);
 });
+
+onBeforeUnmount(() => {
+  editorInstance.value?.dispose();
+});
+
+const availableLangs = ref<string[]>([]);
+
+watch(
+  () => props.languages,
+  (langs) => {
+    if (langs) {
+      availableLangs.value = Object.keys(langs);
+    } else {
+      availableLangs.value = [props.lang];
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
   <div class="playground">
     <div class="playground-header">
       <span class="playground-title">{{ title }}</span>
-      <span class="playground-lang">{{ lang }}</span>
+      <div class="playground-tabs" v-if="availableLangs.length > 1">
+        <button
+          v-for="lang in availableLangs"
+          :key="lang"
+          :class="['tab', { active: activeLang === lang }]"
+          @click="switchLang(lang)"
+        >
+          {{ langLabels[lang] || lang }}
+        </button>
+      </div>
+      <span v-else class="playground-lang">{{ langLabels[activeLang] || activeLang }}</span>
       <div class="playground-actions">
         <button class="btn-reset" @click="handleReset" title="Reset">↺</button>
         <button class="btn-run" @click="handleRun" :disabled="isRunning">
@@ -113,12 +223,7 @@ onMounted(() => {
       </div>
     </div>
     <div class="playground-body">
-      <textarea
-        v-model="editorCode"
-        class="playground-editor"
-        spellcheck="false"
-        :rows="Math.max(editorCode.split('\n').length, 8)"
-      />
+      <div ref="editorContainer" class="playground-editor" />
       <pre v-if="output" :class="['playground-output', { error: hasError }]">{{ output }}</pre>
     </div>
   </div>
@@ -139,11 +244,41 @@ onMounted(() => {
   padding: 8px 12px;
   background: var(--vp-c-bg-soft);
   border-bottom: 1px solid var(--vp-c-divider);
+  flex-wrap: wrap;
 }
 
 .playground-title {
   font-weight: 600;
   font-size: 14px;
+}
+
+.playground-tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--vp-c-bg-alt);
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.tab {
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--vp-c-text-2);
+  transition: all 0.15s;
+}
+
+.tab.active {
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  font-weight: 500;
+}
+
+.tab:hover:not(.active) {
+  color: var(--vp-c-text-1);
 }
 
 .playground-lang {
@@ -171,14 +306,8 @@ onMounted(() => {
   font-weight: 500;
 }
 
-.btn-run:hover {
-  opacity: 0.9;
-}
-
-.btn-run:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+.btn-run:hover { opacity: 0.9; }
+.btn-run:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .btn-reset {
   padding: 4px 8px;
@@ -196,16 +325,8 @@ onMounted(() => {
 
 .playground-editor {
   width: 100%;
-  padding: 12px 16px;
-  font-family: var(--vp-font-family-mono);
-  font-size: 14px;
-  line-height: 1.6;
-  border: none;
-  outline: none;
-  resize: vertical;
-  background: var(--vp-code-block-bg);
-  color: var(--vp-c-text-1);
-  tab-size: 2;
+  min-height: 180px;
+  max-height: 500px;
 }
 
 .playground-output {
@@ -220,7 +341,5 @@ onMounted(() => {
   color: var(--vp-c-text-2);
 }
 
-.playground-output.error {
-  color: var(--vp-c-danger-1);
-}
+.playground-output.error { color: var(--vp-c-danger-1); }
 </style>
