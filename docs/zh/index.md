@@ -40,3 +40,5 @@ features:
 | [对象池 (Object Pool)](/zh/patterns/object-pool/) | 预分配并复用对象，避免 GC | Go sync.Pool, Godot |
 | [环形缓冲区 (Ring Buffer)](/zh/patterns/ring-buffer/) | 固定大小循环队列，零分配 | LMAX Disruptor, Linux ftrace |
 | [状态机 (State Machine)](/zh/patterns/state-machine/) | 显式状态+转换，不可能状态不可表达 | XState, Linux TCP |
+| [写时复制 (Copy-on-Write)](/zh/patterns/copy-on-write/) | 引用共享，修改时才复制 | Git 对象, Rust Cow |
+| [观察者 (Observer)](/zh/patterns/observer/) | 订阅事件，通知时无耦合 | Node EventEmitter, Redux |

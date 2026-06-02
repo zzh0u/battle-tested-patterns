@@ -40,3 +40,5 @@ features:
 | [Object Pool](/patterns/object-pool/) | Pre-allocate and reuse objects to avoid GC | Go sync.Pool, Godot Engine |
 | [Ring Buffer](/patterns/ring-buffer/) | Fixed-size circular queue, zero allocation | LMAX Disruptor, Linux ftrace |
 | [State Machine](/patterns/state-machine/) | Explicit states + transitions, impossible states unrepresentable | XState, Linux TCP |
+| [Copy-on-Write](/patterns/copy-on-write/) | Share by reference, copy only on mutation | Git objects, Rust Cow |
+| [Observer / Pub-Sub](/patterns/observer/) | Subscribe to events, get notified without coupling | Node EventEmitter, Redux |
