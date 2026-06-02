@@ -22,7 +22,7 @@ Follow [SOP 01: New Pattern](./../.sop/01-new-pattern.md). In short:
 1. **Verify** the pattern exists in ≥ 2 production codebases
 2. **Write** the pattern document following the [template](../CLAUDE.md#pattern-file-template)
 3. **Implement** in TypeScript (required) + at least 1 other language
-4. **Create** ≥ 2 exercise test files with difficulty labels
+4. **Create** ≥ 1 exercise test file with difficulty labels
 5. **Verify** all source links return HTTP 200
 6. **Submit** PR with a filled-out checklist
 

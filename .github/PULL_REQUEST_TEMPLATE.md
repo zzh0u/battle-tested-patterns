@@ -30,7 +30,7 @@
 - [ ] Each implementation is idiomatic to its language
 
 ### Exercises
-- [ ] ≥ 2 runnable test cases
+- [ ] ≥ 1 runnable test file
 - [ ] Tests pass (`pnpm test` / `cargo test` / `go test`)
 - [ ] Difficulty labels (basic / intermediate / advanced)
 

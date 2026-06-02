@@ -78,6 +78,6 @@ print(a is b)  # True — 享元！
 
 - Java `String.intern()`
 - Python small int cache (-5..256)
-- Rust [string_cache](https://github.com/nicedoc/nicedoc.io) crate
+- Rust [string_cache](https://crates.io/crates/string_cache) crate
 - .NET string interning
 - CSS value deduplication in browsers

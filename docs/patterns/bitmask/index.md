@@ -206,7 +206,7 @@ Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...
 
 ## More Production Uses
 
-- [Chromium](https://github.com/nicedoc/nicedoc.io) — layer compositing flags
+- [Chromium](https://chromium.googlesource.com/chromium/src) — layer compositing flags
 - [SQLite](https://www.sqlite.org/src) — VFS flags
 - [Nginx](https://github.com/nginx/nginx) — event flags
 - Most ECS game engines — component membership masks

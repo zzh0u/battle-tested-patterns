@@ -9,6 +9,7 @@ When proposing or implementing a new programming pattern for the project.
 - The pattern is used in ≥ 2 different production projects (verifiable via source code)
 - The pattern is cross-language (not specific to one language or framework)
 - The pattern is a code-level technique (not purely architectural)
+- **Open an Issue first** ([new-pattern template](https://github.com/Totoro-jam/battle-tested-patterns/issues/new?template=new-pattern.md)) to discuss before starting work
 
 ## Complete File Checklist
 
@@ -105,6 +106,7 @@ Create files in `exercises/typescript/<pattern-name>/`:
 - [ ] Add to `docs/zh/index.md` homepage pattern table
 - [ ] Add to `README.md` pattern table
 - [ ] Add to `README.zh-CN.md` pattern table
+- [ ] Update relevant `docs/by-project/*.md` and `docs/zh/by-project/*.md` pages (if new source project, create a new page or add to existing)
 
 ### 8. Self-Review
 
