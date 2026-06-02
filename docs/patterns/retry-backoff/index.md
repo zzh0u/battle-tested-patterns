@@ -24,7 +24,7 @@ The formula: `delay = min(base * 2^attempt + random(0, jitter), maxDelay)`
 | Project | Source | Usage |
 |---------|--------|-------|
 | Kubernetes | [backoff.go#L30-L50](https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/util/wait/backoff.go#L30-L50) | `Backoff` struct defines `Duration`, `Factor`, `Jitter`, `Steps`, `Cap`. `ExponentialBackoff` (line 475) retries with this config. Used for pod restart backoff, API server retries, controller reconciliation. |
-| gRPC | [connection-backoff.md](https://github.com/grpc/grpc/blob/master/doc/connection-backoff.md) | gRPC's connection backoff spec defines the algorithm all gRPC clients must implement: initial 1s, multiply by 1.6, jitter ±20%, cap at 120s. Used by every gRPC connection worldwide. |
+| gRPC-Go | [backoff.go#L56-L75](https://github.com/grpc/grpc-go/blob/master/internal/backoff/backoff.go#L56-L75) | `Exponential.Backoff()` — computes exponential delay with jitter. Base delay doubles per retry, capped at `MaxDelay`. `RunF` (L86-L109) is the retry orchestration loop with context cancellation and `ErrResetBackoff` support. |
 
 ## Implementation
 

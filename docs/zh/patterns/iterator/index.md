@@ -18,7 +18,7 @@ flowchart LR
 | 项目 | 源码 | 用途 |
 |------|------|------|
 | Rust 标准库 | [iterator.rs#L68-L112](https://github.com/rust-lang/rust/blob/main/library/core/src/iter/traits/iterator.rs#L68-L112) | `Iterator` trait — `next()` 是唯一必须方法。`map`、`filter`、`fold`、`collect` 都构建其上。Rust 零成本抽象的基础。 |
-| Python | [genobject.c](https://github.com/python/cpython/blob/main/Objects/genobject.c) | 生成器对象 — Python 惰性求值的基本原语。`yield` 挂起执行并逐个产生值。 |
+| Python | [genobject.c#L259-L374](https://github.com/python/cpython/blob/main/Objects/genobject.c#L259-L374) | `gen_send_ex2`（L259-L324）— 核心生成器 send：推送参数到帧栈，调用 `_PyEval_EvalFrame`，区分 yield 和 return。`gen_send_ex`（L329-L374）在委派前验证生成器状态。 |
 
 ## 实现
 

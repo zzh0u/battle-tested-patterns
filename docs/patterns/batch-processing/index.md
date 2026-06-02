@@ -28,7 +28,7 @@ flowchart LR
 | Project | Source | Usage |
 |---------|--------|-------|
 | Apache Kafka | [RecordAccumulator.java#L69-L120](https://github.com/apache/kafka/blob/trunk/clients/src/main/java/org/apache/kafka/clients/producer/internals/RecordAccumulator.java#L69-L120) | The Kafka producer accumulates records into batches per partition. `append()` (line 280) adds records to the current batch; the sender thread drains ready batches. This is how Kafka achieves millions of messages/sec. |
-| Linux Kernel | [semaphore.h#L15-L55](https://github.com/torvalds/linux/blob/master/include/linux/semaphore.h#L15-L55) | I/O schedulers batch disk requests — the `elevator` algorithm merges adjacent sector reads/writes into single DMA operations, amortizing seek time across the batch. |
+| Linux Kernel | [blk-merge.c#L350-L395](https://github.com/torvalds/linux/blob/master/block/blk-merge.c#L350-L395) | `blk_attempt_req_merge` — the block layer merges adjacent I/O requests into batched operations, amortizing seek time. Checks if two requests have contiguous sectors and compatible flags before merging. |
 
 ::: info Note
 React's `setState` batching is another well-known example — multiple `setState` calls within the same event handler are batched into a single re-render.

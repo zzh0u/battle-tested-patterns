@@ -21,7 +21,7 @@
 | 项目 | 源码 | 用途 |
 |------|------|------|
 | Kubernetes | [backoff.go#L30-L50](https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/util/wait/backoff.go#L30-L50) | `Backoff` 结构定义退避参数。`ExponentialBackoff`（行475）实现重试。用于 pod 重启、API 服务器重试。 |
-| gRPC | [connection-backoff.md](https://github.com/grpc/grpc/blob/master/doc/connection-backoff.md) | gRPC 连接退避规范：初始 1s，乘以 1.6，抖动 ±20%，封顶 120s。全球每个 gRPC 连接都实现此算法。 |
+| gRPC-Go | [backoff.go#L56-L75](https://github.com/grpc/grpc-go/blob/master/internal/backoff/backoff.go#L56-L75) | `Exponential.Backoff()` — 计算带抖动的指数延迟。基础延迟每次重试翻倍，上限为 `MaxDelay`。`RunF`（L86-L109）是带上下文取消的重试编排循环。 |
 
 ## 实现
 

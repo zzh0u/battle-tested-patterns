@@ -26,7 +26,7 @@ sequenceDiagram
 | 项目 | 源码 | 用途 |
 |------|------|------|
 | Linux 内核 | [semaphore.h#L15-L55](https://github.com/torvalds/linux/blob/master/include/linux/semaphore.h#L15-L55) | `struct semaphore` — 内核计数信号量，`down()`（获取）和 `up()`（释放）。用于设备驱动访问控制。 |
-| Go stdlib | [semaphore (x/sync)](https://github.com/golang/sync/blob/master/semaphore/semaphore.go) | `semaphore.Weighted` — 加权信号量。Go 惯用法也用缓冲 channel：`make(chan struct{}, n)`。 |
+| Go stdlib | [semaphore.go#L28-L107](https://github.com/golang/sync/blob/master/semaphore/semaphore.go#L28-L107) | `Weighted` 结构体（L28-L33），含 `size`、`cur`、`mu`、`waiters`。`Acquire`（L38-L107）阻塞直到信号量权重可用或上下文取消。 |
 
 ## 实现
 

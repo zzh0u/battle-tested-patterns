@@ -8,6 +8,10 @@ export default withMermaid(defineConfig({
 
   base: '/battle-tested-patterns/',
 
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/battle-tested-patterns/favicon.svg' }],
+  ],
+
   locales: {
     root: {
       label: 'English',

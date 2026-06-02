@@ -9,7 +9,6 @@ import { describe, it, expect } from 'vitest';
 
 class WorkStealingScheduler {
   private queues: number[][];
-  private results: number[] = [];
 
   constructor(workerCount: number) {
     // TODO: implement

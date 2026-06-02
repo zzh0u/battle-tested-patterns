@@ -6,15 +6,21 @@ Model dependencies as a directed acyclic graph and topologically sort to determi
 
 ## Core Idea
 
-A dependency graph represents items as nodes and "depends-on" relationships as directed edges. Topological sort (Kahn's algorithm or DFS-based) produces an ordering where every node appears after all its dependencies. If no valid ordering exists, a cycle is present.
+A dependency graph represents items as nodes and "must come before" relationships as directed edges. An edge `A → B` means A is a prerequisite of B. Topological sort (Kahn's algorithm or DFS-based) produces an ordering where every prerequisite appears before its dependents. If no valid ordering exists, a cycle is present.
 
 ```text
-  app ──────► utils ──────► config
-   │                          ▲
-   └──────────────────────────┘
+  config ◄────── utils ◄────── app
+    (no deps)    (needs config)  (needs utils, config)
 
-  Topological order: config → utils → app
-  (every node comes after its dependencies)
+  addEdge(app, utils)   — app is prerequisite of utils?
+  No: edge means "from has outgoing edge to to"
+  Kahn's: process zero-in-degree nodes first
+
+  app ──────► utils ──────► config
+              (in-degree 1)  (in-degree 2)
+
+  Topological order: app → utils → config
+  (zero in-degree first, then dependents)
 
   Cycle detection:
   a → b → c → a  ← ERROR: no valid order exists
@@ -32,7 +38,7 @@ A dependency graph represents items as nodes and "depends-on" relationships as d
 | Project | Source | Usage |
 |---------|--------|-------|
 | Cargo (Rust) | [dep_cache.rs#L1-L50](https://github.com/rust-lang/cargo/blob/master/src/cargo/core/resolver/dep_cache.rs#L1-L50) | `RegistryQueryer` manages the dependency resolution graph for Rust packages. Dependencies form a DAG resolved via backtracking, with the `resolve` function producing a topological ordering of crate versions for compilation. |
-| pnpm | [sort-packages](https://github.com/pnpm/pnpm/blob/main/pkg-manager/sort-packages/src/index.ts) | `sortPackages` — topologically sorts workspace packages by their inter-dependencies so they build in the correct order. Used by `pnpm -r` recursive commands to respect dependency ordering across a monorepo. |
+| pnpm | [graph-sequencer#L22-L125](https://github.com/pnpm/pnpm/blob/main/deps/graph-sequencer/src/index.ts#L22-L125) | `graphSequencer` — topologically sorts workspace packages by their inter-dependencies with cycle detection. Used by `pnpm -r` recursive commands to respect dependency ordering across a monorepo. |
 
 ## Implementation
 

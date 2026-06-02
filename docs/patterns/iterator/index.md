@@ -20,7 +20,7 @@ No intermediate arrays are created. Each element flows through the entire chain 
 | Project | Source | Usage |
 |---------|--------|-------|
 | Rust stdlib | [iterator.rs#L68-L112](https://github.com/rust-lang/rust/blob/main/library/core/src/iter/traits/iterator.rs#L68-L112) | The `Iterator` trait — `next()` (line 78) is the single required method. `map` (line 831), `filter` (line 952), `fold`, `collect` are all built on top. This is the foundation of Rust's zero-cost abstraction for sequences. |
-| Python | [genobject.c](https://github.com/python/cpython/blob/main/Objects/genobject.c) | Generator objects — Python's lazy evaluation primitive. `yield` suspends execution and produces one value at a time. Used throughout the standard library (`range`, file iteration, `itertools`). |
+| Python | [genobject.c#L259-L374](https://github.com/python/cpython/blob/main/Objects/genobject.c#L259-L374) | `gen_send_ex2` (L259-L324) — core generator send: pushes arg onto frame stack, calls `_PyEval_EvalFrame`, distinguishes yield vs return. `gen_send_ex` (L329-L374) validates generator state (CREATED/EXECUTING/FINISHED) before delegating. |
 
 ## Implementation
 

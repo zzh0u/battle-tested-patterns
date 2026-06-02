@@ -27,7 +27,7 @@ sequenceDiagram
 | Project | Source | Usage |
 |---------|--------|-------|
 | Linux Kernel | [semaphore.h#L15-L55](https://github.com/torvalds/linux/blob/master/include/linux/semaphore.h#L15-L55) | `struct semaphore` — kernel counting semaphore with `down()` (acquire) and `up()` (release). Used for device driver access control, limiting concurrent I/O operations. |
-| Go stdlib | [Semaphore (x/sync)](https://github.com/golang/sync/blob/master/semaphore/semaphore.go) | `semaphore.Weighted` — a weighted semaphore used internally by `errgroup` to limit goroutine concurrency. Idiomatic Go also uses buffered channels as semaphores: `make(chan struct{}, n)`. |
+| Go stdlib | [semaphore.go#L28-L107](https://github.com/golang/sync/blob/master/semaphore/semaphore.go#L28-L107) | `Weighted` struct (L28-L33) with `size`, `cur`, `mu`, `waiters`. `Acquire` (L38-L107) blocks until semaphore weight is available or context is cancelled. Used internally by `errgroup` to limit goroutine concurrency. |
 
 ## Implementation
 

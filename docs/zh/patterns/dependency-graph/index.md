@@ -6,15 +6,14 @@
 
 ## 核心思想
 
-依赖图将项目表示为节点，"依赖于"关系表示为有向边。拓扑排序（Kahn 算法或基于 DFS）产生一个顺序，其中每个节点都出现在其所有依赖之后。如果不存在合法顺序，则存在循环。
+依赖图将项目表示为节点，"前置条件"关系表示为有向边。边 `A → B` 表示 A 的出边指向 B。Kahn 算法先处理入度为 0 的节点，产生一个合法的拓扑顺序。如果不存在合法顺序，则存在循环。
 
 ```text
   app ──────► utils ──────► config
-   │                          ▲
-   └──────────────────────────┘
+              (入度 1)       (入度 2)
 
-  拓扑顺序: config → utils → app
-  (每个节点出现在其依赖之后)
+  拓扑顺序: app → utils → config
+  (入度为 0 的先输出)
 
   循环检测:
   a → b → c → a  ← 错误：不存在合法顺序
@@ -32,7 +31,7 @@
 | 项目 | 源码 | 用途 |
 |------|------|------|
 | Cargo (Rust) | [dep_cache.rs#L1-L50](https://github.com/rust-lang/cargo/blob/master/src/cargo/core/resolver/dep_cache.rs#L1-L50) | `RegistryQueryer` 管理 Rust 包的依赖解析图。依赖形成通过回溯解析的 DAG，`resolve` 函数产生 crate 版本的拓扑排序用于编译。 |
-| pnpm | [sort-packages](https://github.com/pnpm/pnpm/blob/main/pkg-manager/sort-packages/src/index.ts) | `sortPackages` — 按工作区包的相互依赖关系进行拓扑排序，确保按正确顺序构建。被 `pnpm -r` 递归命令使用，在 monorepo 中遵循依赖顺序。 |
+| pnpm | [graph-sequencer#L22-L125](https://github.com/pnpm/pnpm/blob/main/deps/graph-sequencer/src/index.ts#L22-L125) | `graphSequencer` — 按工作区包的相互依赖关系进行拓扑排序并检测循环。被 `pnpm -r` 递归命令使用，在 monorepo 中遵循依赖顺序。 |
 
 ## 实现
 

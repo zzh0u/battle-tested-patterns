@@ -26,7 +26,7 @@ After swap: old "current" becomes new "work-in-progress" (reused, not GC'd). The
 | Project | Source | Usage |
 |---------|--------|-------|
 | React | [ReactFiber.js#L327-L355](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactFiber.js#L327-L355) | `createWorkInProgress` — creates or reuses an alternate fiber. The comment says: *"We use a double buffering pooling technique because we know that we'll only ever need at most two versions of a tree."* `current.alternate = workInProgress` and `workInProgress.alternate = current` establish the mutual link. |
-| SDL | [SDL_render.c](https://github.com/libsdl-org/SDL/blob/main/src/render/SDL_render.c) | SDL's renderer uses front/back buffer swapping for tear-free frame presentation. `SDL_RenderPresent` flushes the back buffer and swaps it to the screen. (File-level link — swap logic spans multiple renderer backends.) |
+| SDL | [SDL_render.c#L5535-L5570](https://github.com/libsdl-org/SDL/blob/main/src/render/SDL_render.c#L5535-L5570) | `SDL_RenderPresent` — flushes queued render commands, calls the backend's `RenderPresent` to swap front/back buffers for tear-free frame presentation, and handles vsync simulation. |
 
 ## Implementation
 
