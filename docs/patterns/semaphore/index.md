@@ -152,4 +152,7 @@ Run exercises: `pnpm test`
 
 ## More Production Uses
 
-Java `Semaphore`, Python `threading.Semaphore`, Nginx worker connections, PostgreSQL `max_connections`, Kubernetes resource quotas.
+- Java `Semaphore`
+- Python `threading.Semaphore`
+- [Nginx](https://github.com/nginx/nginx) — worker connections
+- [PostgreSQL](https://github.com/postgres/postgres) — `max_connections`

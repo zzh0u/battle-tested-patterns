@@ -80,4 +80,8 @@ def retry_with_backoff(fn, max_retries=5, base=1.0, cap=30.0):
 
 ## 更多生产案例
 
-AWS SDK, Azure SDK, Google Cloud 客户端, Envoy, Istio, Celery, Sidekiq.
+- [AWS SDK](https://github.com/aws/aws-sdk-js-v3)
+- [Azure SDK](https://github.com/Azure/azure-sdk-for-js)
+- [Google Cloud](https://github.com/googleapis/google-cloud-node)
+- [Envoy](https://github.com/envoyproxy/envoy) — proxy
+- [Celery](https://github.com/celery/celery) — Python task queue

@@ -133,4 +133,8 @@ Run exercises: `pnpm test`
 
 ## More Production Uses
 
-Java Streams, C# LINQ, Haskell lazy lists, Kotlin Sequences, Swift `LazySequence`, Clojure transducers.
+- Java Streams
+- C# LINQ
+- Haskell lazy lists
+- [Kotlin](https://github.com/JetBrains/kotlin) Sequences
+- Swift `LazySequence`

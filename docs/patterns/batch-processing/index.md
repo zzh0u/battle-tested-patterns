@@ -162,4 +162,7 @@ Run exercises: `pnpm test`
 
 ## More Production Uses
 
-React `unstable_batchedUpdates`, DataLoader (GraphQL N+1), Redis Pipeline, PostgreSQL `COPY`, Elasticsearch Bulk API, browser `requestAnimationFrame`.
+- React `unstable_batchedUpdates`
+- [DataLoader](https://github.com/graphql/dataloader) — GraphQL N+1
+- [Redis](https://github.com/redis/redis) — Pipeline
+- [Elasticsearch](https://github.com/elastic/elasticsearch) — Bulk API

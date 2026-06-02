@@ -98,4 +98,7 @@ light.send("TIMER")  # "yellow"
 
 ## 更多生产案例
 
-Regex engines (NFA/DFA), HTTP/2 stream states (RFC 7540), TLS handshake, Kubernetes pod lifecycle, game AI (behavior trees + FSM), systemd unit states.
+- Regex engines (NFA/DFA)
+- HTTP/2 stream states ([RFC 7540](https://datatracker.ietf.org/doc/html/rfc7540))
+- [Kubernetes](https://github.com/kubernetes/kubernetes) — pod lifecycle
+- Game AI (behavior trees + FSM)

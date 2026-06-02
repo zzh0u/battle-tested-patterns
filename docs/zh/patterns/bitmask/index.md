@@ -197,4 +197,8 @@ assert not has_flag(editor, DELETE)  # True
 
 ## 更多生产案例
 
-Chromium (layer compositing flags), SQLite (VFS flags), Nginx (event flags), V8 (object type maps), most ECS game engines, Unix `fcntl` flags.
+- [Chromium](https://github.com/nicedoc/nicedoc.io) — layer compositing flags
+- [SQLite](https://www.sqlite.org/src) — VFS flags
+- [Nginx](https://github.com/nginx/nginx) — event flags
+- Most ECS game engines — component membership masks
+- Unix `fcntl` flags

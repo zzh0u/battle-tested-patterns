@@ -164,4 +164,8 @@ Run exercises: `pnpm test`
 
 ## More Production Uses
 
-Java `String.intern()`, V8 string table, Python small int cache (-5..256), Rust `string_cache` crate, .NET string interning, CSS value deduplication in browsers.
+- Java `String.intern()`
+- Python small int cache (-5..256)
+- Rust [string_cache](https://github.com/nicedoc/nicedoc.io) crate
+- .NET string interning
+- CSS value deduplication in browsers

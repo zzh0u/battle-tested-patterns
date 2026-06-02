@@ -199,4 +199,7 @@ Run exercises: `pnpm test`
 
 ## More Production Uses
 
-Linux `io_uring`, ZeroMQ, Kafka (log segments), audio DSP buffers, UART serial communication, Chrome trace event buffer.
+- Linux [io_uring](https://github.com/axboe/liburing)
+- [ZeroMQ](https://github.com/zeromq/libzmq)
+- [Kafka](https://github.com/apache/kafka) — log segments
+- Audio DSP buffers

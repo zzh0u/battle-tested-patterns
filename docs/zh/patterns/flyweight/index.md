@@ -76,4 +76,8 @@ print(a is b)  # True — 享元！
 
 ## 更多生产案例
 
-Java `String.intern()`, V8 字符串表, Python 小整数缓存, Rust `string_cache`, .NET 字符串驻留.
+- Java `String.intern()`
+- Python small int cache (-5..256)
+- Rust [string_cache](https://github.com/nicedoc/nicedoc.io) crate
+- .NET string interning
+- CSS value deduplication in browsers

@@ -94,4 +94,7 @@ class BatchProcessor:
 
 ## 更多生产案例
 
-React `unstable_batchedUpdates`, DataLoader (GraphQL N+1), Redis Pipeline, Elasticsearch Bulk API.
+- React `unstable_batchedUpdates`
+- [DataLoader](https://github.com/graphql/dataloader) — GraphQL N+1
+- [Redis](https://github.com/redis/redis) — Pipeline
+- [Elasticsearch](https://github.com/elastic/elasticsearch) — Bulk API

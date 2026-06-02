@@ -189,4 +189,6 @@ Run exercises: `pnpm test`
 
 ## More Production Uses
 
-VS Code (text buffer diff), jsdiff, Mercurial, SVN, React Native (shadow tree reconciliation), Vue 3 (template diff).
+- [VS Code](https://github.com/microsoft/vscode) — text buffer diff
+- [jsdiff](https://github.com/kpdecker/jsdiff)
+- [Vue 3](https://github.com/vuejs/core) — template diff

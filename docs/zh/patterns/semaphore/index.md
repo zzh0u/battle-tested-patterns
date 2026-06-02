@@ -77,4 +77,7 @@ async def limited_work():
 
 ## 更多生产案例
 
-Java `Semaphore`, Python `threading.Semaphore`, Nginx worker connections, PostgreSQL `max_connections`.
+- Java `Semaphore`
+- Python `threading.Semaphore`
+- [Nginx](https://github.com/nginx/nginx) — worker connections
+- [PostgreSQL](https://github.com/postgres/postgres) — `max_connections`

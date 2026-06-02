@@ -188,4 +188,6 @@ Run exercises: `pnpm test`
 
 ## More Production Uses
 
-OpenGL/Vulkan (swap chains), PostgreSQL MVCC (snapshot isolation), Unreal Engine (frame rendering), database WAL (write-ahead log).
+- [OpenGL](https://www.khronos.org/opengl/) / Vulkan — swap chains
+- [PostgreSQL](https://github.com/postgres/postgres) — MVCC snapshot isolation
+- Unreal Engine — frame rendering

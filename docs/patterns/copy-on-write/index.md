@@ -166,4 +166,7 @@ Run exercises: `pnpm test`
 
 ## More Production Uses
 
-Linux `fork()` (page table CoW), Swift value types, PHP strings (before PHP 7), Redis `BGSAVE`, ZFS/Btrfs filesystem snapshots.
+- Linux `fork()` — page table CoW
+- [Swift](https://github.com/swiftlang/swift) — value types
+- [Redis](https://github.com/redis/redis) — `BGSAVE`
+- [ZFS](https://github.com/openzfs/zfs) / Btrfs — filesystem snapshots

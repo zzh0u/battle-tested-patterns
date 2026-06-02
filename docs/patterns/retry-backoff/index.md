@@ -161,4 +161,8 @@ Run exercises: `pnpm test`
 
 ## More Production Uses
 
-AWS SDK (all services), Azure SDK, Google Cloud client libraries, Envoy proxy, Istio service mesh, Celery (Python task queue), Sidekiq (Ruby background jobs).
+- [AWS SDK](https://github.com/aws/aws-sdk-js-v3)
+- [Azure SDK](https://github.com/Azure/azure-sdk-for-js)
+- [Google Cloud](https://github.com/googleapis/google-cloud-node)
+- [Envoy](https://github.com/envoyproxy/envoy) — proxy
+- [Celery](https://github.com/celery/celery) — Python task queue

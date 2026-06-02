@@ -155,4 +155,7 @@ func (s *Scheduler) WorkLoop() bool {
 
 ## 更多生产案例
 
-Lua coroutines, Python `asyncio`, Erlang/BEAM VM (reduction counting), Windows Fibers, Unity coroutines, Zig async.
+- [Lua](https://github.com/lua/lua) — coroutines
+- Python [asyncio](https://github.com/python/cpython/tree/main/Lib/asyncio)
+- Erlang/BEAM VM — reduction counting
+- Unity — coroutines

@@ -109,4 +109,7 @@ class RingBuffer:
 
 ## 更多生产案例
 
-Linux `io_uring`, ZeroMQ, Kafka (log segments), audio DSP buffers, UART serial communication, Chrome trace event buffer.
+- Linux [io_uring](https://github.com/axboe/liburing)
+- [ZeroMQ](https://github.com/zeromq/libzmq)
+- [Kafka](https://github.com/apache/kafka) — log segments
+- Audio DSP buffers

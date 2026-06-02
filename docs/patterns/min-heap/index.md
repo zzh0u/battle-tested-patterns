@@ -298,4 +298,7 @@ Run exercises: `pnpm test` · `cargo test` · `go test ./...`
 
 ## More Production Uses
 
-Node.js timer queue (`libuv`), Java `PriorityQueue`, Python `heapq`, Dijkstra/Prim graph algorithms, Kubernetes scheduler.
+- [Node.js libuv](https://github.com/libuv/libuv) — timer queue
+- Java `PriorityQueue`
+- Python [heapq](https://github.com/python/cpython/blob/main/Lib/heapq.py)
+- Dijkstra / Prim graph algorithms

@@ -111,4 +111,6 @@ pub fn diff<T: PartialEq + Clone>(old: &[T], new: &[T]) -> Vec<Op<T>> {
 
 ## 更多生产案例
 
-VS Code (text buffer diff), jsdiff, Mercurial, SVN, React Native (shadow tree reconciliation), Vue 3 (template diff).
+- [VS Code](https://github.com/microsoft/vscode) — text buffer diff
+- [jsdiff](https://github.com/kpdecker/jsdiff)
+- [Vue 3](https://github.com/vuejs/core) — template diff

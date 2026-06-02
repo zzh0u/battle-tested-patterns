@@ -74,4 +74,8 @@ first_10 = [next(evens) for _ in range(10)]
 
 ## 更多生产案例
 
-Java Streams, C# LINQ, Haskell lazy lists, Kotlin Sequences, Swift `LazySequence`.
+- Java Streams
+- C# LINQ
+- Haskell lazy lists
+- [Kotlin](https://github.com/JetBrains/kotlin) Sequences
+- Swift `LazySequence`

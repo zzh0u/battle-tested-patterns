@@ -172,4 +172,8 @@ Run exercises: `pnpm test`
 
 ## More Production Uses
 
-RxJS (reactive streams), Vue 3 reactivity (`effect` / `track` / `trigger`), MobX, DOM `addEventListener`, Java `PropertyChangeListener`, C# events.
+- [RxJS](https://github.com/ReactiveX/rxjs) — reactive streams
+- [Vue 3](https://github.com/vuejs/core) — reactivity system
+- [MobX](https://github.com/mobxjs/mobx)
+- DOM `addEventListener`
+- C# events

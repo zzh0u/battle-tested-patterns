@@ -93,4 +93,8 @@ print(msgs)  # ["hello"]
 
 ## 更多生产案例
 
-RxJS (reactive streams), Vue 3 reactivity (`effect` / `track` / `trigger`), MobX, DOM `addEventListener`, Java `PropertyChangeListener`, C# events.
+- [RxJS](https://github.com/ReactiveX/rxjs) — reactive streams
+- [Vue 3](https://github.com/vuejs/core) — reactivity system
+- [MobX](https://github.com/mobxjs/mobx)
+- DOM `addEventListener`
+- C# events

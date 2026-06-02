@@ -115,4 +115,7 @@ class ObjectPool:
 
 ## 更多生产案例
 
-Java `ThreadPoolExecutor`, .NET `ArrayPool<T>`, Apache Commons Pool, HikariCP (JDBC connection pool), Unity `ObjectPool<T>`.
+- Java `ThreadPoolExecutor`
+- .NET `ArrayPool<T>`
+- [HikariCP](https://github.com/brettwooldridge/HikariCP) — JDBC connection pool
+- Unity `ObjectPool<T>`
