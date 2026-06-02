@@ -4,3 +4,4 @@
 |------|------|------|
 | [迭代器](/zh/patterns/iterator/) | `core/iter/traits/iterator.rs` | `Iterator` trait — 零成本抽象的可组合序列处理 |
 | [写时复制](/zh/patterns/copy-on-write/) | `alloc/src/borrow.rs` | `Cow<'a, B>` — 写时克隆智能指针 |
+| [Arena 分配器](/zh/patterns/arena-allocator/) | bumpalo `lib.rs` | `Bump` — Rust 经典 arena 分配器，被 wasm-bindgen 和 Deno 使用 |

@@ -7,6 +7,7 @@ Node.js, Redux, and XState demonstrate event-driven and state management pattern
 | [Observer / Pub-Sub](/patterns/observer/) | Node.js | `lib/events.js` | `EventEmitter` — foundation of Node's event-driven architecture |
 | [Observer / Pub-Sub](/patterns/observer/) | Redux | `createStore.ts` | `subscribe()` + `dispatch()` — state change notification |
 | [State Machine](/patterns/state-machine/) | XState | `StateMachine.ts` | Industry-standard finite state machine library |
+| [Backpressure](/patterns/backpressure/) | Node.js | `writable.js` | `writeOrBuffer()` — `highWaterMark` + `drain` event flow control |
 
 ## Further Reading
 

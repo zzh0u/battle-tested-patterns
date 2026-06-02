@@ -125,6 +125,7 @@ Create files in `exercises/typescript/<pattern-name>/`:
 - [ ] Production Proof: links precise to line numbers (`#L42-L80`), never `#L1`
 - [ ] More Production Uses: use bullet list with verified URLs, not comma-separated text
 - [ ] Chinese translation: section titles in Chinese (`## 更多生产案例` not `## More Production Uses`)
+- [ ] ASCII diagrams: strictly monospaced-aligned, use 4-char wide cells (`┌────┬────┐`), verify in a monospace font
 - [ ] Sidebar: updated in BOTH English and Chinese sections of `config.ts`
 - [ ] README: updated in BOTH `README.md` and `README.zh-CN.md`
 

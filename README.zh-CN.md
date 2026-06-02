@@ -46,6 +46,11 @@
 | [**批处理**](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/batch-processing/) | 累积操作批量执行 | [Kafka](https://github.com/apache/kafka/blob/trunk/clients/src/main/java/org/apache/kafka/clients/producer/internals/RecordAccumulator.java#L69-L120)|
 | [**指数退避重试**](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/retry-backoff/) | 指数延迟 + 抖动重试 | [Kubernetes](https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/util/wait/backoff.go#L30-L50) · [gRPC](https://github.com/grpc/grpc/blob/master/doc/connection-backoff.md)|
 | [**享元/驻留**](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/flyweight/) | 共享相同对象避免重复 | [Python int cache](https://github.com/python/cpython/blob/main/Objects/longobject.c#L61-L75)|
+| [**布隆过滤器**](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/bloom-filter/) | 概率集合成员测试，零漏判 | [LevelDB](https://github.com/google/leveldb/blob/main/util/bloom.cc#L17-L80) · [Chromium](https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/core/css/selector_filter.h#L149-L175)|
+| [**熔断器**](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/circuit-breaker/) | 停止调用故障服务，快速失败 | [Hystrix](https://github.com/Netflix/Hystrix/blob/master/hystrix-core/src/main/java/com/netflix/hystrix/HystrixCircuitBreaker.java#L138-L289) · [gobreaker](https://github.com/sony/gobreaker/blob/master/gobreaker.go#L117-L131)|
+| [**Arena 分配器**](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/arena-allocator/) | 区域内推进指针分配，一次性释放 | [bumpalo](https://github.com/fitzgen/bumpalo/blob/main/src/lib.rs#L378-L383) · [Go arena](https://github.com/golang/go/blob/master/src/arena/arena.go#L44-L67)|
+| [**背压**](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/backpressure/) | 消费者跟不上时减慢生产者 | [Node.js Streams](https://github.com/nodejs/node/blob/main/lib/internal/streams/writable.js#L312-L370) · [Reactive Streams](https://github.com/reactive-streams/reactive-streams-jvm/blob/master/api/src/main/java/org/reactivestreams/Subscription.java#L25-L45)|
+| [**预写日志**](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/write-ahead-log/) | 应用前先记录变更，崩溃可恢复 | [etcd](https://github.com/etcd-io/etcd/blob/main/server/storage/wal/wal.go#L72-L95) · [PostgreSQL](https://github.com/postgres/postgres/blob/master/src/backend/access/transam/xlog.c)|
 
 > 每个"验证来源"链接都指向源代码的**精确行号**。不是目录，不是文件，是行。
 
@@ -54,15 +59,15 @@
 每个模式遵循一致的结构——以**位掩码**为例：
 
 ```text
-  比特位:        7   6   5   4   3   2   1   0
-                ┌───┬───┬───┬───┬───┬───┬───┬───┐
-  标志:         │   │   │   │ SN│ CB│ RF│ UP│ PL│
-                └───┴───┴───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┘
-                              │   │   │   │   └─ Placement  (1 << 0)
-                              │   │   │   └──── Update     (1 << 1)
-                              │   │   └──────── Ref        (1 << 2)
-                              │   └──────────── Callback   (1 << 3)
-                              └──────────────── Snapshot   (1 << 4)
+  比特位:          7    6    5    4    3    2    1    0
+                ┌────┬────┬────┬────┬────┬────┬────┬────┐
+  标志:         │    │    │    │ SN │ CB │ RF │ UP │ PL │
+                └────┴────┴────┴──┬─┴──┬─┴──┬─┴──┬─┴──┬─┘
+                                  │    │    │    │    └── Placement  (1 << 0)
+                                  │    │    │    └─────── Update     (1 << 1)
+                                  │    │    └──────────── Ref        (1 << 2)
+                                  │    └───────────────── Callback   (1 << 3)
+                                  └────────────────────── Snapshot   (1 << 4)
 ```
 
 4 种语言实现，各自地道：

@@ -47,3 +47,8 @@ features:
 | [Batch Processing](/patterns/batch-processing/) | Accumulate ops, execute as a group for throughput | Kafka RecordAccumulator, React batched setState |
 | [Retry with Backoff](/patterns/retry-backoff/) | Retry with exponential delay + jitter | Kubernetes, gRPC |
 | [Flyweight / Interning](/patterns/flyweight/) | Share identical objects, avoid duplicate allocations | Python int cache, V8 |
+| [Bloom Filter](/patterns/bloom-filter/) | Probabilistic set membership — zero false negatives | LevelDB, Chromium Blink |
+| [Circuit Breaker](/patterns/circuit-breaker/) | Stop calling failing services, fail fast | Netflix Hystrix, Sony gobreaker |
+| [Arena Allocator](/patterns/arena-allocator/) | Bump-allocate in a region, free all at once | Rust bumpalo, jemalloc |
+| [Backpressure](/patterns/backpressure/) | Slow producers when consumers can't keep up | Node.js Streams, Reactive Streams |
+| [Write-Ahead Log](/patterns/write-ahead-log/) | Log mutations before applying for crash recovery | etcd, PostgreSQL |

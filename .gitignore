@@ -32,6 +32,8 @@ coverage/
 
 # Temp
 tmp/
+.tmp-code-verify/
+.pnpm-store/
 
 # Local Claude settings (not committed)
 .claude/settings.local.json

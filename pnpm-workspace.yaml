@@ -10,3 +10,4 @@ onlyBuiltDependencies:
 
 overrides:
   debug: "4.4.0"
+  js-tokens: "10.0.0"

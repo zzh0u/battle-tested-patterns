@@ -46,6 +46,11 @@ This project: **code-level techniques from React, Linux, Go, Chromium — each w
 | [**Batch Processing**](https://totoro-jam.github.io/battle-tested-patterns/patterns/batch-processing/) | Accumulate ops, execute as group | [Kafka](https://github.com/apache/kafka/blob/trunk/clients/src/main/java/org/apache/kafka/clients/producer/internals/RecordAccumulator.java#L69-L120)|
 | [**Retry with Backoff**](https://totoro-jam.github.io/battle-tested-patterns/patterns/retry-backoff/) | Exponential delay + jitter on failure | [Kubernetes](https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/util/wait/backoff.go#L30-L50) · [gRPC](https://github.com/grpc/grpc/blob/master/doc/connection-backoff.md)|
 | [**Flyweight**](https://totoro-jam.github.io/battle-tested-patterns/patterns/flyweight/) | Share identical objects, avoid duplicates | [Python int cache](https://github.com/python/cpython/blob/main/Objects/longobject.c#L61-L75)|
+| [**Bloom Filter**](https://totoro-jam.github.io/battle-tested-patterns/patterns/bloom-filter/) | Probabilistic set membership, zero false negatives | [LevelDB](https://github.com/google/leveldb/blob/main/util/bloom.cc#L17-L80) · [Chromium](https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/core/css/selector_filter.h#L149-L175)|
+| [**Circuit Breaker**](https://totoro-jam.github.io/battle-tested-patterns/patterns/circuit-breaker/) | Stop calling failing services, fail fast | [Hystrix](https://github.com/Netflix/Hystrix/blob/master/hystrix-core/src/main/java/com/netflix/hystrix/HystrixCircuitBreaker.java#L138-L289) · [gobreaker](https://github.com/sony/gobreaker/blob/master/gobreaker.go#L117-L131)|
+| [**Arena Allocator**](https://totoro-jam.github.io/battle-tested-patterns/patterns/arena-allocator/) | Bump-allocate, free all at once | [bumpalo](https://github.com/fitzgen/bumpalo/blob/main/src/lib.rs#L378-L383) · [Go arena](https://github.com/golang/go/blob/master/src/arena/arena.go#L44-L67)|
+| [**Backpressure**](https://totoro-jam.github.io/battle-tested-patterns/patterns/backpressure/) | Slow producers when consumers can't keep up | [Node.js Streams](https://github.com/nodejs/node/blob/main/lib/internal/streams/writable.js#L312-L370) · [Reactive Streams](https://github.com/reactive-streams/reactive-streams-jvm/blob/master/api/src/main/java/org/reactivestreams/Subscription.java#L25-L45)|
+| [**Write-Ahead Log**](https://totoro-jam.github.io/battle-tested-patterns/patterns/write-ahead-log/) | Log mutations before applying, crash recovery | [etcd](https://github.com/etcd-io/etcd/blob/main/server/storage/wal/wal.go#L72-L95) · [PostgreSQL](https://github.com/postgres/postgres/blob/master/src/backend/access/transam/xlog.c)|
 
 > Every "Proven In" link goes to the **exact lines** in the source code. Not a directory. Not a file. The lines.
 
@@ -54,15 +59,15 @@ This project: **code-level techniques from React, Linux, Go, Chromium — each w
 Each pattern follows a consistent structure — here's a taste from **Bitmask**:
 
 ```text
-  Bit position:  7   6   5   4   3   2   1   0
-                ┌───┬───┬───┬───┬───┬───┬───┬───┐
-  Flags:        │   │   │   │ SN│ CB│ RF│ UP│ PL│
-                └───┴───┴───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┘
-                              │   │   │   │   └─ Placement  (1 << 0)
-                              │   │   │   └──── Update     (1 << 1)
-                              │   │   └──────── Ref        (1 << 2)
-                              │   └──────────── Callback   (1 << 3)
-                              └──────────────── Snapshot   (1 << 4)
+  Bit position:   7    6    5    4    3    2    1    0
+                ┌────┬────┬────┬────┬────┬────┬────┬────┐
+  Flags:        │    │    │    │ SN │ CB │ RF │ UP │ PL │
+                └────┴────┴────┴──┬─┴──┬─┴──┬─┴──┬─┴──┬─┘
+                                  │    │    │    │    └── Placement  (1 << 0)
+                                  │    │    │    └─────── Update     (1 << 1)
+                                  │    │    └──────────── Ref        (1 << 2)
+                                  │    └───────────────── Callback   (1 << 3)
+                                  └────────────────────── Snapshot   (1 << 4)
 ```
 
 Implementations in 4 languages, each idiomatic:

@@ -5,3 +5,4 @@
 | [观察者](/zh/patterns/observer/) | Node.js | `lib/events.js` | `EventEmitter` — Node 事件驱动架构的基础 |
 | [观察者](/zh/patterns/observer/) | Redux | `createStore.ts` | `subscribe()` + `dispatch()` — 状态变化通知 |
 | [状态机](/zh/patterns/state-machine/) | XState | `StateMachine.ts` | 工业级有限状态机库 |
+| [背压](/zh/patterns/backpressure/) | Node.js | `writable.js` | `writeOrBuffer()` — `highWaterMark` + `drain` 事件流控 |

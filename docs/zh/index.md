@@ -47,3 +47,8 @@ features:
 | [批处理 (Batch Processing)](/zh/patterns/batch-processing/) | 累积操作批量执行提升吞吐 | Kafka, React batched setState |
 | [指数退避重试 (Retry)](/zh/patterns/retry-backoff/) | 指数增长延迟重试 + 抖动 | Kubernetes, gRPC |
 | [享元/驻留 (Flyweight)](/zh/patterns/flyweight/) | 共享相同对象，避免重复分配 | Python 整数缓存, V8 |
+| [布隆过滤器 (Bloom Filter)](/zh/patterns/bloom-filter/) | 概率集合成员测试——零漏判 | LevelDB, Chromium Blink |
+| [熔断器 (Circuit Breaker)](/zh/patterns/circuit-breaker/) | 停止调用故障服务，快速失败 | Netflix Hystrix, Sony gobreaker |
+| [Arena 分配器](/zh/patterns/arena-allocator/) | 区域内推进指针分配，一次性释放 | Rust bumpalo, jemalloc |
+| [背压 (Backpressure)](/zh/patterns/backpressure/) | 消费者跟不上时减慢生产者 | Node.js Streams, Reactive Streams |
+| [预写日志 (WAL)](/zh/patterns/write-ahead-log/) | 应用前先记录变更，崩溃可恢复 | etcd, PostgreSQL |

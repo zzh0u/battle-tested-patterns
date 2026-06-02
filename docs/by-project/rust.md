@@ -6,7 +6,8 @@ Rust's standard library embodies zero-cost abstractions through its type system.
 |---------|-------|--------------|
 | [Iterator / Lazy Eval](/patterns/iterator/) | `core/iter/traits/iterator.rs` | The `Iterator` trait — `next()` + composable `map`/`filter`/`fold` |
 | [Copy-on-Write](/patterns/copy-on-write/) | `alloc/src/borrow.rs` | `Cow<'a, B>` — clone-on-write smart pointer for zero-copy parsing |
+| [Arena Allocator](/patterns/arena-allocator/) | bumpalo `lib.rs` | `Bump` — canonical Rust arena allocator, used in wasm-bindgen and Deno |
 
 ## Further Reading
 
-- [Rust Source Code (GitHub)](https://github.com/rust-lang/rust)
+- [Rust Source Code (GitHub)](https://github.com/rust-lang/rust) · [bumpalo (GitHub)](https://github.com/fitzgen/bumpalo)

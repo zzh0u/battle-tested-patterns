@@ -8,6 +8,8 @@ The Linux kernel has been refined over 30+ years. These patterns have survived d
 | [Min Heap](/patterns/min-heap/) | `kernel/sched/fair.c` (CFS) | Completely Fair Scheduler — pick task with lowest vruntime |
 | [Ring Buffer](/patterns/ring-buffer/) | `include/linux/ring_buffer.h` | ftrace event logging, per-CPU lock-free buffers |
 | [State Machine](/patterns/state-machine/) | `net/ipv4/tcp_input.c` | TCP connection state machine (SYN_SENT → ESTABLISHED → FIN_WAIT) |
+| [Semaphore](/patterns/semaphore/) | `include/linux/semaphore.h` | Kernel counting semaphore with `down()`/`up()` |
+| [Backpressure](/patterns/backpressure/) | `net/ipv4/tcp_output.c` | TCP congestion window (`cwnd`) — flow control backpressure |
 
 ## Further Reading
 
