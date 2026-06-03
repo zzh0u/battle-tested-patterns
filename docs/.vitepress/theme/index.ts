@@ -1,6 +1,6 @@
 import DefaultTheme from 'vitepress/theme';
 import type { Theme } from 'vitepress';
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, defineComponent, h } from 'vue';
 import './custom.css';
 
 const vizComponents: Record<string, () => Promise<any>> = {
@@ -52,11 +52,21 @@ const vizComponents: Record<string, () => Promise<any>> = {
   TombstoneViz: () => import('./components/TombstoneViz.vue'),
 };
 
+function clientOnly(loader: () => Promise<any>) {
+  const AsyncComp = defineAsyncComponent(loader);
+  return defineComponent({
+    setup() {
+      return () =>
+        typeof window === 'undefined' ? null : h(AsyncComp);
+    },
+  });
+}
+
 export default {
   extends: DefaultTheme,
   enhanceApp({ app }) {
     for (const [name, loader] of Object.entries(vizComponents)) {
-      app.component(name, defineAsyncComponent(loader));
+      app.component(name, clientOnly(loader));
     }
   },
 } satisfies Theme;
