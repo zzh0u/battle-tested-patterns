@@ -41,8 +41,8 @@ These patterns span 80+ years of computing history — from the earliest stored-
 | 1958 | [Free List](/patterns/free-list/) | McCarthy's LISP used free lists to manage cons cell allocation |
 | 1958 | [Cooperative Scheduling](/patterns/cooperative-scheduling/) | Melvin Conway described coroutines (published 1963), formalizing voluntary yield |
 | 1959 | [Trie](/patterns/trie/) | Rene de la Briandais described the trie; Fredkin coined the name "trie" (from retrieval) in 1960 |
-| ~1960s | [Ring Buffer](/patterns/ring-buffer/) | Used in telecommunications and real-time I/O systems; no single inventor |
-| ~1960s | [Arena Allocator](/patterns/arena-allocator/) | Region-based allocation in compilers; Knuth discussed pool allocation in TAOCP (1968) |
+| ~1960 | [Ring Buffer](/patterns/ring-buffer/) | Used in telecommunications and real-time I/O systems; no single inventor |
+| ~1960 | [Arena Allocator](/patterns/arena-allocator/) | Region-based allocation in compilers; Knuth discussed pool allocation in TAOCP (1968) |
 | 1962 | [Dependency Graph](/patterns/dependency-graph/) | Kahn published "Topological sorting of large networks" in CACM |
 | 1964 | [Min Heap](/patterns/min-heap/) | Williams invented the binary heap for heapsort; Floyd improved it the same year |
 | 1965 | [Semaphore](/patterns/semaphore/) | Dijkstra invented P() and V() for the THE operating system |

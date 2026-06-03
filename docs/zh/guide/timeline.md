@@ -41,8 +41,8 @@
 | 1958 | [空闲链表](/zh/patterns/free-list/) | McCarthy 的 LISP 使用空闲链表管理 cons cell 分配 |
 | 1958 | [协作调度](/zh/patterns/cooperative-scheduling/) | Melvin Conway 描述了协程（1963 年发表），形式化了自愿让出 |
 | 1959 | [Trie 前缀树](/zh/patterns/trie/) | Rene de la Briandais 描述了 trie；Fredkin 于 1960 年命名（取自 retrieval） |
-| ~1960s | [环形缓冲区](/zh/patterns/ring-buffer/) | 用于电信和实时 I/O 系统；无单一发明者 |
-| ~1960s | [Arena 分配器](/zh/patterns/arena-allocator/) | 编译器中的区域分配；Knuth 在 TAOCP（1968）中讨论了池分配 |
+| 约1960年代 | [环形缓冲区](/zh/patterns/ring-buffer/) | 用于电信和实时 I/O 系统；无单一发明者 |
+| 约1960年代 | [Arena 分配器](/zh/patterns/arena-allocator/) | 编译器中的区域分配；Knuth 在 TAOCP（1968）中讨论了池分配 |
 | 1962 | [依赖图](/zh/patterns/dependency-graph/) | Kahn 在 CACM 发表"大型网络的拓扑排序" |
 | 1964 | [最小堆](/zh/patterns/min-heap/) | Williams 为堆排序发明二叉堆；Floyd 同年改进 |
 | 1965 | [信号量](/zh/patterns/semaphore/) | Dijkstra 为 THE 操作系统发明了 P() 和 V() |

@@ -32,7 +32,7 @@ Actor 是拥有私有状态和信箱（消息队列）的轻量级进程。Actor
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Akka (Scala) | [Actor.scala#L476-L547](https://github.com/akka/akka/blob/main/akka-actor/src/main/scala/akka/actor/Actor.scala#L476-L547) | `trait Actor` — 核心 Actor 接口。定义 `context`、`self`、`sender()` 和 `def receive: Actor.Receive`（L528），每个 Akka Actor 通过偏函数指定其消息处理行为。`aroundReceive`（L540-L546）是分发钩子。 |
+| Akka (Scala) | [Actor.scala#L476-L547](https://github.com/akka/akka-core/blob/main/akka-actor/src/main/scala/akka/actor/Actor.scala#L476-L547) | `trait Actor` — 核心 Actor 接口。定义 `context`、`self`、`sender()` 和 `def receive: Actor.Receive`（L528），每个 Akka Actor 通过偏函数指定其消息处理行为。`aroundReceive`（L540-L546）是分发钩子。 |
 | Erlang/OTP | [erl_process.h#L1043-L1205](https://github.com/erlang/otp/blob/master/erts/emulator/beam/erl_process.h#L1043-L1205) | `struct process` — BEAM 虚拟机中 Erlang 进程（Actor）的表示。关键字段：`sig_qs`（L1107，信号/消息队列 — 信箱）、`sig_inq`（L1168，并发信号输入队列）、`state`（L1165，原子进程状态标志）。每个进程是拥有自己堆和信箱的轻量级 Actor。 |
 
 ## 实现

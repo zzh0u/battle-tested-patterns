@@ -32,7 +32,7 @@ An actor is a lightweight process with private state and a mailbox (message queu
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Akka (Scala) | [Actor.scala#L476-L547](https://github.com/akka/akka/blob/main/akka-actor/src/main/scala/akka/actor/Actor.scala#L476-L547) | `trait Actor` — the core actor interface. Defines `context`, `self`, `sender()`, and `def receive: Actor.Receive` (L528) where every Akka actor specifies its message-handling behavior via a partial function. `aroundReceive` (L540-L546) is the dispatch hook. |
+| Akka (Scala) | [Actor.scala#L476-L547](https://github.com/akka/akka-core/blob/main/akka-actor/src/main/scala/akka/actor/Actor.scala#L476-L547) | `trait Actor` — the core actor interface. Defines `context`, `self`, `sender()`, and `def receive: Actor.Receive` (L528) where every Akka actor specifies its message-handling behavior via a partial function. `aroundReceive` (L540-L546) is the dispatch hook. |
 | Erlang/OTP | [erl_process.h#L1043-L1205](https://github.com/erlang/otp/blob/master/erts/emulator/beam/erl_process.h#L1043-L1205) | `struct process` — the BEAM VM's representation of an Erlang process (actor). Key fields: `sig_qs` (L1107, signal/message queues — the mailbox), `sig_inq` (L1168, concurrent signal input queue), `state` (L1165, atomic process state flags). Each process is a lightweight actor with its own heap and mailbox. |
 
 ## Implementation

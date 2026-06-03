@@ -6,74 +6,74 @@ Patterns from databases, JVM ecosystem, browsers, and other notable open-source 
 
 | Pattern | Project | Where | What It Does |
 |---------|---------|-------|--------------|
-| [MVCC](/patterns/mvcc/) | PostgreSQL | `heapam_visibility.c` | `HeapTupleSatisfiesMVCC` — snapshot isolation visibility check |
-| [Write-Ahead Log](/patterns/write-ahead-log/) | PostgreSQL | `xlog.c` | Transaction WAL for crash recovery, replication, PITR |
-| [MVCC](/patterns/mvcc/) | etcd | `kvstore.go` | Multi-version KV store powering Kubernetes config |
-| [Write-Ahead Log](/patterns/write-ahead-log/) | etcd | `wal.go` | Raft consensus WAL for distributed state |
-| [LRU Cache](/patterns/lru-cache/) | Redis | `evict.c` | Approximated LRU with sampling-based eviction pool |
-| [Trie](/patterns/trie/) | Redis | `rax.c` / `rax.h` | RAX radix tree for Streams and sorted key ranges |
-| [Skip List](/patterns/skip-list/) | Redis | `t_zset.c` | Sorted set implementation with probabilistic balancing |
-| [Bloom Filter](/patterns/bloom-filter/) | LevelDB | `bloom.cc` | Block-level bloom filter to skip unnecessary disk reads |
-| [Skip List](/patterns/skip-list/) | LevelDB | `skiplist.h` | Lock-free memtable with atomic next pointers |
-| [Arena Allocator](/patterns/arena-allocator/) | LevelDB | `arena.cc` | Block-based arena for memtable allocations |
-| [Merge Iterator](/patterns/merge-iterator/) | LevelDB | `merger.cc` | `MergingIterator` merges sorted iterators (memtable + SSTable levels) into single sorted view |
-| [LSM Tree](/patterns/lsm-tree/) | LevelDB | `db_impl.cc` | `DBImpl::Write` — batch writes to WAL, insert into memtable, flush to SST on threshold |
-| [Merge Iterator](/patterns/merge-iterator/) | RocksDB | `merge_helper.cc` | `TimedFullMerge` combines multiple versions of the same key during compaction |
-| [LSM Tree](/patterns/lsm-tree/) | RocksDB | `memtable.cc` | `MemTable::Add` — skip-list backed memtable, flush to L0 SST when full |
-| [Merkle Tree](/patterns/merkle-tree/) | ZFS (OpenZFS) | `blkptr.c` | Block pointer checksums form a Merkle tree from data blocks to uberblock for silent corruption detection |
-| [Checkpointing](/patterns/checkpointing/) | PostgreSQL | `checkpointer.c` | `CheckpointerMain` — flush dirty buffers, write checkpoint WAL record, update `pg_control` |
-| [Checkpointing](/patterns/checkpointing/) | Redis | `rdb.c` | `rdbSaveRio` — fork child process to write point-in-time RDB snapshot without blocking main thread |
+| [MVCC](/patterns/mvcc/) | PostgreSQL | [`heapam_visibility.c`](https://github.com/postgres/postgres/blob/master/src/backend/access/heap/heapam_visibility.c#L917-L1096) | `HeapTupleSatisfiesMVCC` — snapshot isolation visibility check |
+| [Write-Ahead Log](/patterns/write-ahead-log/) | PostgreSQL | [`xlog.c`](https://github.com/postgres/postgres/blob/master/src/backend/access/transam/xlog.c#L783-L1128) | Transaction WAL for crash recovery, replication, PITR |
+| [MVCC](/patterns/mvcc/) | etcd | [`kvstore.go`](https://github.com/etcd-io/etcd/blob/main/server/storage/mvcc/kvstore.go#L53-L135) | Multi-version KV store powering Kubernetes config |
+| [Write-Ahead Log](/patterns/write-ahead-log/) | etcd | [`wal.go`](https://github.com/etcd-io/etcd/blob/main/server/storage/wal/wal.go#L72-L95) | Raft consensus WAL for distributed state |
+| [LRU Cache](/patterns/lru-cache/) | Redis | [`evict.c`](https://github.com/redis/redis/blob/unstable/src/evict.c#L55-L83) | Approximated LRU with sampling-based eviction pool |
+| [Trie](/patterns/trie/) | Redis | [`rax.c` / `rax.h`](https://github.com/redis/redis/blob/unstable/src/rax.h#L80-L130) | RAX radix tree for Streams and sorted key ranges |
+| [Skip List](/patterns/skip-list/) | Redis | [`t_zset.c`](https://github.com/redis/redis/blob/unstable/src/t_zset.c#L70-L130) | Sorted set implementation with probabilistic balancing |
+| [Bloom Filter](/patterns/bloom-filter/) | LevelDB | [`bloom.cc`](https://github.com/google/leveldb/blob/main/util/bloom.cc#L17-L80) | Block-level bloom filter to skip unnecessary disk reads |
+| [Skip List](/patterns/skip-list/) | LevelDB | [`skiplist.h`](https://github.com/google/leveldb/blob/main/db/skiplist.h#L40-L90) | Lock-free memtable with atomic next pointers |
+| [Arena Allocator](/patterns/arena-allocator/) | LevelDB | [`arena.cc`](https://github.com/google/leveldb/blob/main/util/arena.cc) | Block-based arena for memtable allocations |
+| [Merge Iterator](/patterns/merge-iterator/) | LevelDB | [`merger.cc`](https://github.com/google/leveldb/blob/main/table/merger.cc#L17-L100) | `MergingIterator` merges sorted iterators (memtable + SSTable levels) into single sorted view |
+| [LSM Tree](/patterns/lsm-tree/) | LevelDB | [`db_impl.cc`](https://github.com/google/leveldb/blob/main/db/db_impl.cc#L1241-L1368) | `DBImpl::Write` — batch writes to WAL, insert into memtable, flush to SST on threshold |
+| [Merge Iterator](/patterns/merge-iterator/) | RocksDB | [`merge_helper.cc`](https://github.com/facebook/rocksdb/blob/main/db/merge_helper.cc#L87-L156) | `TimedFullMerge` combines multiple versions of the same key during compaction |
+| [LSM Tree](/patterns/lsm-tree/) | RocksDB | [`memtable.cc`](https://github.com/facebook/rocksdb/blob/main/db/memtable.cc#L458-L534) | `MemTable::Add` — skip-list backed memtable, flush to L0 SST when full |
+| [Merkle Tree](/patterns/merkle-tree/) | ZFS (OpenZFS) | [`blkptr.c`](https://github.com/openzfs/zfs/blob/master/module/zfs/blkptr.c#L30-L77) | Block pointer checksums form a Merkle tree from data blocks to uberblock for silent corruption detection |
+| [Checkpointing](/patterns/checkpointing/) | PostgreSQL | [`checkpointer.c`](https://github.com/postgres/postgres/blob/master/src/backend/postmaster/checkpointer.c#L218-L360) | `CheckpointerMain` — flush dirty buffers, write checkpoint WAL record, update `pg_control` |
+| [Checkpointing](/patterns/checkpointing/) | Redis | [`rdb.c`](https://github.com/redis/redis/blob/unstable/src/rdb.c#L1414-L1529) | `rdbSaveRio` — fork child process to write point-in-time RDB snapshot without blocking main thread |
 
 ## JVM Ecosystem
 
 | Pattern | Project | Where | What It Does |
 |---------|---------|-------|--------------|
-| [Actor Model](/patterns/actor-model/) | Akka | `Actor.scala` | `trait Actor` — message-driven concurrency for JVM |
-| [Circuit Breaker](/patterns/circuit-breaker/) | Netflix Hystrix | `HystrixCircuitBreaker.java` | Three-state circuit breaker for microservice resilience |
-| [Batch Processing](/patterns/batch-processing/) | Apache Kafka | `RecordAccumulator.java` | Accumulate records into batches per partition |
-| [Work Stealing](/patterns/work-stealing/) | OpenJDK | `ForkJoinPool.java` | `scan` method with randomized work stealing |
-| [LRU Cache](/patterns/lru-cache/) | Guava | `CacheBuilder` | `maximumSize()` with LRU eviction |
-| [Rate Limiter](/patterns/rate-limiter/) | Guava | `RateLimiter` | Smooth bursty / warm-up token bucket |
-| [Consistent Hashing](/patterns/consistent-hashing/) | groupcache | `consistenthash.go` | Hash ring with virtual replicas (by Brad Fitzpatrick) |
+| [Actor Model](/patterns/actor-model/) | Akka | [`Actor.scala`](https://github.com/akka/akka-core/blob/main/akka-actor/src/main/scala/akka/actor/Actor.scala#L476-L547) | `trait Actor` — message-driven concurrency for JVM |
+| [Circuit Breaker](/patterns/circuit-breaker/) | Netflix Hystrix | [`HystrixCircuitBreaker.java`](https://github.com/Netflix/Hystrix/blob/master/hystrix-core/src/main/java/com/netflix/hystrix/HystrixCircuitBreaker.java#L138-L289) | Three-state circuit breaker for microservice resilience |
+| [Batch Processing](/patterns/batch-processing/) | Apache Kafka | [`RecordAccumulator.java`](https://github.com/apache/kafka/blob/trunk/clients/src/main/java/org/apache/kafka/clients/producer/internals/RecordAccumulator.java#L69-L120) | Accumulate records into batches per partition |
+| [Work Stealing](/patterns/work-stealing/) | OpenJDK | [`ForkJoinPool.java`](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/concurrent/ForkJoinPool.java) | `scan` method with randomized work stealing |
+| [LRU Cache](/patterns/lru-cache/) | Guava | [`CacheBuilder`](https://github.com/google/guava/blob/master/guava/src/com/google/common/cache/CacheBuilder.java) | `maximumSize()` with LRU eviction |
+| [Rate Limiter](/patterns/rate-limiter/) | Guava | [`RateLimiter`](https://github.com/google/guava/blob/master/guava/src/com/google/common/util/concurrent/RateLimiter.java) | Smooth bursty / warm-up token bucket |
+| [Consistent Hashing](/patterns/consistent-hashing/) | groupcache | [`consistenthash.go`](https://github.com/golang/groupcache/blob/master/consistenthash/consistenthash.go#L28-L81) | Hash ring with virtual replicas (by Brad Fitzpatrick) |
 
 ## Erlang / BEAM VM
 
 | Pattern | Project | Where | What It Does |
 |---------|---------|-------|--------------|
-| [Actor Model](/patterns/actor-model/) | Erlang/OTP | `erl_process.h` | BEAM VM process struct — lightweight actor with mailbox |
-| [Cooperative Scheduling](/patterns/cooperative-scheduling/) | Erlang/OTP | BEAM scheduler | Reduction-based preemption for millions of processes |
-| [Semaphore](/patterns/semaphore/) | Erlang/OTP | `erl_process_lock.c` | Process locks for safe concurrent access |
+| [Actor Model](/patterns/actor-model/) | Erlang/OTP | [`erl_process.h`](https://github.com/erlang/otp/blob/master/erts/emulator/beam/erl_process.h#L1043-L1205) | BEAM VM process struct — lightweight actor with mailbox |
+| [Cooperative Scheduling](/patterns/cooperative-scheduling/) | Erlang/OTP | [BEAM scheduler](https://github.com/erlang/otp/blob/master/erts/emulator/beam/erl_process.c) | Reduction-based preemption for millions of processes |
+| [Semaphore](/patterns/semaphore/) | Erlang/OTP | [`erl_process_lock.c`](https://github.com/erlang/otp/blob/master/erts/emulator/beam/erl_process_lock.c) | Process locks for safe concurrent access |
 
 ## Browsers & Web
 
 | Pattern | Project | Where | What It Does |
 |---------|---------|-------|--------------|
-| [Bloom Filter](/patterns/bloom-filter/) | Chromium | `selector_filter.h` | CSS selector bloom filter — skip 60-70% of rules |
-| [Bitmask](/patterns/bitmask/) | React | `ReactFiberFlags.js` | Fiber effect flags — `Placement`, `Update`, `Deletion` |
-| [Double Buffering](/patterns/double-buffering/) | React | Fiber architecture | Current tree vs work-in-progress tree swap on commit |
-| [Diff / Patch](/patterns/diff-patch/) | React | `ReactChildFiber.js` | List reconciliation with key-based matching |
+| [Bloom Filter](/patterns/bloom-filter/) | Chromium | [`selector_filter.h`](https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/core/css/selector_filter.h#L149-L175) | CSS selector bloom filter — skip 60-70% of rules |
+| [Bitmask](/patterns/bitmask/) | React | [`ReactFiberFlags.js`](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactFiberFlags.js#L14-L36) | Fiber effect flags — `Placement`, `Update`, `Deletion` |
+| [Double Buffering](/patterns/double-buffering/) | React | [Fiber architecture](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactFiber.js#L327-L355) | Current tree vs work-in-progress tree swap on commit |
+| [Diff / Patch](/patterns/diff-patch/) | React | [`ReactChildFiber.js`](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactChildFiber.js#L1169-L1340) | List reconciliation with key-based matching |
 
 ## Infrastructure & Cloud
 
 | Pattern | Project | Where | What It Does |
 |---------|---------|-------|--------------|
-| [Retry Backoff](/patterns/retry-backoff/) | Kubernetes | `backoff.go` | Pod restart backoff, API server retries |
-| [Retry Backoff](/patterns/retry-backoff/) | gRPC-Go | `internal/backoff/backoff.go` | Exponential connection backoff with jitter |
-| [Dependency Graph](/patterns/dependency-graph/) | Terraform | Resource graph | Parallel resource apply with DAG ordering |
-| [Dependency Graph](/patterns/dependency-graph/) | Bazel | Action graph | Topological execution of build targets |
-| [Consistent Hashing](/patterns/consistent-hashing/) | Nginx | `ngx_http_upstream_hash` | Upstream load balancing with ketama hashing |
+| [Retry Backoff](/patterns/retry-backoff/) | Kubernetes | [`backoff.go`](https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/util/wait/backoff.go#L30-L50) | Pod restart backoff, API server retries |
+| [Retry Backoff](/patterns/retry-backoff/) | gRPC-Go | [`internal/backoff/backoff.go`](https://github.com/grpc/grpc-go/blob/master/internal/backoff/backoff.go#L56-L75) | Exponential connection backoff with jitter |
+| [Dependency Graph](/patterns/dependency-graph/) | Terraform | [Resource graph](https://github.com/hashicorp/terraform) | Parallel resource apply with DAG ordering |
+| [Dependency Graph](/patterns/dependency-graph/) | Bazel | [Action graph](https://github.com/bazelbuild/bazel) | Topological execution of build targets |
+| [Consistent Hashing](/patterns/consistent-hashing/) | Nginx | [`ngx_http_upstream_hash`](https://github.com/nginx/nginx/blob/master/src/http/modules/ngx_http_upstream_hash_module.c) | Upstream load balancing with ketama hashing |
 
 ## Compilers & Language Runtimes
 
 | Pattern | Project | Where | What It Does |
 |---------|---------|-------|--------------|
-| [Visitor](/patterns/visitor/) | LLVM | `InstVisitor.h` | CRTP visitor dispatches on IR instruction opcode for optimization passes |
-| [Visitor](/patterns/visitor/) | Vue.js | `transforms/vIf.ts` | `transformIf` is a `NodeTransform` visitor that walks the template AST |
-| [Vtable](/patterns/vtable/) | CPython | `object.h` | `PyTypeObject` vtable — `tp_repr`, `tp_hash`, `tp_call`, protocol suites |
-| [Interning](/patterns/interning/) | CPython | `unicodeobject.c` | `PyUnicode_InternInPlace` — intern identifier strings for O(1) dict lookups |
-| [Interning](/patterns/interning/) | Rust (rustc) | `symbol.rs` | `Symbol` is a `u32` index into global interner — all identifiers interned |
-| [Tagged Union](/patterns/tagged-union/) | Godot Engine | `variant.h` | `Variant::Type` enum + union — every GDScript value is a `Variant` |
-| [Tagged Union](/patterns/tagged-union/) | PyTorch | `ivalue.h` | `IValue` holds a `Tag` enum + `Payload` union for TorchScript interpreter |
+| [Visitor](/patterns/visitor/) | LLVM | [`InstVisitor.h`](https://github.com/llvm/llvm-project/blob/main/llvm/include/llvm/IR/InstVisitor.h#L45-L107) | CRTP visitor dispatches on IR instruction opcode for optimization passes |
+| [Visitor](/patterns/visitor/) | Vue.js | [`transforms/vIf.ts`](https://github.com/vuejs/core/blob/main/packages/compiler-core/src/transforms/vIf.ts#L35-L60) | `transformIf` is a `NodeTransform` visitor that walks the template AST |
+| [Vtable](/patterns/vtable/) | CPython | [`object.h`](https://github.com/python/cpython/blob/main/Include/cpython/object.h#L250-L340) | `PyTypeObject` vtable — `tp_repr`, `tp_hash`, `tp_call`, protocol suites |
+| [Interning](/patterns/interning/) | CPython | [`unicodeobject.c`](https://github.com/python/cpython/blob/main/Objects/unicodeobject.c#L15575-L15631) | `PyUnicode_InternInPlace` — intern identifier strings for O(1) dict lookups |
+| [Interning](/patterns/interning/) | Rust (rustc) | [`symbol.rs`](https://github.com/rust-lang/rust/blob/master/compiler/rustc_span/src/symbol.rs#L24-L79) | `Symbol` is a `u32` index into global interner — all identifiers interned |
+| [Tagged Union](/patterns/tagged-union/) | Godot Engine | [`variant.h`](https://github.com/godotengine/godot/blob/master/core/variant/variant.h#L78-L120) | `Variant::Type` enum + union — every GDScript value is a `Variant` |
+| [Tagged Union](/patterns/tagged-union/) | PyTorch | [`ivalue.h`](https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/core/ivalue.h#L51-L96) | `IValue` holds a `Tag` enum + `Payload` union for TorchScript interpreter |
 
 ## Further Reading
 
