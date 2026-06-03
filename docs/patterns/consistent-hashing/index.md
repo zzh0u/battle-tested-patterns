@@ -32,6 +32,10 @@ Traditional modular hashing (`hash(key) % n`) remaps almost every key when `n` c
 | Virtual nodes (replicas) | Improve balance — each physical node maps to k positions on the ring |
 | Lookup | O(log n) via binary search on sorted ring |
 
+**Try it yourself** — add keys, then add/remove nodes to see minimal key redistribution:
+
+<ConsistentHashViz />
+
 ## Production Proof
 
 | Project | Source | Usage |

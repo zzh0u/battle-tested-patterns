@@ -23,6 +23,10 @@ stateDiagram-v2
 | OPEN | 调用立即失败（`CircuitOpenError`），计时器运行中 |
 | HALF_OPEN | 允许一次探测调用。成功 → CLOSED，失败 → OPEN |
 
+**动手试试** — 发送成功和失败请求，观察状态机转换过程：
+
+<CircuitBreakerViz />
+
 ## 生产验证
 
 | 项目 | 源码 | 用途 |

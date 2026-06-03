@@ -23,6 +23,10 @@ stateDiagram-v2
 | OPEN | Calls fail immediately (`CircuitOpenError`). Timer running. |
 | HALF_OPEN | Allow one probe call. Success → CLOSED. Failure → OPEN. |
 
+**Try it yourself** — send successes and failures to see the state machine transitions:
+
+<CircuitBreakerViz />
+
 ## Production Proof
 
 | Project | Source | Usage |
