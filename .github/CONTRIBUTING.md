@@ -82,4 +82,4 @@ Look for issues labeled [`good first issue`](https://github.com/Totoro-jam/battl
 
 ## Code of Conduct
 
-Be respectful, constructive, and focused on quality. We value accuracy over speed.
+This project follows the [Contributor Covenant Code of Conduct](../CODE_OF_CONDUCT.md). Be respectful, constructive, and focused on quality. We value accuracy over speed.
