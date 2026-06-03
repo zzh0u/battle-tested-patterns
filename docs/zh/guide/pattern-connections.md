@@ -141,7 +141,8 @@ flowchart TD
     HEAP -->|"buffer pool"| BUF["LRU Cache (shared_buffers)"]
     BUF -->|"clock-sweep eviction"| DISK["Disk pages"]
     MVCC -->|"anti-wraparound"| VACUUM["VACUUM"]
-    VACUUM -->|"skip tables via"| BLOOM["Bloom Filter (visibility map)"]
+    VACUUM -->|"skip all-visible pages"| VMAP["Visibility Map (bitmap)"]
+    HEAP -->|"multi-column filter"| BLOOM["Bloom Index"]
 ```
 
 | 模式 | 在 PostgreSQL 中的位置 | 原因 |
@@ -149,7 +150,7 @@ flowchart TD
 | **MVCC** | `heapam.c` — 每个元组携带 `xmin`/`xmax` 事务 ID | 读不阻塞写。每个事务看到一致的快照，无需加锁。 |
 | **Write-Ahead Log** | `xlog.c` — 所有变更在页面修改前写入 WAL | 崩溃恢复时重放 WAL 重建已提交状态。同时支持复制。 |
 | **LRU Cache** | `bufmgr.c` — `shared_buffers` 使用 clock-sweep 淘汰 | 8KB 页缓存。clock-sweep 以低于真正 LRU 的开销近似 LRU。 |
-| **Bloom Filter** | Bloom 索引访问方法、visibility map 位图 | Bloom 索引用于多列等值查询。visibility map 帮助 VACUUM 跳过全可见页。 |
+| **Bloom Filter** | `contrib/bloom` — bloom 索引访问方法 | 使用基于签名的索引进行多列等值过滤。与 visibility map（VACUUM 使用的简单 per-page bitmap）不同。 |
 
 ## Kafka：通过批处理和流控实现高吞吐
 
