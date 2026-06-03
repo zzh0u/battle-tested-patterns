@@ -34,53 +34,75 @@ features:
     details: See how React, Redis, Go runtime, Linux, PostgreSQL, and Kafka compose multiple patterns in production.
 ---
 
-## Patterns
+## 46 Patterns in 5 Categories
+
+### Data Structures
 
 | Pattern | Key Insight | Source Projects |
 |---------|------------|-----------------|
 | [Bitmask](/patterns/bitmask/) | Pack multiple flags into a single integer | React, Linux, Chromium |
-| [Double Buffering](/patterns/double-buffering/) | Swap between two copies for atomic updates | React Fiber, GPU, PostgreSQL |
-| [Cooperative Scheduling](/patterns/cooperative-scheduling/) | Voluntarily yield control to stay responsive | React, Go Runtime |
-| [Min Heap](/patterns/min-heap/) | O(1) access to the highest-priority item | React Scheduler, Linux CFS, Node.js |
-| [Diff / Patch](/patterns/diff-patch/) | Compute minimal changes between two states | React Reconciler, Git |
-| [Object Pool](/patterns/object-pool/) | Pre-allocate and reuse objects to avoid GC | Go sync.Pool, Godot Engine |
-| [Ring Buffer](/patterns/ring-buffer/) | Fixed-size circular queue, zero allocation | LMAX Disruptor, Linux ftrace |
-| [State Machine](/patterns/state-machine/) | Explicit states + transitions, impossible states unrepresentable | XState, Linux TCP |
-| [Copy-on-Write](/patterns/copy-on-write/) | Share by reference, copy only on mutation | Git objects, Rust Cow |
-| [Observer / Pub-Sub](/patterns/observer/) | Subscribe to events, get notified without coupling | Node EventEmitter, Redux |
-| [Iterator / Lazy Eval](/patterns/iterator/) | Process sequences lazily, zero intermediate allocations | Rust Iterator, Python generators |
-| [Semaphore](/patterns/semaphore/) | Limit concurrent operations with a counter | Linux kernel, Go x/sync |
-| [Batch Processing](/patterns/batch-processing/) | Accumulate ops, execute as a group for throughput | Kafka RecordAccumulator, React batched setState |
-| [Retry with Backoff](/patterns/retry-backoff/) | Retry with exponential delay + jitter | Kubernetes, gRPC |
-| [Flyweight / Interning](/patterns/flyweight/) | Share identical objects, avoid duplicate allocations | Python int cache, V8 |
-| [Bloom Filter](/patterns/bloom-filter/) | Probabilistic set membership — zero false negatives | LevelDB, Chromium Blink |
-| [Circuit Breaker](/patterns/circuit-breaker/) | Stop calling failing services, fail fast | Netflix Hystrix, Sony gobreaker |
-| [Arena Allocator](/patterns/arena-allocator/) | Bump-allocate in a region, free all at once | Rust bumpalo, jemalloc |
-| [Backpressure](/patterns/backpressure/) | Slow producers when consumers can't keep up | Node.js Streams, Reactive Streams |
-| [Write-Ahead Log](/patterns/write-ahead-log/) | Log mutations before applying for crash recovery | etcd, PostgreSQL |
-| [LRU Cache](/patterns/lru-cache/) | Evict least recently used, O(1) get and put | Go groupcache, Linux kernel |
-| [Consistent Hashing](/patterns/consistent-hashing/) | Add/remove nodes remaps only ~1/n keys | Go groupcache, HAProxy |
-| [Trie (Prefix Tree)](/patterns/trie/) | O(k) lookup by key length, shared prefixes share nodes | Linux FIB, Redis rax |
-| [Skip List](/patterns/skip-list/) | Probabilistic O(log n) sorted structure | Redis sorted sets, LevelDB |
-| [Rate Limiter](/patterns/rate-limiter/) | Token bucket controls throughput with burst capacity | Go x/time/rate, Nginx |
-| [Work Stealing](/patterns/work-stealing/) | Idle threads steal tasks from busy threads' queues | Go runtime, Tokio |
-| [MVCC](/patterns/mvcc/) | Timestamped versions let readers never block writers | PostgreSQL, etcd |
-| [Free List](/patterns/free-list/) | Linked list of freed slots for O(1) alloc/free | Go runtime, Linux SLUB |
-| [Dependency Graph](/patterns/dependency-graph/) | DAG + topological sort for valid execution order | Cargo, pnpm |
-| [Actor Model](/patterns/actor-model/) | Private state + mailbox, no shared state, just messages | Akka, Erlang/OTP |
-| [Reference Counting](/patterns/reference-counting/) | Auto-cleanup at zero owners, deterministic lifetime | CPython, Rust Arc |
-| [Logical Clock](/patterns/logical-clock/) | Monotonic counter orders events without wall-clock time | etcd, LevelDB |
-| [Event Loop](/patterns/event-loop/) | Single-threaded I/O multiplexing via epoll/kqueue | libuv, Redis |
-| [Middleware Chain](/patterns/middleware-chain/) | Composable handlers: pre-process, call next, post-process | gRPC, Koa.js |
-| [B+ Tree](/patterns/b-plus-tree/) | High-branching balanced tree, leaf-linked for range scans | PostgreSQL, SQLite |
-| [Tombstone](/patterns/tombstone/) | Mark deleted, reclaim later — deferred deletion | LevelDB, Cassandra |
-| [Registry](/patterns/registry/) | Self-register by name, discover at runtime | TensorFlow, gRPC |
-| [Dirty Flag](/patterns/dirty-flag/) | Mark dirty on mutation, recompute only when needed | Chromium, React |
-| [Tagged Union](/patterns/tagged-union/) | Type tag + union for safe multi-type dispatch | Godot Variant, PyTorch IValue |
-| [Interning](/patterns/interning/) | Deduplicate immutable values, O(1) equality by pointer | Rust compiler, CPython |
-| [Vtable](/patterns/vtable/) | Function pointer struct for manual polymorphism | Linux kernel, CPython |
-| [Visitor](/patterns/visitor/) | Dispatch to type-specific callbacks on tree nodes | LLVM, Vue compiler |
-| [Merkle Tree](/patterns/merkle-tree/) | Hash pairs upward to root for O(log n) integrity proof | Git, ZFS |
+| [Min Heap](/patterns/min-heap/) | O(1) access to the highest-priority item | React Scheduler, Linux CFS |
+| [Ring Buffer](/patterns/ring-buffer/) | Fixed-size circular queue, zero allocation | LMAX Disruptor, Linux |
+| [Trie](/patterns/trie/) | O(k) lookup by key length, shared prefixes | Linux FIB, Redis rax |
+| [Skip List](/patterns/skip-list/) | Probabilistic O(log n) sorted structure | Redis, LevelDB |
+| [Bloom Filter](/patterns/bloom-filter/) | Probabilistic membership — zero false negatives | LevelDB, Chromium |
+| [LRU Cache](/patterns/lru-cache/) | Evict least recently used, O(1) get/put | Go groupcache, Linux |
+| [B+ Tree](/patterns/b-plus-tree/) | Leaf-linked balanced tree for range scans | PostgreSQL, SQLite |
+| [Tagged Union](/patterns/tagged-union/) | Type tag + union for safe dispatch | Godot, PyTorch |
+| [Merkle Tree](/patterns/merkle-tree/) | Hash upward for O(log n) integrity proof | Git, ZFS |
 | [Merge Iterator](/patterns/merge-iterator/) | K-way merge of sorted streams via min-heap | LevelDB, RocksDB |
-| [LSM Tree](/patterns/lsm-tree/) | Buffer writes in memory, flush to sorted files, compact | LevelDB, RocksDB |
-| [Checkpointing](/patterns/checkpointing/) | Snapshot state periodically, recover from checkpoint | PostgreSQL, Redis |
+
+### Concurrency
+
+| Pattern | Key Insight | Source Projects |
+|---------|------------|-----------------|
+| [Semaphore](/patterns/semaphore/) | Limit concurrent operations with a counter | Linux, Go x/sync |
+| [Actor Model](/patterns/actor-model/) | Private state + mailbox, no shared state | Akka, Erlang/OTP |
+| [Work Stealing](/patterns/work-stealing/) | Idle threads steal from busy queues | Go runtime, Tokio |
+| [MVCC](/patterns/mvcc/) | Versioned reads never block writers | PostgreSQL, etcd |
+| [Cooperative Scheduling](/patterns/cooperative-scheduling/) | Yield control to stay responsive | React, Go Runtime |
+| [Double Buffering](/patterns/double-buffering/) | Swap two copies for atomic updates | React Fiber, GPU |
+| [Backpressure](/patterns/backpressure/) | Slow producers when consumers lag | Node.js Streams, Reactive Streams |
+| [Event Loop](/patterns/event-loop/) | Single-threaded I/O multiplexing | libuv, Redis |
+| [Logical Clock](/patterns/logical-clock/) | Order events without wall-clock time | etcd, LevelDB |
+
+### System
+
+| Pattern | Key Insight | Source Projects |
+|---------|------------|-----------------|
+| [Circuit Breaker](/patterns/circuit-breaker/) | Stop calling failing services, fail fast | Netflix Hystrix, gobreaker |
+| [Rate Limiter](/patterns/rate-limiter/) | Token bucket controls throughput | Go x/time/rate, Nginx |
+| [Retry with Backoff](/patterns/retry-backoff/) | Exponential delay + jitter | Kubernetes, gRPC |
+| [Write-Ahead Log](/patterns/write-ahead-log/) | Log before applying for crash recovery | etcd, PostgreSQL |
+| [Batch Processing](/patterns/batch-processing/) | Accumulate ops, execute as group | Kafka, React |
+| [Consistent Hashing](/patterns/consistent-hashing/) | Add/remove nodes remaps only ~1/n keys | Go groupcache, HAProxy |
+| [Dependency Graph](/patterns/dependency-graph/) | DAG + topological sort | Cargo, pnpm |
+| [Middleware Chain](/patterns/middleware-chain/) | Composable pre/post handlers | gRPC, Koa.js |
+| [Registry](/patterns/registry/) | Self-register by name, discover at runtime | TensorFlow, gRPC |
+| [Dirty Flag](/patterns/dirty-flag/) | Recompute only when marked dirty | Chromium, React |
+| [LSM Tree](/patterns/lsm-tree/) | Buffer writes, flush to sorted files | LevelDB, RocksDB |
+| [Checkpointing](/patterns/checkpointing/) | Snapshot state, recover from checkpoint | PostgreSQL, Redis |
+
+### Memory
+
+| Pattern | Key Insight | Source Projects |
+|---------|------------|-----------------|
+| [Object Pool](/patterns/object-pool/) | Pre-allocate and reuse to avoid GC | Go sync.Pool, Godot |
+| [Flyweight](/patterns/flyweight/) | Share identical objects across users | Python int cache, V8 |
+| [Arena Allocator](/patterns/arena-allocator/) | Bump-allocate in region, free all at once | Rust bumpalo, Go |
+| [Free List](/patterns/free-list/) | O(1) alloc/free via linked freed slots | Go runtime, Linux SLUB |
+| [Copy-on-Write](/patterns/copy-on-write/) | Share by reference, copy on mutation | Git, Rust Cow |
+| [Reference Counting](/patterns/reference-counting/) | Auto-cleanup at zero owners | CPython, Rust Arc |
+| [Tombstone](/patterns/tombstone/) | Mark deleted, reclaim later | LevelDB, Cassandra |
+| [Interning](/patterns/interning/) | Deduplicate values, O(1) equality | Rust compiler, CPython |
+
+### Behavioral
+
+| Pattern | Key Insight | Source Projects |
+|---------|------------|-----------------|
+| [State Machine](/patterns/state-machine/) | Explicit states, impossible transitions unrepresentable | XState, Linux TCP |
+| [Observer](/patterns/observer/) | Subscribe to events, decouple producers | Node EventEmitter, Redux |
+| [Iterator](/patterns/iterator/) | Lazy sequences, zero intermediate allocations | Rust Iterator, Python |
+| [Diff / Patch](/patterns/diff-patch/) | Compute minimal changes between states | React Reconciler, Git |
+| [Vtable](/patterns/vtable/) | Function pointer struct for polymorphism | Linux kernel, CPython |
+| [Visitor](/patterns/visitor/) | Dispatch type-specific callbacks on trees | LLVM, Vue compiler |
