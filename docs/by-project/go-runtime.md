@@ -4,14 +4,14 @@ Go's runtime and standard library demonstrate clean, practical pattern implement
 
 | Pattern | Where in Go | What It Does |
 |---------|------------|--------------|
-| [Cooperative Scheduling](/patterns/cooperative-scheduling/) | `runtime/proc.go` | Goroutine scheduling with cooperative preemption points |
-| [Bitmask](/patterns/bitmask/) | `os/types.go` | `FileMode` — Unix permission flags via typed constants with `iota` |
-| [Object Pool](/patterns/object-pool/) | `sync/pool.go` | `sync.Pool` — per-P local pools with lock-free fast path, used in `fmt`, `encoding/json` |
-| [Work Stealing](/patterns/work-stealing/) | `runtime/proc.go` | `stealWork` — goroutine scheduler steals from other P's run queues via `runqsteal`/`runqgrab` |
-| [Free List](/patterns/free-list/) | `runtime/mfixalloc.go` | `fixalloc` — fixed-size free-list allocator with intrusive `mlink` nodes |
-| [LRU Cache](/patterns/lru-cache/) | groupcache `lru/lru.go` | `Cache` struct with doubly linked list + hash map, by Brad Fitzpatrick |
-| [Consistent Hashing](/patterns/consistent-hashing/) | groupcache `consistenthash.go` | Hash ring with virtual nodes for distributed caching |
-| [Rate Limiter](/patterns/rate-limiter/) | `x/time/rate` | Token bucket rate limiter in the extended standard library |
+| [Cooperative Scheduling](/patterns/cooperative-scheduling/) | [`runtime/proc.go`](https://github.com/golang/go/blob/master/src/runtime/proc.go#L4143-L4200) | Goroutine scheduling with cooperative preemption points |
+| [Bitmask](/patterns/bitmask/) | [`os/types.go`](https://github.com/golang/go/blob/master/src/os/types.go#L32-L46) | `FileMode` — Unix permission flags via typed constants with `iota` |
+| [Object Pool](/patterns/object-pool/) | [`sync/pool.go`](https://github.com/golang/go/blob/master/src/sync/pool.go#L52-L97) | `sync.Pool` — per-P local pools with lock-free fast path, used in `fmt`, `encoding/json` |
+| [Work Stealing](/patterns/work-stealing/) | [`runtime/proc.go`](https://github.com/golang/go/blob/master/src/runtime/proc.go#L3836-L3903) | `stealWork` — goroutine scheduler steals from other P's run queues via `runqsteal`/`runqgrab` |
+| [Free List](/patterns/free-list/) | [`runtime/mfixalloc.go`](https://github.com/golang/go/blob/master/src/runtime/mfixalloc.go#L31-L109) | `fixalloc` — fixed-size free-list allocator with intrusive `mlink` nodes |
+| [LRU Cache](/patterns/lru-cache/) | [groupcache `lru/lru.go`](https://github.com/golang/groupcache/blob/master/lru/lru.go#L23-L104) | `Cache` struct with doubly linked list + hash map, by Brad Fitzpatrick |
+| [Consistent Hashing](/patterns/consistent-hashing/) | [groupcache `consistenthash.go`](https://github.com/golang/groupcache/blob/master/consistenthash/consistenthash.go#L28-L81) | Hash ring with virtual nodes for distributed caching |
+| [Rate Limiter](/patterns/rate-limiter/) | [`x/time/rate`](https://github.com/golang/time/blob/master/rate/rate.go#L57-L66) | Token bucket rate limiter in the extended standard library |
 
 ## Further Reading
 

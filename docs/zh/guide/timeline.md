@@ -2,38 +2,32 @@
 
 这些模式横跨 80 多年的计算历史——从最早的存储程序计算机到现代分布式系统。
 
-```mermaid
-timeline
-    title 模式首次出现的时间
-    ~1943 : State Machine (McCulloch & Pitts)
-    ~1945 : Bitmask (von Neumann EDVAC)
-    ~1953 : Double Buffering (IBM mainframes)
-    ~1956 : Batch Processing (GM-NAA I/O)
-    1958 : Free List (McCarthy's LISP)
-         : Cooperative Scheduling (Conway's coroutines)
-    1959 : Trie (de la Briandais)
-    1962 : Dependency Graph / Toposort (Kahn)
-    1964 : Min Heap (Williams' heapsort)
-    1965 : Semaphore (Dijkstra, THE OS)
-    1966 : LRU Cache (Belady, IBM)
-    1970 : Bloom Filter (Burton Bloom)
-    ~1971 : Copy-on-Write (IBM VM/370)
-    1973 : Actor Model (Hewitt, Bishop, Steiger)
-         : Retry with Backoff (Metcalfe's Ethernet)
-    1974 : Diff / Patch (McIlroy, Unix V5)
-         : Backpressure (TCP, Cerf & Kahn)
-    1975 : Iterator (Liskov's CLU)
-    ~1976 : Write-Ahead Log (IBM System R)
-         : Checkpointing (database recovery)
-    1978 : MVCC (David Reed, MIT)
-    1979 : Observer / Pub-Sub (MVC, Xerox PARC)
-    1981 : Work Stealing (Burton & Sleep)
-    ~1986 : Rate Limiter / Token Bucket (Turner)
-    1989 : Skip List (William Pugh)
-    1990 : Flyweight (Calder & Linton)
-    ~1994 : Object Pool (Bonwick's slab allocator)
-    1997 : Consistent Hashing (Karger et al.)
-    2007 : Circuit Breaker (Nygard, "Release It!")
+```text
+  1943 ━━━━ State Machine
+  1945 ━━━━ Bitmask
+  1953 ━━━━ Double Buffering
+  1956 ━━━━ Batch Processing
+  1958 ━━━━ Free List, Cooperative Scheduling
+  1959 ━━━━ Trie
+  1962 ━━━━ Dependency Graph (Kahn's toposort)
+  1964 ━━━━ Min Heap (Williams)
+  1965 ━━━━ Semaphore (Dijkstra)
+  1966 ━━━━ LRU Cache (Belady)
+  1970 ━━━━ Bloom Filter
+  1971 ━━━━ Copy-on-Write
+  1973 ━━━━ Actor Model, Retry with Backoff (Ethernet)
+  1974 ━━━━ Diff/Patch, Backpressure (TCP)
+  1975 ━━━━ Iterator (CLU)
+  1976 ━━━━ Write-Ahead Log, Checkpointing (System R)
+  1978 ━━━━ MVCC (David Reed)
+  1979 ━━━━ Observer / Pub-Sub (MVC)
+  1981 ━━━━ Work Stealing
+  1986 ━━━━ Rate Limiter / Token Bucket
+  1989 ━━━━ Skip List (Pugh)
+  1990 ━━━━ Flyweight
+  1994 ━━━━ Object Pool (slab allocator)
+  1997 ━━━━ Consistent Hashing (Karger)
+  2007 ━━━━ Circuit Breaker (Nygard)
 ```
 
 ## 完整表格
