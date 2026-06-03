@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <text x="100" y="180" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="bold" fill="#e2e8f0">Battle-Tested</text>
+  <text x="100" y="260" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="bold" fill="#818cf8">Patterns</text>
+  <text x="100" y="340" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="#94a3b8">Production-proven code patterns from top open-source projects</text>
+  <line x1="100" y1="380" x2="500" y2="380" stroke="#6366f1" stroke-width="3"/>
+  <text x="100" y="430" font-family="monospace" font-size="22" fill="#fbbf24">React  Linux  Go  Redis  PostgreSQL  Kafka</text>
+  <text x="100" y="475" font-family="monospace" font-size="20" fill="#64748b">30+ patterns  |  4 languages  |  60 exercises  |  100+ challenges</text>
+  <text x="100" y="560" font-family="monospace" font-size="18" fill="#475569">github.com/Totoro-jam/battle-tested-patterns</text>
+</svg>

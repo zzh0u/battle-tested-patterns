@@ -143,7 +143,7 @@ Add `## Challenge Questions` section at the end of the pattern doc:
 - [ ] More Production Uses: use bullet list with verified URLs, not comma-separated text
 - [ ] Chinese translation: section titles in Chinese (`## 更多生产案例` not `## More Production Uses`)
 - [ ] ASCII diagrams: strictly monospaced-aligned, verify in a monospace font
-- [ ] ASCII in ZH docs: CJK chars = 2 display columns; compensate with fewer spaces
+- [ ] ASCII in ZH docs: use ENGLISH labels inside box-drawing diagrams (CJK causes misalignment); only translate text OUTSIDE diagrams
 - [ ] ASCII box borders: │ must be vertically aligned on EVERY line of the same box
 - [ ] Challenge questions: no unescaped `|` in table cells, no `*` for multiplication (use `×`)
 - [ ] Challenge answers: factually verified — don't claim Go is cooperative-only (async preemption since 1.14)
