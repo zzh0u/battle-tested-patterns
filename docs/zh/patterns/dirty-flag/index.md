@@ -247,9 +247,9 @@ impl<T, F: Fn() -> T> DirtyFlag<T, F> {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [observer](/zh/patterns/observer/) | 观察者在状态变更时通知；脏标记将反应延迟到需要时 |
-| [bitmask](/zh/patterns/bitmask/) | 脏标记作为位掩码中的位高效存储 |
-| [dependency-graph](/zh/patterns/dependency-graph/) | 脏传播沿依赖图边标记下游节点 |
+| [观察者 / 发布-订阅 (Observer / Pub-Sub)](/zh/patterns/observer/) | 观察者在状态变更时通知；脏标记将反应延迟到需要时 |
+| [位掩码 (Bitmask)](/zh/patterns/bitmask/) | 脏标记作为位掩码中的位高效存储 |
+| [依赖图 (Dependency Graph)](/zh/patterns/dependency-graph/) | 脏传播沿依赖图边标记下游节点 |
 
 ## 挑战题
 

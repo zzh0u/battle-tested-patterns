@@ -210,9 +210,9 @@ fn create_rect(w: f64, h: f64) -> Shape {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [tagged-union](/zh/patterns/tagged-union/) | 两者都实现多态——虚函数表通过间接调用，标签联合通过 switch |
-| [visitor](/zh/patterns/visitor/) | 访问者按类型分发，通常通过类似虚函数表的函数指针查找 |
-| [middleware-chain](/zh/patterns/middleware-chain/) | 每个中间件处理器是一个函数指针，形成动态虚函数表 |
+| [标签联合体 (Tagged Union / Variant)](/zh/patterns/tagged-union/) | 两者都实现多态——虚函数表通过间接调用，标签联合通过 switch |
+| [访问者 / 树遍历器 (Visitor / Tree Walker)](/zh/patterns/visitor/) | 访问者按类型分发，通常通过类似虚函数表的函数指针查找 |
+| [中间件 / 管道链 (Middleware / Pipeline Chain)](/zh/patterns/middleware-chain/) | 每个中间件处理器是一个函数指针，形成动态虚函数表 |
 
 ## 挑战题
 

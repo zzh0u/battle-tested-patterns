@@ -152,9 +152,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [merge-iterator](/patterns/merge-iterator/) | Merge iterator composes multiple iterators into one sorted output |
-| [visitor](/patterns/visitor/) | Both traverse data structures — iterators yield elements, visitors dispatch callbacks |
-| [middleware-chain](/patterns/middleware-chain/) | Middleware chains iterate through handler sequences |
+| [Merge Iterator (K-Way Merge)](/patterns/merge-iterator/) | Merge iterator composes multiple iterators into one sorted output |
+| [Visitor](/patterns/visitor/) | Both traverse data structures — iterators yield elements, visitors dispatch callbacks |
+| [Middleware](/patterns/middleware-chain/) | Middleware chains iterate through handler sequences |
 
 ## Challenge Questions
 

@@ -241,10 +241,10 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [cooperative-scheduling](/patterns/cooperative-scheduling/) | Event loops require cooperative scheduling — handlers must not block |
-| [observer](/patterns/observer/) | Event loops dispatch events to registered observers/callbacks |
-| [ring-buffer](/patterns/ring-buffer/) | Event queues are typically implemented as ring buffers |
-| [actor-model](/patterns/actor-model/) | Each actor is essentially a single-threaded event loop over its mailbox |
+| [Cooperative Scheduling](/patterns/cooperative-scheduling/) | Event loops require cooperative scheduling — handlers must not block |
+| [Observer](/patterns/observer/) | Event loops dispatch events to registered observers/callbacks |
+| [Ring Buffer (Circular Buffer)](/patterns/ring-buffer/) | Event queues are typically implemented as ring buffers |
+| [Actor Model](/patterns/actor-model/) | Each actor is essentially a single-threaded event loop over its mailbox |
 
 ## Challenge Questions
 

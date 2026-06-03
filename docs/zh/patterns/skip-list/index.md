@@ -279,10 +279,10 @@ impl SkipList {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [lsm-tree](/zh/patterns/lsm-tree/) | LSM 树使用跳表作为内存中的有序缓冲区（memtable） |
-| [b-plus-tree](/zh/patterns/b-plus-tree/) | B+ 树保证 O(log n)；跳表以更简单的代码概率性地实现 |
-| [bloom-filter](/zh/patterns/bloom-filter/) | 两者都是概率性的——布隆过滤器用于成员判定，跳表用于排序 |
-| [free-list](/zh/patterns/free-list/) | 跳表节点需要分配管理；空闲链表为固定大小节点提供 O(1) 分配 |
+| [LSM 树 (Log-Structured Merge Tree)](/zh/patterns/lsm-tree/) | LSM 树使用跳表作为内存中的有序缓冲区（memtable） |
+| [B+ 树 (B+ Tree)](/zh/patterns/b-plus-tree/) | B+ 树保证 O(log n)；跳表以更简单的代码概率性地实现 |
+| [布隆过滤器 (Bloom Filter)](/zh/patterns/bloom-filter/) | 两者都是概率性的——布隆过滤器用于成员判定，跳表用于排序 |
+| [空闲链表 (Free List)](/zh/patterns/free-list/) | 跳表节点需要分配管理；空闲链表为固定大小节点提供 O(1) 分配 |
 
 ## 挑战题
 

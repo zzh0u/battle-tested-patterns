@@ -250,9 +250,9 @@ impl Trie {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [bloom-filter](/zh/patterns/bloom-filter/) | 布隆过滤器在昂贵的 Trie 查找前做预过滤 |
-| [registry](/zh/patterns/registry/) | Trie 可以实现基于前缀路由的注册表 |
-| [skip-list](/zh/patterns/skip-list/) | 另一种有序查找——跳表按值排序，Trie 按键字符排序 |
+| [布隆过滤器 (Bloom Filter)](/zh/patterns/bloom-filter/) | 布隆过滤器在昂贵的 Trie 查找前做预过滤 |
+| [注册表 / 自注册 (Registry)](/zh/patterns/registry/) | Trie 可以实现基于前缀路由的注册表 |
+| [跳表 (Skip List)](/zh/patterns/skip-list/) | 另一种有序查找——跳表按值排序，Trie 按键字符排序 |
 
 ## 挑战题
 

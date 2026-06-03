@@ -127,9 +127,9 @@ pub fn diff<T: PartialEq + Clone>(old: &[T], new: &[T]) -> Vec<Op<T>> {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [copy-on-write](/zh/patterns/copy-on-write/) | 差异/补丁计算变更内容；CoW 将实际复制延迟到需要时 |
-| [merkle-tree](/zh/patterns/merkle-tree/) | Merkle 树识别哪些子树发生了变化，缩小差异比较范围 |
-| [double-buffering](/zh/patterns/double-buffering/) | React 将当前树与正在进行的双缓冲进行差异比较 |
+| [写时复制 (Copy-on-Write)](/zh/patterns/copy-on-write/) | 差异/补丁计算变更内容；CoW 将实际复制延迟到需要时 |
+| [Merkle 树 (Merkle Tree)](/zh/patterns/merkle-tree/) | Merkle 树识别哪些子树发生了变化，缩小差异比较范围 |
+| [双缓冲 (Double Buffering)](/zh/patterns/double-buffering/) | React 将当前树与正在进行的双缓冲进行差异比较 |
 
 ## 挑战题
 

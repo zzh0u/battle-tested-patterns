@@ -214,10 +214,10 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [iterator](/patterns/iterator/) | Both traverse structures — visitors dispatch callbacks, iterators yield elements |
-| [vtable](/patterns/vtable/) | Visitor's dispatch table is conceptually a vtable indexed by node type |
-| [dependency-graph](/patterns/dependency-graph/) | Visitors walk dependency graphs to process nodes in correct order |
-| [tagged-union](/patterns/tagged-union/) | Visitor dispatch matches on tagged union's type tag |
+| [Iterator](/patterns/iterator/) | Both traverse structures — visitors dispatch callbacks, iterators yield elements |
+| [Vtable](/patterns/vtable/) | Visitor's dispatch table is conceptually a vtable indexed by node type |
+| [Dependency Graph](/patterns/dependency-graph/) | Visitors walk dependency graphs to process nodes in correct order |
+| [Tagged Union](/patterns/tagged-union/) | Visitor dispatch matches on tagged union's type tag |
 
 ## Challenge Questions
 

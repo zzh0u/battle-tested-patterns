@@ -210,9 +210,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [actor-model](/patterns/actor-model/) | Actors often use state machines to manage their internal behavior |
-| [circuit-breaker](/patterns/circuit-breaker/) | Circuit breaker is a classic state machine: closed -> open -> half-open |
-| [visitor](/patterns/visitor/) | Visitors can dispatch differently based on state machine's current state |
+| [Actor Model](/patterns/actor-model/) | Actors often use state machines to manage their internal behavior |
+| [Circuit Breaker](/patterns/circuit-breaker/) | Circuit breaker is a classic state machine: closed -> open -> half-open |
+| [Visitor](/patterns/visitor/) | Visitors can dispatch differently based on state machine's current state |
 
 ## Challenge Questions
 

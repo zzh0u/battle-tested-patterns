@@ -187,9 +187,9 @@ impl Interner {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [flyweight](/zh/patterns/flyweight/) | 驻留是享元背后的机制——去重相同的不可变值 |
-| [lru-cache](/zh/patterns/lru-cache/) | 驻留表可以使用 LRU 淘汰来限制内存使用 |
-| [bloom-filter](/zh/patterns/bloom-filter/) | 布隆过滤器可以在昂贵的驻留表查找前做预检查 |
+| [享元 / 驻留 (Flyweight / Interning)](/zh/patterns/flyweight/) | 驻留是享元背后的机制——去重相同的不可变值 |
+| [LRU 缓存 (LRU Cache)](/zh/patterns/lru-cache/) | 驻留表可以使用 LRU 淘汰来限制内存使用 |
+| [布隆过滤器 (Bloom Filter)](/zh/patterns/bloom-filter/) | 布隆过滤器可以在昂贵的驻留表查找前做预检查 |
 
 ## 挑战题
 

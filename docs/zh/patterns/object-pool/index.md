@@ -132,9 +132,9 @@ class ObjectPool:
 
 | 模式 | 关系 |
 |---------|-------------|
-| [free-list](/zh/patterns/free-list/) | 空闲链表管理池内部的槽位分配 |
-| [arena-allocator](/zh/patterns/arena-allocator/) | Arena 分配器为池对象批量分配；两者都避免逐对象 malloc |
-| [semaphore](/zh/patterns/semaphore/) | 池大小充当信号量限制并发对象使用 |
+| [空闲链表 (Free List)](/zh/patterns/free-list/) | 空闲链表管理池内部的槽位分配 |
+| [Arena 分配器 (Arena Allocator)](/zh/patterns/arena-allocator/) | Arena 分配器为池对象批量分配；两者都避免逐对象 malloc |
+| [信号量 / 有界并发 (Semaphore)](/zh/patterns/semaphore/) | 池大小充当信号量限制并发对象使用 |
 
 ## 挑战题
 

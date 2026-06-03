@@ -245,9 +245,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [retry-backoff](/patterns/retry-backoff/) | Circuit breaker prevents retries when the service is known to be down |
-| [state-machine](/patterns/state-machine/) | Circuit breaker is a state machine: closed -> open -> half-open |
-| [rate-limiter](/patterns/rate-limiter/) | Both protect services — rate limiter controls throughput, circuit breaker stops failures |
+| [Retry with Exponential Backoff](/patterns/retry-backoff/) | Circuit breaker prevents retries when the service is known to be down |
+| [State Machine](/patterns/state-machine/) | Circuit breaker is a state machine: closed -> open -> half-open |
+| [Rate Limiter (Token Bucket)](/patterns/rate-limiter/) | Both protect services — rate limiter controls throughput, circuit breaker stops failures |
 
 ## Challenge Questions
 

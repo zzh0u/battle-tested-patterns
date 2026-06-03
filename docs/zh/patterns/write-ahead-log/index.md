@@ -263,10 +263,10 @@ impl WriteAheadLog {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [checkpointing](/zh/patterns/checkpointing/) | 检查点截断 WAL——从检查点恢复 + 重放剩余日志 |
-| [lsm-tree](/zh/patterns/lsm-tree/) | LSM 树使用 WAL 确保 memtable 写入在刷盘前幸存崩溃 |
-| [merkle-tree](/zh/patterns/merkle-tree/) | Merkle 树验证 WAL 在恢复后帮助重建的状态 |
-| [logical-clock](/zh/patterns/logical-clock/) | WAL 条目按逻辑时钟排序以保证顺序 |
+| [检查点 (Checkpointing)](/zh/patterns/checkpointing/) | 检查点截断 WAL——从检查点恢复 + 重放剩余日志 |
+| [LSM 树 (Log-Structured Merge Tree)](/zh/patterns/lsm-tree/) | LSM 树使用 WAL 确保 memtable 写入在刷盘前幸存崩溃 |
+| [Merkle 树 (Merkle Tree)](/zh/patterns/merkle-tree/) | Merkle 树验证 WAL 在恢复后帮助重建的状态 |
+| [逻辑时钟 / Epoch (Logical Clock)](/zh/patterns/logical-clock/) | WAL 条目按逻辑时钟排序以保证顺序 |
 
 ## 挑战题
 

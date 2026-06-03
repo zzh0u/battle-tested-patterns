@@ -188,10 +188,10 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [ring-buffer](/patterns/ring-buffer/) | Bounded ring buffers are a common mechanism for implementing backpressure |
-| [rate-limiter](/patterns/rate-limiter/) | Rate limiting controls intake speed; backpressure signals the producer to slow down |
-| [semaphore](/patterns/semaphore/) | Semaphores can implement backpressure by limiting outstanding work |
-| [batch-processing](/patterns/batch-processing/) | Batching smooths bursty input, complementing backpressure mechanisms |
+| [Ring Buffer (Circular Buffer)](/patterns/ring-buffer/) | Bounded ring buffers are a common mechanism for implementing backpressure |
+| [Rate Limiter (Token Bucket)](/patterns/rate-limiter/) | Rate limiting controls intake speed; backpressure signals the producer to slow down |
+| [Semaphore](/patterns/semaphore/) | Semaphores can implement backpressure by limiting outstanding work |
+| [Batch Processing](/patterns/batch-processing/) | Batching smooths bursty input, complementing backpressure mechanisms |
 
 ## Challenge Questions
 

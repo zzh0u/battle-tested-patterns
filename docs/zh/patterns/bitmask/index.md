@@ -215,9 +215,9 @@ assert not has_flag(editor, DELETE)  # True
 
 | 模式 | 关系 |
 |---------|-------------|
-| [tagged-union](/zh/patterns/tagged-union/) | 两者都将类型信息编码为紧凑的整数表示 |
-| [dirty-flag](/zh/patterns/dirty-flag/) | 脏标记通常作为位掩码中的位来存储 |
-| [double-buffering](/zh/patterns/double-buffering/) | React 在双缓冲树的每个 Fiber 节点上使用位掩码标志追踪工作 |
+| [标签联合体 (Tagged Union / Variant)](/zh/patterns/tagged-union/) | 两者都将类型信息编码为紧凑的整数表示 |
+| [脏标记 (Dirty Flag)](/zh/patterns/dirty-flag/) | 脏标记通常作为位掩码中的位来存储 |
+| [双缓冲 (Double Buffering)](/zh/patterns/double-buffering/) | React 在双缓冲树的每个 Fiber 节点上使用位掩码标志追踪工作 |
 
 ## 挑战题
 

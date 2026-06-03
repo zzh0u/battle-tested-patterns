@@ -206,9 +206,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [mvcc](/patterns/mvcc/) | MVCC uses logical timestamps as version identifiers |
-| [write-ahead-log](/patterns/write-ahead-log/) | WAL entries are ordered by logical clock sequence numbers |
-| [checkpointing](/patterns/checkpointing/) | Checkpoints are taken at specific logical clock positions |
+| [MVCC (Multi-Version Concurrency Control)](/patterns/mvcc/) | MVCC uses logical timestamps as version identifiers |
+| [Write-Ahead Log (WAL)](/patterns/write-ahead-log/) | WAL entries are ordered by logical clock sequence numbers |
+| [Checkpointing](/patterns/checkpointing/) | Checkpoints are taken at specific logical clock positions |
 
 ## Challenge Questions
 

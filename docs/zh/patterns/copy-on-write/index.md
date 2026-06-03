@@ -118,10 +118,10 @@ class Cow:
 
 | 模式 | 关系 |
 |---------|-------------|
-| [double-buffering](/zh/patterns/double-buffering/) | 两者都延迟成本——CoW 在写入时复制，双缓冲准备第二份副本 |
-| [flyweight](/zh/patterns/flyweight/) | 享元共享不可变数据；CoW 共享可变数据直到修改 |
-| [merkle-tree](/zh/patterns/merkle-tree/) | Merkle 树实现高效 CoW——只需重新哈希从变更节点到根的路径 |
-| [reference-counting](/zh/patterns/reference-counting/) | 引用计数追踪 CoW 共享——当引用计数 > 1 且写入时复制 |
+| [双缓冲 (Double Buffering)](/zh/patterns/double-buffering/) | 两者都延迟成本——CoW 在写入时复制，双缓冲准备第二份副本 |
+| [享元 / 驻留 (Flyweight / Interning)](/zh/patterns/flyweight/) | 享元共享不可变数据；CoW 共享可变数据直到修改 |
+| [Merkle 树 (Merkle Tree)](/zh/patterns/merkle-tree/) | Merkle 树实现高效 CoW——只需重新哈希从变更节点到根的路径 |
+| [引用计数 (Reference Counting)](/zh/patterns/reference-counting/) | 引用计数追踪 CoW 共享——当引用计数 > 1 且写入时复制 |
 
 ## 挑战题
 

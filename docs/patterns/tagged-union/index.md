@@ -206,9 +206,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [vtable](/patterns/vtable/) | Both enable runtime polymorphism — tagged unions via switch, vtables via function pointers |
-| [bitmask](/patterns/bitmask/) | Bitmask flags can serve as type tags in lightweight tagged union implementations |
-| [visitor](/patterns/visitor/) | Visitors dispatch on node types, which are often represented as tagged unions |
+| [Vtable](/patterns/vtable/) | Both enable runtime polymorphism — tagged unions via switch, vtables via function pointers |
+| [Bitmask](/patterns/bitmask/) | Bitmask flags can serve as type tags in lightweight tagged union implementations |
+| [Visitor](/patterns/visitor/) | Visitors dispatch on node types, which are often represented as tagged unions |
 
 ## Challenge Questions
 

@@ -281,10 +281,10 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [lsm-tree](/patterns/lsm-tree/) | LSM trees use skip lists as their in-memory sorted buffer (memtable) |
-| [b-plus-tree](/patterns/b-plus-tree/) | B+ trees guarantee O(log n); skip lists achieve it probabilistically with simpler code |
-| [bloom-filter](/patterns/bloom-filter/) | Both are probabilistic — bloom filters for membership, skip lists for ordering |
-| [free-list](/patterns/free-list/) | Skip list nodes need allocation management; free lists provide O(1) alloc for fixed-size nodes |
+| [LSM Tree (Log-Structured Merge Tree)](/patterns/lsm-tree/) | LSM trees use skip lists as their in-memory sorted buffer (memtable) |
+| [B+ Tree](/patterns/b-plus-tree/) | B+ trees guarantee O(log n); skip lists achieve it probabilistically with simpler code |
+| [Bloom Filter](/patterns/bloom-filter/) | Both are probabilistic — bloom filters for membership, skip lists for ordering |
+| [Free List](/patterns/free-list/) | Skip list nodes need allocation management; free lists provide O(1) alloc for fixed-size nodes |
 
 ## Challenge Questions
 

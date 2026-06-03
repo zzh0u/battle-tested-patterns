@@ -278,9 +278,9 @@ impl<T> Drop for Rc<T> {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [copy-on-write](/zh/patterns/copy-on-write/) | 引用计数决定何时需要复制 CoW 值 |
-| [object-pool](/zh/patterns/object-pool/) | 池提供引用计数的替代方案——归还对象而不是释放 |
-| [tombstone](/zh/patterns/tombstone/) | 墓碑延迟清理，类似引用计数延迟释放 |
+| [写时复制 (Copy-on-Write)](/zh/patterns/copy-on-write/) | 引用计数决定何时需要复制 CoW 值 |
+| [对象池 (Object Pool)](/zh/patterns/object-pool/) | 池提供引用计数的替代方案——归还对象而不是释放 |
+| [墓碑 / 延迟删除 (Tombstone)](/zh/patterns/tombstone/) | 墓碑延迟清理，类似引用计数延迟释放 |
 
 ## 挑战题
 

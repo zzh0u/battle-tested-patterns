@@ -200,9 +200,9 @@ impl Pipeline {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [iterator](/zh/patterns/iterator/) | 中间件链像迭代器遍历序列一样遍历处理器 |
-| [observer](/zh/patterns/observer/) | 中间件可以观察和修改流经管道的请求/响应 |
-| [vtable](/zh/patterns/vtable/) | 每个中间件是实现通用接口的函数指针，类似虚函数表条目 |
+| [迭代器 / 惰性求值 (Iterator)](/zh/patterns/iterator/) | 中间件链像迭代器遍历序列一样遍历处理器 |
+| [观察者 / 发布-订阅 (Observer / Pub-Sub)](/zh/patterns/observer/) | 中间件可以观察和修改流经管道的请求/响应 |
+| [虚函数表 / 操作分发 (Vtable / Ops Dispatch)](/zh/patterns/vtable/) | 每个中间件是实现通用接口的函数指针，类似虚函数表条目 |
 
 ## 挑战题
 

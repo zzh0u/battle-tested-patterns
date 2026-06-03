@@ -245,9 +245,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [cooperative-scheduling](/patterns/cooperative-scheduling/) | Work stealing distributes tasks across threads; cooperative scheduling yields within a thread |
-| [object-pool](/patterns/object-pool/) | Worker threads use per-thread object pools to avoid contention |
-| [free-list](/patterns/free-list/) | Per-thread free lists complement work stealing by providing lock-free allocation |
+| [Cooperative Scheduling](/patterns/cooperative-scheduling/) | Work stealing distributes tasks across threads; cooperative scheduling yields within a thread |
+| [Object Pool](/patterns/object-pool/) | Worker threads use per-thread object pools to avoid contention |
+| [Free List](/patterns/free-list/) | Per-thread free lists complement work stealing by providing lock-free allocation |
 
 ## Challenge Questions
 

@@ -239,10 +239,10 @@ impl EventLoop {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [cooperative-scheduling](/zh/patterns/cooperative-scheduling/) | 事件循环要求协作调度——处理器不能阻塞 |
-| [observer](/zh/patterns/observer/) | 事件循环将事件分发给注册的观察者/回调 |
-| [ring-buffer](/zh/patterns/ring-buffer/) | 事件队列通常实现为环形缓冲区 |
-| [actor-model](/zh/patterns/actor-model/) | 每个 Actor 本质上是其信箱上的单线程事件循环 |
+| [协作调度 (Cooperative Scheduling)](/zh/patterns/cooperative-scheduling/) | 事件循环要求协作调度——处理器不能阻塞 |
+| [观察者 / 发布-订阅 (Observer / Pub-Sub)](/zh/patterns/observer/) | 事件循环将事件分发给注册的观察者/回调 |
+| [环形缓冲区 (Ring Buffer)](/zh/patterns/ring-buffer/) | 事件队列通常实现为环形缓冲区 |
+| [Actor 模型](/zh/patterns/actor-model/) | 每个 Actor 本质上是其信箱上的单线程事件循环 |
 
 ## 挑战题
 

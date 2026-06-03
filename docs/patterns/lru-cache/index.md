@@ -207,10 +207,10 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [free-list](/patterns/free-list/) | LRU eviction frees nodes; free lists recycle them without calling the allocator |
-| [flyweight](/patterns/flyweight/) | Both reduce memory — LRU limits cache size, flyweight shares identical objects |
-| [consistent-hashing](/patterns/consistent-hashing/) | Distributed caches use consistent hashing to route keys to the right LRU instance |
-| [tombstone](/patterns/tombstone/) | Tombstones mark deleted cache entries in distributed LRU caches |
+| [Free List](/patterns/free-list/) | LRU eviction frees nodes; free lists recycle them without calling the allocator |
+| [Flyweight](/patterns/flyweight/) | Both reduce memory — LRU limits cache size, flyweight shares identical objects |
+| [Consistent Hashing](/patterns/consistent-hashing/) | Distributed caches use consistent hashing to route keys to the right LRU instance |
+| [Tombstone](/patterns/tombstone/) | Tombstones mark deleted cache entries in distributed LRU caches |
 
 ## Challenge Questions
 

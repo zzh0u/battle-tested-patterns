@@ -186,10 +186,10 @@ impl<T> BoundedQueue<T> {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [ring-buffer](/zh/patterns/ring-buffer/) | 有界环形缓冲区是实现背压的常见机制 |
-| [rate-limiter](/zh/patterns/rate-limiter/) | 限流控制摄入速度；背压信号生产者减速 |
-| [semaphore](/zh/patterns/semaphore/) | 信号量可以通过限制未完成工作来实现背压 |
-| [batch-processing](/zh/patterns/batch-processing/) | 批处理平滑突发输入，补充背压机制 |
+| [环形缓冲区 (Ring Buffer)](/zh/patterns/ring-buffer/) | 有界环形缓冲区是实现背压的常见机制 |
+| [限流器 / 令牌桶 (Rate Limiter)](/zh/patterns/rate-limiter/) | 限流控制摄入速度；背压信号生产者减速 |
+| [信号量 / 有界并发 (Semaphore)](/zh/patterns/semaphore/) | 信号量可以通过限制未完成工作来实现背压 |
+| [批处理 (Batch Processing)](/zh/patterns/batch-processing/) | 批处理平滑突发输入，补充背压机制 |
 
 ## 挑战题
 

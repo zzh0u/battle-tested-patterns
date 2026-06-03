@@ -185,9 +185,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [free-list](/patterns/free-list/) | Free lists recycle individual objects; arenas bulk-free all at once |
-| [object-pool](/patterns/object-pool/) | Object pools pre-allocate; arenas bump-allocate — both reduce malloc overhead |
-| [reference-counting](/patterns/reference-counting/) | Arenas avoid per-object reference counting by freeing everything at scope end |
+| [Free List](/patterns/free-list/) | Free lists recycle individual objects; arenas bulk-free all at once |
+| [Object Pool](/patterns/object-pool/) | Object pools pre-allocate; arenas bump-allocate — both reduce malloc overhead |
+| [Reference Counting](/patterns/reference-counting/) | Arenas avoid per-object reference counting by freeing everything at scope end |
 
 ## Challenge Questions
 

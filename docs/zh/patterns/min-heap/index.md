@@ -174,10 +174,10 @@ func (h *MinHeap) Pop() (int, bool) {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [merge-iterator](/zh/patterns/merge-iterator/) | K 路合并使用最小堆从多个流中选取最小元素 |
-| [cooperative-scheduling](/zh/patterns/cooperative-scheduling/) | React 调度器使用最小堆选择最高优先级任务 |
-| [event-loop](/zh/patterns/event-loop/) | 事件循环中的定时器队列通常使用最小堆实现最早截止时间调度 |
-| [b-plus-tree](/zh/patterns/b-plus-tree/) | 另一种有序结构——B+ 树优化磁盘访问，堆优化优先级访问 |
+| [归并迭代器 (Merge Iterator / K-Way Merge)](/zh/patterns/merge-iterator/) | K 路合并使用最小堆从多个流中选取最小元素 |
+| [协作调度 (Cooperative Scheduling)](/zh/patterns/cooperative-scheduling/) | React 调度器使用最小堆选择最高优先级任务 |
+| [事件循环 / 反应器 (Event Loop / Reactor)](/zh/patterns/event-loop/) | 事件循环中的定时器队列通常使用最小堆实现最早截止时间调度 |
+| [B+ 树 (B+ Tree)](/zh/patterns/b-plus-tree/) | 另一种有序结构——B+ 树优化磁盘访问，堆优化优先级访问 |
 
 ## 挑战题
 

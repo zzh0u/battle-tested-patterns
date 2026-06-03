@@ -255,9 +255,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [middleware-chain](/patterns/middleware-chain/) | Middleware handlers often register themselves into a registry |
-| [dependency-graph](/patterns/dependency-graph/) | Registries can track dependencies between registered components |
-| [consistent-hashing](/patterns/consistent-hashing/) | Service registries feed consistent hashing with available node lists |
+| [Middleware](/patterns/middleware-chain/) | Middleware handlers often register themselves into a registry |
+| [Dependency Graph](/patterns/dependency-graph/) | Registries can track dependencies between registered components |
+| [Consistent Hashing](/patterns/consistent-hashing/) | Service registries feed consistent hashing with available node lists |
 
 ## Challenge Questions
 

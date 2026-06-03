@@ -222,10 +222,10 @@ impl MVCCStore {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [copy-on-write](/zh/patterns/copy-on-write/) | MVCC 在写入时创建新版本，类似写时复制语义 |
-| [logical-clock](/zh/patterns/logical-clock/) | 逻辑时钟提供 MVCC 依赖的版本时间戳 |
-| [tombstone](/zh/patterns/tombstone/) | MVCC 用墓碑标记已删除版本，供后续垃圾回收 |
-| [write-ahead-log](/zh/patterns/write-ahead-log/) | WAL 确保 MVCC 版本变更在崩溃后幸存 |
+| [写时复制 (Copy-on-Write)](/zh/patterns/copy-on-write/) | MVCC 在写入时创建新版本，类似写时复制语义 |
+| [逻辑时钟 / Epoch (Logical Clock)](/zh/patterns/logical-clock/) | 逻辑时钟提供 MVCC 依赖的版本时间戳 |
+| [墓碑 / 延迟删除 (Tombstone)](/zh/patterns/tombstone/) | MVCC 用墓碑标记已删除版本，供后续垃圾回收 |
+| [预写日志 (Write-Ahead Log)](/zh/patterns/write-ahead-log/) | WAL 确保 MVCC 版本变更在崩溃后幸存 |
 
 ## 挑战题
 

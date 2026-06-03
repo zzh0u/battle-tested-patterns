@@ -189,9 +189,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [flyweight](/patterns/flyweight/) | Interning is the mechanism behind flyweight — deduplicate identical immutable values |
-| [lru-cache](/patterns/lru-cache/) | Intern tables can use LRU eviction to bound memory usage |
-| [bloom-filter](/patterns/bloom-filter/) | Bloom filters can pre-check before expensive intern table lookups |
+| [Flyweight](/patterns/flyweight/) | Interning is the mechanism behind flyweight — deduplicate identical immutable values |
+| [LRU Cache](/patterns/lru-cache/) | Intern tables can use LRU eviction to bound memory usage |
+| [Bloom Filter](/patterns/bloom-filter/) | Bloom filters can pre-check before expensive intern table lookups |
 
 ## Challenge Questions
 

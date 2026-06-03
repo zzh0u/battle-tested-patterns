@@ -287,10 +287,10 @@ pub fn merge_k_sorted(streams: &[Vec<i32>]) -> Vec<i32> {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [min-heap](/zh/patterns/min-heap/) | 最小堆是驱动 K 路合并的核心数据结构 |
-| [lsm-tree](/zh/patterns/lsm-tree/) | LSM 压缩使用归并迭代器合并多个有序 SSTable |
-| [iterator](/zh/patterns/iterator/) | 归并迭代器是迭代器模式在多个源上的组合 |
-| [skip-list](/zh/patterns/skip-list/) | 跳表提供归并迭代器消费的有序输入流 |
+| [最小堆 / 优先队列 (Min Heap)](/zh/patterns/min-heap/) | 最小堆是驱动 K 路合并的核心数据结构 |
+| [LSM 树 (Log-Structured Merge Tree)](/zh/patterns/lsm-tree/) | LSM 压缩使用归并迭代器合并多个有序 SSTable |
+| [迭代器 / 惰性求值 (Iterator)](/zh/patterns/iterator/) | 归并迭代器是迭代器模式在多个源上的组合 |
+| [跳表 (Skip List)](/zh/patterns/skip-list/) | 跳表提供归并迭代器消费的有序输入流 |
 
 ## 挑战题
 

@@ -212,10 +212,10 @@ impl ExprVisitor for Evaluator {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [iterator](/zh/patterns/iterator/) | 两者都遍历结构——访问者分发回调，迭代器产出元素 |
-| [vtable](/zh/patterns/vtable/) | 访问者的分发表在概念上是按节点类型索引的虚函数表 |
-| [dependency-graph](/zh/patterns/dependency-graph/) | 访问者遍历依赖图以正确顺序处理节点 |
-| [tagged-union](/zh/patterns/tagged-union/) | 访问者分发匹配标签联合的类型标签 |
+| [迭代器 / 惰性求值 (Iterator)](/zh/patterns/iterator/) | 两者都遍历结构——访问者分发回调，迭代器产出元素 |
+| [虚函数表 / 操作分发 (Vtable / Ops Dispatch)](/zh/patterns/vtable/) | 访问者的分发表在概念上是按节点类型索引的虚函数表 |
+| [依赖图 (Dependency Graph)](/zh/patterns/dependency-graph/) | 访问者遍历依赖图以正确顺序处理节点 |
+| [标签联合体 (Tagged Union / Variant)](/zh/patterns/tagged-union/) | 访问者分发匹配标签联合的类型标签 |
 
 ## 挑战题
 

@@ -217,10 +217,10 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [backpressure](/patterns/backpressure/) | Bounded ring buffers naturally create backpressure when full |
-| [event-loop](/patterns/event-loop/) | Event loops use ring buffers for I/O event queues |
-| [double-buffering](/patterns/double-buffering/) | Both avoid allocation — ring buffers reuse slots, double buffering swaps pointers |
-| [batch-processing](/patterns/batch-processing/) | Ring buffers accumulate events for batch consumption |
+| [Backpressure](/patterns/backpressure/) | Bounded ring buffers naturally create backpressure when full |
+| [Event Loop](/patterns/event-loop/) | Event loops use ring buffers for I/O event queues |
+| [Double Buffering](/patterns/double-buffering/) | Both avoid allocation — ring buffers reuse slots, double buffering swaps pointers |
+| [Batch Processing](/patterns/batch-processing/) | Ring buffers accumulate events for batch consumption |
 
 ## Challenge Questions
 

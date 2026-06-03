@@ -191,9 +191,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [event-loop](/patterns/event-loop/) | Event loops dispatch events to observers registered for specific event types |
-| [dirty-flag](/patterns/dirty-flag/) | Observer triggers notification; dirty flag defers the expensive reaction |
-| [middleware-chain](/patterns/middleware-chain/) | Middleware observes and transforms data flowing through a pipeline |
+| [Event Loop](/patterns/event-loop/) | Event loops dispatch events to observers registered for specific event types |
+| [Dirty Flag](/patterns/dirty-flag/) | Observer triggers notification; dirty flag defers the expensive reaction |
+| [Middleware](/patterns/middleware-chain/) | Middleware observes and transforms data flowing through a pipeline |
 
 ## Challenge Questions
 

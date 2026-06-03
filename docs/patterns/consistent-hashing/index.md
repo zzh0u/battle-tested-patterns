@@ -247,9 +247,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [registry](/patterns/registry/) | Registry discovers services; consistent hashing routes to them |
-| [lru-cache](/patterns/lru-cache/) | Distributed LRU caches use consistent hashing to route keys to the right node |
-| [rate-limiter](/patterns/rate-limiter/) | Per-node rate limiting in consistent hashing clusters |
+| [Registry](/patterns/registry/) | Registry discovers services; consistent hashing routes to them |
+| [LRU Cache](/patterns/lru-cache/) | Distributed LRU caches use consistent hashing to route keys to the right node |
+| [Rate Limiter (Token Bucket)](/patterns/rate-limiter/) | Per-node rate limiting in consistent hashing clusters |
 
 ## Challenge Questions
 

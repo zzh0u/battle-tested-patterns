@@ -202,9 +202,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [semaphore](/patterns/semaphore/) | Semaphore limits concurrency; rate limiter limits throughput over time |
-| [backpressure](/patterns/backpressure/) | Rate limiting is a form of backpressure applied at system boundaries |
-| [circuit-breaker](/patterns/circuit-breaker/) | Circuit breaker stops all traffic on failure; rate limiter controls healthy traffic volume |
+| [Semaphore](/patterns/semaphore/) | Semaphore limits concurrency; rate limiter limits throughput over time |
+| [Backpressure](/patterns/backpressure/) | Rate limiting is a form of backpressure applied at system boundaries |
+| [Circuit Breaker](/patterns/circuit-breaker/) | Circuit breaker stops all traffic on failure; rate limiter controls healthy traffic volume |
 
 ## Challenge Questions
 

@@ -395,10 +395,10 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [copy-on-write](/patterns/copy-on-write/) | Merkle trees enable efficient copy-on-write — only rehash the changed path |
-| [write-ahead-log](/patterns/write-ahead-log/) | WAL records changes; Merkle trees verify the resulting state is consistent |
-| [checkpointing](/patterns/checkpointing/) | Merkle roots serve as integrity proofs for checkpoint snapshots |
-| [b-plus-tree](/patterns/b-plus-tree/) | Both are tree structures — Merkle for verification, B+ for ordered access |
+| [Copy-on-Write (CoW)](/patterns/copy-on-write/) | Merkle trees enable efficient copy-on-write — only rehash the changed path |
+| [Write-Ahead Log (WAL)](/patterns/write-ahead-log/) | WAL records changes; Merkle trees verify the resulting state is consistent |
+| [Checkpointing](/patterns/checkpointing/) | Merkle roots serve as integrity proofs for checkpoint snapshots |
+| [B+ Tree](/patterns/b-plus-tree/) | Both are tree structures — Merkle for verification, B+ for ordered access |
 
 ## Challenge Questions
 

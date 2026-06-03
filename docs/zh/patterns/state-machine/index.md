@@ -116,9 +116,9 @@ light.send("TIMER")  # "yellow"
 
 | 模式 | 关系 |
 |---------|-------------|
-| [actor-model](/zh/patterns/actor-model/) | Actor 通常使用状态机管理其内部行为 |
-| [circuit-breaker](/zh/patterns/circuit-breaker/) | 熔断器是经典的状态机：关闭 -> 打开 -> 半开 |
-| [visitor](/zh/patterns/visitor/) | 访问者可以根据状态机的当前状态进行不同的分发 |
+| [Actor 模型](/zh/patterns/actor-model/) | Actor 通常使用状态机管理其内部行为 |
+| [熔断器 (Circuit Breaker)](/zh/patterns/circuit-breaker/) | 熔断器是经典的状态机：关闭 -> 打开 -> 半开 |
+| [访问者 / 树遍历器 (Visitor / Tree Walker)](/zh/patterns/visitor/) | 访问者可以根据状态机的当前状态进行不同的分发 |
 
 ## 挑战题
 

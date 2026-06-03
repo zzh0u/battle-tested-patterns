@@ -172,9 +172,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [rate-limiter](/patterns/rate-limiter/) | Rate limiters control throughput over time; semaphores control concurrent access count |
-| [backpressure](/patterns/backpressure/) | Semaphores implement backpressure by blocking when the limit is reached |
-| [object-pool](/patterns/object-pool/) | Pool size is effectively a semaphore — acquire an object, release when done |
+| [Rate Limiter (Token Bucket)](/patterns/rate-limiter/) | Rate limiters control throughput over time; semaphores control concurrent access count |
+| [Backpressure](/patterns/backpressure/) | Semaphores implement backpressure by blocking when the limit is reached |
+| [Object Pool](/patterns/object-pool/) | Pool size is effectively a semaphore — acquire an object, release when done |
 
 ## Challenge Questions
 

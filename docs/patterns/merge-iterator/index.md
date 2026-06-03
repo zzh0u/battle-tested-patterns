@@ -289,10 +289,10 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [min-heap](/patterns/min-heap/) | The min-heap is the core data structure powering K-way merge |
-| [lsm-tree](/patterns/lsm-tree/) | LSM compaction merges multiple sorted SSTables using merge iterators |
-| [iterator](/patterns/iterator/) | Merge iterator is a composition of the iterator pattern across multiple sources |
-| [skip-list](/patterns/skip-list/) | Skip lists provide the sorted input streams that merge iterators consume |
+| [Min Heap](/patterns/min-heap/) | The min-heap is the core data structure powering K-way merge |
+| [LSM Tree (Log-Structured Merge Tree)](/patterns/lsm-tree/) | LSM compaction merges multiple sorted SSTables using merge iterators |
+| [Iterator](/patterns/iterator/) | Merge iterator is a composition of the iterator pattern across multiple sources |
+| [Skip List](/patterns/skip-list/) | Skip lists provide the sorted input streams that merge iterators consume |
 
 ## Challenge Questions
 

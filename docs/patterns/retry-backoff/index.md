@@ -185,9 +185,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [circuit-breaker](/patterns/circuit-breaker/) | Circuit breaker tells you when to stop retrying entirely |
-| [batch-processing](/patterns/batch-processing/) | Failed batch items can be retried with backoff independently |
-| [rate-limiter](/patterns/rate-limiter/) | Jittered backoff prevents retry storms, similar to rate limiting's goal |
+| [Circuit Breaker](/patterns/circuit-breaker/) | Circuit breaker tells you when to stop retrying entirely |
+| [Batch Processing](/patterns/batch-processing/) | Failed batch items can be retried with backoff independently |
+| [Rate Limiter (Token Bucket)](/patterns/rate-limiter/) | Jittered backoff prevents retry storms, similar to rate limiting's goal |
 
 ## Challenge Questions
 

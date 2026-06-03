@@ -127,10 +127,10 @@ class RingBuffer:
 
 | 模式 | 关系 |
 |---------|-------------|
-| [backpressure](/zh/patterns/backpressure/) | 有界环形缓冲区满时自然产生背压 |
-| [event-loop](/zh/patterns/event-loop/) | 事件循环使用环形缓冲区作为 I/O 事件队列 |
-| [double-buffering](/zh/patterns/double-buffering/) | 两者都避免分配——环形缓冲区复用槽位，双缓冲交换指针 |
-| [batch-processing](/zh/patterns/batch-processing/) | 环形缓冲区累积事件供批量消费 |
+| [背压 / 流控 (Backpressure)](/zh/patterns/backpressure/) | 有界环形缓冲区满时自然产生背压 |
+| [事件循环 / 反应器 (Event Loop / Reactor)](/zh/patterns/event-loop/) | 事件循环使用环形缓冲区作为 I/O 事件队列 |
+| [双缓冲 (Double Buffering)](/zh/patterns/double-buffering/) | 两者都避免分配——环形缓冲区复用槽位，双缓冲交换指针 |
+| [批处理 (Batch Processing)](/zh/patterns/batch-processing/) | 环形缓冲区累积事件供批量消费 |
 
 ## 挑战题
 

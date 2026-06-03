@@ -520,10 +520,10 @@ impl BPlusTree {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [skip-list](/zh/patterns/skip-list/) | 更简单的概率性替代方案，具有相当的 O(log n) 性能 |
-| [lsm-tree](/zh/patterns/lsm-tree/) | LSM 树缓冲写入以提高速度；B+ 树通过平衡结构优化读取 |
-| [merkle-tree](/zh/patterns/merkle-tree/) | 两者都是树结构——Merkle 用于完整性验证，B+ 用于有序存储 |
-| [merge-iterator](/zh/patterns/merge-iterator/) | B+ 树范围扫描使用类似归并迭代器的迭代模式 |
+| [跳表 (Skip List)](/zh/patterns/skip-list/) | 更简单的概率性替代方案，具有相当的 O(log n) 性能 |
+| [LSM 树 (Log-Structured Merge Tree)](/zh/patterns/lsm-tree/) | LSM 树缓冲写入以提高速度；B+ 树通过平衡结构优化读取 |
+| [Merkle 树 (Merkle Tree)](/zh/patterns/merkle-tree/) | 两者都是树结构——Merkle 用于完整性验证，B+ 用于有序存储 |
+| [归并迭代器 (Merge Iterator / K-Way Merge)](/zh/patterns/merge-iterator/) | B+ 树范围扫描使用类似归并迭代器的迭代模式 |
 
 ## 挑战题
 

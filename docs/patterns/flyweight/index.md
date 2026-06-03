@@ -183,9 +183,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [interning](/patterns/interning/) | Interning is the mechanism that implements flyweight — deduplicate identical values |
-| [copy-on-write](/patterns/copy-on-write/) | Both share data — flyweight shares immutable objects, CoW shares until mutation |
-| [lru-cache](/patterns/lru-cache/) | LRU caches can store flyweight instances, evicting least-used shared objects |
+| [Interning](/patterns/interning/) | Interning is the mechanism that implements flyweight — deduplicate identical values |
+| [Copy-on-Write (CoW)](/patterns/copy-on-write/) | Both share data — flyweight shares immutable objects, CoW shares until mutation |
+| [LRU Cache](/patterns/lru-cache/) | LRU caches can store flyweight instances, evicting least-used shared objects |
 
 ## Challenge Questions
 

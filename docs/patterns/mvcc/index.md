@@ -224,10 +224,10 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [copy-on-write](/patterns/copy-on-write/) | MVCC creates new versions on write, similar to copy-on-write semantics |
-| [logical-clock](/patterns/logical-clock/) | Logical clocks provide the version timestamps that MVCC depends on |
-| [tombstone](/patterns/tombstone/) | MVCC marks deleted versions with tombstones for later garbage collection |
-| [write-ahead-log](/patterns/write-ahead-log/) | WAL ensures MVCC version changes survive crashes |
+| [Copy-on-Write (CoW)](/patterns/copy-on-write/) | MVCC creates new versions on write, similar to copy-on-write semantics |
+| [Logical Clock](/patterns/logical-clock/) | Logical clocks provide the version timestamps that MVCC depends on |
+| [Tombstone](/patterns/tombstone/) | MVCC marks deleted versions with tombstones for later garbage collection |
+| [Write-Ahead Log (WAL)](/patterns/write-ahead-log/) | WAL ensures MVCC version changes survive crashes |
 
 ## Challenge Questions
 

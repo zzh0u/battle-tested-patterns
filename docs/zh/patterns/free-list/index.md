@@ -216,9 +216,9 @@ impl FreeList {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [arena-allocator](/zh/patterns/arena-allocator/) | Arena 批量释放；空闲链表回收单个槽位实现 O(1) 复用 |
-| [object-pool](/zh/patterns/object-pool/) | 对象池内部使用空闲链表追踪可用对象 |
-| [ring-buffer](/zh/patterns/ring-buffer/) | 两者都提供 O(1) 槽位管理——环形缓冲区通过模索引，空闲链表通过链表 |
+| [Arena 分配器 (Arena Allocator)](/zh/patterns/arena-allocator/) | Arena 批量释放；空闲链表回收单个槽位实现 O(1) 复用 |
+| [对象池 (Object Pool)](/zh/patterns/object-pool/) | 对象池内部使用空闲链表追踪可用对象 |
+| [环形缓冲区 (Ring Buffer)](/zh/patterns/ring-buffer/) | 两者都提供 O(1) 槽位管理——环形缓冲区通过模索引，空闲链表通过链表 |
 
 ## 挑战题
 

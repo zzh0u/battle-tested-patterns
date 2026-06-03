@@ -112,9 +112,9 @@ class BatchProcessor:
 
 | 模式 | 关系 |
 |---------|-------------|
-| [ring-buffer](/zh/patterns/ring-buffer/) | 环形缓冲区累积项目供批量消费 |
-| [backpressure](/zh/patterns/backpressure/) | 批处理平滑突发输入，与背压机制协同工作 |
-| [retry-backoff](/zh/patterns/retry-backoff/) | 单个批处理项在失败时可以进行指数退避重试 |
+| [环形缓冲区 (Ring Buffer)](/zh/patterns/ring-buffer/) | 环形缓冲区累积项目供批量消费 |
+| [背压 / 流控 (Backpressure)](/zh/patterns/backpressure/) | 批处理平滑突发输入，与背压机制协同工作 |
+| [指数退避重试 (Retry with Backoff)](/zh/patterns/retry-backoff/) | 单个批处理项在失败时可以进行指数退避重试 |
 
 ## 挑战题
 

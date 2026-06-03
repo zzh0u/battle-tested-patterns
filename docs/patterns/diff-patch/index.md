@@ -205,9 +205,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [copy-on-write](/patterns/copy-on-write/) | Diff/patch computes what changed; CoW defers the actual copying until needed |
-| [merkle-tree](/patterns/merkle-tree/) | Merkle trees identify which subtrees changed, narrowing where to diff |
-| [double-buffering](/patterns/double-buffering/) | React diffs the current tree against the work-in-progress double buffer |
+| [Copy-on-Write (CoW)](/patterns/copy-on-write/) | Diff/patch computes what changed; CoW defers the actual copying until needed |
+| [Merkle Tree](/patterns/merkle-tree/) | Merkle trees identify which subtrees changed, narrowing where to diff |
+| [Double Buffering](/patterns/double-buffering/) | React diffs the current tree against the work-in-progress double buffer |
 
 ## Challenge Questions
 

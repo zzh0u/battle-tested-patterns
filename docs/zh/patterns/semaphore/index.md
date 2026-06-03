@@ -95,9 +95,9 @@ async def limited_work():
 
 | 模式 | 关系 |
 |---------|-------------|
-| [rate-limiter](/zh/patterns/rate-limiter/) | 限流器控制时间维度的吞吐量；信号量控制并发访问数量 |
-| [backpressure](/zh/patterns/backpressure/) | 信号量通过在达到上限时阻塞来实现背压 |
-| [object-pool](/zh/patterns/object-pool/) | 池大小本质上是一个信号量——获取对象，完成后释放 |
+| [限流器 / 令牌桶 (Rate Limiter)](/zh/patterns/rate-limiter/) | 限流器控制时间维度的吞吐量；信号量控制并发访问数量 |
+| [背压 / 流控 (Backpressure)](/zh/patterns/backpressure/) | 信号量通过在达到上限时阻塞来实现背压 |
+| [对象池 (Object Pool)](/zh/patterns/object-pool/) | 池大小本质上是一个信号量——获取对象，完成后释放 |
 
 ## 挑战题
 

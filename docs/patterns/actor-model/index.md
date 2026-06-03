@@ -199,9 +199,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [observer](/patterns/observer/) | Actors communicate via messages, similar to observer's publish/subscribe pattern |
-| [event-loop](/patterns/event-loop/) | Each actor processes its mailbox sequentially, like a single-threaded event loop |
-| [state-machine](/patterns/state-machine/) | Actor behavior often follows a state machine pattern for its internal logic |
+| [Observer](/patterns/observer/) | Actors communicate via messages, similar to observer's publish/subscribe pattern |
+| [Event Loop](/patterns/event-loop/) | Each actor processes its mailbox sequentially, like a single-threaded event loop |
+| [State Machine](/patterns/state-machine/) | Actor behavior often follows a state machine pattern for its internal logic |
 
 ## Challenge Questions
 

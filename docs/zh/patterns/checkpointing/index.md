@@ -412,9 +412,9 @@ impl CheckpointableStore {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [write-ahead-log](/zh/patterns/write-ahead-log/) | 检查点截断 WAL——恢复只从最新检查点重放 |
-| [copy-on-write](/zh/patterns/copy-on-write/) | 写时复制在不停止写入的情况下实现一致快照 |
-| [logical-clock](/zh/patterns/logical-clock/) | 检查点与逻辑时钟位置关联以保证一致性 |
+| [预写日志 (Write-Ahead Log)](/zh/patterns/write-ahead-log/) | 检查点截断 WAL——恢复只从最新检查点重放 |
+| [写时复制 (Copy-on-Write)](/zh/patterns/copy-on-write/) | 写时复制在不停止写入的情况下实现一致快照 |
+| [逻辑时钟 / Epoch (Logical Clock)](/zh/patterns/logical-clock/) | 检查点与逻辑时钟位置关联以保证一致性 |
 
 ## 挑战题
 

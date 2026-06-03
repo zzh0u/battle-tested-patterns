@@ -197,9 +197,9 @@ impl<S> Actor<S> {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [observer](/zh/patterns/observer/) | Actor 通过消息通信，类似观察者的发布/订阅模式 |
-| [event-loop](/zh/patterns/event-loop/) | 每个 Actor 按顺序处理其信箱，类似单线程事件循环 |
-| [state-machine](/zh/patterns/state-machine/) | Actor 行为通常遵循状态机模式管理其内部逻辑 |
+| [观察者 / 发布-订阅 (Observer / Pub-Sub)](/zh/patterns/observer/) | Actor 通过消息通信，类似观察者的发布/订阅模式 |
+| [事件循环 / 反应器 (Event Loop / Reactor)](/zh/patterns/event-loop/) | 每个 Actor 按顺序处理其信箱，类似单线程事件循环 |
+| [状态机 (State Machine)](/zh/patterns/state-machine/) | Actor 行为通常遵循状态机模式管理其内部逻辑 |
 
 ## 挑战题
 

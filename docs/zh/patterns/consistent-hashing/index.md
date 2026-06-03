@@ -245,9 +245,9 @@ impl HashRing {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [registry](/zh/patterns/registry/) | 注册表发现服务；一致性哈希路由到它们 |
-| [lru-cache](/zh/patterns/lru-cache/) | 分布式 LRU 缓存使用一致性哈希将键路由到正确的节点 |
-| [rate-limiter](/zh/patterns/rate-limiter/) | 一致性哈希集群中的节点级限流 |
+| [注册表 / 自注册 (Registry)](/zh/patterns/registry/) | 注册表发现服务；一致性哈希路由到它们 |
+| [LRU 缓存 (LRU Cache)](/zh/patterns/lru-cache/) | 分布式 LRU 缓存使用一致性哈希将键路由到正确的节点 |
+| [限流器 / 令牌桶 (Rate Limiter)](/zh/patterns/rate-limiter/) | 一致性哈希集群中的节点级限流 |
 
 ## 挑战题
 

@@ -224,9 +224,9 @@ Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...
 
 | Pattern | Relationship |
 |---------|-------------|
-| [tagged-union](/patterns/tagged-union/) | Both encode type information in compact integer representations |
-| [dirty-flag](/patterns/dirty-flag/) | Dirty flags are often stored as bitmask bits |
-| [double-buffering](/patterns/double-buffering/) | React uses bitmask flags on each Fiber node to track work in its double-buffered tree |
+| [Tagged Union](/patterns/tagged-union/) | Both encode type information in compact integer representations |
+| [Dirty Flag](/patterns/dirty-flag/) | Dirty flags are often stored as bitmask bits |
+| [Double Buffering](/patterns/double-buffering/) | React uses bitmask flags on each Fiber node to track work in its double-buffered tree |
 
 ## Challenge Questions
 

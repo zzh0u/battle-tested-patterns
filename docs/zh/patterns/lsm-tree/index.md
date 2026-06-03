@@ -575,11 +575,11 @@ impl LSMTree {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [skip-list](/zh/patterns/skip-list/) | 跳表充当 LSM 树中的内存有序缓冲区（memtable） |
-| [bloom-filter](/zh/patterns/bloom-filter/) | 每个 SSTable 上的布隆过滤器避免查找时不必要的磁盘读取 |
-| [merge-iterator](/zh/patterns/merge-iterator/) | 压缩使用归并迭代器合并多个有序 SSTable |
-| [write-ahead-log](/zh/patterns/write-ahead-log/) | WAL 确保 memtable 写入在刷盘到 SSTable 前幸存崩溃 |
-| [tombstone](/zh/patterns/tombstone/) | LSM 树使用墓碑标记删除，在压缩时清理 |
+| [跳表 (Skip List)](/zh/patterns/skip-list/) | 跳表充当 LSM 树中的内存有序缓冲区（memtable） |
+| [布隆过滤器 (Bloom Filter)](/zh/patterns/bloom-filter/) | 每个 SSTable 上的布隆过滤器避免查找时不必要的磁盘读取 |
+| [归并迭代器 (Merge Iterator / K-Way Merge)](/zh/patterns/merge-iterator/) | 压缩使用归并迭代器合并多个有序 SSTable |
+| [预写日志 (Write-Ahead Log)](/zh/patterns/write-ahead-log/) | WAL 确保 memtable 写入在刷盘到 SSTable 前幸存崩溃 |
+| [墓碑 / 延迟删除 (Tombstone)](/zh/patterns/tombstone/) | LSM 树使用墓碑标记删除，在压缩时清理 |
 
 ## 挑战题
 

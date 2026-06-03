@@ -221,9 +221,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [lsm-tree](/patterns/lsm-tree/) | LSM trees attach bloom filters to each SSTable to avoid unnecessary disk reads |
-| [trie](/patterns/trie/) | Bloom filter pre-screens before expensive trie traversal |
-| [lru-cache](/patterns/lru-cache/) | Both speed up lookups — bloom filters eliminate negatives, LRU caches store positives |
+| [LSM Tree (Log-Structured Merge Tree)](/patterns/lsm-tree/) | LSM trees attach bloom filters to each SSTable to avoid unnecessary disk reads |
+| [Trie (Prefix Tree)](/patterns/trie/) | Bloom filter pre-screens before expensive trie traversal |
+| [LRU Cache](/patterns/lru-cache/) | Both speed up lookups — bloom filters eliminate negatives, LRU caches store positives |
 
 ## Challenge Questions
 

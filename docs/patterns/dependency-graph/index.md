@@ -292,9 +292,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [visitor](/patterns/visitor/) | Tree traversal over dependency graphs dispatches to type-specific handlers |
-| [iterator](/patterns/iterator/) | Topological iteration produces a lazy sequence of nodes in dependency order |
-| [dirty-flag](/patterns/dirty-flag/) | Dirty propagation follows dependency edges to mark downstream nodes for recomputation |
+| [Visitor](/patterns/visitor/) | Tree traversal over dependency graphs dispatches to type-specific handlers |
+| [Iterator](/patterns/iterator/) | Topological iteration produces a lazy sequence of nodes in dependency order |
+| [Dirty Flag](/patterns/dirty-flag/) | Dirty propagation follows dependency edges to mark downstream nodes for recomputation |
 
 ## Challenge Questions
 

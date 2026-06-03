@@ -143,9 +143,9 @@ func (db *DoubleBuffer[T]) Swap() {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [copy-on-write](/zh/patterns/copy-on-write/) | 两者都延迟变更成本——双缓冲交换整份副本，CoW 在写入时复制 |
-| [ring-buffer](/zh/patterns/ring-buffer/) | 环形缓冲区可视为双缓冲的多槽位泛化 |
-| [dirty-flag](/zh/patterns/dirty-flag/) | 脏标记追踪哪个缓冲区已变更并需要交换 |
+| [写时复制 (Copy-on-Write)](/zh/patterns/copy-on-write/) | 两者都延迟变更成本——双缓冲交换整份副本，CoW 在写入时复制 |
+| [环形缓冲区 (Ring Buffer)](/zh/patterns/ring-buffer/) | 环形缓冲区可视为双缓冲的多槽位泛化 |
+| [脏标记 (Dirty Flag)](/zh/patterns/dirty-flag/) | 脏标记追踪哪个缓冲区已变更并需要交换 |
 
 ## 挑战题
 

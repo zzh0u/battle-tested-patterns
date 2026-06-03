@@ -577,11 +577,11 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [skip-list](/patterns/skip-list/) | Skip lists serve as the in-memory sorted buffer (memtable) in LSM trees |
-| [bloom-filter](/patterns/bloom-filter/) | Bloom filters on each SSTable avoid unnecessary disk reads during lookups |
-| [merge-iterator](/patterns/merge-iterator/) | Compaction merges multiple sorted SSTables using merge iterators |
-| [write-ahead-log](/patterns/write-ahead-log/) | WAL ensures memtable writes survive crashes before flushing to SSTables |
-| [tombstone](/patterns/tombstone/) | LSM trees use tombstones to mark deletions that are cleaned up during compaction |
+| [Skip List](/patterns/skip-list/) | Skip lists serve as the in-memory sorted buffer (memtable) in LSM trees |
+| [Bloom Filter](/patterns/bloom-filter/) | Bloom filters on each SSTable avoid unnecessary disk reads during lookups |
+| [Merge Iterator (K-Way Merge)](/patterns/merge-iterator/) | Compaction merges multiple sorted SSTables using merge iterators |
+| [Write-Ahead Log (WAL)](/patterns/write-ahead-log/) | WAL ensures memtable writes survive crashes before flushing to SSTables |
+| [Tombstone](/patterns/tombstone/) | LSM trees use tombstones to mark deletions that are cleaned up during compaction |
 
 ## Challenge Questions
 

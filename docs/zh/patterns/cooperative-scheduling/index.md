@@ -172,9 +172,9 @@ func (s *Scheduler) WorkLoop() bool {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [event-loop](/zh/patterns/event-loop/) | 事件循环依赖协作调度——长任务必须让出以保持 I/O 流畅 |
-| [work-stealing](/zh/patterns/work-stealing/) | 协作调度在线程内工作；工作窃取在线程间分配 |
-| [min-heap](/zh/patterns/min-heap/) | React 调度器使用最小堆选择下一个运行的协作任务 |
+| [事件循环 / 反应器 (Event Loop / Reactor)](/zh/patterns/event-loop/) | 事件循环依赖协作调度——长任务必须让出以保持 I/O 流畅 |
+| [工作窃取 (Work Stealing)](/zh/patterns/work-stealing/) | 协作调度在线程内工作；工作窃取在线程间分配 |
+| [最小堆 / 优先队列 (Min Heap)](/zh/patterns/min-heap/) | React 调度器使用最小堆选择下一个运行的协作任务 |
 
 ## 挑战题
 

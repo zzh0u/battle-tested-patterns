@@ -204,9 +204,9 @@ impl Value {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [vtable](/zh/patterns/vtable/) | 两者都实现运行时多态——标签联合通过 switch，虚函数表通过函数指针 |
-| [bitmask](/zh/patterns/bitmask/) | 位掩码标志可以在轻量级标签联合实现中充当类型标签 |
-| [visitor](/zh/patterns/visitor/) | 访问者按节点类型分发，而节点类型通常表示为标签联合 |
+| [虚函数表 / 操作分发 (Vtable / Ops Dispatch)](/zh/patterns/vtable/) | 两者都实现运行时多态——标签联合通过 switch，虚函数表通过函数指针 |
+| [位掩码 (Bitmask)](/zh/patterns/bitmask/) | 位掩码标志可以在轻量级标签联合实现中充当类型标签 |
+| [访问者 / 树遍历器 (Visitor / Tree Walker)](/zh/patterns/visitor/) | 访问者按节点类型分发，而节点类型通常表示为标签联合 |
 
 ## 挑战题
 

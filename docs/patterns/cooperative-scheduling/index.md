@@ -243,9 +243,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [event-loop](/patterns/event-loop/) | Event loops rely on cooperative scheduling — long tasks must yield to keep I/O flowing |
-| [work-stealing](/patterns/work-stealing/) | Cooperative scheduling works within a thread; work stealing distributes across threads |
-| [min-heap](/patterns/min-heap/) | React's scheduler uses a min-heap to select which cooperative task runs next |
+| [Event Loop](/patterns/event-loop/) | Event loops rely on cooperative scheduling — long tasks must yield to keep I/O flowing |
+| [Work Stealing](/patterns/work-stealing/) | Cooperative scheduling works within a thread; work stealing distributes across threads |
+| [Min Heap](/patterns/min-heap/) | React's scheduler uses a min-heap to select which cooperative task runs next |
 
 ## Challenge Questions
 

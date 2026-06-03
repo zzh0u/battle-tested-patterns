@@ -200,9 +200,9 @@ impl TokenBucket {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [semaphore](/zh/patterns/semaphore/) | 信号量限制并发；限流器限制时间维度的吞吐量 |
-| [backpressure](/zh/patterns/backpressure/) | 限流是在系统边界应用的一种背压形式 |
-| [circuit-breaker](/zh/patterns/circuit-breaker/) | 熔断器在故障时停止所有流量；限流器控制正常流量 |
+| [信号量 / 有界并发 (Semaphore)](/zh/patterns/semaphore/) | 信号量限制并发；限流器限制时间维度的吞吐量 |
+| [背压 / 流控 (Backpressure)](/zh/patterns/backpressure/) | 限流是在系统边界应用的一种背压形式 |
+| [熔断器 (Circuit Breaker)](/zh/patterns/circuit-breaker/) | 熔断器在故障时停止所有流量；限流器控制正常流量 |
 
 ## 挑战题
 

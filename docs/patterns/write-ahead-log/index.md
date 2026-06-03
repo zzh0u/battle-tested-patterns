@@ -265,10 +265,10 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [checkpointing](/patterns/checkpointing/) | Checkpoints truncate the WAL — recover from checkpoint + replay remaining log |
-| [lsm-tree](/patterns/lsm-tree/) | LSM trees use WAL to ensure memtable writes survive crashes before flushing |
-| [merkle-tree](/patterns/merkle-tree/) | Merkle trees verify the state that WAL helps reconstruct after recovery |
-| [logical-clock](/patterns/logical-clock/) | WAL entries are sequenced by logical clock for ordering guarantees |
+| [Checkpointing](/patterns/checkpointing/) | Checkpoints truncate the WAL — recover from checkpoint + replay remaining log |
+| [LSM Tree (Log-Structured Merge Tree)](/patterns/lsm-tree/) | LSM trees use WAL to ensure memtable writes survive crashes before flushing |
+| [Merkle Tree](/patterns/merkle-tree/) | Merkle trees verify the state that WAL helps reconstruct after recovery |
+| [Logical Clock](/patterns/logical-clock/) | WAL entries are sequenced by logical clock for ordering guarantees |
 
 ## Challenge Questions
 

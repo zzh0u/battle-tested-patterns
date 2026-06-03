@@ -253,9 +253,9 @@ impl<T> Registry<T> {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [middleware-chain](/zh/patterns/middleware-chain/) | 中间件处理器通常将自身注册到注册表中 |
-| [dependency-graph](/zh/patterns/dependency-graph/) | 注册表可以追踪已注册组件之间的依赖关系 |
-| [consistent-hashing](/zh/patterns/consistent-hashing/) | 服务注册表为一致性哈希提供可用节点列表 |
+| [中间件 / 管道链 (Middleware / Pipeline Chain)](/zh/patterns/middleware-chain/) | 中间件处理器通常将自身注册到注册表中 |
+| [依赖图 (Dependency Graph)](/zh/patterns/dependency-graph/) | 注册表可以追踪已注册组件之间的依赖关系 |
+| [一致性哈希 (Consistent Hashing)](/zh/patterns/consistent-hashing/) | 服务注册表为一致性哈希提供可用节点列表 |
 
 ## 挑战题
 

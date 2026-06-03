@@ -203,10 +203,10 @@ impl LRUCache {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [free-list](/zh/patterns/free-list/) | LRU 淘汰释放节点；空闲链表回收它们而无需调用分配器 |
-| [flyweight](/zh/patterns/flyweight/) | 两者都减少内存——LRU 限制缓存大小，享元共享相同对象 |
-| [consistent-hashing](/zh/patterns/consistent-hashing/) | 分布式缓存使用一致性哈希将键路由到正确的 LRU 实例 |
-| [tombstone](/zh/patterns/tombstone/) | 墓碑在分布式 LRU 缓存中标记已删除的条目 |
+| [空闲链表 (Free List)](/zh/patterns/free-list/) | LRU 淘汰释放节点；空闲链表回收它们而无需调用分配器 |
+| [享元 / 驻留 (Flyweight / Interning)](/zh/patterns/flyweight/) | 两者都减少内存——LRU 限制缓存大小，享元共享相同对象 |
+| [一致性哈希 (Consistent Hashing)](/zh/patterns/consistent-hashing/) | 分布式缓存使用一致性哈希将键路由到正确的 LRU 实例 |
+| [墓碑 / 延迟删除 (Tombstone)](/zh/patterns/tombstone/) | 墓碑在分布式 LRU 缓存中标记已删除的条目 |
 
 ## 挑战题
 

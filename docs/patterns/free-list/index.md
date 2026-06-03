@@ -218,9 +218,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [arena-allocator](/patterns/arena-allocator/) | Arena bulk-frees; free lists recycle individual slots for O(1) reuse |
-| [object-pool](/patterns/object-pool/) | Object pools use free lists internally to track available objects |
-| [ring-buffer](/patterns/ring-buffer/) | Both provide O(1) slot management — ring buffers via modular index, free lists via linked chain |
+| [Arena Allocator](/patterns/arena-allocator/) | Arena bulk-frees; free lists recycle individual slots for O(1) reuse |
+| [Object Pool](/patterns/object-pool/) | Object pools use free lists internally to track available objects |
+| [Ring Buffer (Circular Buffer)](/patterns/ring-buffer/) | Both provide O(1) slot management — ring buffers via modular index, free lists via linked chain |
 
 ## Challenge Questions
 

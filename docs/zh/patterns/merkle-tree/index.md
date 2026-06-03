@@ -393,10 +393,10 @@ impl MerkleTree {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [copy-on-write](/zh/patterns/copy-on-write/) | Merkle 树实现高效的写时复制——只需重新哈希变更路径 |
-| [write-ahead-log](/zh/patterns/write-ahead-log/) | WAL 记录变更；Merkle 树验证结果状态的一致性 |
-| [checkpointing](/zh/patterns/checkpointing/) | Merkle 根作为检查点快照的完整性证明 |
-| [b-plus-tree](/zh/patterns/b-plus-tree/) | 两者都是树结构——Merkle 用于验证，B+ 用于有序访问 |
+| [写时复制 (Copy-on-Write)](/zh/patterns/copy-on-write/) | Merkle 树实现高效的写时复制——只需重新哈希变更路径 |
+| [预写日志 (Write-Ahead Log)](/zh/patterns/write-ahead-log/) | WAL 记录变更；Merkle 树验证结果状态的一致性 |
+| [检查点 (Checkpointing)](/zh/patterns/checkpointing/) | Merkle 根作为检查点快照的完整性证明 |
+| [B+ 树 (B+ Tree)](/zh/patterns/b-plus-tree/) | 两者都是树结构——Merkle 用于验证，B+ 用于有序访问 |
 
 ## 挑战题
 

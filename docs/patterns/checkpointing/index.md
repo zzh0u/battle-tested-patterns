@@ -414,9 +414,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [write-ahead-log](/patterns/write-ahead-log/) | Checkpoints truncate the WAL — recovery replays only from the latest checkpoint |
-| [copy-on-write](/patterns/copy-on-write/) | Copy-on-write enables consistent snapshots without stopping writes |
-| [logical-clock](/patterns/logical-clock/) | Checkpoints are associated with logical clock positions for consistency |
+| [Write-Ahead Log (WAL)](/patterns/write-ahead-log/) | Checkpoints truncate the WAL — recovery replays only from the latest checkpoint |
+| [Copy-on-Write (CoW)](/patterns/copy-on-write/) | Copy-on-write enables consistent snapshots without stopping writes |
+| [Logical Clock](/patterns/logical-clock/) | Checkpoints are associated with logical clock positions for consistency |
 
 ## Challenge Questions
 

@@ -202,9 +202,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [iterator](/patterns/iterator/) | Middleware chain iterates through handlers like an iterator over a sequence |
-| [observer](/patterns/observer/) | Middleware can observe and modify requests/responses flowing through the pipeline |
-| [vtable](/patterns/vtable/) | Each middleware is a function pointer implementing a common interface, like a vtable entry |
+| [Iterator](/patterns/iterator/) | Middleware chain iterates through handlers like an iterator over a sequence |
+| [Observer](/patterns/observer/) | Middleware can observe and modify requests/responses flowing through the pipeline |
+| [Vtable](/patterns/vtable/) | Each middleware is a function pointer implementing a common interface, like a vtable entry |
 
 ## Challenge Questions
 

@@ -180,9 +180,9 @@ Run exercises: `pnpm test` · `cargo test` · `go test ./...`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [free-list](/patterns/free-list/) | Free lists manage the pool's internal allocation of slots |
-| [arena-allocator](/patterns/arena-allocator/) | Arena allocators batch-allocate for pool objects; both avoid per-object malloc |
-| [semaphore](/patterns/semaphore/) | Pool size acts as a semaphore limiting concurrent object usage |
+| [Free List](/patterns/free-list/) | Free lists manage the pool's internal allocation of slots |
+| [Arena Allocator](/patterns/arena-allocator/) | Arena allocators batch-allocate for pool objects; both avoid per-object malloc |
+| [Semaphore](/patterns/semaphore/) | Pool size acts as a semaphore limiting concurrent object usage |
 
 ## Challenge Questions
 

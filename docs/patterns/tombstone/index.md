@@ -342,9 +342,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [lsm-tree](/patterns/lsm-tree/) | LSM trees use tombstones extensively — they're cleaned up during compaction |
-| [mvcc](/patterns/mvcc/) | MVCC marks old versions with tombstones for garbage collection |
-| [free-list](/patterns/free-list/) | After tombstone cleanup, freed slots can be managed by a free list |
+| [LSM Tree (Log-Structured Merge Tree)](/patterns/lsm-tree/) | LSM trees use tombstones extensively — they're cleaned up during compaction |
+| [MVCC (Multi-Version Concurrency Control)](/patterns/mvcc/) | MVCC marks old versions with tombstones for garbage collection |
+| [Free List](/patterns/free-list/) | After tombstone cleanup, freed slots can be managed by a free list |
 
 ## Challenge Questions
 

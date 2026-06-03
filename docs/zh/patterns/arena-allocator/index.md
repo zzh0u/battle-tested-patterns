@@ -182,9 +182,9 @@ class Arena:
 
 | 模式 | 关系 |
 |---------|-------------|
-| [free-list](/zh/patterns/free-list/) | 空闲链表回收单个对象；Arena 一次性批量释放 |
-| [object-pool](/zh/patterns/object-pool/) | 对象池预分配；Arena 推进指针分配——两者都减少 malloc 开销 |
-| [reference-counting](/zh/patterns/reference-counting/) | Arena 通过在作用域结束时释放所有内容来避免逐对象引用计数 |
+| [空闲链表 (Free List)](/zh/patterns/free-list/) | 空闲链表回收单个对象；Arena 一次性批量释放 |
+| [对象池 (Object Pool)](/zh/patterns/object-pool/) | 对象池预分配；Arena 推进指针分配——两者都减少 malloc 开销 |
+| [引用计数 (Reference Counting)](/zh/patterns/reference-counting/) | Arena 通过在作用域结束时释放所有内容来避免逐对象引用计数 |
 
 ## 挑战题
 

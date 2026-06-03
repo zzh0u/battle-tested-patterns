@@ -105,9 +105,9 @@ def retry_with_backoff(fn, max_retries=5, base=1.0, cap=30.0):
 
 | 模式 | 关系 |
 |---------|-------------|
-| [circuit-breaker](/zh/patterns/circuit-breaker/) | 熔断器告诉你何时完全停止重试 |
-| [batch-processing](/zh/patterns/batch-processing/) | 失败的批处理项可以独立地进行退避重试 |
-| [rate-limiter](/zh/patterns/rate-limiter/) | 抖动退避防止重试风暴，目标与限流类似 |
+| [熔断器 (Circuit Breaker)](/zh/patterns/circuit-breaker/) | 熔断器告诉你何时完全停止重试 |
+| [批处理 (Batch Processing)](/zh/patterns/batch-processing/) | 失败的批处理项可以独立地进行退避重试 |
+| [限流器 / 令牌桶 (Rate Limiter)](/zh/patterns/rate-limiter/) | 抖动退避防止重试风暴，目标与限流类似 |
 
 ## 挑战题
 

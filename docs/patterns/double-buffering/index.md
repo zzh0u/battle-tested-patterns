@@ -204,9 +204,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [copy-on-write](/patterns/copy-on-write/) | Both defer mutation costs — double buffering swaps whole copies, CoW copies on write |
-| [ring-buffer](/patterns/ring-buffer/) | Ring buffers can be seen as multi-slot generalizations of double buffering |
-| [dirty-flag](/patterns/dirty-flag/) | Dirty flags track which buffer has changed and needs to be swapped |
+| [Copy-on-Write (CoW)](/patterns/copy-on-write/) | Both defer mutation costs — double buffering swaps whole copies, CoW copies on write |
+| [Ring Buffer (Circular Buffer)](/patterns/ring-buffer/) | Ring buffers can be seen as multi-slot generalizations of double buffering |
+| [Dirty Flag](/patterns/dirty-flag/) | Dirty flags track which buffer has changed and needs to be swapped |
 
 ## Challenge Questions
 

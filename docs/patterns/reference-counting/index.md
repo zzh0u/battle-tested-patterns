@@ -280,9 +280,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [copy-on-write](/patterns/copy-on-write/) | Reference counting determines when a CoW value needs to be copied |
-| [object-pool](/patterns/object-pool/) | Pools provide an alternative to reference counting — return objects instead of freeing |
-| [tombstone](/patterns/tombstone/) | Tombstones defer cleanup like reference counting defers deallocation |
+| [Copy-on-Write (CoW)](/patterns/copy-on-write/) | Reference counting determines when a CoW value needs to be copied |
+| [Object Pool](/patterns/object-pool/) | Pools provide an alternative to reference counting — return objects instead of freeing |
+| [Tombstone](/patterns/tombstone/) | Tombstones defer cleanup like reference counting defers deallocation |
 
 ## Challenge Questions
 

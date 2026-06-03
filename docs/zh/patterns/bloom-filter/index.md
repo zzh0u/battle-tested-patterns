@@ -219,9 +219,9 @@ class BloomFilter:
 
 | 模式 | 关系 |
 |---------|-------------|
-| [lsm-tree](/zh/patterns/lsm-tree/) | LSM 树为每个 SSTable 附加布隆过滤器以避免不必要的磁盘读取 |
-| [trie](/zh/patterns/trie/) | 布隆过滤器在昂贵的 Trie 遍历前做预筛选 |
-| [lru-cache](/zh/patterns/lru-cache/) | 两者都加速查找——布隆过滤器排除否定，LRU 缓存存储肯定 |
+| [LSM 树 (Log-Structured Merge Tree)](/zh/patterns/lsm-tree/) | LSM 树为每个 SSTable 附加布隆过滤器以避免不必要的磁盘读取 |
+| [Trie 前缀树 (Trie / Prefix Tree)](/zh/patterns/trie/) | 布隆过滤器在昂贵的 Trie 遍历前做预筛选 |
+| [LRU 缓存 (LRU Cache)](/zh/patterns/lru-cache/) | 两者都加速查找——布隆过滤器排除否定，LRU 缓存存储肯定 |
 
 ## 挑战题
 

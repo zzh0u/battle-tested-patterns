@@ -243,9 +243,9 @@ impl CircuitBreaker {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [retry-backoff](/zh/patterns/retry-backoff/) | 熔断器在服务已知不可用时阻止重试 |
-| [state-machine](/zh/patterns/state-machine/) | 熔断器是一个状态机：关闭 -> 打开 -> 半开 |
-| [rate-limiter](/zh/patterns/rate-limiter/) | 两者都保护服务——限流器控制吞吐量，熔断器停止故障 |
+| [指数退避重试 (Retry with Backoff)](/zh/patterns/retry-backoff/) | 熔断器在服务已知不可用时阻止重试 |
+| [状态机 (State Machine)](/zh/patterns/state-machine/) | 熔断器是一个状态机：关闭 -> 打开 -> 半开 |
+| [限流器 / 令牌桶 (Rate Limiter)](/zh/patterns/rate-limiter/) | 两者都保护服务——限流器控制吞吐量，熔断器停止故障 |
 
 ## 挑战题
 

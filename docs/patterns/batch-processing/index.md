@@ -181,9 +181,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [ring-buffer](/patterns/ring-buffer/) | Ring buffers accumulate items for batch consumption |
-| [backpressure](/patterns/backpressure/) | Batching smooths bursty input and works with backpressure mechanisms |
-| [retry-backoff](/patterns/retry-backoff/) | Individual batch items can be retried with exponential backoff on failure |
+| [Ring Buffer (Circular Buffer)](/patterns/ring-buffer/) | Ring buffers accumulate items for batch consumption |
+| [Backpressure](/patterns/backpressure/) | Batching smooths bursty input and works with backpressure mechanisms |
+| [Retry with Exponential Backoff](/patterns/retry-backoff/) | Individual batch items can be retried with exponential backoff on failure |
 
 ## Challenge Questions
 

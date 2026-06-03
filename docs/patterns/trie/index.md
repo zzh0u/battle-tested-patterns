@@ -252,9 +252,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [bloom-filter](/patterns/bloom-filter/) | Bloom filters pre-filter before expensive trie lookups |
-| [registry](/patterns/registry/) | Tries can implement registries with prefix-based routing |
-| [skip-list](/patterns/skip-list/) | Alternative sorted lookup — skip lists are ordered by value, tries by key characters |
+| [Bloom Filter](/patterns/bloom-filter/) | Bloom filters pre-filter before expensive trie lookups |
+| [Registry](/patterns/registry/) | Tries can implement registries with prefix-based routing |
+| [Skip List](/patterns/skip-list/) | Alternative sorted lookup — skip lists are ordered by value, tries by key characters |
 
 ## Challenge Questions
 

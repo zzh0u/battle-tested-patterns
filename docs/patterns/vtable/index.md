@@ -212,9 +212,9 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [tagged-union](/patterns/tagged-union/) | Both enable polymorphism — vtable via indirection, tagged union via switch |
-| [visitor](/patterns/visitor/) | Visitors dispatch on type, often via vtable-like function pointer lookups |
-| [middleware-chain](/patterns/middleware-chain/) | Each middleware handler is a function pointer, forming a dynamic vtable |
+| [Tagged Union](/patterns/tagged-union/) | Both enable polymorphism — vtable via indirection, tagged union via switch |
+| [Visitor](/patterns/visitor/) | Visitors dispatch on type, often via vtable-like function pointer lookups |
+| [Middleware](/patterns/middleware-chain/) | Each middleware handler is a function pointer, forming a dynamic vtable |
 
 ## Challenge Questions
 

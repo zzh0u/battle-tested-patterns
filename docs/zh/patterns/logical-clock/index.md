@@ -204,9 +204,9 @@ impl LamportClock {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [mvcc](/zh/patterns/mvcc/) | MVCC 使用逻辑时间戳作为版本标识符 |
-| [write-ahead-log](/zh/patterns/write-ahead-log/) | WAL 条目按逻辑时钟序列号排序 |
-| [checkpointing](/zh/patterns/checkpointing/) | 检查点在特定的逻辑时钟位置获取 |
+| [MVCC 多版本并发控制](/zh/patterns/mvcc/) | MVCC 使用逻辑时间戳作为版本标识符 |
+| [预写日志 (Write-Ahead Log)](/zh/patterns/write-ahead-log/) | WAL 条目按逻辑时钟序列号排序 |
+| [检查点 (Checkpointing)](/zh/patterns/checkpointing/) | 检查点在特定的逻辑时钟位置获取 |
 
 ## 挑战题
 

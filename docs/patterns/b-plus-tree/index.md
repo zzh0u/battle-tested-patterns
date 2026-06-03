@@ -522,10 +522,10 @@ Run exercises: `pnpm test`
 
 | Pattern | Relationship |
 |---------|-------------|
-| [skip-list](/patterns/skip-list/) | Simpler probabilistic alternative with comparable O(log n) performance |
-| [lsm-tree](/patterns/lsm-tree/) | LSM trees buffer writes for speed; B+ trees optimize reads with balanced structure |
-| [merkle-tree](/patterns/merkle-tree/) | Both are tree structures — Merkle for integrity verification, B+ for ordered storage |
-| [merge-iterator](/patterns/merge-iterator/) | B+ tree range scans use iterator patterns similar to merge iterators |
+| [Skip List](/patterns/skip-list/) | Simpler probabilistic alternative with comparable O(log n) performance |
+| [LSM Tree (Log-Structured Merge Tree)](/patterns/lsm-tree/) | LSM trees buffer writes for speed; B+ trees optimize reads with balanced structure |
+| [Merkle Tree](/patterns/merkle-tree/) | Both are tree structures — Merkle for integrity verification, B+ for ordered storage |
+| [Merge Iterator (K-Way Merge)](/patterns/merge-iterator/) | B+ tree range scans use iterator patterns similar to merge iterators |
 
 ## Challenge Questions
 

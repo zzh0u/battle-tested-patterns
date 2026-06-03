@@ -243,9 +243,9 @@ impl WorkStealingScheduler {
 
 | 模式 | 关系 |
 |---------|-------------|
-| [cooperative-scheduling](/zh/patterns/cooperative-scheduling/) | 工作窃取在线程间分配任务；协作调度在线程内让出 |
-| [object-pool](/zh/patterns/object-pool/) | 工作线程使用线程本地对象池避免争用 |
-| [free-list](/zh/patterns/free-list/) | 线程本地空闲链表通过提供无锁分配来补充工作窃取 |
+| [协作调度 (Cooperative Scheduling)](/zh/patterns/cooperative-scheduling/) | 工作窃取在线程间分配任务；协作调度在线程内让出 |
+| [对象池 (Object Pool)](/zh/patterns/object-pool/) | 工作线程使用线程本地对象池避免争用 |
+| [空闲链表 (Free List)](/zh/patterns/free-list/) | 线程本地空闲链表通过提供无锁分配来补充工作窃取 |
 
 ## 挑战题
 
