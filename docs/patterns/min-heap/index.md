@@ -25,6 +25,10 @@ Two operations maintain the invariant:
 
 Array layout: `[1, 3, 2, 7, 5, 4, 6]` — the tree above stored flat.
 
+**Try it yourself** — insert values and extract the minimum to see sift-up and sift-down in action:
+
+<MinHeapViz />
+
 ## Production Proof
 
 | Project | Source | Usage |

@@ -5,6 +5,7 @@ import LRUCacheViz from './components/LRUCacheViz.vue';
 import BloomFilterViz from './components/BloomFilterViz.vue';
 import CircuitBreakerViz from './components/CircuitBreakerViz.vue';
 import ConsistentHashViz from './components/ConsistentHashViz.vue';
+import MinHeapViz from './components/MinHeapViz.vue';
 import './custom.css';
 
 export default {
@@ -15,5 +16,6 @@ export default {
     app.component('BloomFilterViz', BloomFilterViz);
     app.component('CircuitBreakerViz', CircuitBreakerViz);
     app.component('ConsistentHashViz', ConsistentHashViz);
+    app.component('MinHeapViz', MinHeapViz);
   },
 } satisfies Theme;
