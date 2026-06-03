@@ -1,3 +1,7 @@
+---
+description: "How the 46 patterns connect: composition chains, shared building blocks, and real-world pattern combinations."
+---
+
 # How Patterns Connect
 
 These patterns don't exist in isolation. The most interesting insight is how production systems **compose** them together.

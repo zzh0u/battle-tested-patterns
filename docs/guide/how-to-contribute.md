@@ -1,3 +1,7 @@
+---
+description: "How to contribute a new pattern: verification requirements, source link standards, multi-language implementation guidelines."
+---
+
 # How to Contribute
 
 We welcome contributions! Here's how to get started.

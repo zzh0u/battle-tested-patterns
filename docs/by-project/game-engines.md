@@ -1,3 +1,7 @@
+---
+description: "Game engine patterns from Godot and SDL: object pool, tagged union, double buffering, and dirty flag for 60fps performance."
+---
+
 # Patterns from Game Engines
 
 Game engines push patterns to their limits — every frame counts at 60fps.

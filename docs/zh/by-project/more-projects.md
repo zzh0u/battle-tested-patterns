@@ -1,3 +1,7 @@
+---
+description: "更多开源项目的模式：PostgreSQL、Redis、Kafka、LLVM、Chromium、V8 等。"
+---
+
 # 更多项目
 
 来自数据库、JVM 生态、浏览器及其他知名开源项目的模式。

@@ -1,3 +1,7 @@
+---
+description: "Battle-Tested Patterns: 46 production-proven programming patterns from React, Linux, Go, and Chromium with interactive visualizations."
+---
+
 # What is This?
 
 **Battle-Tested Patterns** collects programming patterns that are:

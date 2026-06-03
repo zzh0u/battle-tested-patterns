@@ -1,3 +1,7 @@
+---
+description: "Battle-Tested Patterns：46 个生产验证的编程模式，来自 React、Linux、Go、Chromium，配有交互式可视化。"
+---
+
 # 这是什么？
 
 **Battle-Tested Patterns** 收集的编程模式具有以下特点：

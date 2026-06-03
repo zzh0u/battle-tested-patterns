@@ -1,3 +1,7 @@
+---
+description: "Additional patterns from PostgreSQL, Redis, Kafka, LLVM, Chromium, V8, and other open-source projects."
+---
+
 # More Projects
 
 Patterns from databases, JVM ecosystem, browsers, and other notable open-source projects.

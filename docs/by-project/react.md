@@ -1,3 +1,7 @@
+---
+description: "How React combines bitmask, double buffering, cooperative scheduling, min heap, and diff/patch patterns in a single render cycle."
+---
+
 # Patterns from React
 
 React's reconciler is a masterclass in combining low-level patterns. The first five patterns all appear in a single render cycle.

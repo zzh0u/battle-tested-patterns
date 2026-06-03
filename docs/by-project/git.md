@@ -1,3 +1,7 @@
+---
+description: "Git's pattern usage: copy-on-write objects, Merkle trees for integrity, and diff/patch for minimal changes."
+---
+
 # Patterns from Git
 
 Git's data model is built on copy-on-write immutable objects and efficient diffing.

@@ -1,3 +1,7 @@
+---
+description: "Browse all 46 battle-tested programming patterns organized by category: data structures, concurrency, system, memory, and behavioral."
+---
+
 # All Patterns
 
 46 production-proven patterns organized by category. Each one has interactive visualization, multi-language implementations, exercises, and precise source links.

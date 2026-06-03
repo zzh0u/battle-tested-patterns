@@ -1,3 +1,7 @@
+---
+description: "Go runtime patterns: work stealing, object pool, cooperative scheduling, semaphore, free list, and arena allocator."
+---
+
 # Patterns from Go
 
 Go's runtime and standard library demonstrate clean, practical pattern implementations.

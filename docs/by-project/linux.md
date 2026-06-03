@@ -1,3 +1,7 @@
+---
+description: "Programming patterns from the Linux kernel: bitmask, semaphore, ring buffer, trie, LRU cache, free list, vtable, and more."
+---
+
 # Patterns from Linux Kernel
 
 The Linux kernel has been refined over 30+ years. These patterns have survived decades of real-world use across millions of devices.

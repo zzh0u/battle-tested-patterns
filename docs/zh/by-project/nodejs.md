@@ -1,3 +1,7 @@
+---
+description: "Node.js 生态模式：观察者（EventEmitter）、背压（Streams）、状态机（XState）和中间件链（Koa）。"
+---
+
 # Node.js 生态系统中的模式
 
 | 模式 | 项目 | 位置 | 作用 |

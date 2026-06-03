@@ -1,3 +1,7 @@
+---
+description: "Node.js ecosystem patterns: observer (EventEmitter), backpressure (Streams), state machine (XState), and middleware chain (Koa)."
+---
+
 # Patterns from Node.js Ecosystem
 
 Node.js, Redux, and XState demonstrate event-driven and state management patterns at scale.

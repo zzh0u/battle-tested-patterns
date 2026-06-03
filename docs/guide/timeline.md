@@ -1,3 +1,7 @@
+---
+description: "Timeline of programming patterns: 80 years of computing history from von Neumann to modern distributed systems."
+---
+
 # Pattern Timeline
 
 These patterns span 80+ years of computing history — from the earliest stored-program computers to modern distributed systems.

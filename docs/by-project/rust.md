@@ -1,3 +1,7 @@
+---
+description: "Rust standard library patterns: iterator, copy-on-write (Cow), reference counting (Arc), interning, and arena allocation."
+---
+
 # Patterns from Rust
 
 Rust's standard library embodies zero-cost abstractions through its type system.
