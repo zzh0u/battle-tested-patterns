@@ -244,6 +244,7 @@ impl SkipList {
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现带 insert/search/delete 的跳表 | `exercises/typescript/skip-list/01-basic.test.ts` |
+| 进阶 | 带范围查询的跳表 | `exercises/typescript/skip-list/02-intermediate.test.ts` |
 
 ## 何时使用
 

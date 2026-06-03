@@ -208,6 +208,7 @@ impl WorkStealingScheduler {
 | Level | Exercise | File |
 |-------|----------|------|
 | Basic | Implement a work-stealing scheduler with local deques | `exercises/typescript/work-stealing/01-basic.test.ts` |
+| Intermediate | Priority work stealing — high-priority tasks first | `exercises/typescript/work-stealing/02-intermediate.test.ts` |
 
 Run exercises: `pnpm test`
 

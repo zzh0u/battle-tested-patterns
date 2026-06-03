@@ -172,6 +172,7 @@ traffic_light.send("TIMER")  # "green"
 | Level | Exercise | File |
 |-------|----------|------|
 | Basic | Implement a state machine with send/can | `exercises/typescript/state-machine/01-basic.test.ts` |
+| Intermediate | Traffic light controller with timed transitions | `exercises/typescript/state-machine/02-intermediate.test.ts` |
 
 Run exercises: `pnpm test`
 

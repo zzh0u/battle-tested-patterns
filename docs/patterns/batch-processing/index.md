@@ -143,6 +143,7 @@ func (bp *BatchProcessor[T, R]) flush() {
 | Level | Exercise | File |
 |-------|----------|------|
 | Basic | Implement a batch processor with size-based flushing | `exercises/typescript/batch-processing/01-basic.test.ts` |
+| Intermediate | Timeout flush — flush on size OR time, whichever comes first | `exercises/typescript/batch-processing/02-intermediate.test.ts` |
 
 Run exercises: `pnpm test`
 

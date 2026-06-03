@@ -165,6 +165,7 @@ impl TokenBucket {
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现令牌桶限流器 | `exercises/typescript/rate-limiter/01-basic.test.ts` |
+| 进阶 | 滑动窗口计数限流器 | `exercises/typescript/rate-limiter/02-intermediate.test.ts` |
 
 ## 何时使用
 

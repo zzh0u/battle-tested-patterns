@@ -167,6 +167,7 @@ impl LRUCache {
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现带 get/put 和淘汰的 LRU 缓存 | `exercises/typescript/lru-cache/01-basic.test.ts` |
+| 进阶 | 带 TTL 过期的 LRU 缓存 | `exercises/typescript/lru-cache/02-intermediate.test.ts` |
 
 ## 何时使用
 

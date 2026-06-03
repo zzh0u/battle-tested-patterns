@@ -161,6 +161,7 @@ impl<S> Actor<S> {
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现带信箱和消息处理的 Actor | `exercises/typescript/actor-model/01-basic.test.ts` |
+| 进阶 | Actor 监督 — 父 Actor 重启崩溃的子 Actor | `exercises/typescript/actor-model/02-intermediate.test.ts` |
 
 ## 何时使用
 

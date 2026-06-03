@@ -77,6 +77,7 @@ print(msgs)  # ["hello"]
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现 on/off/emit 事件发射器 | `exercises/typescript/observer/01-basic.test.ts` |
+| 进阶 | 类型安全的事件总线 on/once/off/emit | `exercises/typescript/observer/02-intermediate.test.ts` |
 
 ## 何时使用
 

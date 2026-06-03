@@ -152,6 +152,7 @@ print(messages)  # ["hello", "world"] — unchanged
 | Level | Exercise | File |
 |-------|----------|------|
 | Basic | Implement an EventEmitter with on/off/emit | `exercises/typescript/observer/01-basic.test.ts` |
+| Intermediate | Typed event bus with on/once/off/emit | `exercises/typescript/observer/02-intermediate.test.ts` |
 
 Run exercises: `pnpm test`
 

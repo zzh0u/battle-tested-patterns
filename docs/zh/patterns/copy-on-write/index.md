@@ -84,6 +84,7 @@ class Cow:
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现写时复制包装器 | `exercises/typescript/copy-on-write/01-basic.test.ts` |
+| 进阶 | 带 CoW fork 的版本化配置存储 | `exercises/typescript/copy-on-write/02-intermediate.test.ts` |
 
 ## 何时使用
 

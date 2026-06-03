@@ -187,6 +187,7 @@ impl MVCCStore {
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现多版本键值存储 | `exercises/typescript/mvcc/01-basic.test.ts` |
+| 进阶 | 带一致性读取的快照事务 | `exercises/typescript/mvcc/02-intermediate.test.ts` |
 
 ## 何时使用
 

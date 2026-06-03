@@ -141,7 +141,8 @@ flowchart TD
     HEAP -->|"buffer pool"| BUF["LRU Cache (shared_buffers)"]
     BUF -->|"clock-sweep eviction"| DISK["Disk pages"]
     MVCC -->|"anti-wraparound"| VACUUM["VACUUM"]
-    VACUUM -->|"skip tables via"| BLOOM["Bloom Filter (visibility map)"]
+    VACUUM -->|"skip all-visible pages"| VMAP["Visibility Map (bitmap)"]
+    HEAP -->|"multi-column filter"| BLOOM["Bloom Index"]
 ```
 
 | Pattern | Where in PostgreSQL | Why |
@@ -149,7 +150,7 @@ flowchart TD
 | **MVCC** | `heapam.c` — each tuple carries `xmin`/`xmax` transaction IDs | Readers never block writers. Each transaction sees a consistent snapshot without locks. |
 | **Write-Ahead Log** | `xlog.c` — all changes logged to WAL before page modification | Crash recovery replays WAL to reconstruct committed state. Also enables replication. |
 | **LRU Cache** | `bufmgr.c` — `shared_buffers` with clock-sweep eviction | 8KB page cache. Clock-sweep approximates LRU with lower overhead than true LRU. |
-| **Bloom Filter** | Bloom index access method, visibility map bits | Bloom indexes for multi-column equality. Visibility map helps VACUUM skip all-visible pages. |
+| **Bloom Filter** | `contrib/bloom` — bloom index access method | Multi-column equality filter using signature-based indexing. Separate from the visibility map (a simple per-page bitmap used by VACUUM). |
 
 ## Kafka: Throughput Through Batching and Flow Control
 

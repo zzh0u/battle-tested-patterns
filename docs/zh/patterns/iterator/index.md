@@ -60,6 +60,7 @@ first_10 = [next(evens) for _ in range(10)]
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现带 map、filter、collect 的惰性迭代器 | `exercises/typescript/iterator/01-basic.test.ts` |
+| 进阶 | 带 flatMap、take、reduce 的惰性管道 | `exercises/typescript/iterator/02-intermediate.test.ts` |
 
 ## 何时使用
 

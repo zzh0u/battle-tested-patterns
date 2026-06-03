@@ -151,6 +151,7 @@ impl<T> BoundedQueue<T> {
 | Level | Exercise | File |
 |-------|----------|------|
 | Basic | Implement a bounded async queue with flow control | `exercises/typescript/backpressure/01-basic.test.ts` |
+| Intermediate | Bounded async channel with blocking send/receive | `exercises/typescript/backpressure/02-intermediate.test.ts` |
 
 Run exercises: `pnpm test`
 

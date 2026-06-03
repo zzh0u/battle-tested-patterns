@@ -227,6 +227,7 @@ impl WriteAheadLog {
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现内存中的预写日志 | `exercises/typescript/write-ahead-log/01-basic.test.ts` |
+| 进阶 | 检查点恢复 — 仅重放最后检查点之后的条目 | `exercises/typescript/write-ahead-log/02-intermediate.test.ts` |
 
 ## 何时使用
 

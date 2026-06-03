@@ -90,7 +90,18 @@ const perms = READ | WRITE;            perms = READ | WRITE
 (perms & READ) !== 0;  // true         bool(perms & READ)  # True
 ```
 
-然后是 3 个难度等级的练习——全部配套可运行测试。
+然后是 2 个难度等级的练习——全部配套可运行测试。
+
+## 项目亮点
+
+| 特性 | 详情 |
+|------|------|
+| 30 个模式 | Bitmask、LRU Cache、MVCC、Work Stealing、Actor Model 等 |
+| 60 个练习 | 每个模式 basic + intermediate，真实场景 |
+| 100+ 挑战题 | "你猜会怎样"场景问答，验证真正理解 |
+| 6 个系统案例 | React、Redis、Go、Linux、PostgreSQL、Kafka 如何组合模式 |
+| 4 种语言 | TypeScript、Go、Python、Rust 地道实现 |
+| 双语 | 完整中英文文档 |
 
 ## 快速开始
 

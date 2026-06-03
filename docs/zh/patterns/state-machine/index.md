@@ -82,6 +82,7 @@ light.send("TIMER")  # "yellow"
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现带 send/can 的状态机 | `exercises/typescript/state-machine/01-basic.test.ts` |
+| 进阶 | 带定时转换的交通灯控制器 | `exercises/typescript/state-machine/02-intermediate.test.ts` |
 
 ## 何时使用
 

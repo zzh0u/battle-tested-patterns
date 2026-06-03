@@ -210,6 +210,7 @@ impl HashRing {
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现带 addNode/getNode 的哈希环 | `exercises/typescript/consistent-hashing/01-basic.test.ts` |
+| 进阶 | 带虚拟节点的一致性哈希环 | `exercises/typescript/consistent-hashing/02-intermediate.test.ts` |
 
 ## 何时使用
 

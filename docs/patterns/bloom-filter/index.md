@@ -183,6 +183,7 @@ class BloomFilter:
 | Level | Exercise | File |
 |-------|----------|------|
 | Basic | Implement a bloom filter with add/mightContain | `exercises/typescript/bloom-filter/01-basic.test.ts` |
+| Intermediate | Spell checker using a bloom filter dictionary | `exercises/typescript/bloom-filter/02-intermediate.test.ts` |
 
 Run exercises: `pnpm test`
 

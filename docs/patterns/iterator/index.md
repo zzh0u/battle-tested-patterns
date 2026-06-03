@@ -115,6 +115,7 @@ func Filter[T any](in []T, pred func(T) bool) []T {
 | Level | Exercise | File |
 |-------|----------|------|
 | Basic | Implement a lazy iterator with map, filter, collect | `exercises/typescript/iterator/01-basic.test.ts` |
+| Intermediate | Lazy pipeline with flatMap, take, and reduce | `exercises/typescript/iterator/02-intermediate.test.ts` |
 
 Run exercises: `pnpm test`
 

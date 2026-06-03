@@ -71,6 +71,7 @@ def retry_with_backoff(fn, max_retries=5, base=1.0, cap=30.0):
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现可配置退避的重试 | `exercises/typescript/retry-backoff/01-basic.test.ts` |
+| 进阶 | 集成熔断器的重试机制 | `exercises/typescript/retry-backoff/02-intermediate.test.ts` |
 
 ## 何时使用
 

@@ -208,6 +208,7 @@ impl WorkStealingScheduler {
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现带本地双端队列的工作窃取调度器 | `exercises/typescript/work-stealing/01-basic.test.ts` |
+| 进阶 | 优先级工作窃取 — 高优先级任务优先执行 | `exercises/typescript/work-stealing/02-intermediate.test.ts` |
 
 ## 何时使用
 

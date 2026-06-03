@@ -165,6 +165,7 @@ impl TokenBucket {
 | Level | Exercise | File |
 |-------|----------|------|
 | Basic | Implement a token bucket rate limiter | `exercises/typescript/rate-limiter/01-basic.test.ts` |
+| Intermediate | Sliding window counter rate limiter | `exercises/typescript/rate-limiter/02-intermediate.test.ts` |
 
 Run exercises: `pnpm test`
 

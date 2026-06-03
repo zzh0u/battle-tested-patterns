@@ -244,6 +244,7 @@ impl SkipList {
 | Level | Exercise | File |
 |-------|----------|------|
 | Basic | Implement a skip list with insert/search/delete | `exercises/typescript/skip-list/01-basic.test.ts` |
+| Intermediate | Skip list with range query | `exercises/typescript/skip-list/02-intermediate.test.ts` |
 
 Run exercises: `pnpm test`
 

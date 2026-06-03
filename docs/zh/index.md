@@ -23,9 +23,12 @@ features:
   - icon: 🧪
     title: 可运行练习
     details: 渐进式练习（基础 → 进阶 → 高级），配套测试用例，本地即可运行。
-  - icon: 🎮
-    title: 官方 Playground
-    details: 一键跳转 TypeScript、Go、Rust、Python 官方在线环境，直接动手实践。
+  - icon: 🧠
+    title: 挑战题
+    details: 每个模式包含 3-4 个场景化"你猜会怎样"题目，验证真正理解而非泛泛浏览。
+  - icon: 🔀
+    title: 真实系统案例
+    details: 看 React、Redis、Go runtime、Linux、PostgreSQL、Kafka 如何在生产中组合使用多个模式。
 ---
 
 ## 编程模式

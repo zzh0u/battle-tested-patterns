@@ -151,6 +151,7 @@ impl<T> BoundedQueue<T> {
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现带流控的有界异步队列 | `exercises/typescript/backpressure/01-basic.test.ts` |
+| 进阶 | 带阻塞 send/receive 的有界异步通道 | `exercises/typescript/backpressure/02-intermediate.test.ts` |
 
 ## 何时使用
 

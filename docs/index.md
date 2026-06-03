@@ -23,9 +23,12 @@ features:
   - icon: 🧪
     title: Runnable Exercises
     details: Progressive exercises (basic → intermediate → advanced) with test suites you can run locally.
-  - icon: 🎮
-    title: Official Playgrounds
-    details: One-click links to TypeScript, Go, Rust, and Python official online playgrounds for hands-on practice.
+  - icon: 🧠
+    title: Challenge Questions
+    details: Each pattern includes 3-4 scenario-based "guess what happens" questions to test real understanding, not just reading.
+  - icon: 🔀
+    title: Real System Case Studies
+    details: See how React, Redis, Go runtime, Linux, PostgreSQL, and Kafka compose multiple patterns in production.
 ---
 
 ## Patterns

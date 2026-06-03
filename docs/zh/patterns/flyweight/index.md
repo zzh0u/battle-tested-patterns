@@ -62,6 +62,7 @@ print(a is b)  # True — 享元！
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现字符串驻留器 | `exercises/typescript/flyweight/01-basic.test.ts` |
+| 进阶 | 按名称去重的图标注册表 | `exercises/typescript/flyweight/02-intermediate.test.ts` |
 
 ## 何时使用
 

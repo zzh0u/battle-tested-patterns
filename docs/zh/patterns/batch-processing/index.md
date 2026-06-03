@@ -79,6 +79,7 @@ class BatchProcessor:
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现基于大小的批处理器 | `exercises/typescript/batch-processing/01-basic.test.ts` |
+| 进阶 | 超时刷新 — 按大小或时间触发刷新 | `exercises/typescript/batch-processing/02-intermediate.test.ts` |
 
 ## 何时使用
 

@@ -208,6 +208,7 @@ impl CircuitBreaker {
 | Level | Exercise | File |
 |-------|----------|------|
 | Basic | Implement a circuit breaker with three states | `exercises/typescript/circuit-breaker/01-basic.test.ts` |
+| Intermediate | Circuit breaker with failure rate and rolling window | `exercises/typescript/circuit-breaker/02-intermediate.test.ts` |
 
 Run exercises: `pnpm test`
 

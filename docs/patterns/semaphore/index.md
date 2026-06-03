@@ -136,6 +136,7 @@ impl Semaphore {
 | Level | Exercise | File |
 |-------|----------|------|
 | Basic | Implement a counting semaphore with acquire/release | `exercises/typescript/semaphore/01-basic.test.ts` |
+| Intermediate | Connection pool guarded by a semaphore | `exercises/typescript/semaphore/02-intermediate.test.ts` |
 
 Run exercises: `pnpm test`
 

@@ -148,6 +148,7 @@ class Arena:
 | Level | Exercise | File |
 |-------|----------|------|
 | Basic | Implement a bump allocator with alloc/reset | `exercises/typescript/arena-allocator/01-basic.test.ts` |
+| Intermediate | String arena with handle-based allocation | `exercises/typescript/arena-allocator/02-intermediate.test.ts` |
 
 Run exercises: `pnpm test`
 

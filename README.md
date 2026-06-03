@@ -90,7 +90,18 @@ const perms = READ | WRITE;            perms = READ | WRITE
 (perms & READ) !== 0;  // true         bool(perms & READ)  # True
 ```
 
-Then exercises at 3 difficulty levels — all with tests you can run.
+Then exercises at 2 difficulty levels — all with tests you can run.
+
+## What's Inside
+
+| Feature | Details |
+|---------|---------|
+| 30 patterns | Bitmask, LRU Cache, MVCC, Work Stealing, Actor Model, and 25 more |
+| 60 exercises | Basic + intermediate for every pattern, real-world scenarios |
+| 100+ challenge questions | "Guess what happens" scenario Q&A to test understanding |
+| 6 system case studies | How React, Redis, Go, Linux, PostgreSQL, Kafka compose patterns |
+| 4 languages | TypeScript, Go, Python, Rust — idiomatic implementations |
+| Bilingual | Full English + Chinese documentation |
 
 ## Quick Start
 

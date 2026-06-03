@@ -254,6 +254,7 @@ impl DependencyGraph {
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现带循环检测的拓扑排序 | `exercises/typescript/dependency-graph/01-basic.test.ts` |
+| 进阶 | 并行执行规划器 — 计算执行波次 | `exercises/typescript/dependency-graph/02-intermediate.test.ts` |
 
 ## 何时使用
 

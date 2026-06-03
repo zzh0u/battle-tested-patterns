@@ -63,6 +63,7 @@ async def limited_work():
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现带 acquire/release 的计数信号量 | `exercises/typescript/semaphore/01-basic.test.ts` |
+| 进阶 | 信号量守护的连接池 | `exercises/typescript/semaphore/02-intermediate.test.ts` |
 
 ## 何时使用
 

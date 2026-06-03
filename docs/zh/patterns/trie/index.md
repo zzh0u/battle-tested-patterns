@@ -214,6 +214,7 @@ impl Trie {
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现带 insert/search/startsWith 的 Trie | `exercises/typescript/trie/01-basic.test.ts` |
+| 进阶 | 基于频率排序的自动补全 | `exercises/typescript/trie/02-intermediate.test.ts` |
 
 ## 何时使用
 

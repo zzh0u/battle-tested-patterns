@@ -94,6 +94,7 @@ class RingBuffer:
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现环形缓冲区 enqueue/dequeue | `exercises/typescript/ring-buffer/01-basic.test.ts` |
+| 进阶 | 基于环形缓冲区的流式移动平均 | `exercises/typescript/ring-buffer/02-intermediate.test.ts` |
 
 ## 何时使用
 

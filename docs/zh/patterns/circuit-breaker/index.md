@@ -208,6 +208,7 @@ impl CircuitBreaker {
 | 难度 | 练习 | 文件 |
 |------|------|------|
 | 基础 | 实现包含三种状态的熔断器 | `exercises/typescript/circuit-breaker/01-basic.test.ts` |
+| 进阶 | 基于失败率和滚动窗口的熔断器 | `exercises/typescript/circuit-breaker/02-intermediate.test.ts` |
 
 ## 何时使用
 
