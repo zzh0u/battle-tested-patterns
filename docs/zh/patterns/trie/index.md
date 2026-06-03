@@ -240,26 +240,26 @@ impl Trie {
 
 ## 挑战题
 
-::: details Q1: You build a trie to store 100,000 English words. Each node has a `Map<string, TrieNode>` with one entry per child character. A colleague points out this uses far more memory than a simple hash set of the same words. Is the trie's memory overhead justified?
-**Answer:** For pure exact-match lookups, no — a hash set is more memory-efficient and O(1). The trie's memory overhead is only justified when you need prefix operations.
+::: details Q1: 你构建了一个 Trie 来存储 100,000 个英文单词。每个节点有一个 `Map<string, TrieNode>`，每个子字符一个条目。一位同事指出这比同样单词的简单 hash set 使用更多内存。Trie 的内存开销是合理的吗？
+**答案：** 对于纯精确匹配查找，不合理——hash set 更节省内存且 O(1)。Trie 的内存开销只有在你需要前缀操作时才合理。
 
-A naive trie with one node per character creates many small objects with map/pointer overhead. For 100k English words, a hash set stores 100k strings; a trie might create 500k+ nodes. The trie becomes worthwhile when your use case requires prefix search ("find all words starting with 'pre'"), autocomplete, or longest-prefix matching — operations a hash set cannot do efficiently. If you only need "is this exact word in the set?", use a hash set.
+朴素的 Trie 每个字符创建一个节点，产生大量带有 map/指针开销的小对象。对于 10 万个英文单词，hash set 存储 10 万个字符串；Trie 可能创建 50 万以上的节点。当你的用例需要前缀搜索（"找到所有以 'pre' 开头的单词"）、自动补全或最长前缀匹配时，Trie 才值得——这些操作 hash set 无法高效完成。如果你只需要"这个确切的单词在集合中吗？"，使用 hash set。
 :::
 
-::: details Q2: Redis uses a radix tree (compressed trie) instead of a standard trie. What does "compressed" mean, and why does it matter for memory?
-**Answer:** A compressed trie (radix tree) merges chains of single-child nodes into one node with a multi-character label, dramatically reducing node count.
+::: details Q2: Redis 使用基数树（压缩 Trie）而不是标准 Trie。"压缩"是什么意思？为什么它对内存很重要？
+**答案：** 压缩 Trie（基数树）将单子节点链合并为一个带多字符标签的节点，大幅减少节点数量。
 
-In a standard trie storing "application", you create 11 nodes — one per character. If no other word shares the prefix "applicat", the first 8 nodes each have exactly one child, wasting 8 nodes of overhead. A radix tree compresses this into a single node labeled "applicat" followed by branching at "i"→"on" and potentially other suffixes. Redis's `rax` implementation stores compressed prefixes inline in the node struct, reducing memory by 5-10x for typical string sets with long shared prefixes.
+在标准 Trie 中存储 "application"，你需要创建 11 个节点——每个字符一个。如果没有其他单词共享前缀 "applicat"，前 8 个节点各自恰好有一个子节点，浪费了 8 个节点的开销。基数树将其压缩为单个标签为 "applicat" 的节点，然后在 "i"->"on" 处分支以及可能的其他后缀。Redis 的 `rax` 实现在节点结构中内联存储压缩前缀，对于有长共享前缀的典型字符串集合，内存减少 5-10 倍。
 :::
 
-::: details Q3: The Linux kernel uses a trie for IP routing table lookups. A hash map would give O(1) exact-match lookup. Why does the kernel use a trie instead?
-**Answer:** IP routing requires longest-prefix matching, not exact matching — a trie naturally supports this while a hash map does not.
+::: details Q3: Linux 内核使用 Trie 进行 IP 路由表查找。Hash map 能提供 O(1) 的精确匹配查找。为什么内核使用 Trie？
+**答案：** IP 路由需要最长前缀匹配，而非精确匹配——Trie 天然支持这一点，而 hash map 不行。
 
-When the kernel routes a packet to `192.168.1.42`, it needs to find the most specific matching route. The routing table might contain `0.0.0.0/0` (default), `192.168.0.0/16`, and `192.168.1.0/24`. The correct match is the longest prefix: `192.168.1.0/24`. A hash map would require checking all possible prefix lengths (up to 32 for IPv4), needing 32 lookups per packet. A trie traverses from root to the deepest matching node in a single pass, naturally finding the longest prefix. This is why every major OS uses a trie variant for IP routing.
+当内核将数据包路由到 `192.168.1.42` 时，它需要找到最具体的匹配路由。路由表可能包含 `0.0.0.0/0`（默认）、`192.168.0.0/16` 和 `192.168.1.0/24`。正确的匹配是最长前缀：`192.168.1.0/24`。Hash map 需要检查所有可能的前缀长度（IPv4 最多 32 位），每个数据包需要 32 次查找。Trie 在一次遍历中从根到最深匹配节点，自然找到最长前缀。这就是为什么每个主要操作系统都使用 Trie 变体进行 IP 路由。
 :::
 
-::: details Q4: Your autocomplete system stores 10 million product names in a trie. Searching for prefix "ip" returns 50,000 results. Users only see the top 10. How would you avoid collecting all 50,000 results?
-**Answer:** Store a "top-k results" list at each trie node, precomputed during insertion, so prefix queries return ranked results in O(k) time without traversing the subtree.
+::: details Q4: 你的自动补全系统在 Trie 中存储了 1000 万个产品名称。搜索前缀 "ip" 返回 50,000 个结果。用户只看前 10 个。如何避免收集所有 50,000 个结果？
+**答案：** 在每个 Trie 节点存储一个"top-k 结果"列表，在插入时预计算，这样前缀查询可以在 O(k) 时间内返回排名结果而无需遍历子树。
 
-Naively, prefix search requires traversing the entire subtree below the prefix node, collecting all `isEnd` nodes — O(results) time that's wasteful when you only need 10. By maintaining a bounded priority queue of the top-k results at each node (updated on insertion), you can answer "top 10 for prefix 'ip'" by reading the list at the 'p' node under 'i'. This trades insertion time and memory for query speed. Google's search suggestions use a similar approach with frequency-weighted tries.
+朴素方法中，前缀搜索需要遍历前缀节点下的整个子树，收集所有 `isEnd` 节点——O(结果数) 的时间在你只需要 10 个时是浪费的。通过在每个节点维护一个有界优先队列的 top-k 结果（在插入时更新），你可以通过读取 'i' 下 'p' 节点的列表来回答"前缀 'ip' 的前 10 个"。这以插入时间和内存换取查询速度。Google 的搜索建议使用类似的方法，采用频率加权的 Trie。
 :::

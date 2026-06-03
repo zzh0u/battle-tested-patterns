@@ -253,26 +253,26 @@ impl WriteAheadLog {
 
 ## 挑战题
 
-::: details Q1: Your WAL implementation calls write() but not fsync(). The OS crashes (not just the process). Is your data safe?
-**Answer:** No. Without fsync, data may be in the OS page cache but not on disk. An OS crash or power loss loses the unflushed writes.
+::: details Q1: 你的 WAL 实现调用了 write() 但没有调用 fsync()。操作系统崩溃（不仅仅是进程崩溃）。你的数据安全吗？
+**答案：** 不安全。没有 fsync，数据可能在 OS 页面缓存中但不在磁盘上。OS 崩溃或断电会丢失未刷写的写入。
 
-`write()` transfers data to the kernel's page cache, which is volatile memory. Only `fsync()` (or `fdatasync()`) forces it to durable storage. This is why databases like PostgreSQL have `synchronous_commit` and etcd calls `sync()` after every WAL write. The trade-off: fsync on every write is slow (especially on spinning disks), so many systems batch writes and fsync periodically, accepting a small window of potential data loss.
+`write()` 将数据传输到内核的页面缓存，这是易失性内存。只有 `fsync()`（或 `fdatasync()`）才强制写入持久存储。这就是为什么像 PostgreSQL 这样的数据库有 `synchronous_commit`，etcd 在每次 WAL 写入后调用 `sync()`。权衡：每次写入都 fsync 很慢（尤其在机械硬盘上），所以很多系统批量写入并定期 fsync，接受一个小的潜在数据丢失窗口。
 :::
 
-::: details Q2: Your WAL has been running for 6 months and contains 200 million log entries. Recovery after a crash takes 45 minutes. How do you fix this?
-**Answer:** Take periodic snapshots (checkpoints) of the current state and truncate the WAL up to that point. Recovery replays only entries after the last snapshot.
+::: details Q2: 你的 WAL 已经运行了 6 个月，包含 2 亿条日志条目。崩溃后的恢复需要 45 分钟。如何修复？
+**答案：** 定期对当前状态进行快照（检查点）并截断到该点的 WAL。恢复只重放最后一次快照之后的条目。
 
-This is log compaction or checkpointing. Instead of replaying the entire history, you serialize the current state to a snapshot file, record the WAL position, and delete older log entries. Recovery loads the snapshot and replays only the entries after it. etcd does this with its snapshot mechanism; PostgreSQL uses checkpoints. Without it, WAL-based systems become progressively slower to recover.
+这是日志压缩或检查点。不是重放整个历史，而是将当前状态序列化到快照文件，记录 WAL 位置，然后删除更旧的日志条目。恢复加载快照并只重放之后的条目。etcd 通过其快照机制做到这一点；PostgreSQL 使用检查点。没有它，基于 WAL 的系统恢复会越来越慢。
 :::
 
-::: details Q3: A teammate suggests using periodic full-state snapshots instead of a WAL. "Just snapshot every 5 seconds." What does the WAL give you that snapshots alone don't?
-**Answer:** The WAL gives you point-in-time recovery with zero data loss. A 5-second snapshot interval means you can lose up to 5 seconds of writes on crash.
+::: details Q3: 一个队友建议用定期的全状态快照替代 WAL。"每 5 秒快照一次就行了。"WAL 给你什么是仅靠快照无法实现的？
+**答案：** WAL 给你零数据丢失的时间点恢复。5 秒的快照间隔意味着崩溃时你可能丢失最多 5 秒的写入。
 
-Snapshots capture state at discrete intervals, so any writes between the last snapshot and the crash are lost. The WAL records every individual mutation, so recovery replays up to the last successfully written entry -- typically losing at most one operation. Most production systems use both: the WAL for durability between snapshots, and snapshots to bound WAL size and speed up recovery.
+快照在离散的时间间隔捕获状态，所以最后一次快照和崩溃之间的任何写入都会丢失。WAL 记录每个单独的变更，所以恢复会重放到最后一条成功写入的条目——通常最多丢失一个操作。大多数生产系统两者都使用：快照之间用 WAL 保证持久性，快照用来限制 WAL 大小和加速恢复。
 :::
 
-::: details Q4: Two operations in the WAL are: (1) SET balance=100, (2) SET balance=200. During recovery, the system replays both. Does the replay order matter, and why?
-**Answer:** Yes, order matters. Replaying (2) before (1) would set balance to 100, which is incorrect. WAL entries must be replayed in the exact order they were written.
+::: details Q4: WAL 中有两个操作：(1) SET balance=100，(2) SET balance=200。恢复期间，系统重放两者。重放顺序重要吗？为什么？
+**答案：** 是的，顺序很重要。先重放 (2) 再重放 (1) 会将 balance 设为 100，这是不正确的。WAL 条目必须按写入的精确顺序重放。
 
-WAL correctness depends on sequential replay reproducing the exact same state transitions as the original execution. This is why the WAL is an ordered, append-only log -- not a set of unordered operations. If operations were commutative and idempotent (like "increment by 5"), order might not matter, but most real mutations (SET, DELETE) are order-dependent.
+WAL 的正确性依赖于顺序重放能重现与原始执行完全相同的状态转换。这就是为什么 WAL 是有序的、仅追加的日志——而不是无序操作的集合。如果操作是可交换的且幂等的（如"增加 5"），顺序可能不重要，但大多数真实变更（SET、DELETE）是顺序依赖的。
 :::

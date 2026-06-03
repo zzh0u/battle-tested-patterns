@@ -142,6 +142,7 @@ Add `## Challenge Questions` section at the end of the pattern doc:
 
 - [ ] Go code: no `:=` at package level (must be inside `func`)
 - [ ] Go code: do NOT add `import` blocks — verify-code auto-detects and adds imports
+- [ ] Python code: do NOT use `match` statement (3.10+) — use `if/elif` chains instead
 - [ ] Go code: all called functions exist (add stubs like `func process(s string) {}`)
 - [ ] Rust code: top-level `let`/`assert!` wrapped in `fn main()`
 - [ ] Mermaid diagrams: use `×` not `*` for multiplication (Mermaid treats `*` as special)

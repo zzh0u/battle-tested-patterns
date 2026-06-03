@@ -233,26 +233,26 @@ impl WorkStealingScheduler {
 
 ## 挑战题
 
-::: details Q1: Workers pop from their own deque using LIFO (top), but steal from others using FIFO (bottom). Why not use FIFO for both?
-**Answer:** LIFO on your own deque gives cache locality -- the most recently pushed task is likely still in CPU cache. FIFO stealing takes the oldest (largest) task from the victim, giving the thief more work to do before needing to steal again.
+::: details Q1: Worker 从自己的双端队列使用 LIFO（顶部）弹出，但从其他 Worker 处使用 FIFO（底部）窃取。为什么不两者都用 FIFO？
+**答案：** 从自己的双端队列使用 LIFO 提供缓存局部性——最近推入的任务很可能仍在 CPU 缓存中。FIFO 窃取从受害者那里取走最旧（最大）的任务，给窃取者更多工作做，从而在需要再次窃取之前持续更久。
 
-In divide-and-conquer workloads, the bottom of the deque holds the earliest-spawned (coarsest-grained) tasks. Stealing one large task is better than stealing many small ones because it amortizes the steal overhead and gives the thief a chunk of work it can subdivide locally. LIFO for local pops also naturally implements depth-first execution, which uses less stack space.
+在分治工作负载中，双端队列的底部持有最早产生的（粒度最粗的）任务。窃取一个大任务比窃取多个小任务好，因为它摊销了窃取开销并给窃取者一块可以在本地细分的工作。本地弹出使用 LIFO 也自然实现了深度优先执行，使用更少的栈空间。
 :::
 
-::: details Q2: Go's runtime steals half the victim's run queue instead of just one task. Why is "steal half" better than "steal one"?
-**Answer:** Stealing one task means the thief may finish quickly and immediately need to steal again, causing repeated contention on the victim's deque. Stealing half amortizes the synchronization cost.
+::: details Q2: Go 的运行时从受害者的运行队列中窃取一半而非仅一个任务。为什么"窃取一半"比"窃取一个"好？
+**答案：** 只窃取一个任务意味着窃取者可能很快完成并立即需要再次窃取，导致对受害者双端队列的重复竞争。窃取一半摊销了同步成本。
 
-Each steal operation requires atomic CAS on the victim's deque, which is expensive. If you steal only one task, a worker with an empty queue may steal dozens of times per millisecond. Stealing half the queue in one operation means the thief has enough local work to stay busy, reducing total steal attempts and contention. The Go runtime's `runqgrab` does exactly this with a single atomic operation.
+每次窃取操作需要对受害者双端队列的原子 CAS，这代价很高。如果你只窃取一个任务，一个队列为空的 Worker 可能每毫秒窃取几十次。在一次操作中窃取队列的一半意味着窃取者有足够的本地工作保持忙碌，减少总窃取尝试次数和竞争。Go 运行时的 `runqgrab` 正是用单次原子操作做到这一点的。
 :::
 
-::: details Q3: What is the ABA problem in the context of a lock-free work-stealing deque, and why does it matter?
-**Answer:** The ABA problem occurs when a CAS succeeds because the value matches, but the underlying state has changed between the read and the CAS -- another thread modified and restored the original value.
+::: details Q3: 在无锁工作窃取双端队列的上下文中，什么是 ABA 问题？为什么它很重要？
+**答案：** ABA 问题发生在 CAS 因为值匹配而成功，但在读取和 CAS 之间底层状态已经改变——另一个线程修改了然后又恢复了原始值。
 
-In a lock-free deque, a thief reads the bottom index as value A, gets preempted, the owner pops and pushes (bottom goes A -> B -> A), and the thief's CAS on the bottom index succeeds even though the deque content is different. This can cause a task to be executed twice or skipped. The fix is to use a tagged pointer or generation counter so CAS detects the intermediate changes. This is why Tokio and Go use epoch/version counters alongside deque indices.
+在无锁双端队列中，窃取者读取底部索引为值 A，被抢占，所有者弹出又推入（底部从 A -> B -> A），窃取者对底部索引的 CAS 成功了，即使双端队列内容不同。这可能导致任务被执行两次或被跳过。修复方法是使用标记指针或代计数器使 CAS 能检测到中间的变化。这就是 Tokio 和 Go 在双端队列索引旁边使用 epoch/版本计数器的原因。
 :::
 
-::: details Q4: You have 8 workers and 8 identical long-running tasks, one per worker. Is work stealing helping here?
-**Answer:** No. If every worker has exactly one task of equal duration, no worker finishes early, so no stealing ever occurs. Work stealing adds zero benefit and a small overhead from the idle-check logic.
+::: details Q4: 你有 8 个 Worker 和 8 个相同的长时间运行任务，每个 Worker 一个。工作窃取在这里有帮助吗？
+**答案：** 没有。如果每个 Worker 恰好有一个相同持续时间的任务，没有 Worker 会提前完成，所以永远不会发生窃取。工作窃取带来零收益和来自空闲检查逻辑的少量开销。
 
-Work stealing shines when workloads are irregular -- some tasks finish quickly and the worker can help others. With perfectly balanced, uniform tasks, static partitioning (assign one task per worker) is simpler and equally effective. Work stealing's overhead (deque management, random victim selection, CAS operations) is wasted when there's nothing to steal.
+工作窃取在工作负载不均匀时发挥优势——一些任务很快完成，Worker 可以帮助其他的。在完美平衡、统一的任务下，静态分配（每个 Worker 分配一个任务）更简单且同样有效。工作窃取的开销（双端队列管理、随机受害者选择、CAS 操作）在没有东西可窃取时都是浪费的。
 :::
