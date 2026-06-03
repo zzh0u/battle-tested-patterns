@@ -73,3 +73,11 @@ features:
 | [Tombstone](/patterns/tombstone/) | Mark deleted, reclaim later — deferred deletion | LevelDB, Cassandra |
 | [Registry](/patterns/registry/) | Self-register by name, discover at runtime | TensorFlow, gRPC |
 | [Dirty Flag](/patterns/dirty-flag/) | Mark dirty on mutation, recompute only when needed | Chromium, React |
+| [Tagged Union](/patterns/tagged-union/) | Type tag + union for safe multi-type dispatch | Godot Variant, PyTorch IValue |
+| [Interning](/patterns/interning/) | Deduplicate immutable values, O(1) equality by pointer | Rust compiler, CPython |
+| [Vtable](/patterns/vtable/) | Function pointer struct for manual polymorphism | Linux kernel, CPython |
+| [Visitor](/patterns/visitor/) | Dispatch to type-specific callbacks on tree nodes | LLVM, Vue compiler |
+| [Merkle Tree](/patterns/merkle-tree/) | Hash pairs upward to root for O(log n) integrity proof | Git, ZFS |
+| [Merge Iterator](/patterns/merge-iterator/) | K-way merge of sorted streams via min-heap | LevelDB, RocksDB |
+| [LSM Tree](/patterns/lsm-tree/) | Buffer writes in memory, flush to sorted files, compact | LevelDB, RocksDB |
+| [Checkpointing](/patterns/checkpointing/) | Snapshot state periodically, recover from checkpoint | PostgreSQL, Redis |

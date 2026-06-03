@@ -73,3 +73,11 @@ features:
 | [墓碑删除](/zh/patterns/tombstone/) | 标记删除，后台回收——延迟删除 | LevelDB, Cassandra |
 | [注册表](/zh/patterns/registry/) | 按名注册，运行时发现 | TensorFlow, gRPC |
 | [脏标记](/zh/patterns/dirty-flag/) | 变更时标脏，按需重算 | Chromium, React |
+| [标签联合 (Tagged Union)](/zh/patterns/tagged-union/) | 类型标签 + 联合体，安全的多类型分发 | Godot Variant, PyTorch IValue |
+| [驻留 (Interning)](/zh/patterns/interning/) | 去重不可变值，指针比较实现 O(1) 等值判断 | Rust 编译器, CPython |
+| [虚函数表 (Vtable)](/zh/patterns/vtable/) | 函数指针结构体实现手动多态 | Linux 内核, CPython |
+| [访问者 (Visitor)](/zh/patterns/visitor/) | 对树节点分发类型特定回调 | LLVM, Vue 编译器 |
+| [默克尔树 (Merkle Tree)](/zh/patterns/merkle-tree/) | 哈希对逐层上推至根，O(log n) 完整性证明 | Git, ZFS |
+| [归并迭代器 (Merge Iterator)](/zh/patterns/merge-iterator/) | 最小堆实现 K 路有序流合并 | LevelDB, RocksDB |
+| [LSM 树](/zh/patterns/lsm-tree/) | 写入缓冲在内存，刷入有序文件，后台合并 | LevelDB, RocksDB |
+| [检查点 (Checkpointing)](/zh/patterns/checkpointing/) | 周期性快照状态，从检查点恢复 | PostgreSQL, Redis |

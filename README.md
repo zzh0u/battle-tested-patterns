@@ -17,7 +17,7 @@ English | [简体中文](README.zh-CN.md)
 
 </div>
 
-## 30 Patterns at a Glance
+## 46 Patterns at a Glance
 
 <table>
 <tr>
@@ -32,6 +32,9 @@ English | [简体中文](README.zh-CN.md)
 - [Bloom Filter](https://totoro-jam.github.io/battle-tested-patterns/patterns/bloom-filter/) — set membership
 - [LRU Cache](https://totoro-jam.github.io/battle-tested-patterns/patterns/lru-cache/) — eviction policy
 - [B+ Tree](https://totoro-jam.github.io/battle-tested-patterns/patterns/b-plus-tree/) — disk-optimized index
+- [Tagged Union](https://totoro-jam.github.io/battle-tested-patterns/patterns/tagged-union/) — type-safe dispatch
+- [Merkle Tree](https://totoro-jam.github.io/battle-tested-patterns/patterns/merkle-tree/) — integrity proof
+- [Merge Iterator](https://totoro-jam.github.io/battle-tested-patterns/patterns/merge-iterator/) — k-way merge
 
 </td>
 <td width="33%">
@@ -61,6 +64,8 @@ English | [简体中文](README.zh-CN.md)
 - [Middleware Chain](https://totoro-jam.github.io/battle-tested-patterns/patterns/middleware-chain/) — pipeline
 - [Registry](https://totoro-jam.github.io/battle-tested-patterns/patterns/registry/) — self-register
 - [Dirty Flag](https://totoro-jam.github.io/battle-tested-patterns/patterns/dirty-flag/) — deferred recompute
+- [LSM Tree](https://totoro-jam.github.io/battle-tested-patterns/patterns/lsm-tree/) — write-optimized store
+- [Checkpointing](https://totoro-jam.github.io/battle-tested-patterns/patterns/checkpointing/) — snapshot recovery
 
 </td>
 </tr>
@@ -75,6 +80,7 @@ English | [简体中文](README.zh-CN.md)
 - [Copy-on-Write](https://totoro-jam.github.io/battle-tested-patterns/patterns/copy-on-write/) — defer copy
 - [Reference Counting](https://totoro-jam.github.io/battle-tested-patterns/patterns/reference-counting/) — auto-cleanup
 - [Tombstone](https://totoro-jam.github.io/battle-tested-patterns/patterns/tombstone/) — deferred deletion
+- [Interning](https://totoro-jam.github.io/battle-tested-patterns/patterns/interning/) — deduplicate values
 
 </td>
 <td>
@@ -84,6 +90,8 @@ English | [简体中文](README.zh-CN.md)
 - [Observer](https://totoro-jam.github.io/battle-tested-patterns/patterns/observer/) — pub/sub
 - [Iterator](https://totoro-jam.github.io/battle-tested-patterns/patterns/iterator/) — lazy eval
 - [Diff / Patch](https://totoro-jam.github.io/battle-tested-patterns/patterns/diff-patch/) — minimal edits
+- [Vtable](https://totoro-jam.github.io/battle-tested-patterns/patterns/vtable/) — manual polymorphism
+- [Visitor](https://totoro-jam.github.io/battle-tested-patterns/patterns/visitor/) — tree traversal dispatch
 
 </td>
 <td>
@@ -93,8 +101,10 @@ English | [简体中文](README.zh-CN.md)
 - Redis · PostgreSQL
 - Kafka · Chromium
 - Tokio · Erlang/OTP
-- LevelDB · etcd
+- LevelDB · RocksDB · etcd
 - Nginx · Akka
+- LLVM · Vue · Godot
+- PyTorch · CPython · ZFS
 
 </td>
 </tr>

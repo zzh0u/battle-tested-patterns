@@ -280,7 +280,7 @@ Run exercises: `pnpm test`
 ## Challenge Questions
 
 ::: details Q1: You're merging 100 sorted streams, each with 1 million elements. What's the total number of heap operations, and why is this better than sorting all 100 million elements?
-**Answer:** About 200 million heap operations (each element is pushed and popped once), each costing O(log 100) ~ 7 comparisons. Total: ~1.4 billion comparisons. Sorting 100M elements with merge sort: O(100M * log(100M)) ~ 100M * 27 ~ 2.7 billion comparisons. K-way merge is roughly 2x faster.
+**Answer:** About 200 million heap operations (each element is pushed and popped once), each costing O(log 100) ~ 7 comparisons. Total: ~1.4 billion comparisons. Sorting 100M elements with merge sort: O(100M × log(100M)) ~ 100M × 27 ~ 2.7 billion comparisons. K-way merge is roughly 2x faster.
 
 The key advantage isn't just fewer comparisons -- it's the streaming nature. K-way merge uses O(K) memory regardless of total data size. You can merge terabytes of sorted data from disk using only a few KB of heap space. Full sorting would require loading everything into memory or implementing multi-pass external sort, which is essentially K-way merge anyway.
 :::
