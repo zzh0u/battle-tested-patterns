@@ -48,7 +48,7 @@ class CheckpointWAL {
     const startIndex = this.lastCheckpointIndex + 1;
     let count = 0;
     for (let i = startIndex; i < this.entries.length; i++) {
-      applyFn(this.entries[i]);
+      applyFn(this.entries[i]!);
       count++;
     }
     return count;

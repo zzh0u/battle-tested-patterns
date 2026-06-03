@@ -36,7 +36,7 @@ class GenerationPool<T> {
     // TODO: implement
     if (this.freeList.length === 0) return null;
     const index = this.freeList.pop()!;
-    const slot = this.slots[index];
+    const slot = this.slots[index]!;
     slot.value = value;
     slot.occupied = true;
     return { index, generation: slot.generation };
