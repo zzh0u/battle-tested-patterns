@@ -1,0 +1,284 @@
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+
+interface TrieNode {
+  char: string;
+  children: Map<string, TrieNode>;
+  isEnd: boolean;
+  id: number;
+}
+
+let nextId = 0;
+
+function createNode(char: string): TrieNode {
+  return { char, children: new Map(), isEnd: false, id: nextId++ };
+}
+
+const root = ref<TrieNode>(createNode(''));
+const inputWord = ref('');
+const message = ref('Type a word and insert it into the trie');
+const highlightIds = ref<Set<number>>(new Set());
+const words = ref<string[]>([]);
+
+function insertWord() {
+  const word = inputWord.value.trim().toLowerCase();
+  if (!word || !/^[a-z]+$/.test(word)) {
+    message.value = 'Enter lowercase letters only';
+    return;
+  }
+  if (words.value.includes(word)) {
+    message.value = `"${word}" already exists`;
+    return;
+  }
+
+  let current = root.value;
+  const path: number[] = [current.id];
+  for (const ch of word) {
+    if (!current.children.has(ch)) {
+      current.children.set(ch, createNode(ch));
+    }
+    current = current.children.get(ch)!;
+    path.push(current.id);
+  }
+  current.isEnd = true;
+  words.value.push(word);
+
+  highlightIds.value = new Set(path);
+  message.value = `Inserted "${word}" (${word.length} nodes traversed)`;
+  inputWord.value = '';
+
+  setTimeout(() => { highlightIds.value = new Set(); }, 800);
+}
+
+async function searchWord() {
+  const word = inputWord.value.trim().toLowerCase();
+  if (!word) {
+    message.value = 'Enter a word to search';
+    return;
+  }
+
+  let current = root.value;
+  const path: number[] = [current.id];
+
+  for (const ch of word) {
+    highlightIds.value = new Set(path);
+    await delay(200);
+    if (!current.children.has(ch)) {
+      message.value = `"${word}" not found — no '${ch}' edge from current node`;
+      setTimeout(() => { highlightIds.value = new Set(); }, 800);
+      return;
+    }
+    current = current.children.get(ch)!;
+    path.push(current.id);
+  }
+
+  highlightIds.value = new Set(path);
+  if (current.isEnd) {
+    message.value = `Found "${word}"!`;
+  } else {
+    message.value = `"${word}" is a prefix but not a stored word`;
+  }
+  setTimeout(() => { highlightIds.value = new Set(); }, 1200);
+}
+
+function addPresets() {
+  for (const w of ['cat', 'car', 'card', 'care', 'dog', 'do']) {
+    inputWord.value = w;
+    insertWord();
+  }
+  message.value = 'Added preset words: cat, car, card, care, dog, do';
+}
+
+function reset() {
+  nextId = 0;
+  root.value = createNode('');
+  words.value = [];
+  highlightIds.value = new Set();
+  message.value = 'Trie cleared!';
+  inputWord.value = '';
+}
+
+function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+interface TreeLayout {
+  node: TrieNode;
+  x: number;
+  y: number;
+  children: TreeLayout[];
+}
+
+function layoutTree(node: TrieNode, depth: number, xOffset: { val: number }): TreeLayout {
+  const children: TreeLayout[] = [];
+  const sortedKeys = [...node.children.keys()].sort();
+
+  for (const key of sortedKeys) {
+    const child = node.children.get(key)!;
+    children.push(layoutTree(child, depth + 1, xOffset));
+  }
+
+  let x: number;
+  if (children.length === 0) {
+    x = xOffset.val;
+    xOffset.val += 40;
+  } else {
+    x = (children[0].x + children[children.length - 1].x) / 2;
+  }
+
+  return { node, x, y: depth * 45 + 25, children };
+}
+
+const treeLayout = computed(() => {
+  const xOffset = { val: 30 };
+  return layoutTree(root.value, 0, xOffset);
+});
+
+function flattenLayout(layout: TreeLayout): TreeLayout[] {
+  const result: TreeLayout[] = [layout];
+  for (const child of layout.children) {
+    result.push(...flattenLayout(child));
+  }
+  return result;
+}
+
+const allNodes = computed(() => flattenLayout(treeLayout.value));
+const svgW = computed(() => Math.max(300, allNodes.value.reduce((max, n) => Math.max(max, n.x), 0) + 50));
+const svgH = computed(() => Math.max(120, allNodes.value.reduce((max, n) => Math.max(max, n.y), 0) + 40));
+
+function edgesFromLayout(layout: TreeLayout): { from: TreeLayout; to: TreeLayout }[] {
+  const edges: { from: TreeLayout; to: TreeLayout }[] = [];
+  for (const child of layout.children) {
+    edges.push({ from: layout, to: child });
+    edges.push(...edgesFromLayout(child));
+  }
+  return edges;
+}
+
+const edges = computed(() => edgesFromLayout(treeLayout.value));
+</script>
+
+<template>
+  <div class="viz-container">
+    <div class="viz-title">Interactive Trie (Prefix Tree)</div>
+
+    <svg :viewBox="`0 0 ${svgW} ${svgH}`" class="trie-svg">
+      <!-- Edges -->
+      <line
+        v-for="(e, i) in edges"
+        :key="'edge-' + i"
+        :x1="e.from.x"
+        :y1="e.from.y"
+        :x2="e.to.x"
+        :y2="e.to.y"
+        stroke="var(--viz-border)"
+        stroke-width="1.5"
+      />
+
+      <!-- Nodes -->
+      <g v-for="n in allNodes" :key="n.node.id" :transform="`translate(${n.x}, ${n.y})`">
+        <circle
+          r="15"
+          :fill="highlightIds.has(n.node.id) ? 'var(--viz-warning)' : n.node.isEnd ? 'var(--viz-success)' : 'var(--viz-primary)'"
+          stroke="#fff"
+          stroke-width="1.5"
+          :class="{ 'trie-node-pulse': highlightIds.has(n.node.id) }"
+        />
+        <text
+          text-anchor="middle"
+          dominant-baseline="central"
+          fill="#fff"
+          font-size="12"
+          font-weight="700"
+          font-family="var(--vp-font-family-mono)"
+        >{{ n.node.char || '·' }}</text>
+        <!-- End marker -->
+        <circle
+          v-if="n.node.isEnd"
+          r="18"
+          fill="none"
+          stroke="var(--viz-success)"
+          stroke-width="2"
+          stroke-dasharray="3,2"
+        />
+      </g>
+
+      <!-- Empty state -->
+      <text v-if="words.length === 0" :x="svgW / 2" :y="svgH / 2" text-anchor="middle" fill="var(--viz-muted)" font-size="13">
+        Empty — insert words to build the trie
+      </text>
+    </svg>
+
+    <!-- Stored words -->
+    <div v-if="words.length > 0" class="trie-words">
+      <span class="viz-label">Words:&nbsp;</span>
+      <span v-for="w in words" :key="w" class="trie-word-tag">{{ w }}</span>
+    </div>
+
+    <div class="viz-controls">
+      <input
+        v-model="inputWord"
+        class="viz-input"
+        placeholder="word"
+        maxlength="10"
+        @keydown.enter="insertWord"
+      />
+      <button class="viz-btn viz-btn--primary" @click="insertWord">Insert</button>
+      <button class="viz-btn" @click="searchWord">Search</button>
+      <button class="viz-btn" @click="addPresets">Demo</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+    </div>
+
+    <div class="viz-status">{{ message }}</div>
+  </div>
+</template>
+
+<style scoped>
+.trie-svg {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  min-height: 120px;
+}
+
+.trie-node-pulse {
+  animation: trie-pulse 0.3s ease;
+}
+
+.trie-words {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 0.5rem 0;
+}
+
+.trie-word-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-family: var(--vp-font-family-mono);
+  font-weight: 600;
+  background: var(--viz-primary);
+  color: #fff;
+}
+
+.viz-input {
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--viz-border);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-family: var(--vp-font-family-mono);
+  background: var(--vp-c-bg);
+  color: var(--viz-text);
+  width: 100px;
+}
+
+@keyframes trie-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+</style>

@@ -30,6 +30,10 @@ A skip list is a multi-level linked list where each level skips over more elemen
 | Space | O(n) expected |
 | Advantage | Simpler than red-black/AVL trees, lock-free variants possible |
 
+**Try it yourself** — insert values and search to see how express lanes speed up traversal:
+
+<SkipListViz />
+
 ## Production Proof
 
 | Project | Source | Usage |

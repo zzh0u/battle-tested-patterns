@@ -20,6 +20,10 @@ stateDiagram-v2
 
 The power: **impossible transitions don't exist**. You can't go from `success` to `error` because no such transition is defined. The compiler (or runtime) enforces this.
 
+**Try it yourself** — click events to trigger transitions and observe which events are valid in each state:
+
+<StateMachineViz />
+
 ## Production Proof
 
 | Project | Source | Usage |

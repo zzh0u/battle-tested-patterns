@@ -30,6 +30,10 @@ A trie (pronounced "try") is a tree where each path from root to node spells a p
 | Prefix search | O(k + results) — find all keys with prefix in one traversal |
 | Space | O(n × k) worst case, but shared prefixes save significantly |
 
+**Try it yourself** — insert words and search to see how shared prefixes create a compact tree:
+
+<TrieViz />
+
 ## Production Proof
 
 | Project | Source | Usage |
