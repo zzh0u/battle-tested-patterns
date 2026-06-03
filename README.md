@@ -17,6 +17,81 @@ English | [简体中文](README.zh-CN.md)
 
 </div>
 
+## 30 Patterns at a Glance
+
+<table>
+<tr>
+<td width="33%">
+
+**🧠 Data Structures**
+- [Bitmask](https://totoro-jam.github.io/battle-tested-patterns/patterns/bitmask/) — flags in one int
+- [Min Heap](https://totoro-jam.github.io/battle-tested-patterns/patterns/min-heap/) — priority queue
+- [Ring Buffer](https://totoro-jam.github.io/battle-tested-patterns/patterns/ring-buffer/) — fixed-size FIFO
+- [Trie](https://totoro-jam.github.io/battle-tested-patterns/patterns/trie/) — prefix search
+- [Skip List](https://totoro-jam.github.io/battle-tested-patterns/patterns/skip-list/) — probabilistic order
+- [Bloom Filter](https://totoro-jam.github.io/battle-tested-patterns/patterns/bloom-filter/) — set membership
+- [LRU Cache](https://totoro-jam.github.io/battle-tested-patterns/patterns/lru-cache/) — eviction policy
+
+</td>
+<td width="33%">
+
+**⚡ Concurrency**
+- [Semaphore](https://totoro-jam.github.io/battle-tested-patterns/patterns/semaphore/) — bounded access
+- [Actor Model](https://totoro-jam.github.io/battle-tested-patterns/patterns/actor-model/) — message passing
+- [Work Stealing](https://totoro-jam.github.io/battle-tested-patterns/patterns/work-stealing/) — load balance
+- [MVCC](https://totoro-jam.github.io/battle-tested-patterns/patterns/mvcc/) — snapshot isolation
+- [Cooperative Scheduling](https://totoro-jam.github.io/battle-tested-patterns/patterns/cooperative-scheduling/) — yield control
+- [Double Buffering](https://totoro-jam.github.io/battle-tested-patterns/patterns/double-buffering/) — atomic swap
+- [Backpressure](https://totoro-jam.github.io/battle-tested-patterns/patterns/backpressure/) — flow control
+
+</td>
+<td width="33%">
+
+**🏗️ Systems**
+- [Circuit Breaker](https://totoro-jam.github.io/battle-tested-patterns/patterns/circuit-breaker/) — fault tolerance
+- [Rate Limiter](https://totoro-jam.github.io/battle-tested-patterns/patterns/rate-limiter/) — throttle
+- [Retry Backoff](https://totoro-jam.github.io/battle-tested-patterns/patterns/retry-backoff/) — resilience
+- [Write-Ahead Log](https://totoro-jam.github.io/battle-tested-patterns/patterns/write-ahead-log/) — durability
+- [Batch Processing](https://totoro-jam.github.io/battle-tested-patterns/patterns/batch-processing/) — throughput
+- [Consistent Hashing](https://totoro-jam.github.io/battle-tested-patterns/patterns/consistent-hashing/) — distribution
+- [Dependency Graph](https://totoro-jam.github.io/battle-tested-patterns/patterns/dependency-graph/) — ordering
+
+</td>
+</tr>
+<tr>
+<td>
+
+**♻️ Memory**
+- [Object Pool](https://totoro-jam.github.io/battle-tested-patterns/patterns/object-pool/) — reuse instances
+- [Flyweight](https://totoro-jam.github.io/battle-tested-patterns/patterns/flyweight/) — share immutables
+- [Arena Allocator](https://totoro-jam.github.io/battle-tested-patterns/patterns/arena-allocator/) — bump alloc
+- [Free List](https://totoro-jam.github.io/battle-tested-patterns/patterns/free-list/) — O(1) alloc/free
+- [Copy-on-Write](https://totoro-jam.github.io/battle-tested-patterns/patterns/copy-on-write/) — defer copy
+
+</td>
+<td>
+
+**🔄 Behavioral**
+- [State Machine](https://totoro-jam.github.io/battle-tested-patterns/patterns/state-machine/) — transitions
+- [Observer](https://totoro-jam.github.io/battle-tested-patterns/patterns/observer/) — pub/sub
+- [Iterator](https://totoro-jam.github.io/battle-tested-patterns/patterns/iterator/) — lazy eval
+- [Diff / Patch](https://totoro-jam.github.io/battle-tested-patterns/patterns/diff-patch/) — minimal edits
+
+</td>
+<td>
+
+**📊 Proven In**
+- React · Linux · Go
+- Redis · PostgreSQL
+- Kafka · Chromium
+- Tokio · Erlang/OTP
+- LevelDB · etcd
+- Nginx · Akka
+
+</td>
+</tr>
+</table>
+
 ## The Gap This Fills
 
 | What exists | What's missing |

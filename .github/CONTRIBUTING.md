@@ -62,6 +62,18 @@ pnpm verify-links     # Verify source URLs
 3. Ensure CI is green
 4. Wait for review (see [SOP 05](./../.sop/05-pr-review.md))
 
+## Good First Contributions
+
+Not ready for a full pattern? These are great ways to start:
+
+- **Add a language implementation** — pick a pattern missing Rust/Go/Python and add an idiomatic version
+- **Add an exercise** — write a new test scenario for an existing pattern
+- **Improve a diagram** — make an ASCII diagram clearer or fix alignment
+- **Fix a broken link** — source links drift as upstream repos refactor
+- **Translate** — improve Chinese translations or add new content
+
+Look for issues labeled [`good first issue`](https://github.com/Totoro-jam/battle-tested-patterns/labels/good%20first%20issue).
+
 ## Reporting Issues
 
 - **Broken link**: Use the [broken-link template](ISSUE_TEMPLATE/broken-link.md)

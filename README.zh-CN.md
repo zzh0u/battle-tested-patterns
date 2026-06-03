@@ -17,6 +17,81 @@
 
 </div>
 
+## 30 个模式速览
+
+<table>
+<tr>
+<td width="33%">
+
+**🧠 数据结构**
+- [Bitmask](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/bitmask/) — 标志位压缩
+- [Min Heap](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/min-heap/) — 优先队列
+- [Ring Buffer](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/ring-buffer/) — 定长 FIFO
+- [Trie](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/trie/) — 前缀搜索
+- [Skip List](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/skip-list/) — 概率有序
+- [Bloom Filter](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/bloom-filter/) — 集合判存
+- [LRU Cache](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/lru-cache/) — 淘汰策略
+
+</td>
+<td width="33%">
+
+**⚡ 并发**
+- [Semaphore](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/semaphore/) — 有界访问
+- [Actor Model](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/actor-model/) — 消息传递
+- [Work Stealing](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/work-stealing/) — 负载均衡
+- [MVCC](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/mvcc/) — 快照隔离
+- [Cooperative Scheduling](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/cooperative-scheduling/) — 协作让出
+- [Double Buffering](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/double-buffering/) — 原子交换
+- [Backpressure](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/backpressure/) — 流量控制
+
+</td>
+<td width="33%">
+
+**🏗️ 系统**
+- [Circuit Breaker](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/circuit-breaker/) — 容错
+- [Rate Limiter](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/rate-limiter/) — 限流
+- [Retry Backoff](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/retry-backoff/) — 弹性
+- [Write-Ahead Log](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/write-ahead-log/) — 持久性
+- [Batch Processing](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/batch-processing/) — 吞吐
+- [Consistent Hashing](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/consistent-hashing/) — 分布
+- [Dependency Graph](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/dependency-graph/) — 排序
+
+</td>
+</tr>
+<tr>
+<td>
+
+**♻️ 内存**
+- [Object Pool](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/object-pool/) — 复用实例
+- [Flyweight](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/flyweight/) — 共享不可变
+- [Arena Allocator](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/arena-allocator/) — bump 分配
+- [Free List](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/free-list/) — O(1) 分配释放
+- [Copy-on-Write](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/copy-on-write/) — 延迟复制
+
+</td>
+<td>
+
+**🔄 行为型**
+- [State Machine](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/state-machine/) — 状态转换
+- [Observer](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/observer/) — 发布订阅
+- [Iterator](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/iterator/) — 惰性求值
+- [Diff / Patch](https://totoro-jam.github.io/battle-tested-patterns/zh/patterns/diff-patch/) — 最小编辑
+
+</td>
+<td>
+
+**📊 验证来源**
+- React · Linux · Go
+- Redis · PostgreSQL
+- Kafka · Chromium
+- Tokio · Erlang/OTP
+- LevelDB · etcd
+- Nginx · Akka
+
+</td>
+</tr>
+</table>
+
 ## 填补什么空白
 
 | 现有资源 | 缺失的部分 |
