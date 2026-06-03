@@ -30,6 +30,10 @@ Wall clocks are unreliable in distributed systems -- they drift, jump on NTP syn
 | Guarantees | If A → B (causally), then clock(A) < clock(B) |
 | Limitation | Converse is NOT true: clock(A) < clock(B) does not imply A → B |
 
+**Try it yourself** — perform local events and send messages between processes to see Lamport clocks:
+
+<LogicalClockViz />
+
 ## Production Proof
 
 | Project | Source | Usage |

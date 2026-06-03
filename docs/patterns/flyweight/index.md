@@ -20,6 +20,10 @@ flowchart LR
 
 Two requests for `"hello"` get the **same object** — not a copy. This is why `"hello" === "hello"` in many languages (string interning).
 
+**Try it yourself** — add characters and see how flyweight objects are shared:
+
+<FlyweightViz />
+
 ## Production Proof
 
 | Project | Source | Usage |

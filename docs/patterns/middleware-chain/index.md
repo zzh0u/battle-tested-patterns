@@ -37,6 +37,10 @@ Each middleware receives a context and a `next()` function. Calling `next()` pas
 | Context sharing | All middleware share the same mutable context object |
 | Direction | Bidirectional -- pre-process on the way in, post-process on the way out |
 
+**Try it yourself** — send a request through the middleware chain and watch it flow forward then backward:
+
+<MiddlewareChainViz />
+
 ## Production Proof
 
 | Project | Source | Usage |

@@ -39,6 +39,10 @@ The dirty flag pattern avoids redundant computation by tracking whether derived 
 | Read cost (dirty) | O(recompute) -- compute + cache + clear flag |
 | Space | O(1) per tracked value -- one boolean flag |
 
+**Try it yourself** — move entities to mark them dirty, then recompute to see optimization savings:
+
+<DirtyFlagViz />
+
 ## Production Proof
 
 | Project | Source | Usage |

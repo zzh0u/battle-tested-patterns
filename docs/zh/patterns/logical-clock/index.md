@@ -30,6 +30,10 @@
 | 保证 | 若 A → B（因果），则 clock(A) < clock(B) |
 | 局限 | 反之不成立：clock(A) < clock(B) 不意味着 A → B |
 
+**动手试试** — 执行本地事件并在进程之间发送消息，观察 Lamport 时钟：
+
+<LogicalClockViz />
+
 ## 生产验证
 
 | 项目 | 源码 | 用途 |

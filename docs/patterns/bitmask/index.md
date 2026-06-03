@@ -35,6 +35,10 @@ Instead of using an array of booleans or an object with multiple fields, a bitma
 
 Key insight: a single `&` operation can check any combination of flags simultaneously — no loops, no branching.
 
+**Try it yourself** — toggle permission bits and see the mask value update in binary, decimal, and hex:
+
+<BitmaskViz />
+
 ## Production Proof
 
 | Project | Source | Usage |

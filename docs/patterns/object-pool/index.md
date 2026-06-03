@@ -25,6 +25,10 @@ sequenceDiagram
 
 The pool acts as a cache of allocated objects. The key trade-off: memory usage (idle objects sitting in the pool) vs. CPU/GC savings (no allocation on the hot path).
 
+**Try it yourself** — acquire connections from the pool and watch what happens when it's exhausted:
+
+<ObjectPoolViz />
+
 ## Production Proof
 
 | Project | Source | Usage |

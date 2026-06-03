@@ -27,6 +27,10 @@ A write-ahead log records every state change as a sequential append before the a
 | Recovery | Replay from beginning or last checkpoint |
 | Overhead | One extra write per mutation (log + state) |
 
+**Try it yourself** — write operations to the WAL, flush to table, then simulate a crash and recover:
+
+<WriteAheadLogViz />
+
 ## Production Proof
 
 | Project | Source | Usage |

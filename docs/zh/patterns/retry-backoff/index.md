@@ -22,6 +22,10 @@
   + jitter: randomize to avoid thundering herd
 ```
 
+**动手试试** — 发送请求，观察指数退避与抖动的实际效果：
+
+<RetryBackoffViz />
+
 ## 生产验证
 
 | 项目 | 源码 | 用途 |

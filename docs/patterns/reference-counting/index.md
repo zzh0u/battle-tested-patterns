@@ -46,6 +46,10 @@ Reference counting assigns each shared resource a counter. Every new owner (clon
 | Cleanup trigger | Deterministic -- exactly when last owner drops |
 | Thread safety | Requires atomic operations (or mutex) for multi-threaded use |
 
+**Try it yourself** — drop references to decrement ref counts and watch objects get freed at rc=0:
+
+<ReferenceCountingViz />
+
 ## Production Proof
 
 | Project | Source | Usage |

@@ -21,6 +21,10 @@ stateDiagram-v2
 
 After swap: old "current" becomes new "work-in-progress" (reused, not GC'd). The same two objects are recycled forever — **zero allocation** on the hot path.
 
+**Try it yourself** — draw frames and swap buffers to see double buffering prevent tearing:
+
+<DoubleBufferingViz />
+
 ## Production Proof
 
 | Project | Source | Usage |

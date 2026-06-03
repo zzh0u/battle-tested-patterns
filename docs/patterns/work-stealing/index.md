@@ -26,6 +26,10 @@ Each worker owns a local deque (double-ended queue). Workers push/pop tasks from
 | Load balance | Automatic, decentralized |
 | Cache locality | High — LIFO on own work, FIFO on stolen |
 
+**Try it yourself** — add tasks to one worker and start processing to see idle workers steal tasks:
+
+<WorkStealingViz />
+
 ## Production Proof
 
 | Project | Source | Usage |

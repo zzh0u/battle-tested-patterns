@@ -24,6 +24,10 @@ Instead of retrying immediately (which overloads the failing service) or giving 
 
 The formula: `delay = min(base * 2^attempt + random(0, jitter), maxDelay)`
 
+**Try it yourself** — send a request and watch exponential backoff with jitter in action:
+
+<RetryBackoffViz />
+
 ## Production Proof
 
 | Project | Source | Usage |

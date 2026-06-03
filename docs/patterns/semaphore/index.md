@@ -22,6 +22,10 @@ sequenceDiagram
     S->>T3: unblock (count: 1→0)
 ```
 
+**Try it yourself** — acquire permits and watch workers queue when the semaphore is full:
+
+<SemaphoreViz />
+
 ## Production Proof
 
 | Project | Source | Usage |

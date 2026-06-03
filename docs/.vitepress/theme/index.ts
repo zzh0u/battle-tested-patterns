@@ -17,6 +17,18 @@ import DependencyGraphViz from './components/DependencyGraphViz.vue';
 import ObserverViz from './components/ObserverViz.vue';
 import BackpressureViz from './components/BackpressureViz.vue';
 import CopyOnWriteViz from './components/CopyOnWriteViz.vue';
+import SemaphoreViz from './components/SemaphoreViz.vue';
+import RetryBackoffViz from './components/RetryBackoffViz.vue';
+import DoubleBufferingViz from './components/DoubleBufferingViz.vue';
+import FlyweightViz from './components/FlyweightViz.vue';
+import ObjectPoolViz from './components/ObjectPoolViz.vue';
+import BitmaskViz from './components/BitmaskViz.vue';
+import MiddlewareChainViz from './components/MiddlewareChainViz.vue';
+import WorkStealingViz from './components/WorkStealingViz.vue';
+import WriteAheadLogViz from './components/WriteAheadLogViz.vue';
+import DirtyFlagViz from './components/DirtyFlagViz.vue';
+import LogicalClockViz from './components/LogicalClockViz.vue';
+import ReferenceCountingViz from './components/ReferenceCountingViz.vue';
 import './custom.css';
 
 export default {
@@ -39,5 +51,17 @@ export default {
     app.component('ObserverViz', ObserverViz);
     app.component('BackpressureViz', BackpressureViz);
     app.component('CopyOnWriteViz', CopyOnWriteViz);
+    app.component('SemaphoreViz', SemaphoreViz);
+    app.component('RetryBackoffViz', RetryBackoffViz);
+    app.component('DoubleBufferingViz', DoubleBufferingViz);
+    app.component('FlyweightViz', FlyweightViz);
+    app.component('ObjectPoolViz', ObjectPoolViz);
+    app.component('BitmaskViz', BitmaskViz);
+    app.component('MiddlewareChainViz', MiddlewareChainViz);
+    app.component('WorkStealingViz', WorkStealingViz);
+    app.component('WriteAheadLogViz', WriteAheadLogViz);
+    app.component('DirtyFlagViz', DirtyFlagViz);
+    app.component('LogicalClockViz', LogicalClockViz);
+    app.component('ReferenceCountingViz', ReferenceCountingViz);
   },
 } satisfies Theme;
