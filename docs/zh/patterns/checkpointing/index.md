@@ -408,6 +408,14 @@ impl CheckpointableStore {
 - [SQLite WAL 模式](https://www.sqlite.org/wal.html) -- WAL 检查点将页面传回数据库文件
 - [PyTorch](https://github.com/pytorch/pytorch) -- 模型检查点以在中断后恢复训练
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [write-ahead-log](/zh/patterns/write-ahead-log/) | 检查点截断 WAL——恢复只从最新检查点重放 |
+| [copy-on-write](/zh/patterns/copy-on-write/) | 写时复制在不停止写入的情况下实现一致快照 |
+| [logical-clock](/zh/patterns/logical-clock/) | 检查点与逻辑时钟位置关联以保证一致性 |
+
 ## 挑战题
 
 ::: details Q1: 你的 PostgreSQL 数据库配置了 checkpoint_timeout = 30 分钟。服务器崩溃了。最坏情况的恢复时间是多少，如何减少？

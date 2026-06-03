@@ -108,6 +108,14 @@ print(msgs)  # ["hello"]
 - DOM `addEventListener`
 - C# events
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [event-loop](/zh/patterns/event-loop/) | 事件循环将事件分发给为特定事件类型注册的观察者 |
+| [dirty-flag](/zh/patterns/dirty-flag/) | 观察者触发通知；脏标记延迟昂贵的反应 |
+| [middleware-chain](/zh/patterns/middleware-chain/) | 中间件观察和转换流经管道的数据 |
+
 ## 挑战题
 
 ::: details Q1: 一个 React 组件在 `useEffect` 中订阅了 store，但忘记返回清理函数。组件卸载时会发生什么？

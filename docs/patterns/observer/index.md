@@ -187,6 +187,14 @@ Run exercises: `pnpm test`
 - DOM `addEventListener`
 - C# events
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [event-loop](/patterns/event-loop/) | Event loops dispatch events to observers registered for specific event types |
+| [dirty-flag](/patterns/dirty-flag/) | Observer triggers notification; dirty flag defers the expensive reaction |
+| [middleware-chain](/patterns/middleware-chain/) | Middleware observes and transforms data flowing through a pipeline |
+
 ## Challenge Questions
 
 ::: details Q1: A React component subscribes to a store in `useEffect` but forgets to return a cleanup function. What happens when the component unmounts?

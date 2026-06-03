@@ -195,6 +195,14 @@ Run exercises: `pnpm test`
 - [Actix (Rust)](https://github.com/actix/actix) — actor framework for Rust with typed messages
 - [Microsoft DAPR](https://github.com/dapr/dapr) — virtual actors for microservices
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [observer](/patterns/observer/) | Actors communicate via messages, similar to observer's publish/subscribe pattern |
+| [event-loop](/patterns/event-loop/) | Each actor processes its mailbox sequentially, like a single-threaded event loop |
+| [state-machine](/patterns/state-machine/) | Actor behavior often follows a state machine pattern for its internal logic |
+
 ## Challenge Questions
 
 ::: details Q1: Actors communicate only via asynchronous messages, with no shared state or locks. A colleague claims "actors can't deadlock since there are no locks." Is this true?

@@ -214,6 +214,14 @@ Run exercises: `pnpm test`
 - [mimalloc](https://github.com/microsoft/mimalloc) — segment-level free lists with sharded design
 - [Vulkan Memory Allocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator) — sub-allocation pools with free lists
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [arena-allocator](/patterns/arena-allocator/) | Arena bulk-frees; free lists recycle individual slots for O(1) reuse |
+| [object-pool](/patterns/object-pool/) | Object pools use free lists internally to track available objects |
+| [ring-buffer](/patterns/ring-buffer/) | Both provide O(1) slot management — ring buffers via modular index, free lists via linked chain |
+
 ## Challenge Questions
 
 ::: details Q1: A bug causes `free(slot)` to be called twice on the same slot. What happens with a naive free list, and how do production systems detect this?

@@ -336,6 +336,14 @@ impl TombstoneStore {
 - [CockroachDB](https://github.com/cockroachdb/cockroach) -- 用于范围删除的 MVCC 墓碑，由后台任务 GC
 - [Elasticsearch](https://github.com/elastic/elasticsearch) -- 软删除文档用 `_deleted` 标记，段合并时清除
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [lsm-tree](/zh/patterns/lsm-tree/) | LSM 树大量使用墓碑——在压缩时清理 |
+| [mvcc](/zh/patterns/mvcc/) | MVCC 用墓碑标记旧版本以供垃圾回收 |
+| [free-list](/zh/patterns/free-list/) | 墓碑清理后，释放的槽位可以由空闲链表管理 |
+
 ## 挑战题
 
 ::: details Q1: 一个 Cassandra 集群设置 gc_grace_seconds=10 天。节点 C 宕机了 15 天。当 C 恢复上线时会发生什么？

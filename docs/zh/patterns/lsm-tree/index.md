@@ -571,6 +571,16 @@ impl LSMTree {
 - [BadgerDB](https://github.com/dgraph-io/badger) -- Go 原生的 LSM 键值存储，支持值分离
 - [SQLite LSM 扩展](https://www.sqlite.org/lsm.html) -- SQLite 的基于 LSM 的存储后端
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [skip-list](/zh/patterns/skip-list/) | 跳表充当 LSM 树中的内存有序缓冲区（memtable） |
+| [bloom-filter](/zh/patterns/bloom-filter/) | 每个 SSTable 上的布隆过滤器避免查找时不必要的磁盘读取 |
+| [merge-iterator](/zh/patterns/merge-iterator/) | 压缩使用归并迭代器合并多个有序 SSTable |
+| [write-ahead-log](/zh/patterns/write-ahead-log/) | WAL 确保 memtable 写入在刷盘到 SSTable 前幸存崩溃 |
+| [tombstone](/zh/patterns/tombstone/) | LSM 树使用墓碑标记删除，在压缩时清理 |
+
 ## 挑战题
 
 ::: details Q1: 你的 LSM 树有 5 个层级（L0-L4）。读取键 "user:999" 没有找到结果。它可能需要检查多少个文件？

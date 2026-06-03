@@ -251,6 +251,14 @@ Run exercises: `pnpm test`
 - [pytest](https://github.com/pytest-dev/pytest) -- fixture registry: `@pytest.fixture` registers functions discoverable by parameter name
 - [Docker](https://github.com/moby/moby) -- driver registry: storage, network, and logging drivers register at daemon startup
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [middleware-chain](/patterns/middleware-chain/) | Middleware handlers often register themselves into a registry |
+| [dependency-graph](/patterns/dependency-graph/) | Registries can track dependencies between registered components |
+| [consistent-hashing](/patterns/consistent-hashing/) | Service registries feed consistent hashing with available node lists |
+
 ## Challenge Questions
 
 ::: details Q1: Two plugins both try to register the name "json". What should happen?

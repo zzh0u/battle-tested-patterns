@@ -211,6 +211,14 @@ assert not has_flag(editor, DELETE)  # True
 - Most ECS game engines — component membership masks
 - Unix `fcntl` flags
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [tagged-union](/zh/patterns/tagged-union/) | 两者都将类型信息编码为紧凑的整数表示 |
+| [dirty-flag](/zh/patterns/dirty-flag/) | 脏标记通常作为位掩码中的位来存储 |
+| [double-buffering](/zh/patterns/double-buffering/) | React 在双缓冲树的每个 Fiber 节点上使用位掩码标志追踪工作 |
+
 ## 挑战题
 
 ::: details Q1: 你的团队在 JavaScript 配置系统中用 Bitmask 定义了 40 个功能开关。QA 报告第 32-39 号开关行为异常——即使设置了某个开关，检查时有时返回 false。出了什么问题？

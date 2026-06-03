@@ -275,6 +275,15 @@ impl SkipList {
 - [Java ConcurrentSkipListMap](https://github.com/openjdk/jdk) — JDK 中的无锁有序 map
 - [FoundationDB](https://github.com/apple/foundationdb) — 内存有序数据的跳表
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [lsm-tree](/zh/patterns/lsm-tree/) | LSM 树使用跳表作为内存中的有序缓冲区（memtable） |
+| [b-plus-tree](/zh/patterns/b-plus-tree/) | B+ 树保证 O(log n)；跳表以更简单的代码概率性地实现 |
+| [bloom-filter](/zh/patterns/bloom-filter/) | 两者都是概率性的——布隆过滤器用于成员判定，跳表用于排序 |
+| [free-list](/zh/patterns/free-list/) | 跳表节点需要分配管理；空闲链表为固定大小节点提供 O(1) 分配 |
+
 ## 挑战题
 
 ::: details Q1: 跳表使用 `Math.random()` 来决定节点的提升层级。你的同事认为这使得跳表性能"不可靠"，因为糟糕的随机序列可能导致 O(n) 搜索。这在生产中是真正的顾虑吗？

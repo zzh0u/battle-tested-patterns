@@ -168,6 +168,14 @@ func (s *Scheduler) WorkLoop() bool {
 - Erlang/BEAM VM — reduction counting
 - Unity — coroutines
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [event-loop](/zh/patterns/event-loop/) | 事件循环依赖协作调度——长任务必须让出以保持 I/O 流畅 |
+| [work-stealing](/zh/patterns/work-stealing/) | 协作调度在线程内工作；工作窃取在线程间分配 |
+| [min-heap](/zh/patterns/min-heap/) | React 调度器使用最小堆选择下一个运行的协作任务 |
+
 ## 挑战题
 
 ::: details Q1: React 每 5ms 让出控制权。如果你将其增加到 50ms 会怎样？如果减少到 0.5ms 呢？

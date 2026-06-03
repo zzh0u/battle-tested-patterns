@@ -193,6 +193,14 @@ impl<S> Actor<S> {
 - [Actix (Rust)](https://github.com/actix/actix) — Rust 的类型化消息 Actor 框架
 - [Microsoft DAPR](https://github.com/dapr/dapr) — 微服务的虚拟 Actor
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [observer](/zh/patterns/observer/) | Actor 通过消息通信，类似观察者的发布/订阅模式 |
+| [event-loop](/zh/patterns/event-loop/) | 每个 Actor 按顺序处理其信箱，类似单线程事件循环 |
+| [state-machine](/zh/patterns/state-machine/) | Actor 行为通常遵循状态机模式管理其内部逻辑 |
+
 ## 挑战题
 
 ::: details Q1: Actor 之间只通过异步消息通信，没有共享状态和锁。一位同事声称"Actor 不会死锁，因为没有锁"。这个说法正确吗？

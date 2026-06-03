@@ -185,6 +185,14 @@ Run exercises: `pnpm test`
 - [Ruby Symbol](https://github.com/ruby/ruby) — `Symbol` is an interned string that's never garbage-collected
 - [LLVM StringPool](https://github.com/llvm/llvm-project) — interned strings for identifiers across the compiler pipeline
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [flyweight](/patterns/flyweight/) | Interning is the mechanism behind flyweight — deduplicate identical immutable values |
+| [lru-cache](/patterns/lru-cache/) | Intern tables can use LRU eviction to bound memory usage |
+| [bloom-filter](/patterns/bloom-filter/) | Bloom filters can pre-check before expensive intern table lookups |
+
 ## Challenge Questions
 
 ::: details Q1: Your compiler interns 100,000 identifiers. How does interning affect memory compared to storing raw strings?

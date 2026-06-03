@@ -218,6 +218,15 @@ impl MVCCStore {
 - [TiKV](https://github.com/tikv/tikv) — 基于 Percolator 的分布式 MVCC 事务
 - [FoundationDB](https://github.com/apple/foundationdb) — 多版本存储层
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [copy-on-write](/zh/patterns/copy-on-write/) | MVCC 在写入时创建新版本，类似写时复制语义 |
+| [logical-clock](/zh/patterns/logical-clock/) | 逻辑时钟提供 MVCC 依赖的版本时间戳 |
+| [tombstone](/zh/patterns/tombstone/) | MVCC 用墓碑标记已删除版本，供后续垃圾回收 |
+| [write-ahead-log](/zh/patterns/write-ahead-log/) | WAL 确保 MVCC 版本变更在崩溃后幸存 |
+
 ## 挑战题
 
 ::: details Q1: 你的 MVCC 存储永久保留每个键的每个版本。运行一年后，存储使用量是实际活跃数据集的 50 倍。像 PostgreSQL 这样的生产数据库如何处理这个问题？

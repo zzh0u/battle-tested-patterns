@@ -183,6 +183,14 @@ impl Interner {
 - [Ruby Symbol](https://github.com/ruby/ruby) — `Symbol` 是永不被垃圾回收的驻留字符串
 - [LLVM StringPool](https://github.com/llvm/llvm-project) — 编译器管线中标识符的驻留字符串
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [flyweight](/zh/patterns/flyweight/) | 驻留是享元背后的机制——去重相同的不可变值 |
+| [lru-cache](/zh/patterns/lru-cache/) | 驻留表可以使用 LRU 淘汰来限制内存使用 |
+| [bloom-filter](/zh/patterns/bloom-filter/) | 布隆过滤器可以在昂贵的驻留表查找前做预检查 |
+
 ## 挑战题
 
 ::: details Q1: 你的编译器驻留了 100,000 个标识符。与存储原始字符串相比，驻留如何影响内存？

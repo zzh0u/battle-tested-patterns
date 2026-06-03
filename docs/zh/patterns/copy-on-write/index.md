@@ -114,6 +114,15 @@ class Cow:
 - [Redis](https://github.com/redis/redis) — `BGSAVE`
 - [ZFS](https://github.com/openzfs/zfs) / Btrfs — filesystem snapshots
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [double-buffering](/zh/patterns/double-buffering/) | 两者都延迟成本——CoW 在写入时复制，双缓冲准备第二份副本 |
+| [flyweight](/zh/patterns/flyweight/) | 享元共享不可变数据；CoW 共享可变数据直到修改 |
+| [merkle-tree](/zh/patterns/merkle-tree/) | Merkle 树实现高效 CoW——只需重新哈希从变更节点到根的路径 |
+| [reference-counting](/zh/patterns/reference-counting/) | 引用计数追踪 CoW 共享——当引用计数 > 1 且写入时复制 |
+
 ## 挑战题
 
 ::: details Q1: 你的 CoW 包装器在写入时进行浅拷贝。读者和写者共享一个嵌套对象 `{ users: [{ name: "alice" }] }`。写者调用 `write()` 并修改 `users[0].name`。读者会看到这个修改吗？

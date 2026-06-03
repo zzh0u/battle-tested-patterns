@@ -286,6 +286,14 @@ impl DependencyGraph {
 - [webpack](https://github.com/webpack/webpack) — `ModuleGraph` 用于代码分割和 tree shaking
 - [Terraform](https://github.com/hashicorp/terraform) — 资源依赖图实现并行 apply
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [visitor](/zh/patterns/visitor/) | 依赖图上的树遍历分发到类型特定的处理器 |
+| [iterator](/zh/patterns/iterator/) | 拓扑迭代生成按依赖顺序的惰性节点序列 |
+| [dirty-flag](/zh/patterns/dirty-flag/) | 脏传播沿依赖边标记下游节点以进行重计算 |
+
 ## 挑战题
 
 ::: details Q1: 给定一个依赖图，其中 A->C、B->C，且 A 和 B 没有依赖。可以并行运行多少个任务？拓扑排序如何揭示这一点？

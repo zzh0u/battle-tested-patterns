@@ -177,6 +177,14 @@ Run exercises: `pnpm test`
 - [Redis](https://github.com/redis/redis) — Pipeline
 - [Elasticsearch](https://github.com/elastic/elasticsearch) — Bulk API
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [ring-buffer](/patterns/ring-buffer/) | Ring buffers accumulate items for batch consumption |
+| [backpressure](/patterns/backpressure/) | Batching smooths bursty input and works with backpressure mechanisms |
+| [retry-backoff](/patterns/retry-backoff/) | Individual batch items can be retried with exponential backoff on failure |
+
 ## Challenge Questions
 
 ::: details Q1: Your batch processor uses maxSize=100 and maxWaitMs=50ms. Traffic drops to 1 request/second. What happens, and how do you fix it?

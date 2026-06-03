@@ -201,6 +201,14 @@ Run exercises: `pnpm test`
 - [jsdiff](https://github.com/kpdecker/jsdiff)
 - [Vue 3](https://github.com/vuejs/core) — template diff
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [copy-on-write](/patterns/copy-on-write/) | Diff/patch computes what changed; CoW defers the actual copying until needed |
+| [merkle-tree](/patterns/merkle-tree/) | Merkle trees identify which subtrees changed, narrowing where to diff |
+| [double-buffering](/patterns/double-buffering/) | React diffs the current tree against the work-in-progress double buffer |
+
 ## Challenge Questions
 
 ::: details Q1: React's diff produces insert/delete/update ops but not "move." How does it handle a list that was merely reordered?

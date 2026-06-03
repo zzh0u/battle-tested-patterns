@@ -212,6 +212,14 @@ impl FreeList {
 - [mimalloc](https://github.com/microsoft/mimalloc) — 分片设计的段级空闲链表
 - [Vulkan Memory Allocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator) — 带空闲链表的子分配池
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [arena-allocator](/zh/patterns/arena-allocator/) | Arena 批量释放；空闲链表回收单个槽位实现 O(1) 复用 |
+| [object-pool](/zh/patterns/object-pool/) | 对象池内部使用空闲链表追踪可用对象 |
+| [ring-buffer](/zh/patterns/ring-buffer/) | 两者都提供 O(1) 槽位管理——环形缓冲区通过模索引，空闲链表通过链表 |
+
 ## 挑战题
 
 ::: details Q1: 一个 bug 导致 `free(slot)` 对同一个槽位被调用了两次。在简单的 Free List 中会发生什么？生产系统如何检测这种情况？

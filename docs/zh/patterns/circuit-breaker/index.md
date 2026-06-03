@@ -239,6 +239,14 @@ impl CircuitBreaker {
 - [Envoy Proxy](https://github.com/envoyproxy/envoy) — 异常检测充当分布式熔断器
 - [AWS SDK](https://github.com/aws/aws-sdk-js-v3) — 带熔断的服务端点重试
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [retry-backoff](/zh/patterns/retry-backoff/) | 熔断器在服务已知不可用时阻止重试 |
+| [state-machine](/zh/patterns/state-machine/) | 熔断器是一个状态机：关闭 -> 打开 -> 半开 |
+| [rate-limiter](/zh/patterns/rate-limiter/) | 两者都保护服务——限流器控制吞吐量，熔断器停止故障 |
+
 ## 挑战题
 
 ::: details Q1: 你的熔断器有 30 秒的重置超时。下游服务的平均恢复时间是 5 秒。一位同事建议将超时降低到 5 秒以便更快恢复请求。这个权衡是什么？

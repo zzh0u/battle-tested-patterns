@@ -391,6 +391,15 @@ Run exercises: `pnpm test`
 - [IPFS](https://github.com/ipfs/kubo) -- content-addressed Merkle DAG for distributed file storage
 - [Certificate Transparency](https://certificate.transparency.dev/) -- Merkle tree log for auditing TLS certificates
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [copy-on-write](/patterns/copy-on-write/) | Merkle trees enable efficient copy-on-write — only rehash the changed path |
+| [write-ahead-log](/patterns/write-ahead-log/) | WAL records changes; Merkle trees verify the resulting state is consistent |
+| [checkpointing](/patterns/checkpointing/) | Merkle roots serve as integrity proofs for checkpoint snapshots |
+| [b-plus-tree](/patterns/b-plus-tree/) | Both are tree structures — Merkle for verification, B+ for ordered access |
+
 ## Challenge Questions
 
 ::: details Q1: Your Merkle tree has 1 million leaves. A client wants to verify that leaf #500,000 is authentic. How many hashes does the client need to receive and compute?

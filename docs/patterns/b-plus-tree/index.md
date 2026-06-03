@@ -518,6 +518,15 @@ Run exercises: `pnpm test`
 - [LMDB](https://github.com/LMDB/lmdb) -- copy-on-write B+ tree for crash-safe memory-mapped storage
 - [Btrfs](https://github.com/torvalds/linux) -- Linux filesystem built entirely on B-trees / B+ trees
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [skip-list](/patterns/skip-list/) | Simpler probabilistic alternative with comparable O(log n) performance |
+| [lsm-tree](/patterns/lsm-tree/) | LSM trees buffer writes for speed; B+ trees optimize reads with balanced structure |
+| [merkle-tree](/patterns/merkle-tree/) | Both are tree structures — Merkle for integrity verification, B+ for ordered storage |
+| [merge-iterator](/patterns/merge-iterator/) | B+ tree range scans use iterator patterns similar to merge iterators |
+
 ## Challenge Questions
 
 ::: details Q1: A B+ tree with order 100 and 1 billion keys. How many levels deep is it? How many disk reads for a point lookup?

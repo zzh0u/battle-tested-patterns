@@ -180,6 +180,15 @@ Run exercises: `pnpm test`
 - [Redis](https://github.com/redis/redis) — `BGSAVE`
 - [ZFS](https://github.com/openzfs/zfs) / Btrfs — filesystem snapshots
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [double-buffering](/patterns/double-buffering/) | Both defer costs — CoW copies on write, double buffering prepares a second copy |
+| [flyweight](/patterns/flyweight/) | Flyweight shares immutable data; CoW shares mutable data until modification |
+| [merkle-tree](/patterns/merkle-tree/) | Merkle trees enable efficient CoW — only rehash the path from changed node to root |
+| [reference-counting](/patterns/reference-counting/) | Reference counting tracks CoW sharing — copy when ref count > 1 and writing |
+
 ## Challenge Questions
 
 ::: details Q1: Your CoW wrapper does a shallow copy on write. A reader and writer share a nested object `{ users: [{ name: "alice" }] }`. The writer calls `write()` and mutates `users[0].name`. Does the reader see the mutation?

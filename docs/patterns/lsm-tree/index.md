@@ -573,6 +573,16 @@ Run exercises: `pnpm test`
 - [BadgerDB](https://github.com/dgraph-io/badger) -- Go-native LSM key-value store with value separation
 - [SQLite LSM extension](https://www.sqlite.org/lsm.html) -- LSM-based storage backend for SQLite
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [skip-list](/patterns/skip-list/) | Skip lists serve as the in-memory sorted buffer (memtable) in LSM trees |
+| [bloom-filter](/patterns/bloom-filter/) | Bloom filters on each SSTable avoid unnecessary disk reads during lookups |
+| [merge-iterator](/patterns/merge-iterator/) | Compaction merges multiple sorted SSTables using merge iterators |
+| [write-ahead-log](/patterns/write-ahead-log/) | WAL ensures memtable writes survive crashes before flushing to SSTables |
+| [tombstone](/patterns/tombstone/) | LSM trees use tombstones to mark deletions that are cleaned up during compaction |
+
 ## Challenge Questions
 
 ::: details Q1: Your LSM tree has 5 levels (L0-L4). A read for key "user:999" finds nothing. How many files did it potentially have to check?

@@ -338,6 +338,14 @@ Run exercises: `pnpm test`
 - [CockroachDB](https://github.com/cockroachdb/cockroach) -- MVCC tombstones for range deletions, GC-ed by background job
 - [Elasticsearch](https://github.com/elastic/elasticsearch) -- soft-deleted docs marked with `_deleted` flag, purged on segment merge
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [lsm-tree](/patterns/lsm-tree/) | LSM trees use tombstones extensively — they're cleaned up during compaction |
+| [mvcc](/patterns/mvcc/) | MVCC marks old versions with tombstones for garbage collection |
+| [free-list](/patterns/free-list/) | After tombstone cleanup, freed slots can be managed by a free list |
+
 ## Challenge Questions
 
 ::: details Q1: A Cassandra cluster with gc_grace_seconds=10 days. Node C goes down for 15 days. What happens when C comes back online?

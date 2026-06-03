@@ -184,6 +184,15 @@ Run exercises: `pnpm test`
 - [Linux TCP](https://github.com/torvalds/linux/blob/master/net/ipv4/tcp_output.c) — congestion window (`cwnd`) as backpressure
 - [gRPC](https://github.com/grpc/grpc) — flow control windows in HTTP/2
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [ring-buffer](/patterns/ring-buffer/) | Bounded ring buffers are a common mechanism for implementing backpressure |
+| [rate-limiter](/patterns/rate-limiter/) | Rate limiting controls intake speed; backpressure signals the producer to slow down |
+| [semaphore](/patterns/semaphore/) | Semaphores can implement backpressure by limiting outstanding work |
+| [batch-processing](/patterns/batch-processing/) | Batching smooths bursty input, complementing backpressure mechanisms |
+
 ## Challenge Questions
 
 ::: details Q1: Your bounded queue is full. Should you block the producer or drop the newest item? How do you decide?

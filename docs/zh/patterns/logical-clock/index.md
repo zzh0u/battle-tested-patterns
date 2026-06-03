@@ -200,6 +200,14 @@ impl LamportClock {
 - [Kafka](https://github.com/apache/kafka) -- 偏移量作为分区日志中的单调逻辑位置
 - [Raft 共识](https://github.com/etcd-io/raft) -- `term` 是逻辑 epoch；更高的 term 赢得选举
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [mvcc](/zh/patterns/mvcc/) | MVCC 使用逻辑时间戳作为版本标识符 |
+| [write-ahead-log](/zh/patterns/write-ahead-log/) | WAL 条目按逻辑时钟序列号排序 |
+| [checkpointing](/zh/patterns/checkpointing/) | 检查点在特定的逻辑时钟位置获取 |
+
 ## 挑战题
 
 ::: details Q1: 进程 A 的 Lamport 时钟为 5，进程 B 的时钟为 3。你能确定哪个事件先发生吗？

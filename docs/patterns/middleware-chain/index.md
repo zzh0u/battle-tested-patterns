@@ -198,6 +198,14 @@ Run exercises: `pnpm test`
 - [ASP.NET Core](https://github.com/dotnet/aspnetcore) -- `IApplicationBuilder.Use()` middleware pipeline
 - [Gin](https://github.com/gin-gonic/gin) -- Go HTTP framework with `Use()` middleware and `c.Next()`/`c.Abort()`
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [iterator](/patterns/iterator/) | Middleware chain iterates through handlers like an iterator over a sequence |
+| [observer](/patterns/observer/) | Middleware can observe and modify requests/responses flowing through the pipeline |
+| [vtable](/patterns/vtable/) | Each middleware is a function pointer implementing a common interface, like a vtable entry |
+
 ## Challenge Questions
 
 ::: details Q1: You have middleware A (logging), B (auth), C (handler). A user sends a request with an invalid token. B rejects it by NOT calling next(). What does A's post-processing see?

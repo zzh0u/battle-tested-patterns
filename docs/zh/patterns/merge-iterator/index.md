@@ -283,6 +283,15 @@ pub fn merge_k_sorted(streams: &[Vec<i32>]) -> Vec<i32> {
 - [ClickHouse](https://github.com/ClickHouse/ClickHouse) -- MergingSortedTransform 用于合并有序数据部分
 - [CockroachDB](https://github.com/cockroachdb/cockroach) -- 归并连接和跨多个 range 的范围扫描
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [min-heap](/zh/patterns/min-heap/) | 最小堆是驱动 K 路合并的核心数据结构 |
+| [lsm-tree](/zh/patterns/lsm-tree/) | LSM 压缩使用归并迭代器合并多个有序 SSTable |
+| [iterator](/zh/patterns/iterator/) | 归并迭代器是迭代器模式在多个源上的组合 |
+| [skip-list](/zh/patterns/skip-list/) | 跳表提供归并迭代器消费的有序输入流 |
+
 ## 挑战题
 
 ::: details Q1: 你正在合并 100 个有序流，每个有 100 万个元素。堆操作的总数是多少？为什么这比对所有 1 亿个元素排序更好？

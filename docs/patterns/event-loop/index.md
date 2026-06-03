@@ -237,6 +237,15 @@ Run exercises: `pnpm test`
 - [Tokio](https://github.com/tokio-rs/tokio) -- Rust async runtime built on mio (cross-platform reactor)
 - [Netty](https://github.com/netty/netty) -- Java NIO event loop for high-performance networking
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [cooperative-scheduling](/patterns/cooperative-scheduling/) | Event loops require cooperative scheduling — handlers must not block |
+| [observer](/patterns/observer/) | Event loops dispatch events to registered observers/callbacks |
+| [ring-buffer](/patterns/ring-buffer/) | Event queues are typically implemented as ring buffers |
+| [actor-model](/patterns/actor-model/) | Each actor is essentially a single-threaded event loop over its mailbox |
+
 ## Challenge Questions
 
 ::: details Q1: Your Node.js server handles 5,000 WebSocket connections fine, but adding a single endpoint that computes a Fibonacci number blocks ALL connections. Why?

@@ -89,6 +89,14 @@ first_10 = [next(evens) for _ in range(10)]
 - [Kotlin](https://github.com/JetBrains/kotlin) Sequences
 - Swift `LazySequence`
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [merge-iterator](/zh/patterns/merge-iterator/) | 归并迭代器将多个迭代器组合为一个有序输出 |
+| [visitor](/zh/patterns/visitor/) | 两者都遍历数据结构——迭代器产出元素，访问者分发回调 |
+| [middleware-chain](/zh/patterns/middleware-chain/) | 中间件链遍历处理器序列 |
+
 ## 挑战题
 
 ::: details Q1: 你创建了一个无限迭代器 `fibonacci()` 并对它调用 `.collect()`。会发生什么？

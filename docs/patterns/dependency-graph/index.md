@@ -288,6 +288,14 @@ Run exercises: `pnpm test`
 - [webpack](https://github.com/webpack/webpack) — `ModuleGraph` for chunk splitting and tree shaking
 - [Terraform](https://github.com/hashicorp/terraform) — resource dependency graph for parallel apply
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [visitor](/patterns/visitor/) | Tree traversal over dependency graphs dispatches to type-specific handlers |
+| [iterator](/patterns/iterator/) | Topological iteration produces a lazy sequence of nodes in dependency order |
+| [dirty-flag](/patterns/dirty-flag/) | Dirty propagation follows dependency edges to mark downstream nodes for recomputation |
+
 ## Challenge Questions
 
 ::: details Q1: Given a dependency graph where A->C, B->C, and A and B have no dependencies, how many tasks can run in parallel? How does topological sort reveal this?

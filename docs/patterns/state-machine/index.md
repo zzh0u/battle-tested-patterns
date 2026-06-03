@@ -206,6 +206,14 @@ Run exercises: `pnpm test`
 - [Kubernetes](https://github.com/kubernetes/kubernetes) — pod lifecycle
 - Game AI (behavior trees + FSM)
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [actor-model](/patterns/actor-model/) | Actors often use state machines to manage their internal behavior |
+| [circuit-breaker](/patterns/circuit-breaker/) | Circuit breaker is a classic state machine: closed -> open -> half-open |
+| [visitor](/patterns/visitor/) | Visitors can dispatch differently based on state machine's current state |
+
 ## Challenge Questions
 
 ::: details Q1: A form has 4 steps, each with a "valid" and "invalid" sub-state, plus a "submitting" and "submitted" state. That's 4*2 + 2 = 10 states. If you add a "dirty/clean" dimension, it doubles to 20. How do you avoid this state explosion?

@@ -241,6 +241,14 @@ impl HashRing {
 - [Amazon DynamoDB](https://www.allthingsdistributed.com/2007/10/amazons_dynamo.html) — 一致性哈希在生产中的原始论文
 - [Memcached](https://github.com/memcached/memcached) — 客户端一致性哈希（ketama 算法）
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [registry](/zh/patterns/registry/) | 注册表发现服务；一致性哈希路由到它们 |
+| [lru-cache](/zh/patterns/lru-cache/) | 分布式 LRU 缓存使用一致性哈希将键路由到正确的节点 |
+| [rate-limiter](/zh/patterns/rate-limiter/) | 一致性哈希集群中的节点级限流 |
+
 ## 挑战题
 
 ::: details Q1: 你有一个包含 3 个物理节点的哈希环，每个节点只有 1 个虚拟节点（没有副本）。一个节点占了 60% 的键空间，其余两个各占 20%。虚拟节点如何解决这个问题？为什么 groupcache 默认使用较高的副本数？

@@ -128,6 +128,14 @@ class ObjectPool:
 - [HikariCP](https://github.com/brettwooldridge/HikariCP) — JDBC connection pool
 - Unity `ObjectPool<T>`
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [free-list](/zh/patterns/free-list/) | 空闲链表管理池内部的槽位分配 |
+| [arena-allocator](/zh/patterns/arena-allocator/) | Arena 分配器为池对象批量分配；两者都避免逐对象 malloc |
+| [semaphore](/zh/patterns/semaphore/) | 池大小充当信号量限制并发对象使用 |
+
 ## 挑战题
 
 ::: details Q1: 你的池初始化了 10 个对象，但峰值负载时需要 100 个。池应该动态增长还是拒绝超过 10 个的请求？

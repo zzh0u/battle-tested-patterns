@@ -239,6 +239,14 @@ Run exercises: `pnpm test`
 - Erlang/BEAM VM — reduction counting
 - Unity — coroutines
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [event-loop](/patterns/event-loop/) | Event loops rely on cooperative scheduling — long tasks must yield to keep I/O flowing |
+| [work-stealing](/patterns/work-stealing/) | Cooperative scheduling works within a thread; work stealing distributes across threads |
+| [min-heap](/patterns/min-heap/) | React's scheduler uses a min-heap to select which cooperative task runs next |
+
 ## Challenge Questions
 
 ::: details Q1: React yields every 5ms. What happens if you increase this to 50ms? What if you decrease it to 0.5ms?

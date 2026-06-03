@@ -101,6 +101,14 @@ def retry_with_backoff(fn, max_retries=5, base=1.0, cap=30.0):
 - [Envoy](https://github.com/envoyproxy/envoy) — proxy
 - [Celery](https://github.com/celery/celery) — Python task queue
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [circuit-breaker](/zh/patterns/circuit-breaker/) | 熔断器告诉你何时完全停止重试 |
+| [batch-processing](/zh/patterns/batch-processing/) | 失败的批处理项可以独立地进行退避重试 |
+| [rate-limiter](/zh/patterns/rate-limiter/) | 抖动退避防止重试风暴，目标与限流类似 |
+
 ## 挑战题
 
 ::: details Q1: 你从重试逻辑中移除了抖动（jitter）以使延迟"可预测"。在惊群场景下，会发生什么？

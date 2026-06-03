@@ -181,6 +181,14 @@ Run exercises: `pnpm test`
 - [Zig](https://github.com/ziglang/zig) — `std.mem.ArenaAllocator` as a core allocator pattern
 - [ECS game engines](https://github.com/SanderMertens/flecs) — component storage with arena-style allocation
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [free-list](/patterns/free-list/) | Free lists recycle individual objects; arenas bulk-free all at once |
+| [object-pool](/patterns/object-pool/) | Object pools pre-allocate; arenas bump-allocate — both reduce malloc overhead |
+| [reference-counting](/patterns/reference-counting/) | Arenas avoid per-object reference counting by freeing everything at scope end |
+
 ## Challenge Questions
 
 ::: details Q1: An arena allocator never fragments memory. A general-purpose allocator does. Why?

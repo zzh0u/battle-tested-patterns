@@ -202,6 +202,14 @@ Run exercises: `pnpm test`
 - [Lua TValue](https://github.com/lua/lua) — every Lua value is a `TValue` with a type tag and `Value` union
 - [GHC Haskell](https://github.com/ghc/ghc) — algebraic data types compile to tagged heap objects
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [vtable](/patterns/vtable/) | Both enable runtime polymorphism — tagged unions via switch, vtables via function pointers |
+| [bitmask](/patterns/bitmask/) | Bitmask flags can serve as type tags in lightweight tagged union implementations |
+| [visitor](/patterns/visitor/) | Visitors dispatch on node types, which are often represented as tagged unions |
+
 ## Challenge Questions
 
 ::: details Q1: You have a tagged union with 4 types. How many bytes does the value occupy in C if the largest variant is 24 bytes?

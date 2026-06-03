@@ -91,6 +91,14 @@ print(a is b)  # True — 享元！
 - .NET string interning
 - CSS value deduplication in browsers
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [interning](/zh/patterns/interning/) | 驻留是实现享元的机制——去重相同的值 |
+| [copy-on-write](/zh/patterns/copy-on-write/) | 两者都共享数据——享元共享不可变对象，CoW 共享直到变更 |
+| [lru-cache](/zh/patterns/lru-cache/) | LRU 缓存可以存储享元实例，淘汰最少使用的共享对象 |
+
 ## 挑战题
 
 ::: details Q1: 有人对一个可变对象（比如配置字典）进行了驻留，然后又修改了它。会出什么问题？

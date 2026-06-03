@@ -182,6 +182,15 @@ impl<T> BoundedQueue<T> {
 - [Linux TCP](https://github.com/torvalds/linux/blob/master/net/ipv4/tcp_output.c) — 拥塞窗口（`cwnd`）作为背压
 - [gRPC](https://github.com/grpc/grpc) — HTTP/2 中的流控窗口
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [ring-buffer](/zh/patterns/ring-buffer/) | 有界环形缓冲区是实现背压的常见机制 |
+| [rate-limiter](/zh/patterns/rate-limiter/) | 限流控制摄入速度；背压信号生产者减速 |
+| [semaphore](/zh/patterns/semaphore/) | 信号量可以通过限制未完成工作来实现背压 |
+| [batch-processing](/zh/patterns/batch-processing/) | 批处理平滑突发输入，补充背压机制 |
+
 ## 挑战题
 
 ::: details Q1: 你的有界队列已满。应该阻塞生产者还是丢弃最新的消息？如何决定？

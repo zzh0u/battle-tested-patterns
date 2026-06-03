@@ -108,6 +108,14 @@ class BatchProcessor:
 - [Redis](https://github.com/redis/redis) — Pipeline
 - [Elasticsearch](https://github.com/elastic/elasticsearch) — Bulk API
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [ring-buffer](/zh/patterns/ring-buffer/) | 环形缓冲区累积项目供批量消费 |
+| [backpressure](/zh/patterns/backpressure/) | 批处理平滑突发输入，与背压机制协同工作 |
+| [retry-backoff](/zh/patterns/retry-backoff/) | 单个批处理项在失败时可以进行指数退避重试 |
+
 ## 挑战题
 
 ::: details Q1: 你的批处理器使用 maxSize=100 和 maxWaitMs=50ms。流量降到每秒 1 个请求。会发生什么？如何修复？

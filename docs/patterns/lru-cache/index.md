@@ -203,6 +203,15 @@ Run exercises: `pnpm test`
 - [Python functools](https://github.com/python/cpython) — `@lru_cache` decorator
 - [Caffeine](https://github.com/ben-manes/caffeine) — high-performance Java cache (Window TinyLfu, inspired by LRU)
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [free-list](/patterns/free-list/) | LRU eviction frees nodes; free lists recycle them without calling the allocator |
+| [flyweight](/patterns/flyweight/) | Both reduce memory — LRU limits cache size, flyweight shares identical objects |
+| [consistent-hashing](/patterns/consistent-hashing/) | Distributed caches use consistent hashing to route keys to the right LRU instance |
+| [tombstone](/patterns/tombstone/) | Tombstones mark deleted cache entries in distributed LRU caches |
+
 ## Challenge Questions
 
 ::: details Q1: LRU cache with capacity 3. Operations: put(A), put(B), put(C), put(D), get(B). What's in the cache?

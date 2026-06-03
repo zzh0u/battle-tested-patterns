@@ -235,6 +235,15 @@ impl EventLoop {
 - [Tokio](https://github.com/tokio-rs/tokio) -- 基于 mio（跨平台反应器）的 Rust 异步运行时
 - [Netty](https://github.com/netty/netty) -- 高性能网络的 Java NIO 事件循环
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [cooperative-scheduling](/zh/patterns/cooperative-scheduling/) | 事件循环要求协作调度——处理器不能阻塞 |
+| [observer](/zh/patterns/observer/) | 事件循环将事件分发给注册的观察者/回调 |
+| [ring-buffer](/zh/patterns/ring-buffer/) | 事件队列通常实现为环形缓冲区 |
+| [actor-model](/zh/patterns/actor-model/) | 每个 Actor 本质上是其信箱上的单线程事件循环 |
+
 ## 挑战题
 
 ::: details Q1: 你的 Node.js 服务器处理 5,000 个 WebSocket 连接没有问题，但添加了一个计算 Fibonacci 数的端点后，所有连接都被阻塞了。为什么？

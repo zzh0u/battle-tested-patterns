@@ -206,6 +206,14 @@ fn create_rect(w: f64, h: f64) -> Shape {
 - [SQLite VFS](https://github.com/sqlite/sqlite) — 虚拟文件系统层使用函数指针结构体进行操作系统抽象
 - [QEMU](https://github.com/qemu/qemu) — 设备模型提供操作结构体用于内存映射 I/O 处理
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [tagged-union](/zh/patterns/tagged-union/) | 两者都实现多态——虚函数表通过间接调用，标签联合通过 switch |
+| [visitor](/zh/patterns/visitor/) | 访问者按类型分发，通常通过类似虚函数表的函数指针查找 |
+| [middleware-chain](/zh/patterns/middleware-chain/) | 每个中间件处理器是一个函数指针，形成动态虚函数表 |
+
 ## 挑战题
 
 ::: details Q1: 在 C++ 中，每个有虚方法的类都有一个隐藏的 vptr。100 万个对象的内存成本是多少？

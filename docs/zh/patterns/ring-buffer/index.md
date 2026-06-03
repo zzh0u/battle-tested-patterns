@@ -123,6 +123,15 @@ class RingBuffer:
 - [Kafka](https://github.com/apache/kafka) — log segments
 - Audio DSP buffers
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [backpressure](/zh/patterns/backpressure/) | 有界环形缓冲区满时自然产生背压 |
+| [event-loop](/zh/patterns/event-loop/) | 事件循环使用环形缓冲区作为 I/O 事件队列 |
+| [double-buffering](/zh/patterns/double-buffering/) | 两者都避免分配——环形缓冲区复用槽位，双缓冲交换指针 |
+| [batch-processing](/zh/patterns/batch-processing/) | 环形缓冲区累积事件供批量消费 |
+
 ## 挑战题
 
 ::: details Q1: 你实现了一个容量为 8 的环形缓冲区，但没有单独的 `count` 字段——你只追踪 `head` 和 `tail`。当 `head === tail` 时，你无法区分缓冲区是完全满还是完全空。生产系统如何解决这个问题？

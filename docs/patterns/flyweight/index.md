@@ -179,6 +179,14 @@ Run exercises: `pnpm test`
 - .NET string interning
 - CSS value deduplication in browsers
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [interning](/patterns/interning/) | Interning is the mechanism that implements flyweight — deduplicate identical values |
+| [copy-on-write](/patterns/copy-on-write/) | Both share data — flyweight shares immutable objects, CoW shares until mutation |
+| [lru-cache](/patterns/lru-cache/) | LRU caches can store flyweight instances, evicting least-used shared objects |
+
 ## Challenge Questions
 
 ::: details Q1: Someone interns a mutable object (say, a config map) and later modifies it. What breaks?

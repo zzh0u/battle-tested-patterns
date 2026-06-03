@@ -245,6 +245,14 @@ Run exercises: `pnpm test`
 - [Make](https://www.gnu.org/software/make/) -- file modification times as dirty flags; only rebuild targets newer than sources
 - [Excel/Google Sheets](https://support.google.com) -- cell dependency graph with dirty propagation; only recalculates changed subgraph
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [observer](/patterns/observer/) | Observer notifies when state changes; dirty flag defers the reaction until needed |
+| [bitmask](/patterns/bitmask/) | Dirty flags are efficiently stored as bits in a bitmask |
+| [dependency-graph](/patterns/dependency-graph/) | Dirty propagation follows dependency graph edges to mark downstream nodes |
+
 ## Challenge Questions
 
 ::: details Q1: A scene graph has 1000 nodes. The root moves, making all descendants dirty. But only 3 nodes are actually rendered this frame. How many recomputations happen?

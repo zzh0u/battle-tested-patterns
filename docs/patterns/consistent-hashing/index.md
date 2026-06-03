@@ -243,6 +243,14 @@ Run exercises: `pnpm test`
 - [Amazon DynamoDB](https://www.allthingsdistributed.com/2007/10/amazons_dynamo.html) — original paper on consistent hashing in production
 - [Memcached](https://github.com/memcached/memcached) — client-side consistent hashing (ketama algorithm)
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [registry](/patterns/registry/) | Registry discovers services; consistent hashing routes to them |
+| [lru-cache](/patterns/lru-cache/) | Distributed LRU caches use consistent hashing to route keys to the right node |
+| [rate-limiter](/patterns/rate-limiter/) | Per-node rate limiting in consistent hashing clusters |
+
 ## Challenge Questions
 
 ::: details Q1: You have a hash ring with 3 physical nodes, each with 1 virtual node (no replicas). One node owns 60% of the key space while the others own 20% each. How do virtual nodes fix this, and why does groupcache default to a high replica count?

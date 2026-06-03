@@ -181,6 +181,14 @@ Run exercises: `pnpm test`
 - [Envoy](https://github.com/envoyproxy/envoy) — proxy
 - [Celery](https://github.com/celery/celery) — Python task queue
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [circuit-breaker](/patterns/circuit-breaker/) | Circuit breaker tells you when to stop retrying entirely |
+| [batch-processing](/patterns/batch-processing/) | Failed batch items can be retried with backoff independently |
+| [rate-limiter](/patterns/rate-limiter/) | Jittered backoff prevents retry storms, similar to rate limiting's goal |
+
 ## Challenge Questions
 
 ::: details Q1: You remove jitter from your retry logic to make delays "predictable." Under a thundering herd scenario, what happens?

@@ -198,6 +198,14 @@ Run exercises: `pnpm test`
 - [Envoy](https://github.com/envoyproxy/envoy) — local/global rate limiting for service mesh
 - [AWS API Gateway](https://github.com/aws/aws-sdk-js-v3) — token bucket throttling for API endpoints
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [semaphore](/patterns/semaphore/) | Semaphore limits concurrency; rate limiter limits throughput over time |
+| [backpressure](/patterns/backpressure/) | Rate limiting is a form of backpressure applied at system boundaries |
+| [circuit-breaker](/patterns/circuit-breaker/) | Circuit breaker stops all traffic on failure; rate limiter controls healthy traffic volume |
+
 ## Challenge Questions
 
 ::: details Q1: Your API allows 100 requests per minute using a fixed-window counter. At 11:00:59 a client sends 100 requests, and at 11:01:01 sends another 100 requests. Both windows allow it. What is the actual rate over that 2-second span, and how would a token bucket handle this differently?

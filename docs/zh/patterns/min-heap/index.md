@@ -170,6 +170,15 @@ func (h *MinHeap) Pop() (int, bool) {
 - Python [heapq](https://github.com/python/cpython/blob/main/Lib/heapq.py)
 - Dijkstra / Prim graph algorithms
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [merge-iterator](/zh/patterns/merge-iterator/) | K 路合并使用最小堆从多个流中选取最小元素 |
+| [cooperative-scheduling](/zh/patterns/cooperative-scheduling/) | React 调度器使用最小堆选择最高优先级任务 |
+| [event-loop](/zh/patterns/event-loop/) | 事件循环中的定时器队列通常使用最小堆实现最早截止时间调度 |
+| [b-plus-tree](/zh/patterns/b-plus-tree/) | 另一种有序结构——B+ 树优化磁盘访问，堆优化优先级访问 |
+
 ## 挑战题
 
 ::: details Q1: 如何在不改变数据结构的情况下将最小堆转换为最大堆？

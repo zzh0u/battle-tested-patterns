@@ -1,0 +1,584 @@
+{
+  "bitmask": {
+    "en": [
+      ["tagged-union", "Both encode type information in compact integer representations"],
+      ["dirty-flag", "Dirty flags are often stored as bitmask bits"],
+      ["double-buffering", "React uses bitmask flags on each Fiber node to track work in its double-buffered tree"]
+    ],
+    "zh": [
+      ["tagged-union", "两者都将类型信息编码为紧凑的整数表示"],
+      ["dirty-flag", "脏标记通常作为位掩码中的位来存储"],
+      ["double-buffering", "React 在双缓冲树的每个 Fiber 节点上使用位掩码标志追踪工作"]
+    ]
+  },
+  "min-heap": {
+    "en": [
+      ["merge-iterator", "K-way merge uses a min-heap to select the smallest element across streams"],
+      ["cooperative-scheduling", "React's scheduler uses a min-heap to pick the highest-priority task"],
+      ["event-loop", "Timer queues in event loops often use min-heaps for earliest-deadline scheduling"],
+      ["b-plus-tree", "Alternative ordered structure — B+ trees optimize for disk, heaps for priority access"]
+    ],
+    "zh": [
+      ["merge-iterator", "K 路合并使用最小堆从多个流中选取最小元素"],
+      ["cooperative-scheduling", "React 调度器使用最小堆选择最高优先级任务"],
+      ["event-loop", "事件循环中的定时器队列通常使用最小堆实现最早截止时间调度"],
+      ["b-plus-tree", "另一种有序结构——B+ 树优化磁盘访问，堆优化优先级访问"]
+    ]
+  },
+  "ring-buffer": {
+    "en": [
+      ["backpressure", "Bounded ring buffers naturally create backpressure when full"],
+      ["event-loop", "Event loops use ring buffers for I/O event queues"],
+      ["double-buffering", "Both avoid allocation — ring buffers reuse slots, double buffering swaps pointers"],
+      ["batch-processing", "Ring buffers accumulate events for batch consumption"]
+    ],
+    "zh": [
+      ["backpressure", "有界环形缓冲区满时自然产生背压"],
+      ["event-loop", "事件循环使用环形缓冲区作为 I/O 事件队列"],
+      ["double-buffering", "两者都避免分配——环形缓冲区复用槽位，双缓冲交换指针"],
+      ["batch-processing", "环形缓冲区累积事件供批量消费"]
+    ]
+  },
+  "trie": {
+    "en": [
+      ["bloom-filter", "Bloom filters pre-filter before expensive trie lookups"],
+      ["registry", "Tries can implement registries with prefix-based routing"],
+      ["skip-list", "Alternative sorted lookup — skip lists are ordered by value, tries by key characters"]
+    ],
+    "zh": [
+      ["bloom-filter", "布隆过滤器在昂贵的 Trie 查找前做预过滤"],
+      ["registry", "Trie 可以实现基于前缀路由的注册表"],
+      ["skip-list", "另一种有序查找——跳表按值排序，Trie 按键字符排序"]
+    ]
+  },
+  "skip-list": {
+    "en": [
+      ["lsm-tree", "LSM trees use skip lists as their in-memory sorted buffer (memtable)"],
+      ["b-plus-tree", "B+ trees guarantee O(log n); skip lists achieve it probabilistically with simpler code"],
+      ["bloom-filter", "Both are probabilistic — bloom filters for membership, skip lists for ordering"],
+      ["free-list", "Skip list nodes need allocation management; free lists provide O(1) alloc for fixed-size nodes"]
+    ],
+    "zh": [
+      ["lsm-tree", "LSM 树使用跳表作为内存中的有序缓冲区（memtable）"],
+      ["b-plus-tree", "B+ 树保证 O(log n)；跳表以更简单的代码概率性地实现"],
+      ["bloom-filter", "两者都是概率性的——布隆过滤器用于成员判定，跳表用于排序"],
+      ["free-list", "跳表节点需要分配管理；空闲链表为固定大小节点提供 O(1) 分配"]
+    ]
+  },
+  "bloom-filter": {
+    "en": [
+      ["lsm-tree", "LSM trees attach bloom filters to each SSTable to avoid unnecessary disk reads"],
+      ["trie", "Bloom filter pre-screens before expensive trie traversal"],
+      ["lru-cache", "Both speed up lookups — bloom filters eliminate negatives, LRU caches store positives"]
+    ],
+    "zh": [
+      ["lsm-tree", "LSM 树为每个 SSTable 附加布隆过滤器以避免不必要的磁盘读取"],
+      ["trie", "布隆过滤器在昂贵的 Trie 遍历前做预筛选"],
+      ["lru-cache", "两者都加速查找——布隆过滤器排除否定，LRU 缓存存储肯定"]
+    ]
+  },
+  "lru-cache": {
+    "en": [
+      ["free-list", "LRU eviction frees nodes; free lists recycle them without calling the allocator"],
+      ["flyweight", "Both reduce memory — LRU limits cache size, flyweight shares identical objects"],
+      ["consistent-hashing", "Distributed caches use consistent hashing to route keys to the right LRU instance"],
+      ["tombstone", "Tombstones mark deleted cache entries in distributed LRU caches"]
+    ],
+    "zh": [
+      ["free-list", "LRU 淘汰释放节点；空闲链表回收它们而无需调用分配器"],
+      ["flyweight", "两者都减少内存——LRU 限制缓存大小，享元共享相同对象"],
+      ["consistent-hashing", "分布式缓存使用一致性哈希将键路由到正确的 LRU 实例"],
+      ["tombstone", "墓碑在分布式 LRU 缓存中标记已删除的条目"]
+    ]
+  },
+  "b-plus-tree": {
+    "en": [
+      ["skip-list", "Simpler probabilistic alternative with comparable O(log n) performance"],
+      ["lsm-tree", "LSM trees buffer writes for speed; B+ trees optimize reads with balanced structure"],
+      ["merkle-tree", "Both are tree structures — Merkle for integrity verification, B+ for ordered storage"],
+      ["merge-iterator", "B+ tree range scans use iterator patterns similar to merge iterators"]
+    ],
+    "zh": [
+      ["skip-list", "更简单的概率性替代方案，具有相当的 O(log n) 性能"],
+      ["lsm-tree", "LSM 树缓冲写入以提高速度；B+ 树通过平衡结构优化读取"],
+      ["merkle-tree", "两者都是树结构——Merkle 用于完整性验证，B+ 用于有序存储"],
+      ["merge-iterator", "B+ 树范围扫描使用类似归并迭代器的迭代模式"]
+    ]
+  },
+  "tagged-union": {
+    "en": [
+      ["vtable", "Both enable runtime polymorphism — tagged unions via switch, vtables via function pointers"],
+      ["bitmask", "Bitmask flags can serve as type tags in lightweight tagged union implementations"],
+      ["visitor", "Visitors dispatch on node types, which are often represented as tagged unions"]
+    ],
+    "zh": [
+      ["vtable", "两者都实现运行时多态——标签联合通过 switch，虚函数表通过函数指针"],
+      ["bitmask", "位掩码标志可以在轻量级标签联合实现中充当类型标签"],
+      ["visitor", "访问者按节点类型分发，而节点类型通常表示为标签联合"]
+    ]
+  },
+  "merkle-tree": {
+    "en": [
+      ["copy-on-write", "Merkle trees enable efficient copy-on-write — only rehash the changed path"],
+      ["write-ahead-log", "WAL records changes; Merkle trees verify the resulting state is consistent"],
+      ["checkpointing", "Merkle roots serve as integrity proofs for checkpoint snapshots"],
+      ["b-plus-tree", "Both are tree structures — Merkle for verification, B+ for ordered access"]
+    ],
+    "zh": [
+      ["copy-on-write", "Merkle 树实现高效的写时复制——只需重新哈希变更路径"],
+      ["write-ahead-log", "WAL 记录变更；Merkle 树验证结果状态的一致性"],
+      ["checkpointing", "Merkle 根作为检查点快照的完整性证明"],
+      ["b-plus-tree", "两者都是树结构——Merkle 用于验证，B+ 用于有序访问"]
+    ]
+  },
+  "merge-iterator": {
+    "en": [
+      ["min-heap", "The min-heap is the core data structure powering K-way merge"],
+      ["lsm-tree", "LSM compaction merges multiple sorted SSTables using merge iterators"],
+      ["iterator", "Merge iterator is a composition of the iterator pattern across multiple sources"],
+      ["skip-list", "Skip lists provide the sorted input streams that merge iterators consume"]
+    ],
+    "zh": [
+      ["min-heap", "最小堆是驱动 K 路合并的核心数据结构"],
+      ["lsm-tree", "LSM 压缩使用归并迭代器合并多个有序 SSTable"],
+      ["iterator", "归并迭代器是迭代器模式在多个源上的组合"],
+      ["skip-list", "跳表提供归并迭代器消费的有序输入流"]
+    ]
+  },
+  "semaphore": {
+    "en": [
+      ["rate-limiter", "Rate limiters control throughput over time; semaphores control concurrent access count"],
+      ["backpressure", "Semaphores implement backpressure by blocking when the limit is reached"],
+      ["object-pool", "Pool size is effectively a semaphore — acquire an object, release when done"]
+    ],
+    "zh": [
+      ["rate-limiter", "限流器控制时间维度的吞吐量；信号量控制并发访问数量"],
+      ["backpressure", "信号量通过在达到上限时阻塞来实现背压"],
+      ["object-pool", "池大小本质上是一个信号量——获取对象，完成后释放"]
+    ]
+  },
+  "actor-model": {
+    "en": [
+      ["observer", "Actors communicate via messages, similar to observer's publish/subscribe pattern"],
+      ["event-loop", "Each actor processes its mailbox sequentially, like a single-threaded event loop"],
+      ["state-machine", "Actor behavior often follows a state machine pattern for its internal logic"]
+    ],
+    "zh": [
+      ["observer", "Actor 通过消息通信，类似观察者的发布/订阅模式"],
+      ["event-loop", "每个 Actor 按顺序处理其信箱，类似单线程事件循环"],
+      ["state-machine", "Actor 行为通常遵循状态机模式管理其内部逻辑"]
+    ]
+  },
+  "work-stealing": {
+    "en": [
+      ["cooperative-scheduling", "Work stealing distributes tasks across threads; cooperative scheduling yields within a thread"],
+      ["object-pool", "Worker threads use per-thread object pools to avoid contention"],
+      ["free-list", "Per-thread free lists complement work stealing by providing lock-free allocation"]
+    ],
+    "zh": [
+      ["cooperative-scheduling", "工作窃取在线程间分配任务；协作调度在线程内让出"],
+      ["object-pool", "工作线程使用线程本地对象池避免争用"],
+      ["free-list", "线程本地空闲链表通过提供无锁分配来补充工作窃取"]
+    ]
+  },
+  "mvcc": {
+    "en": [
+      ["copy-on-write", "MVCC creates new versions on write, similar to copy-on-write semantics"],
+      ["logical-clock", "Logical clocks provide the version timestamps that MVCC depends on"],
+      ["tombstone", "MVCC marks deleted versions with tombstones for later garbage collection"],
+      ["write-ahead-log", "WAL ensures MVCC version changes survive crashes"]
+    ],
+    "zh": [
+      ["copy-on-write", "MVCC 在写入时创建新版本，类似写时复制语义"],
+      ["logical-clock", "逻辑时钟提供 MVCC 依赖的版本时间戳"],
+      ["tombstone", "MVCC 用墓碑标记已删除版本，供后续垃圾回收"],
+      ["write-ahead-log", "WAL 确保 MVCC 版本变更在崩溃后幸存"]
+    ]
+  },
+  "cooperative-scheduling": {
+    "en": [
+      ["event-loop", "Event loops rely on cooperative scheduling — long tasks must yield to keep I/O flowing"],
+      ["work-stealing", "Cooperative scheduling works within a thread; work stealing distributes across threads"],
+      ["min-heap", "React's scheduler uses a min-heap to select which cooperative task runs next"]
+    ],
+    "zh": [
+      ["event-loop", "事件循环依赖协作调度——长任务必须让出以保持 I/O 流畅"],
+      ["work-stealing", "协作调度在线程内工作；工作窃取在线程间分配"],
+      ["min-heap", "React 调度器使用最小堆选择下一个运行的协作任务"]
+    ]
+  },
+  "double-buffering": {
+    "en": [
+      ["copy-on-write", "Both defer mutation costs — double buffering swaps whole copies, CoW copies on write"],
+      ["ring-buffer", "Ring buffers can be seen as multi-slot generalizations of double buffering"],
+      ["dirty-flag", "Dirty flags track which buffer has changed and needs to be swapped"]
+    ],
+    "zh": [
+      ["copy-on-write", "两者都延迟变更成本——双缓冲交换整份副本，CoW 在写入时复制"],
+      ["ring-buffer", "环形缓冲区可视为双缓冲的多槽位泛化"],
+      ["dirty-flag", "脏标记追踪哪个缓冲区已变更并需要交换"]
+    ]
+  },
+  "backpressure": {
+    "en": [
+      ["ring-buffer", "Bounded ring buffers are a common mechanism for implementing backpressure"],
+      ["rate-limiter", "Rate limiting controls intake speed; backpressure signals the producer to slow down"],
+      ["semaphore", "Semaphores can implement backpressure by limiting outstanding work"],
+      ["batch-processing", "Batching smooths bursty input, complementing backpressure mechanisms"]
+    ],
+    "zh": [
+      ["ring-buffer", "有界环形缓冲区是实现背压的常见机制"],
+      ["rate-limiter", "限流控制摄入速度；背压信号生产者减速"],
+      ["semaphore", "信号量可以通过限制未完成工作来实现背压"],
+      ["batch-processing", "批处理平滑突发输入，补充背压机制"]
+    ]
+  },
+  "event-loop": {
+    "en": [
+      ["cooperative-scheduling", "Event loops require cooperative scheduling — handlers must not block"],
+      ["observer", "Event loops dispatch events to registered observers/callbacks"],
+      ["ring-buffer", "Event queues are typically implemented as ring buffers"],
+      ["actor-model", "Each actor is essentially a single-threaded event loop over its mailbox"]
+    ],
+    "zh": [
+      ["cooperative-scheduling", "事件循环要求协作调度——处理器不能阻塞"],
+      ["observer", "事件循环将事件分发给注册的观察者/回调"],
+      ["ring-buffer", "事件队列通常实现为环形缓冲区"],
+      ["actor-model", "每个 Actor 本质上是其信箱上的单线程事件循环"]
+    ]
+  },
+  "logical-clock": {
+    "en": [
+      ["mvcc", "MVCC uses logical timestamps as version identifiers"],
+      ["write-ahead-log", "WAL entries are ordered by logical clock sequence numbers"],
+      ["checkpointing", "Checkpoints are taken at specific logical clock positions"]
+    ],
+    "zh": [
+      ["mvcc", "MVCC 使用逻辑时间戳作为版本标识符"],
+      ["write-ahead-log", "WAL 条目按逻辑时钟序列号排序"],
+      ["checkpointing", "检查点在特定的逻辑时钟位置获取"]
+    ]
+  },
+  "circuit-breaker": {
+    "en": [
+      ["retry-backoff", "Circuit breaker prevents retries when the service is known to be down"],
+      ["state-machine", "Circuit breaker is a state machine: closed -> open -> half-open"],
+      ["rate-limiter", "Both protect services — rate limiter controls throughput, circuit breaker stops failures"]
+    ],
+    "zh": [
+      ["retry-backoff", "熔断器在服务已知不可用时阻止重试"],
+      ["state-machine", "熔断器是一个状态机：关闭 -> 打开 -> 半开"],
+      ["rate-limiter", "两者都保护服务——限流器控制吞吐量，熔断器停止故障"]
+    ]
+  },
+  "rate-limiter": {
+    "en": [
+      ["semaphore", "Semaphore limits concurrency; rate limiter limits throughput over time"],
+      ["backpressure", "Rate limiting is a form of backpressure applied at system boundaries"],
+      ["circuit-breaker", "Circuit breaker stops all traffic on failure; rate limiter controls healthy traffic volume"]
+    ],
+    "zh": [
+      ["semaphore", "信号量限制并发；限流器限制时间维度的吞吐量"],
+      ["backpressure", "限流是在系统边界应用的一种背压形式"],
+      ["circuit-breaker", "熔断器在故障时停止所有流量；限流器控制正常流量"]
+    ]
+  },
+  "retry-backoff": {
+    "en": [
+      ["circuit-breaker", "Circuit breaker tells you when to stop retrying entirely"],
+      ["batch-processing", "Failed batch items can be retried with backoff independently"],
+      ["rate-limiter", "Jittered backoff prevents retry storms, similar to rate limiting's goal"]
+    ],
+    "zh": [
+      ["circuit-breaker", "熔断器告诉你何时完全停止重试"],
+      ["batch-processing", "失败的批处理项可以独立地进行退避重试"],
+      ["rate-limiter", "抖动退避防止重试风暴，目标与限流类似"]
+    ]
+  },
+  "write-ahead-log": {
+    "en": [
+      ["checkpointing", "Checkpoints truncate the WAL — recover from checkpoint + replay remaining log"],
+      ["lsm-tree", "LSM trees use WAL to ensure memtable writes survive crashes before flushing"],
+      ["merkle-tree", "Merkle trees verify the state that WAL helps reconstruct after recovery"],
+      ["logical-clock", "WAL entries are sequenced by logical clock for ordering guarantees"]
+    ],
+    "zh": [
+      ["checkpointing", "检查点截断 WAL——从检查点恢复 + 重放剩余日志"],
+      ["lsm-tree", "LSM 树使用 WAL 确保 memtable 写入在刷盘前幸存崩溃"],
+      ["merkle-tree", "Merkle 树验证 WAL 在恢复后帮助重建的状态"],
+      ["logical-clock", "WAL 条目按逻辑时钟排序以保证顺序"]
+    ]
+  },
+  "batch-processing": {
+    "en": [
+      ["ring-buffer", "Ring buffers accumulate items for batch consumption"],
+      ["backpressure", "Batching smooths bursty input and works with backpressure mechanisms"],
+      ["retry-backoff", "Individual batch items can be retried with exponential backoff on failure"]
+    ],
+    "zh": [
+      ["ring-buffer", "环形缓冲区累积项目供批量消费"],
+      ["backpressure", "批处理平滑突发输入，与背压机制协同工作"],
+      ["retry-backoff", "单个批处理项在失败时可以进行指数退避重试"]
+    ]
+  },
+  "consistent-hashing": {
+    "en": [
+      ["registry", "Registry discovers services; consistent hashing routes to them"],
+      ["lru-cache", "Distributed LRU caches use consistent hashing to route keys to the right node"],
+      ["rate-limiter", "Per-node rate limiting in consistent hashing clusters"]
+    ],
+    "zh": [
+      ["registry", "注册表发现服务；一致性哈希路由到它们"],
+      ["lru-cache", "分布式 LRU 缓存使用一致性哈希将键路由到正确的节点"],
+      ["rate-limiter", "一致性哈希集群中的节点级限流"]
+    ]
+  },
+  "dependency-graph": {
+    "en": [
+      ["visitor", "Tree traversal over dependency graphs dispatches to type-specific handlers"],
+      ["iterator", "Topological iteration produces a lazy sequence of nodes in dependency order"],
+      ["dirty-flag", "Dirty propagation follows dependency edges to mark downstream nodes for recomputation"]
+    ],
+    "zh": [
+      ["visitor", "依赖图上的树遍历分发到类型特定的处理器"],
+      ["iterator", "拓扑迭代生成按依赖顺序的惰性节点序列"],
+      ["dirty-flag", "脏传播沿依赖边标记下游节点以进行重计算"]
+    ]
+  },
+  "middleware-chain": {
+    "en": [
+      ["iterator", "Middleware chain iterates through handlers like an iterator over a sequence"],
+      ["observer", "Middleware can observe and modify requests/responses flowing through the pipeline"],
+      ["vtable", "Each middleware is a function pointer implementing a common interface, like a vtable entry"]
+    ],
+    "zh": [
+      ["iterator", "中间件链像迭代器遍历序列一样遍历处理器"],
+      ["observer", "中间件可以观察和修改流经管道的请求/响应"],
+      ["vtable", "每个中间件是实现通用接口的函数指针，类似虚函数表条目"]
+    ]
+  },
+  "registry": {
+    "en": [
+      ["middleware-chain", "Middleware handlers often register themselves into a registry"],
+      ["dependency-graph", "Registries can track dependencies between registered components"],
+      ["consistent-hashing", "Service registries feed consistent hashing with available node lists"]
+    ],
+    "zh": [
+      ["middleware-chain", "中间件处理器通常将自身注册到注册表中"],
+      ["dependency-graph", "注册表可以追踪已注册组件之间的依赖关系"],
+      ["consistent-hashing", "服务注册表为一致性哈希提供可用节点列表"]
+    ]
+  },
+  "dirty-flag": {
+    "en": [
+      ["observer", "Observer notifies when state changes; dirty flag defers the reaction until needed"],
+      ["bitmask", "Dirty flags are efficiently stored as bits in a bitmask"],
+      ["dependency-graph", "Dirty propagation follows dependency graph edges to mark downstream nodes"]
+    ],
+    "zh": [
+      ["observer", "观察者在状态变更时通知；脏标记将反应延迟到需要时"],
+      ["bitmask", "脏标记作为位掩码中的位高效存储"],
+      ["dependency-graph", "脏传播沿依赖图边标记下游节点"]
+    ]
+  },
+  "lsm-tree": {
+    "en": [
+      ["skip-list", "Skip lists serve as the in-memory sorted buffer (memtable) in LSM trees"],
+      ["bloom-filter", "Bloom filters on each SSTable avoid unnecessary disk reads during lookups"],
+      ["merge-iterator", "Compaction merges multiple sorted SSTables using merge iterators"],
+      ["write-ahead-log", "WAL ensures memtable writes survive crashes before flushing to SSTables"],
+      ["tombstone", "LSM trees use tombstones to mark deletions that are cleaned up during compaction"]
+    ],
+    "zh": [
+      ["skip-list", "跳表充当 LSM 树中的内存有序缓冲区（memtable）"],
+      ["bloom-filter", "每个 SSTable 上的布隆过滤器避免查找时不必要的磁盘读取"],
+      ["merge-iterator", "压缩使用归并迭代器合并多个有序 SSTable"],
+      ["write-ahead-log", "WAL 确保 memtable 写入在刷盘到 SSTable 前幸存崩溃"],
+      ["tombstone", "LSM 树使用墓碑标记删除，在压缩时清理"]
+    ]
+  },
+  "checkpointing": {
+    "en": [
+      ["write-ahead-log", "Checkpoints truncate the WAL — recovery replays only from the latest checkpoint"],
+      ["copy-on-write", "Copy-on-write enables consistent snapshots without stopping writes"],
+      ["logical-clock", "Checkpoints are associated with logical clock positions for consistency"]
+    ],
+    "zh": [
+      ["write-ahead-log", "检查点截断 WAL——恢复只从最新检查点重放"],
+      ["copy-on-write", "写时复制在不停止写入的情况下实现一致快照"],
+      ["logical-clock", "检查点与逻辑时钟位置关联以保证一致性"]
+    ]
+  },
+  "object-pool": {
+    "en": [
+      ["free-list", "Free lists manage the pool's internal allocation of slots"],
+      ["arena-allocator", "Arena allocators batch-allocate for pool objects; both avoid per-object malloc"],
+      ["semaphore", "Pool size acts as a semaphore limiting concurrent object usage"]
+    ],
+    "zh": [
+      ["free-list", "空闲链表管理池内部的槽位分配"],
+      ["arena-allocator", "Arena 分配器为池对象批量分配；两者都避免逐对象 malloc"],
+      ["semaphore", "池大小充当信号量限制并发对象使用"]
+    ]
+  },
+  "flyweight": {
+    "en": [
+      ["interning", "Interning is the mechanism that implements flyweight — deduplicate identical values"],
+      ["copy-on-write", "Both share data — flyweight shares immutable objects, CoW shares until mutation"],
+      ["lru-cache", "LRU caches can store flyweight instances, evicting least-used shared objects"]
+    ],
+    "zh": [
+      ["interning", "驻留是实现享元的机制——去重相同的值"],
+      ["copy-on-write", "两者都共享数据——享元共享不可变对象，CoW 共享直到变更"],
+      ["lru-cache", "LRU 缓存可以存储享元实例，淘汰最少使用的共享对象"]
+    ]
+  },
+  "arena-allocator": {
+    "en": [
+      ["free-list", "Free lists recycle individual objects; arenas bulk-free all at once"],
+      ["object-pool", "Object pools pre-allocate; arenas bump-allocate — both reduce malloc overhead"],
+      ["reference-counting", "Arenas avoid per-object reference counting by freeing everything at scope end"]
+    ],
+    "zh": [
+      ["free-list", "空闲链表回收单个对象；Arena 一次性批量释放"],
+      ["object-pool", "对象池预分配；Arena 推进指针分配——两者都减少 malloc 开销"],
+      ["reference-counting", "Arena 通过在作用域结束时释放所有内容来避免逐对象引用计数"]
+    ]
+  },
+  "free-list": {
+    "en": [
+      ["arena-allocator", "Arena bulk-frees; free lists recycle individual slots for O(1) reuse"],
+      ["object-pool", "Object pools use free lists internally to track available objects"],
+      ["ring-buffer", "Both provide O(1) slot management — ring buffers via modular index, free lists via linked chain"]
+    ],
+    "zh": [
+      ["arena-allocator", "Arena 批量释放；空闲链表回收单个槽位实现 O(1) 复用"],
+      ["object-pool", "对象池内部使用空闲链表追踪可用对象"],
+      ["ring-buffer", "两者都提供 O(1) 槽位管理——环形缓冲区通过模索引，空闲链表通过链表"]
+    ]
+  },
+  "copy-on-write": {
+    "en": [
+      ["double-buffering", "Both defer costs — CoW copies on write, double buffering prepares a second copy"],
+      ["flyweight", "Flyweight shares immutable data; CoW shares mutable data until modification"],
+      ["merkle-tree", "Merkle trees enable efficient CoW — only rehash the path from changed node to root"],
+      ["reference-counting", "Reference counting tracks CoW sharing — copy when ref count > 1 and writing"]
+    ],
+    "zh": [
+      ["double-buffering", "两者都延迟成本——CoW 在写入时复制，双缓冲准备第二份副本"],
+      ["flyweight", "享元共享不可变数据；CoW 共享可变数据直到修改"],
+      ["merkle-tree", "Merkle 树实现高效 CoW——只需重新哈希从变更节点到根的路径"],
+      ["reference-counting", "引用计数追踪 CoW 共享——当引用计数 > 1 且写入时复制"]
+    ]
+  },
+  "reference-counting": {
+    "en": [
+      ["copy-on-write", "Reference counting determines when a CoW value needs to be copied"],
+      ["object-pool", "Pools provide an alternative to reference counting — return objects instead of freeing"],
+      ["tombstone", "Tombstones defer cleanup like reference counting defers deallocation"]
+    ],
+    "zh": [
+      ["copy-on-write", "引用计数决定何时需要复制 CoW 值"],
+      ["object-pool", "池提供引用计数的替代方案——归还对象而不是释放"],
+      ["tombstone", "墓碑延迟清理，类似引用计数延迟释放"]
+    ]
+  },
+  "tombstone": {
+    "en": [
+      ["lsm-tree", "LSM trees use tombstones extensively — they're cleaned up during compaction"],
+      ["mvcc", "MVCC marks old versions with tombstones for garbage collection"],
+      ["free-list", "After tombstone cleanup, freed slots can be managed by a free list"]
+    ],
+    "zh": [
+      ["lsm-tree", "LSM 树大量使用墓碑——在压缩时清理"],
+      ["mvcc", "MVCC 用墓碑标记旧版本以供垃圾回收"],
+      ["free-list", "墓碑清理后，释放的槽位可以由空闲链表管理"]
+    ]
+  },
+  "interning": {
+    "en": [
+      ["flyweight", "Interning is the mechanism behind flyweight — deduplicate identical immutable values"],
+      ["lru-cache", "Intern tables can use LRU eviction to bound memory usage"],
+      ["bloom-filter", "Bloom filters can pre-check before expensive intern table lookups"]
+    ],
+    "zh": [
+      ["flyweight", "驻留是享元背后的机制——去重相同的不可变值"],
+      ["lru-cache", "驻留表可以使用 LRU 淘汰来限制内存使用"],
+      ["bloom-filter", "布隆过滤器可以在昂贵的驻留表查找前做预检查"]
+    ]
+  },
+  "state-machine": {
+    "en": [
+      ["actor-model", "Actors often use state machines to manage their internal behavior"],
+      ["circuit-breaker", "Circuit breaker is a classic state machine: closed -> open -> half-open"],
+      ["visitor", "Visitors can dispatch differently based on state machine's current state"]
+    ],
+    "zh": [
+      ["actor-model", "Actor 通常使用状态机管理其内部行为"],
+      ["circuit-breaker", "熔断器是经典的状态机：关闭 -> 打开 -> 半开"],
+      ["visitor", "访问者可以根据状态机的当前状态进行不同的分发"]
+    ]
+  },
+  "observer": {
+    "en": [
+      ["event-loop", "Event loops dispatch events to observers registered for specific event types"],
+      ["dirty-flag", "Observer triggers notification; dirty flag defers the expensive reaction"],
+      ["middleware-chain", "Middleware observes and transforms data flowing through a pipeline"]
+    ],
+    "zh": [
+      ["event-loop", "事件循环将事件分发给为特定事件类型注册的观察者"],
+      ["dirty-flag", "观察者触发通知；脏标记延迟昂贵的反应"],
+      ["middleware-chain", "中间件观察和转换流经管道的数据"]
+    ]
+  },
+  "iterator": {
+    "en": [
+      ["merge-iterator", "Merge iterator composes multiple iterators into one sorted output"],
+      ["visitor", "Both traverse data structures — iterators yield elements, visitors dispatch callbacks"],
+      ["middleware-chain", "Middleware chains iterate through handler sequences"]
+    ],
+    "zh": [
+      ["merge-iterator", "归并迭代器将多个迭代器组合为一个有序输出"],
+      ["visitor", "两者都遍历数据结构——迭代器产出元素，访问者分发回调"],
+      ["middleware-chain", "中间件链遍历处理器序列"]
+    ]
+  },
+  "diff-patch": {
+    "en": [
+      ["copy-on-write", "Diff/patch computes what changed; CoW defers the actual copying until needed"],
+      ["merkle-tree", "Merkle trees identify which subtrees changed, narrowing where to diff"],
+      ["double-buffering", "React diffs the current tree against the work-in-progress double buffer"]
+    ],
+    "zh": [
+      ["copy-on-write", "差异/补丁计算变更内容；CoW 将实际复制延迟到需要时"],
+      ["merkle-tree", "Merkle 树识别哪些子树发生了变化，缩小差异比较范围"],
+      ["double-buffering", "React 将当前树与正在进行的双缓冲进行差异比较"]
+    ]
+  },
+  "vtable": {
+    "en": [
+      ["tagged-union", "Both enable polymorphism — vtable via indirection, tagged union via switch"],
+      ["visitor", "Visitors dispatch on type, often via vtable-like function pointer lookups"],
+      ["middleware-chain", "Each middleware handler is a function pointer, forming a dynamic vtable"]
+    ],
+    "zh": [
+      ["tagged-union", "两者都实现多态——虚函数表通过间接调用，标签联合通过 switch"],
+      ["visitor", "访问者按类型分发，通常通过类似虚函数表的函数指针查找"],
+      ["middleware-chain", "每个中间件处理器是一个函数指针，形成动态虚函数表"]
+    ]
+  },
+  "visitor": {
+    "en": [
+      ["iterator", "Both traverse structures — visitors dispatch callbacks, iterators yield elements"],
+      ["vtable", "Visitor's dispatch table is conceptually a vtable indexed by node type"],
+      ["dependency-graph", "Visitors walk dependency graphs to process nodes in correct order"],
+      ["tagged-union", "Visitor dispatch matches on tagged union's type tag"]
+    ],
+    "zh": [
+      ["iterator", "两者都遍历结构——访问者分发回调，迭代器产出元素"],
+      ["vtable", "访问者的分发表在概念上是按节点类型索引的虚函数表"],
+      ["dependency-graph", "访问者遍历依赖图以正确顺序处理节点"],
+      ["tagged-union", "访问者分发匹配标签联合的类型标签"]
+    ]
+  }
+}

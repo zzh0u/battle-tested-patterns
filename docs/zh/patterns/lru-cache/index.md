@@ -199,6 +199,15 @@ impl LRUCache {
 - [Python functools](https://github.com/python/cpython) — `@lru_cache` 装饰器
 - [Caffeine](https://github.com/ben-manes/caffeine) — 高性能 Java 缓存（Window TinyLfu）
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [free-list](/zh/patterns/free-list/) | LRU 淘汰释放节点；空闲链表回收它们而无需调用分配器 |
+| [flyweight](/zh/patterns/flyweight/) | 两者都减少内存——LRU 限制缓存大小，享元共享相同对象 |
+| [consistent-hashing](/zh/patterns/consistent-hashing/) | 分布式缓存使用一致性哈希将键路由到正确的 LRU 实例 |
+| [tombstone](/zh/patterns/tombstone/) | 墓碑在分布式 LRU 缓存中标记已删除的条目 |
+
 ## 挑战题
 
 ::: details Q1: 容量为 3 的 LRU 缓存。操作：put(A), put(B), put(C), put(D), get(B)。缓存中有什么？

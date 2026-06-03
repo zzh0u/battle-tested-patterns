@@ -217,6 +217,14 @@ Run exercises: `pnpm test`
 - [bits-and-blooms/bloom](https://github.com/bits-and-blooms/bloom/blob/master/bloom.go#L77-L81) — popular Go bloom filter library (7k+ stars)
 - [Bitcoin](https://github.com/bitcoin/bitcoin) — SPV bloom filters for lightweight clients
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [lsm-tree](/patterns/lsm-tree/) | LSM trees attach bloom filters to each SSTable to avoid unnecessary disk reads |
+| [trie](/patterns/trie/) | Bloom filter pre-screens before expensive trie traversal |
+| [lru-cache](/patterns/lru-cache/) | Both speed up lookups — bloom filters eliminate negatives, LRU caches store positives |
+
 ## Challenge Questions
 
 ::: details Q1: You deploy a bloom filter with m=1000 bits and k=3 hashes to check URL membership. After inserting 800 URLs, your false positive rate is unacceptably high. You expected around 1%. What went wrong?

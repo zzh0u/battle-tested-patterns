@@ -277,6 +277,15 @@ Run exercises: `pnpm test`
 - [Java ConcurrentSkipListMap](https://github.com/openjdk/jdk) — lock-free sorted map in JDK
 - [FoundationDB](https://github.com/apple/foundationdb) — skip list for in-memory sorted data
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [lsm-tree](/patterns/lsm-tree/) | LSM trees use skip lists as their in-memory sorted buffer (memtable) |
+| [b-plus-tree](/patterns/b-plus-tree/) | B+ trees guarantee O(log n); skip lists achieve it probabilistically with simpler code |
+| [bloom-filter](/patterns/bloom-filter/) | Both are probabilistic — bloom filters for membership, skip lists for ordering |
+| [free-list](/patterns/free-list/) | Skip list nodes need allocation management; free lists provide O(1) alloc for fixed-size nodes |
+
 ## Challenge Questions
 
 ::: details Q1: A skip list uses `Math.random()` to decide node promotion levels. Your colleague argues this makes skip list performance "unreliable" since a bad random sequence could produce O(n) search. Is this a real concern in production?

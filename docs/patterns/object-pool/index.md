@@ -176,6 +176,14 @@ Run exercises: `pnpm test` · `cargo test` · `go test ./...`
 - [HikariCP](https://github.com/brettwooldridge/HikariCP) — JDBC connection pool
 - Unity `ObjectPool<T>`
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [free-list](/patterns/free-list/) | Free lists manage the pool's internal allocation of slots |
+| [arena-allocator](/patterns/arena-allocator/) | Arena allocators batch-allocate for pool objects; both avoid per-object malloc |
+| [semaphore](/patterns/semaphore/) | Pool size acts as a semaphore limiting concurrent object usage |
+
 ## Challenge Questions
 
 ::: details Q1: Your pool is initialized with 10 objects, but at peak load you need 100. Should the pool grow dynamically or reject requests beyond 10?

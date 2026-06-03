@@ -249,6 +249,14 @@ impl<T> Registry<T> {
 - [pytest](https://github.com/pytest-dev/pytest) -- 夹具注册表：`@pytest.fixture` 注册可通过参数名发现的函数
 - [Docker](https://github.com/moby/moby) -- 驱动注册表：存储、网络和日志驱动在守护进程启动时注册
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [middleware-chain](/zh/patterns/middleware-chain/) | 中间件处理器通常将自身注册到注册表中 |
+| [dependency-graph](/zh/patterns/dependency-graph/) | 注册表可以追踪已注册组件之间的依赖关系 |
+| [consistent-hashing](/zh/patterns/consistent-hashing/) | 服务注册表为一致性哈希提供可用节点列表 |
+
 ## 挑战题
 
 ::: details Q1: 两个插件都尝试注册名称 "json"。应该发生什么？

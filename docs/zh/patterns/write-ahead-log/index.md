@@ -259,6 +259,15 @@ impl WriteAheadLog {
 - [CockroachDB](https://github.com/cockroachdb/cockroach) — 分布式 SQL 的 Raft WAL
 - [Apache Kafka](https://github.com/apache/kafka) — 提交日志作为核心存储抽象
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [checkpointing](/zh/patterns/checkpointing/) | 检查点截断 WAL——从检查点恢复 + 重放剩余日志 |
+| [lsm-tree](/zh/patterns/lsm-tree/) | LSM 树使用 WAL 确保 memtable 写入在刷盘前幸存崩溃 |
+| [merkle-tree](/zh/patterns/merkle-tree/) | Merkle 树验证 WAL 在恢复后帮助重建的状态 |
+| [logical-clock](/zh/patterns/logical-clock/) | WAL 条目按逻辑时钟排序以保证顺序 |
+
 ## 挑战题
 
 ::: details Q1: 你的 WAL 实现调用了 write() 但没有调用 fsync()。操作系统崩溃（不仅仅是进程崩溃）。你的数据安全吗？

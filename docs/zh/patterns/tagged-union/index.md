@@ -200,6 +200,14 @@ impl Value {
 - [Lua TValue](https://github.com/lua/lua) — 每个 Lua 值都是带类型标签的 `TValue` + `Value` union
 - [GHC Haskell](https://github.com/ghc/ghc) — 代数数据类型编译为标签化的堆对象
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [vtable](/zh/patterns/vtable/) | 两者都实现运行时多态——标签联合通过 switch，虚函数表通过函数指针 |
+| [bitmask](/zh/patterns/bitmask/) | 位掩码标志可以在轻量级标签联合实现中充当类型标签 |
+| [visitor](/zh/patterns/visitor/) | 访问者按节点类型分发，而节点类型通常表示为标签联合 |
+
 ## 挑战题
 
 ::: details Q1: 你有一个包含 4 种类型的标签联合体。在 C 中如果最大的变体是 24 字节，值占多少字节？

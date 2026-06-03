@@ -239,6 +239,14 @@ impl WorkStealingScheduler {
 - [Intel TBB](https://github.com/oneapi-src/oneTBB) — `task_arena` 工作窃取调度器
 - [Cilk](https://github.com/OpenCilk/opencilk-project) — fork-join 并行的工作窃取先驱
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [cooperative-scheduling](/zh/patterns/cooperative-scheduling/) | 工作窃取在线程间分配任务；协作调度在线程内让出 |
+| [object-pool](/zh/patterns/object-pool/) | 工作线程使用线程本地对象池避免争用 |
+| [free-list](/zh/patterns/free-list/) | 线程本地空闲链表通过提供无锁分配来补充工作窃取 |
+
 ## 挑战题
 
 ::: details Q1: Worker 从自己的双端队列使用 LIFO（顶部）弹出，但从其他 Worker 处使用 FIFO（底部）窃取。为什么不两者都用 FIFO？

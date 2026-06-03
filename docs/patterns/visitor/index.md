@@ -210,6 +210,15 @@ Run exercises: `pnpm test`
 - [Roslyn](https://github.com/dotnet/roslyn) — C# compiler's syntax tree visitors for analysis and code generation
 - [rustc](https://github.com/rust-lang/rust) — HIR and MIR visitor traits for borrow checking, optimization, and codegen
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [iterator](/patterns/iterator/) | Both traverse structures — visitors dispatch callbacks, iterators yield elements |
+| [vtable](/patterns/vtable/) | Visitor's dispatch table is conceptually a vtable indexed by node type |
+| [dependency-graph](/patterns/dependency-graph/) | Visitors walk dependency graphs to process nodes in correct order |
+| [tagged-union](/patterns/tagged-union/) | Visitor dispatch matches on tagged union's type tag |
+
 ## Challenge Questions
 
 ::: details Q1: You're building a compiler with 20 AST node types and 15 optimization passes. Should you use visitors or switch statements?

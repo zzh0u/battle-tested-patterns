@@ -243,6 +243,14 @@ impl<T, F: Fn() -> T> DirtyFlag<T, F> {
 - [Make](https://www.gnu.org/software/make/) -- 文件修改时间作为脏标记；仅重建源文件更新的目标
 - [Excel/Google Sheets](https://support.google.com) -- 带脏传播的单元格依赖图；仅重计算变化的子图
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [observer](/zh/patterns/observer/) | 观察者在状态变更时通知；脏标记将反应延迟到需要时 |
+| [bitmask](/zh/patterns/bitmask/) | 脏标记作为位掩码中的位高效存储 |
+| [dependency-graph](/zh/patterns/dependency-graph/) | 脏传播沿依赖图边标记下游节点 |
+
 ## 挑战题
 
 ::: details Q1: 一个场景图有 1000 个节点。根节点移动，使所有子孙节点变脏。但本帧实际只渲染 3 个节点。会发生多少次重新计算？

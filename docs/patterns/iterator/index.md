@@ -148,6 +148,14 @@ Run exercises: `pnpm test`
 - [Kotlin](https://github.com/JetBrains/kotlin) Sequences
 - Swift `LazySequence`
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [merge-iterator](/patterns/merge-iterator/) | Merge iterator composes multiple iterators into one sorted output |
+| [visitor](/patterns/visitor/) | Both traverse data structures — iterators yield elements, visitors dispatch callbacks |
+| [middleware-chain](/patterns/middleware-chain/) | Middleware chains iterate through handler sequences |
+
 ## Challenge Questions
 
 ::: details Q1: You create an infinite iterator `fibonacci()` and call `.collect()` on it. What happens?

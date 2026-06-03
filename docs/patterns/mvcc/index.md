@@ -220,6 +220,15 @@ Run exercises: `pnpm test`
 - [TiKV](https://github.com/tikv/tikv) — Percolator-based distributed MVCC transactions
 - [FoundationDB](https://github.com/apple/foundationdb) — multi-version storage layer
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [copy-on-write](/patterns/copy-on-write/) | MVCC creates new versions on write, similar to copy-on-write semantics |
+| [logical-clock](/patterns/logical-clock/) | Logical clocks provide the version timestamps that MVCC depends on |
+| [tombstone](/patterns/tombstone/) | MVCC marks deleted versions with tombstones for later garbage collection |
+| [write-ahead-log](/patterns/write-ahead-log/) | WAL ensures MVCC version changes survive crashes |
+
 ## Challenge Questions
 
 ::: details Q1: Your MVCC store keeps every version of every key forever. After a year of operation, storage usage is 50x the actual live dataset size. How do production databases like PostgreSQL handle this?

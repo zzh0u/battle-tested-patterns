@@ -274,6 +274,14 @@ impl<T> Drop for Rc<T> {
 - [Linux kernel kobject](https://github.com/torvalds/linux/blob/master/lib/kobject.c) -- `kref` 为内核对象提供引用计数
 - [Objective-C ARC](https://clang.llvm.org/docs/AutomaticReferenceCounting.html) -- 编译器管理的 `retain`/`release` 调用
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [copy-on-write](/zh/patterns/copy-on-write/) | 引用计数决定何时需要复制 CoW 值 |
+| [object-pool](/zh/patterns/object-pool/) | 池提供引用计数的替代方案——归还对象而不是释放 |
+| [tombstone](/zh/patterns/tombstone/) | 墓碑延迟清理，类似引用计数延迟释放 |
+
 ## 挑战题
 
 ::: details Q1: 对象 A 引用 B，B 引用 A。两者的引用计数都是 2。你释放了对 A 的句柄。会发生什么？

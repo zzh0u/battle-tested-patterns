@@ -276,6 +276,14 @@ Run exercises: `pnpm test`
 - [Linux kernel kobject](https://github.com/torvalds/linux/blob/master/lib/kobject.c) -- `kref` provides reference counting for kernel objects
 - [Objective-C ARC](https://clang.llvm.org/docs/AutomaticReferenceCounting.html) -- compiler-managed `retain`/`release` calls
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [copy-on-write](/patterns/copy-on-write/) | Reference counting determines when a CoW value needs to be copied |
+| [object-pool](/patterns/object-pool/) | Pools provide an alternative to reference counting — return objects instead of freeing |
+| [tombstone](/patterns/tombstone/) | Tombstones defer cleanup like reference counting defers deallocation |
+
 ## Challenge Questions
 
 ::: details Q1: Object A references B, and B references A. Both have refcount 2. You drop your handle to A. What happens?

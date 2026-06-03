@@ -285,6 +285,15 @@ Run exercises: `pnpm test`
 - [ClickHouse](https://github.com/ClickHouse/ClickHouse) -- MergingSortedTransform for merging sorted data parts
 - [CockroachDB](https://github.com/cockroachdb/cockroach) -- merge joins and range scan across multiple ranges
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [min-heap](/patterns/min-heap/) | The min-heap is the core data structure powering K-way merge |
+| [lsm-tree](/patterns/lsm-tree/) | LSM compaction merges multiple sorted SSTables using merge iterators |
+| [iterator](/patterns/iterator/) | Merge iterator is a composition of the iterator pattern across multiple sources |
+| [skip-list](/patterns/skip-list/) | Skip lists provide the sorted input streams that merge iterators consume |
+
 ## Challenge Questions
 
 ::: details Q1: You're merging 100 sorted streams, each with 1 million elements. What's the total number of heap operations, and why is this better than sorting all 100 million elements?

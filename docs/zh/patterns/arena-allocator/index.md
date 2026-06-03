@@ -178,6 +178,14 @@ class Arena:
 - [Zig](https://github.com/ziglang/zig) — `std.mem.ArenaAllocator` 作为核心分配器模式
 - [ECS 游戏引擎](https://github.com/SanderMertens/flecs) — 使用 arena 风格分配的组件存储
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [free-list](/zh/patterns/free-list/) | 空闲链表回收单个对象；Arena 一次性批量释放 |
+| [object-pool](/zh/patterns/object-pool/) | 对象池预分配；Arena 推进指针分配——两者都减少 malloc 开销 |
+| [reference-counting](/zh/patterns/reference-counting/) | Arena 通过在作用域结束时释放所有内容来避免逐对象引用计数 |
+
 ## 挑战题
 
 ::: details Q1: Arena 分配器永远不会产生内存碎片，而通用分配器会。为什么？

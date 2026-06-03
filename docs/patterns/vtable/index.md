@@ -208,6 +208,14 @@ Run exercises: `pnpm test`
 - [SQLite VFS](https://github.com/nicknisi/v8) — Virtual File System layer uses function pointer struct for OS abstraction
 - [QEMU](https://github.com/qemu/qemu) — device models provide ops structs for memory-mapped I/O handlers
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [tagged-union](/patterns/tagged-union/) | Both enable polymorphism — vtable via indirection, tagged union via switch |
+| [visitor](/patterns/visitor/) | Visitors dispatch on type, often via vtable-like function pointer lookups |
+| [middleware-chain](/patterns/middleware-chain/) | Each middleware handler is a function pointer, forming a dynamic vtable |
+
 ## Challenge Questions
 
 ::: details Q1: In C++, every class with virtual methods has a hidden vptr. What's the memory cost for 1 million objects?

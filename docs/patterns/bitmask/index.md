@@ -220,6 +220,14 @@ Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...
 - Most ECS game engines — component membership masks
 - Unix `fcntl` flags
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [tagged-union](/patterns/tagged-union/) | Both encode type information in compact integer representations |
+| [dirty-flag](/patterns/dirty-flag/) | Dirty flags are often stored as bitmask bits |
+| [double-buffering](/patterns/double-buffering/) | React uses bitmask flags on each Fiber node to track work in its double-buffered tree |
+
 ## Challenge Questions
 
 ::: details Q1: Your team defines 40 feature flags as a bitmask in a JavaScript config system. QA reports that flags 32-39 behave erratically — sometimes checking a flag returns false even though it was set. What went wrong?

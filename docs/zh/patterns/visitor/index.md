@@ -208,6 +208,15 @@ impl ExprVisitor for Evaluator {
 - [Roslyn](https://github.com/dotnet/roslyn) — C# 编译器的语法树访问者用于分析和代码生成
 - [rustc](https://github.com/rust-lang/rust) — HIR 和 MIR 访问者 trait 用于借用检查、优化和代码生成
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [iterator](/zh/patterns/iterator/) | 两者都遍历结构——访问者分发回调，迭代器产出元素 |
+| [vtable](/zh/patterns/vtable/) | 访问者的分发表在概念上是按节点类型索引的虚函数表 |
+| [dependency-graph](/zh/patterns/dependency-graph/) | 访问者遍历依赖图以正确顺序处理节点 |
+| [tagged-union](/zh/patterns/tagged-union/) | 访问者分发匹配标签联合的类型标签 |
+
 ## 挑战题
 
 ::: details Q1: 你正在构建一个有 20 种 AST 节点类型和 15 个优化遍历的编译器。应该用访问者还是 switch 语句？

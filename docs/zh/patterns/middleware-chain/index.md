@@ -196,6 +196,14 @@ impl Pipeline {
 - [ASP.NET Core](https://github.com/dotnet/aspnetcore) -- `IApplicationBuilder.Use()` 中间件管道
 - [Gin](https://github.com/gin-gonic/gin) -- Go HTTP 框架，带 `Use()` 中间件和 `c.Next()`/`c.Abort()`
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [iterator](/zh/patterns/iterator/) | 中间件链像迭代器遍历序列一样遍历处理器 |
+| [observer](/zh/patterns/observer/) | 中间件可以观察和修改流经管道的请求/响应 |
+| [vtable](/zh/patterns/vtable/) | 每个中间件是实现通用接口的函数指针，类似虚函数表条目 |
+
 ## 挑战题
 
 ::: details Q1: 你有中间件 A（日志）、B（认证）、C（处理器）。用户发送了一个带无效 token 的请求。B 通过不调用 next() 来拒绝它。A 的后处理会看到什么？

@@ -196,6 +196,14 @@ impl TokenBucket {
 - [Envoy](https://github.com/envoyproxy/envoy) — 服务网格的本地/全局限流
 - [AWS API Gateway](https://github.com/aws/aws-sdk-js-v3) — API 端点的令牌桶节流
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [semaphore](/zh/patterns/semaphore/) | 信号量限制并发；限流器限制时间维度的吞吐量 |
+| [backpressure](/zh/patterns/backpressure/) | 限流是在系统边界应用的一种背压形式 |
+| [circuit-breaker](/zh/patterns/circuit-breaker/) | 熔断器在故障时停止所有流量；限流器控制正常流量 |
+
 ## 挑战题
 
 ::: details Q1: 你的 API 使用固定窗口计数器允许每分钟 100 个请求。在 11:00:59 客户端发送了 100 个请求，在 11:01:01 又发送了 100 个请求。两个窗口都允许。这 2 秒内的实际速率是多少？令牌桶会如何不同地处理这个问题？

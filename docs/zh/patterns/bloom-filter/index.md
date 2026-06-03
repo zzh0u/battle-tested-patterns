@@ -215,6 +215,14 @@ class BloomFilter:
 - [bits-and-blooms/bloom](https://github.com/bits-and-blooms/bloom/blob/master/bloom.go#L77-L81) — 流行的 Go 布隆过滤器库（7k+ stars）
 - [Bitcoin](https://github.com/bitcoin/bitcoin) — 轻量客户端的 SPV 布隆过滤器
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [lsm-tree](/zh/patterns/lsm-tree/) | LSM 树为每个 SSTable 附加布隆过滤器以避免不必要的磁盘读取 |
+| [trie](/zh/patterns/trie/) | 布隆过滤器在昂贵的 Trie 遍历前做预筛选 |
+| [lru-cache](/zh/patterns/lru-cache/) | 两者都加速查找——布隆过滤器排除否定，LRU 缓存存储肯定 |
+
 ## 挑战题
 
 ::: details Q1: 你部署了一个 m=1000 位、k=3 个哈希函数的 Bloom Filter 来检查 URL 的成员关系。插入 800 个 URL 后，假阳性率高得无法接受。你预期大约是 1%。出了什么问题？

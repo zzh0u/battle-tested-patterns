@@ -410,6 +410,14 @@ Run exercises: `pnpm test`
 - [SQLite WAL mode](https://www.sqlite.org/wal.html) -- WAL checkpointing transfers pages back to the database file
 - [PyTorch](https://github.com/pytorch/pytorch) -- model checkpointing to resume training after interruption
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [write-ahead-log](/patterns/write-ahead-log/) | Checkpoints truncate the WAL — recovery replays only from the latest checkpoint |
+| [copy-on-write](/patterns/copy-on-write/) | Copy-on-write enables consistent snapshots without stopping writes |
+| [logical-clock](/patterns/logical-clock/) | Checkpoints are associated with logical clock positions for consistency |
+
 ## Challenge Questions
 
 ::: details Q1: Your PostgreSQL database is configured with checkpoint_timeout = 30 minutes. The server crashes. What's the worst-case recovery time, and how would you reduce it?

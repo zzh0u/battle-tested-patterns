@@ -246,6 +246,14 @@ impl Trie {
 - [Apache Lucene](https://github.com/apache/lucene) — FST（有限状态转换器）用于词项索引
 - [iptables/nftables](https://github.com/torvalds/linux) — 使用 trie 的 IP 集合匹配
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [bloom-filter](/zh/patterns/bloom-filter/) | 布隆过滤器在昂贵的 Trie 查找前做预过滤 |
+| [registry](/zh/patterns/registry/) | Trie 可以实现基于前缀路由的注册表 |
+| [skip-list](/zh/patterns/skip-list/) | 另一种有序查找——跳表按值排序，Trie 按键字符排序 |
+
 ## 挑战题
 
 ::: details Q1: 你构建了一个 Trie 来存储 100,000 个英文单词。每个节点有一个 `Map<string, TrieNode>`，每个子字符一个条目。一位同事指出这比同样单词的简单 hash set 使用更多内存。Trie 的内存开销是合理的吗？

@@ -213,6 +213,15 @@ Run exercises: `pnpm test`
 - [Kafka](https://github.com/apache/kafka) — log segments
 - Audio DSP buffers
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [backpressure](/patterns/backpressure/) | Bounded ring buffers naturally create backpressure when full |
+| [event-loop](/patterns/event-loop/) | Event loops use ring buffers for I/O event queues |
+| [double-buffering](/patterns/double-buffering/) | Both avoid allocation — ring buffers reuse slots, double buffering swaps pointers |
+| [batch-processing](/patterns/batch-processing/) | Ring buffers accumulate events for batch consumption |
+
 ## Challenge Questions
 
 ::: details Q1: You implement a ring buffer with capacity 8, but without a separate `count` field — you only track `head` and `tail`. When `head === tail`, you can't tell if the buffer is completely full or completely empty. How do production systems solve this?

@@ -311,6 +311,15 @@ Run exercises: `pnpm test` · `cargo test` · `go test ./...`
 - Python [heapq](https://github.com/python/cpython/blob/main/Lib/heapq.py)
 - Dijkstra / Prim graph algorithms
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [merge-iterator](/patterns/merge-iterator/) | K-way merge uses a min-heap to select the smallest element across streams |
+| [cooperative-scheduling](/patterns/cooperative-scheduling/) | React's scheduler uses a min-heap to pick the highest-priority task |
+| [event-loop](/patterns/event-loop/) | Timer queues in event loops often use min-heaps for earliest-deadline scheduling |
+| [b-plus-tree](/patterns/b-plus-tree/) | Alternative ordered structure — B+ trees optimize for disk, heaps for priority access |
+
 ## Challenge Questions
 
 ::: details Q1: How do you convert a min heap into a max heap without changing the data structure?

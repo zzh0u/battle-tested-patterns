@@ -389,6 +389,15 @@ impl MerkleTree {
 - [IPFS](https://github.com/ipfs/kubo) -- 内容寻址的 Merkle DAG 用于分布式文件存储
 - [Certificate Transparency](https://certificate.transparency.dev/) -- 用于审计 TLS 证书的 Merkle 树日志
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [copy-on-write](/zh/patterns/copy-on-write/) | Merkle 树实现高效的写时复制——只需重新哈希变更路径 |
+| [write-ahead-log](/zh/patterns/write-ahead-log/) | WAL 记录变更；Merkle 树验证结果状态的一致性 |
+| [checkpointing](/zh/patterns/checkpointing/) | Merkle 根作为检查点快照的完整性证明 |
+| [b-plus-tree](/zh/patterns/b-plus-tree/) | 两者都是树结构——Merkle 用于验证，B+ 用于有序访问 |
+
 ## 挑战题
 
 ::: details Q1: 你的 Merkle 树有 100 万个叶子。客户端想验证第 500,000 个叶子是否真实。客户端需要接收和计算多少个哈希？

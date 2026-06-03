@@ -241,6 +241,14 @@ Run exercises: `pnpm test`
 - [Envoy Proxy](https://github.com/envoyproxy/envoy) — outlier detection acts as a distributed circuit breaker
 - [AWS SDK](https://github.com/aws/aws-sdk-js-v3) — retry with circuit-breaking for service endpoints
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [retry-backoff](/patterns/retry-backoff/) | Circuit breaker prevents retries when the service is known to be down |
+| [state-machine](/patterns/state-machine/) | Circuit breaker is a state machine: closed -> open -> half-open |
+| [rate-limiter](/patterns/rate-limiter/) | Both protect services — rate limiter controls throughput, circuit breaker stops failures |
+
 ## Challenge Questions
 
 ::: details Q1: Your circuit breaker has a 30-second reset timeout. The downstream service has an average recovery time of 5 seconds. A colleague suggests lowering the timeout to 5 seconds so requests resume faster. What's the tradeoff?

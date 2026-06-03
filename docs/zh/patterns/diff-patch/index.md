@@ -123,6 +123,14 @@ pub fn diff<T: PartialEq + Clone>(old: &[T], new: &[T]) -> Vec<Op<T>> {
 - [jsdiff](https://github.com/kpdecker/jsdiff)
 - [Vue 3](https://github.com/vuejs/core) — template diff
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [copy-on-write](/zh/patterns/copy-on-write/) | 差异/补丁计算变更内容；CoW 将实际复制延迟到需要时 |
+| [merkle-tree](/zh/patterns/merkle-tree/) | Merkle 树识别哪些子树发生了变化，缩小差异比较范围 |
+| [double-buffering](/zh/patterns/double-buffering/) | React 将当前树与正在进行的双缓冲进行差异比较 |
+
 ## 挑战题
 
 ::: details Q1: React 的 diff 生成插入/删除/更新操作，但没有"移动"操作。它如何处理仅仅重新排序的列表？

@@ -516,6 +516,15 @@ impl BPlusTree {
 - [LMDB](https://github.com/LMDB/lmdb) -- 写时复制 B+ 树，用于崩溃安全的内存映射存储
 - [Btrfs](https://github.com/torvalds/linux) -- Linux 文件系统完全构建在 B-tree / B+ 树之上
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [skip-list](/zh/patterns/skip-list/) | 更简单的概率性替代方案，具有相当的 O(log n) 性能 |
+| [lsm-tree](/zh/patterns/lsm-tree/) | LSM 树缓冲写入以提高速度；B+ 树通过平衡结构优化读取 |
+| [merkle-tree](/zh/patterns/merkle-tree/) | 两者都是树结构——Merkle 用于完整性验证，B+ 用于有序存储 |
+| [merge-iterator](/zh/patterns/merge-iterator/) | B+ 树范围扫描使用类似归并迭代器的迭代模式 |
+
 ## 挑战题
 
 ::: details Q1: 一棵阶为 100 的 B+ 树存储 10 亿个键。它有多少层深？点查询需要多少次磁盘读取？

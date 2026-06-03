@@ -168,6 +168,14 @@ Run exercises: `pnpm test`
 - [Nginx](https://github.com/nginx/nginx) — worker connections
 - [PostgreSQL](https://github.com/postgres/postgres) — `max_connections`
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [rate-limiter](/patterns/rate-limiter/) | Rate limiters control throughput over time; semaphores control concurrent access count |
+| [backpressure](/patterns/backpressure/) | Semaphores implement backpressure by blocking when the limit is reached |
+| [object-pool](/patterns/object-pool/) | Pool size is effectively a semaphore — acquire an object, release when done |
+
 ## Challenge Questions
 
 ::: details Q1: A semaphore with max=1 behaves like a mutex. Why would you ever use a mutex instead of a semaphore(1)?

@@ -241,6 +241,14 @@ Run exercises: `pnpm test`
 - [Intel TBB](https://github.com/oneapi-src/oneTBB) — `task_arena` with work-stealing scheduler
 - [Cilk](https://github.com/OpenCilk/opencilk-project) — pioneered work stealing for fork-join parallelism
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [cooperative-scheduling](/patterns/cooperative-scheduling/) | Work stealing distributes tasks across threads; cooperative scheduling yields within a thread |
+| [object-pool](/patterns/object-pool/) | Worker threads use per-thread object pools to avoid contention |
+| [free-list](/patterns/free-list/) | Per-thread free lists complement work stealing by providing lock-free allocation |
+
 ## Challenge Questions
 
 ::: details Q1: Workers pop from their own deque using LIFO (top), but steal from others using FIFO (bottom). Why not use FIFO for both?

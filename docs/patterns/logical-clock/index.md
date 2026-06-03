@@ -202,6 +202,14 @@ Run exercises: `pnpm test`
 - [Kafka](https://github.com/apache/kafka) -- offsets as monotonic logical positions in a partition log
 - [Raft consensus](https://github.com/etcd-io/raft) -- `term` is a logical epoch; higher term wins leader election
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [mvcc](/patterns/mvcc/) | MVCC uses logical timestamps as version identifiers |
+| [write-ahead-log](/patterns/write-ahead-log/) | WAL entries are ordered by logical clock sequence numbers |
+| [checkpointing](/patterns/checkpointing/) | Checkpoints are taken at specific logical clock positions |
+
 ## Challenge Questions
 
 ::: details Q1: Process A has Lamport clock 5, Process B has clock 3. Can you determine which event happened first?

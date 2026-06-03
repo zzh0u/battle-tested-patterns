@@ -112,6 +112,14 @@ light.send("TIMER")  # "yellow"
 - [Kubernetes](https://github.com/kubernetes/kubernetes) — pod lifecycle
 - Game AI (behavior trees + FSM)
 
+## 相关模式
+
+| 模式 | 关系 |
+|---------|-------------|
+| [actor-model](/zh/patterns/actor-model/) | Actor 通常使用状态机管理其内部行为 |
+| [circuit-breaker](/zh/patterns/circuit-breaker/) | 熔断器是经典的状态机：关闭 -> 打开 -> 半开 |
+| [visitor](/zh/patterns/visitor/) | 访问者可以根据状态机的当前状态进行不同的分发 |
+
 ## 挑战题
 
 ::: details Q1: 一个表单有 4 个步骤，每个步骤有"有效"和"无效"子状态，加上"提交中"和"已提交"状态。就是 4*2 + 2 = 10 个状态。如果你添加"脏/干净"维度，翻倍到 20。如何避免这种状态爆炸？

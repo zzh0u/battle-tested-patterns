@@ -248,6 +248,14 @@ Run exercises: `pnpm test`
 - [Apache Lucene](https://github.com/apache/lucene) — FST (finite state transducer) for term index
 - [iptables/nftables](https://github.com/torvalds/linux) — IP set matching with tries
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [bloom-filter](/patterns/bloom-filter/) | Bloom filters pre-filter before expensive trie lookups |
+| [registry](/patterns/registry/) | Tries can implement registries with prefix-based routing |
+| [skip-list](/patterns/skip-list/) | Alternative sorted lookup — skip lists are ordered by value, tries by key characters |
+
 ## Challenge Questions
 
 ::: details Q1: You build a trie to store 100,000 English words. Each node has a `Map<string, TrieNode>` with one entry per child character. A colleague points out this uses far more memory than a simple hash set of the same words. Is the trie's memory overhead justified?

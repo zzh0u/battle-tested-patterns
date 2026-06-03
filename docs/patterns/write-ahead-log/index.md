@@ -261,6 +261,15 @@ Run exercises: `pnpm test`
 - [CockroachDB](https://github.com/cockroachdb/cockroach) — Raft WAL for distributed SQL
 - [Apache Kafka](https://github.com/apache/kafka) — commit log as the core storage abstraction
 
+## Related Patterns
+
+| Pattern | Relationship |
+|---------|-------------|
+| [checkpointing](/patterns/checkpointing/) | Checkpoints truncate the WAL — recover from checkpoint + replay remaining log |
+| [lsm-tree](/patterns/lsm-tree/) | LSM trees use WAL to ensure memtable writes survive crashes before flushing |
+| [merkle-tree](/patterns/merkle-tree/) | Merkle trees verify the state that WAL helps reconstruct after recovery |
+| [logical-clock](/patterns/logical-clock/) | WAL entries are sequenced by logical clock for ordering guarantees |
+
 ## Challenge Questions
 
 ::: details Q1: Your WAL implementation calls write() but not fsync(). The OS crashes (not just the process). Is your data safe?
