@@ -1,3 +1,7 @@
+---
+description: "Self-balancing tree with high branching factor — internal nodes guide, leaf nodes store, all leaves linked for efficient range scans."
+---
+
 # Pattern: B+ Tree
 
 ## One Liner

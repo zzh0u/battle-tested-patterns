@@ -1,3 +1,7 @@
+---
+description: "When an operation fails, retry it with progressively longer delays plus random jitter to avoid thundering herd."
+---
+
 # Pattern: Retry with Exponential Backoff
 
 ## One Liner

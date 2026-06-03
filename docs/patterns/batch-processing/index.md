@@ -1,3 +1,7 @@
+---
+description: "Accumulate individual operations and execute them together as a group, amortizing per-operation overhead across the batch."
+---
+
 # Pattern: Batch Processing
 
 ## One Liner

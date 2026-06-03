@@ -1,3 +1,7 @@
+---
+description: "A single-threaded loop that multiplexes I/O via epoll/kqueue, dispatching ready events to callbacks — thousands of connections without threads."
+---
+
 # Pattern: Event Loop / Reactor
 
 ## One Liner

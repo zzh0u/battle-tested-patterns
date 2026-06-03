@@ -1,3 +1,7 @@
+---
+description: "Group function pointers into a struct to achieve runtime polymorphism — the manual foundation behind interfaces, traits, and virtual methods."
+---
+
 # Pattern: Vtable / Ops Dispatch
 
 ## One Liner

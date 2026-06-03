@@ -1,3 +1,7 @@
+---
+description: "Pack multiple boolean flags into a single integer and manipulate them with bitwise operators for constant-time set operations."
+---
+
 # Pattern: Bitmask
 
 ## One Liner

@@ -1,3 +1,7 @@
+---
+description: "Compare two sequences to compute the minimal set of operations (insert, delete, move) needed to transform one into the other."
+---
+
 # Pattern: Diff / Patch
 
 ## One Liner

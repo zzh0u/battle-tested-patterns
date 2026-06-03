@@ -1,3 +1,7 @@
+---
+description: "Store strings in a tree where each edge represents a character — shared prefixes share nodes, enabling O(k) lookup by key length."
+---
+
 # Pattern: Trie (Prefix Tree)
 
 ## One Liner

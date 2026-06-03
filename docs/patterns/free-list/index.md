@@ -1,3 +1,7 @@
+---
+description: "Maintain a linked list of freed slots so allocation and deallocation are O(1) — reuse memory without calling the system allocator."
+---
+
 # Pattern: Free List
 
 ## One Liner

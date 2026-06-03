@@ -1,3 +1,7 @@
+---
+description: "Protect services from overload by draining tokens from a bucket that refills at a fixed rate — reject requests when empty."
+---
+
 # Pattern: Rate Limiter (Token Bucket)
 
 ## One Liner

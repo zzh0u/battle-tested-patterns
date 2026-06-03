@@ -1,3 +1,7 @@
+---
+description: "Store a type tag alongside a value union so one variable safely holds different types, dispatching behavior via the tag."
+---
+
 # Pattern: Tagged Union / Variant
 
 ## One Liner

@@ -1,3 +1,7 @@
+---
+description: "A fixed-size buffer that wraps around using modular arithmetic, enabling constant-time enqueue and dequeue without memory allocation."
+---
+
 # Pattern: Ring Buffer (Circular Buffer)
 
 ## One Liner

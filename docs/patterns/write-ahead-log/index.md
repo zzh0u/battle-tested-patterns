@@ -1,3 +1,7 @@
+---
+description: "Log every mutation to durable storage before applying it — replay the log to recover from crashes without data loss."
+---
+
 # Pattern: Write-Ahead Log (WAL)
 
 ## One Liner

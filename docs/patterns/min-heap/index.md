@@ -1,3 +1,7 @@
+---
+description: "A binary tree stored in an array where the smallest element is always at the root, enabling O(1) peek and O(log n) insert/remove."
+---
+
 # Pattern: Min Heap / Priority Queue
 
 ## One Liner

@@ -1,3 +1,7 @@
+---
+description: "Components register themselves into a global lookup table by name — consumers discover implementations at runtime without hardcoded dependencies."
+---
+
 # Pattern: Registry / Self-Registration
 
 ## One Liner

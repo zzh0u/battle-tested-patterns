@@ -1,3 +1,7 @@
+---
+description: "A monotonically increasing counter that orders events without wall-clock time — enabling consistent snapshots and staleness detection."
+---
+
 # Pattern: Logical Clock / Epoch
 
 ## One Liner

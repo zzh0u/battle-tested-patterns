@@ -1,3 +1,7 @@
+---
+description: 'Mark objects as "dirty" on mutation, defer expensive recomputation until the value is actually needed, then clear the flag.'
+---
+
 # Pattern: Dirty Flag
 
 ## One Liner

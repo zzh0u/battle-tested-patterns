@@ -1,3 +1,7 @@
+---
+description: "Compose handlers where each wraps the next — pre-process, call next, post-process — forming a bidirectional pipeline."
+---
+
 # Pattern: Middleware / Pipeline Chain
 
 ## One Liner

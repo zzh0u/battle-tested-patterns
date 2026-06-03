@@ -1,3 +1,7 @@
+---
+description: "Stop calling a failing service by tracking errors and tripping open — fail fast instead of piling up timeouts."
+---
+
 # Pattern: Circuit Breaker
 
 ## One Liner

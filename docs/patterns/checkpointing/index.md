@@ -1,3 +1,7 @@
+---
+description: "Periodically snapshot consistent state so recovery replays only from the checkpoint — not from the beginning of time."
+---
+
 # Pattern: Checkpointing
 
 ## One Liner

@@ -1,3 +1,7 @@
+---
+description: "Limit the number of concurrent operations by maintaining a counter — acquire before work, release after, block when the limit is reached."
+---
+
 # Pattern: Semaphore / Bounded Concurrency
 
 ## One Liner

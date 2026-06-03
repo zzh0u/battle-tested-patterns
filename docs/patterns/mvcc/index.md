@@ -1,3 +1,7 @@
+---
+description: "Keep multiple timestamped versions of each value so readers never block writers — each transaction sees a consistent snapshot without locks."
+---
+
 # Pattern: MVCC (Multi-Version Concurrency Control)
 
 ## One Liner

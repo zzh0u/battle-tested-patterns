@@ -1,3 +1,7 @@
+---
+description: "Decouple tree traversal from operations by dispatching to type-specific callbacks — enabling new operations without modifying the tree."
+---
+
 # Pattern: Visitor / Tree Walker
 
 ## One Liner

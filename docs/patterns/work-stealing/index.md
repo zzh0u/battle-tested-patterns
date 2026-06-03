@@ -1,3 +1,7 @@
+---
+description: "Idle threads steal tasks from busy threads' queues — balancing load dynamically without central coordination."
+---
+
 # Pattern: Work Stealing
 
 ## One Liner

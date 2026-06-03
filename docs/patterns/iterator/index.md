@@ -1,3 +1,7 @@
+---
+description: "Process sequences one element at a time without materializing the entire collection, enabling composable transformations with zero intermediate allocations."
+---
+
 # Pattern: Iterator / Lazy Evaluation
 
 ## One Liner

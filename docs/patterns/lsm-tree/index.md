@@ -1,3 +1,7 @@
+---
+description: "Buffer writes in memory, flush to sorted files on disk, merge files in background — trading read amplification for fast writes."
+---
+
 # Pattern: LSM Tree (Log-Structured Merge Tree)
 
 ## One Liner

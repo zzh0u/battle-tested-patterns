@@ -1,3 +1,7 @@
+---
+description: "Model an entity's lifecycle as a set of states with explicit transitions, making impossible states unrepresentable and every state change auditable."
+---
+
 # Pattern: State Machine
 
 ## One Liner

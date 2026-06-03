@@ -1,3 +1,7 @@
+---
+description: "Model dependencies as a directed acyclic graph and topologically sort to determine a valid execution order — detecting cycles before they deadlock."
+---
+
 # Pattern: Dependency Graph
 
 ## One Liner

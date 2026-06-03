@@ -1,3 +1,7 @@
+---
+description: "Distribute keys across nodes on a virtual ring so that adding or removing a node only remaps ~1/n of the keys."
+---
+
 # Pattern: Consistent Hashing
 
 ## One Liner

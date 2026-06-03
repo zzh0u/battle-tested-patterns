@@ -1,3 +1,7 @@
+---
+description: "Maintain two copies of state and atomically swap between them so readers always see a consistent snapshot."
+---
+
 # Pattern: Double Buffering
 
 ## One Liner

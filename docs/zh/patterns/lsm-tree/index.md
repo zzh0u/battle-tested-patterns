@@ -1,3 +1,7 @@
+---
+description: "将写入缓冲在内存中，刷写到磁盘的有序文件，后台合并文件——用读放大换取快速写入。"
+---
+
 # 模式：LSM 树 (Log-Structured Merge Tree)
 
 ## 一句话

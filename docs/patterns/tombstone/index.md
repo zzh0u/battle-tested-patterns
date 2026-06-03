@@ -1,3 +1,7 @@
+---
+description: "Mark deleted entries with a tombstone marker instead of removing them — a background process reclaims space later."
+---
+
 # Pattern: Tombstone / Deferred Deletion
 
 ## One Liner

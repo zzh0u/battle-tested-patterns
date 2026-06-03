@@ -1,3 +1,7 @@
+---
+description: "Share identical immutable objects instead of creating duplicates, trading a lookup cost for massive memory savings when many instances have the same value."
+---
+
 # Pattern: Flyweight / Interning
 
 ## One Liner
