@@ -10,6 +10,14 @@ export default withMermaid(defineConfig({
 
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/battle-tested-patterns/favicon.svg' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:title', content: 'Battle-Tested Patterns' }],
+    ['meta', { property: 'og:description', content: '30 production-proven programming patterns from React, Linux, Go, Redis, PostgreSQL. Precise source links, 4-language implementations, 60 exercises, 100+ challenge questions.' }],
+    ['meta', { property: 'og:url', content: 'https://totoro-jam.github.io/battle-tested-patterns/' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: 'Battle-Tested Patterns' }],
+    ['meta', { name: 'twitter:description', content: '30 production-proven programming patterns with precise source links to React, Linux, Go, Redis, and more.' }],
+    ['meta', { name: 'keywords', content: 'programming patterns, design patterns, system design, data structures, algorithms, React, Linux, Go, Rust, TypeScript, Python, Redis, PostgreSQL' }],
   ],
 
   locales: {
