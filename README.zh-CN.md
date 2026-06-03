@@ -4,7 +4,7 @@
 
 **从顶级开源项目源码中提炼的代码级编程模式。**
 
-每个模式附带精确到行号的源码链接 · 多语言实现 · 可运行练习
+交互式可视化 · 精确到行号的源码链接 · 多语言实现 · 可运行练习
 
 [📖 Documentation](https://totoro-jam.github.io/battle-tested-patterns/) · [📖 中文文档](https://totoro-jam.github.io/battle-tested-patterns/zh/)
 
@@ -17,7 +17,7 @@
 
 </div>
 
-## 38 个模式速览
+## 46 个模式速览
 
 <table>
 <tr>
@@ -197,7 +197,8 @@ const perms = READ | WRITE;            perms = READ | WRITE
 
 | 特性 | 详情 |
 |------|------|
-| 38 个模式 | Bitmask、LRU Cache、MVCC、Work Stealing、Actor Model 等 |
+| 46 个模式 | Bitmask、LRU Cache、MVCC、Work Stealing、Actor Model 等 |
+| 46 个交互式可视化 | 可点击、可拖拽的 SVG 可视化，动手操作建立直觉 |
 | 60 个练习 | 每个模式 basic + intermediate，真实场景 |
 | 100+ 挑战题 | "你猜会怎样"场景问答，验证真正理解 |
 | 6 个系统案例 | React、Redis、Go、Linux、PostgreSQL、Kafka 如何组合模式 |

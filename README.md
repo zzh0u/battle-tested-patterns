@@ -4,7 +4,7 @@
 
 **Code-level programming patterns extracted from production codebases.**
 
-Every pattern backed by precise GitHub source links · Multi-language · Runnable exercises
+Interactive visualizations · Precise source links · Multi-language · Runnable exercises
 
 [📖 Documentation](https://totoro-jam.github.io/battle-tested-patterns/) · [📖 中文文档](https://totoro-jam.github.io/battle-tested-patterns/zh/)
 
@@ -17,7 +17,7 @@ English | [简体中文](README.zh-CN.md)
 
 </div>
 
-## 38 Patterns at a Glance
+## 46 Patterns at a Glance
 
 <table>
 <tr>
@@ -197,7 +197,8 @@ Then exercises at 2 difficulty levels — all with tests you can run.
 
 | Feature | Details |
 |---------|---------|
-| 38 patterns | Bitmask, LRU Cache, MVCC, Work Stealing, Actor Model, and 33 more |
+| 46 patterns | Bitmask, LRU Cache, MVCC, Work Stealing, Actor Model, and 41 more |
+| 46 interactive visualizations | Hands-on SVG visualizations — click, drag, experiment to build intuition |
 | 60 exercises | Basic + intermediate for every pattern, real-world scenarios |
 | 100+ challenge questions | "Guess what happens" scenario Q&A to test understanding |
 | 6 system case studies | How React, Redis, Go, Linux, PostgreSQL, Kafka compose patterns |
