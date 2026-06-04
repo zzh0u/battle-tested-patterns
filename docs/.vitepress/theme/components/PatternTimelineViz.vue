@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { withBase } from 'vitepress';
 import { useI18n } from '../composables/useI18n';
 
 const { t, isZh } = useI18n();
@@ -98,7 +99,8 @@ const stats = computed(() => ({
 }));
 
 function linkFor(entry: TimelineEntry) {
-  return isZh.value ? `/zh${entry.link}` : entry.link;
+  const path = isZh.value ? `/zh${entry.link}` : entry.link;
+  return withBase(path);
 }
 </script>
 

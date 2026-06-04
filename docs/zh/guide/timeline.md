@@ -10,41 +10,6 @@ description: "编程模式时间线：从冯·诺依曼到现代分布式系统�
 
 <PatternTimelineViz />
 
-## 文本概览
-
-```text
-  1943 ━━━━ State Machine
-  1945 ━━━━ Bitmask
-  1953 ━━━━ Double Buffering
-  1956 ━━━━ Batch Processing
-  1958 ━━━━ Free List, Cooperative Scheduling
-  1959 ━━━━ Trie
-  1960 ━━━━ Reference Counting (Collins), Interning (LISP symbols)
-  1962 ━━━━ Dependency Graph (Kahn's toposort)
-  1964 ━━━━ Min Heap (Williams)
-  1965 ━━━━ Semaphore (Dijkstra), Dirty Flag (virtual memory)
-  1966 ━━━━ LRU Cache (Belady), Tagged Union (Algol 68)
-  1967 ━━━━ Vtable (Simula), Event Loop (early GUIs)
-  1970 ━━━━ Bloom Filter, B+ Tree (Bayer & McCreight)
-  1971 ━━━━ Copy-on-Write
-  1973 ━━━━ Actor Model, Retry with Backoff (Ethernet)
-  1974 ━━━━ Diff/Patch, Backpressure (TCP)
-  1975 ━━━━ Iterator (CLU), Tombstone (database deletion)
-  1976 ━━━━ Write-Ahead Log, Checkpointing (System R)
-  1978 ━━━━ MVCC (David Reed), Logical Clock (Lamport)
-  1979 ━━━━ Observer / Pub-Sub (MVC), Merkle Tree (Merkle)
-  1981 ━━━━ Work Stealing
-  1986 ━━━━ Rate Limiter / Token Bucket
-  1989 ━━━━ Skip List (Pugh)
-  1990 ━━━━ Flyweight
-  1993 ━━━━ Middleware Chain (web frameworks), Registry (COM)
-  1994 ━━━━ Object Pool (slab allocator), Visitor (GoF)
-  1996 ━━━━ LSM Tree (O'Neil et al.)
-  1997 ━━━━ Consistent Hashing (Karger)
-  2003 ━━━━ Merge Iterator (LevelDB-style K-way merge)
-  2007 ━━━━ Circuit Breaker (Nygard)
-```
-
 ## 完整表格
 
 | 年份 | 模式 | 起源 |

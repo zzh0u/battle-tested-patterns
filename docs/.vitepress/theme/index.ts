@@ -51,6 +51,7 @@ const vizComponents: Record<string, () => Promise<any>> = {
   TaggedUnionViz: () => import('./components/TaggedUnionViz.vue'),
   TombstoneViz: () => import('./components/TombstoneViz.vue'),
   PatternTimelineViz: () => import('./components/PatternTimelineViz.vue'),
+  PatternConnectionsViz: () => import('./components/PatternConnectionsViz.vue'),
 };
 
 function clientOnly(loader: () => Promise<any>) {

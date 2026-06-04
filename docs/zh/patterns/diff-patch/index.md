@@ -14,14 +14,14 @@ description: "比较两个序列，计算将一个转换为另一个所需的最
 
 ```mermaid
 flowchart LR
-    subgraph 旧列表
+    subgraph Old["旧列表"]
         A1[A] --> B1[B] --> C1[C] --> D1[D]
     end
-    subgraph 新列表
+    subgraph New["新列表"]
         A2[A] --> C2[C] --> E2[E] --> D2[D]
     end
-    旧列表 -->|diff| P["补丁:\n- 保留 A\n- 删除 B\n- 保留 C\n- 插入 E\n- 保留 D"]
-    P -->|apply| 新列表
+    Old -->|diff| P["补丁:\n- 保留 A\n- 删除 B\n- 保留 C\n- 插入 E\n- 保留 D"]
+    P -->|apply| New
 ```
 
 React 的协调器用此确定要创建、更新或删除哪些 DOM 节点。Git 用此显示提交之间的变更。
