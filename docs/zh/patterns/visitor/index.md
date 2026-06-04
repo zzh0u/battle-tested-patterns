@@ -187,6 +187,8 @@ impl ExprVisitor for Evaluator {
 | 基础 | 数学表达式的 AST 访问者（求值 + 打印） | `exercises/typescript/visitor/01-basic.test.ts` |
 | 进阶 | 重写树的转换访问者（常量折叠） | `exercises/typescript/visitor/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **编译器和解释器** — 对 AST 进行求值、类型检查、优化遍历

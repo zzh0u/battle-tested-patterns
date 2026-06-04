@@ -175,6 +175,8 @@ remaining = work_loop(
 | 基础 | 实现带让出检查的时间片工作循环 | `exercises/typescript/cooperative-scheduling/01-basic.test.ts` |
 | 进阶 | 构建按优先级调度并让出的调度器 | `exercises/typescript/cooperative-scheduling/02-priority-scheduler.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **UI 线程工作** — 处理大数据集时保持动画和输入响应

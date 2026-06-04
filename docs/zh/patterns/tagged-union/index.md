@@ -179,6 +179,8 @@ impl Value {
 | 基础 | 实现带类型分发的标签值容器 | `exercises/typescript/tagged-union/01-basic.test.ts` |
 | 进阶 | 支持嵌套数组/对象的 JSON 值类型 | `exercises/typescript/tagged-union/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **脚本语言值** — 单一 Value 类型持有数字、字符串、数组等（Godot Variant、Lua TValue）

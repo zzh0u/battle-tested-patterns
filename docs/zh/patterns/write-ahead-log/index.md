@@ -237,6 +237,8 @@ impl WriteAheadLog {
 | 基础 | 实现内存中的预写日志 | `exercises/typescript/write-ahead-log/01-basic.test.ts` |
 | 进阶 | 检查点恢复 — 仅重放最后检查点之后的条目 | `exercises/typescript/write-ahead-log/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **数据库** — 事务崩溃恢复（PostgreSQL、SQLite、MySQL InnoDB）

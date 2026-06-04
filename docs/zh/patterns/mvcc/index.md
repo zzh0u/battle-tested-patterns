@@ -197,6 +197,8 @@ impl MVCCStore {
 | 基础 | 实现多版本键值存储 | `exercises/typescript/mvcc/01-basic.test.ts` |
 | 进阶 | 带一致性读取的快照事务 | `exercises/typescript/mvcc/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **数据库** — 并发事务的快照隔离（PostgreSQL、MySQL InnoDB）

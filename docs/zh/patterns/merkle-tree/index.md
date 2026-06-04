@@ -367,6 +367,8 @@ impl MerkleTree {
 | 基础 | 构建 Merkle 树，获取根哈希，生成并验证证明 | `exercises/typescript/merkle-tree/01-basic.test.ts` |
 | 进阶 | 检测被篡改的叶子并生成最小证明路径 | `exercises/typescript/merkle-tree/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **版本控制** -- 内容寻址存储，任何更改都可检测（Git）

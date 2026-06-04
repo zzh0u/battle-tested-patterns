@@ -171,6 +171,8 @@ impl<S> Actor<S> {
 | 基础 | 实现带信箱和消息处理的 Actor | `exercises/typescript/actor-model/01-basic.test.ts` |
 | 进阶 | Actor 监督 — 父 Actor 重启崩溃的子 Actor | `exercises/typescript/actor-model/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **分布式系统** — Actor 自然映射到网络节点（Erlang/OTP、Akka Cluster）

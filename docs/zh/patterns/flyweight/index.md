@@ -126,6 +126,8 @@ func (in *Interner) Resolve(id int) string {
 | 基础 | 实现字符串驻留器 | `exercises/typescript/flyweight/01-basic.test.ts` |
 | 进阶 | 按名称去重的图标注册表 | `exercises/typescript/flyweight/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **重复相同值** — 字符串、颜色、类型标签

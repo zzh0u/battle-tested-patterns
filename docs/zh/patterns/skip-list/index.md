@@ -254,6 +254,8 @@ impl SkipList {
 | 基础 | 实现带 insert/search/delete 的跳表 | `exercises/typescript/skip-list/01-basic.test.ts` |
 | 进阶 | 带范围查询的跳表 | `exercises/typescript/skip-list/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **内存有序存储** — 需要有序迭代 + 快速点查（Redis 有序集合）

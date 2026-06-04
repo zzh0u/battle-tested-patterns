@@ -254,6 +254,8 @@ impl<T> Drop for Rc<T> {
 | 基础 | 实现带 clone/drop 和清理回调的引用计数值 | `exercises/typescript/reference-counting/01-basic.test.ts` |
 | 进阶 | 扩展弱引用，不阻止清理 | `exercises/typescript/reference-counting/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **需要确定性清理的共享所有权** -- 代码的多个部分需要同一资源，且需要在最后一个用户完成时立即释放（文件句柄、GPU 缓冲区、数据库连接）

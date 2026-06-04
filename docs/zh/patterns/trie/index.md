@@ -224,6 +224,8 @@ impl Trie {
 | 基础 | 实现带 insert/search/startsWith 的 Trie | `exercises/typescript/trie/01-basic.test.ts` |
 | 进阶 | 基于频率排序的自动补全 | `exercises/typescript/trie/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **自动补全 / 输入提示** — 查找某前缀的所有补全

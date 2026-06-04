@@ -222,6 +222,8 @@ impl<T, F: Fn() -> T> DirtyFlag<T, F> {
 | 基础 | 实现基于脏标记的惰性计算包装器 | `exercises/typescript/dirty-flag/01-basic.test.ts` |
 | 进阶 | 构建带脏标记世界坐标缓存的变换层级 | `exercises/typescript/dirty-flag/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **UI 布局引擎** -- 样式变更时标记节点为脏，批量执行布局计算

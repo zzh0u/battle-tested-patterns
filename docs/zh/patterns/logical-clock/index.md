@@ -179,6 +179,8 @@ impl LamportClock {
 | 基础 | 实现带 tick/send/receive 的 Lamport 时钟 | `exercises/typescript/logical-clock/01-basic.test.ts` |
 | 进阶 | 构建多节点因果关系追踪的版本向量 | `exercises/typescript/logical-clock/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **数据库修订追踪** -- etcd、CockroachDB 和 Spanner 使用单调修订号实现一致性快照和 watch API

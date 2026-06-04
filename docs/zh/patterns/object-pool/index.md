@@ -132,6 +132,8 @@ impl<T> ObjectPool<T> {
 | 基础 | 实现通用对象池 get/release | `exercises/typescript/object-pool/01-basic.test.ts` |
 | 进阶 | 构建带最大连接数的连接池 | `exercises/typescript/object-pool/02-connection-pool.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **高频分配** — 游戏循环、请求处理、粒子系统

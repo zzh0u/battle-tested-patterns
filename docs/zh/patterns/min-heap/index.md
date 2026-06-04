@@ -212,6 +212,8 @@ class MinHeap:
 | 基础 | 实现 push、pop、peek 和 sift 操作 | `exercises/typescript/min-heap/01-basic.test.ts` |
 | 进阶 | 构建 React 风格的任务调度器 | `exercises/typescript/min-heap/02-task-scheduler.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **任务调度** — 始终处理最高优先级（最低截止时间）的任务

@@ -315,6 +315,8 @@ impl TombstoneStore {
 | 基础 | 实现带墓碑删除的键值存储 | `exercises/typescript/tombstone/01-basic.test.ts` |
 | 进阶 | 添加基于时间的压缩和墓碑指标 | `exercises/typescript/tombstone/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **LSM 树存储引擎** -- LevelDB、RocksDB、Cassandra 追加墓碑；压缩负责清理

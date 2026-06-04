@@ -228,6 +228,8 @@ impl<T> Registry<T> {
 | 基础 | 实现带注册/查找/列表的类型化注册表 | `exercises/typescript/registry/01-basic.test.ts` |
 | 进阶 | 添加基于装饰器的自注册和依赖验证 | `exercises/typescript/registry/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **插件系统** -- 按名称加载和发现插件，无需编译时耦合

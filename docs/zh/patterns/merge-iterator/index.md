@@ -261,6 +261,8 @@ pub fn merge_k_sorted(streams: &[Vec<i32>]) -> Vec<i32> {
 | 基础 | 将 K 个有序数组合并为一个有序数组 | `exercises/typescript/merge-iterator/01-basic.test.ts` |
 | 进阶 | 带去重的合并（按 key 取最新值） | `exercises/typescript/merge-iterator/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **LSM 树读取** -- 将 memtable + 多个 SSTable 层级合并为一个有序视图（LevelDB、RocksDB）

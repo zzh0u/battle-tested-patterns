@@ -162,6 +162,8 @@ impl Interner {
 | 基础 | 实现带 intern/resolve 的字符串驻留器 | `exercises/typescript/interning/01-basic.test.ts` |
 | 进阶 | 带结构相等性的类型驻留器 | `exercises/typescript/interning/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **编译器和解释器** — 驻留标识符、关键字和类型描述符以实现快速相等性检查

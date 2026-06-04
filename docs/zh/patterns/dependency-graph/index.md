@@ -264,6 +264,8 @@ impl DependencyGraph {
 | 基础 | 实现带循环检测的拓扑排序 | `exercises/typescript/dependency-graph/01-basic.test.ts` |
 | 进阶 | 并行执行规划器 — 计算执行波次 | `exercises/typescript/dependency-graph/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **构建系统** — 依赖先于被依赖者编译（Make、Bazel、Cargo）

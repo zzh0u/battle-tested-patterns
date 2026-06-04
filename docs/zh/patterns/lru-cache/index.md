@@ -177,6 +177,8 @@ impl LRUCache {
 | 基础 | 实现带 get/put 和淘汰的 LRU 缓存 | `exercises/typescript/lru-cache/01-basic.test.ts` |
 | 进阶 | 带 TTL 过期的 LRU 缓存 | `exercises/typescript/lru-cache/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **数据库查询缓存** — 缓存热查询，淘汰冷查询

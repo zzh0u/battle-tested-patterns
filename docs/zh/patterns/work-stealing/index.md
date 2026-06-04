@@ -218,6 +218,8 @@ impl WorkStealingScheduler {
 | 基础 | 实现带本地双端队列的工作窃取调度器 | `exercises/typescript/work-stealing/01-basic.test.ts` |
 | 进阶 | 优先级工作窃取 — 高优先级任务优先执行 | `exercises/typescript/work-stealing/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **并行运行时** — goroutine 调度器（Go）、任务调度器（Tokio、Java ForkJoinPool）

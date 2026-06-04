@@ -158,6 +158,8 @@ class Arena:
 | 基础 | 实现带 alloc/reset 的 bump 分配器 | `exercises/typescript/arena-allocator/01-basic.test.ts` |
 | 进阶 | 基于句柄的字符串 Arena 分配器 | `exercises/typescript/arena-allocator/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **编译器/解析器** — 解析期间分配 AST 节点，编译后一次性释放

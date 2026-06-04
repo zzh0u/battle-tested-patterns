@@ -190,6 +190,8 @@ impl FreeList {
 | 基础 | 实现带 alloc/free 和计数跟踪的空闲链表分配器 | `exercises/typescript/free-list/01-basic.test.ts` |
 | 进阶 | 带过期句柄检测的代际池 | `exercises/typescript/free-list/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **游戏引擎** — 实体/组件池的快速分配/释放循环

@@ -215,6 +215,8 @@ impl EventLoop {
 | 基础 | 实现带处理器注册和 tick/run 的迷你事件循环 | `exercises/typescript/event-loop/01-basic.test.ts` |
 | 进阶 | 扩展定时器支持（一次性定时器与 I/O 交错） | `exercises/typescript/event-loop/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **高连接服务器** -- Web 服务器、聊天服务器、API 网关，数千连接大多空闲（等待 I/O）

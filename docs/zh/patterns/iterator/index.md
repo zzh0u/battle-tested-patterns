@@ -94,6 +94,8 @@ func Filter[T any](in []T, pred func(T) bool) []T {
 | 基础 | 实现带 map、filter、collect 的惰性迭代器 | `exercises/typescript/iterator/01-basic.test.ts` |
 | 进阶 | 带 flatMap、take、reduce 的惰性管道 | `exercises/typescript/iterator/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **大/无限序列** — 处理百万行数据无需全部加载到内存

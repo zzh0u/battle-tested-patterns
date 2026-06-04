@@ -134,6 +134,8 @@ func Retry(fn func() error, cfg Config) error {
 | 基础 | 实现可配置退避的重试 | `exercises/typescript/retry-backoff/01-basic.test.ts` |
 | 进阶 | 集成熔断器的重试机制 | `exercises/typescript/retry-backoff/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **网络请求** — HTTP、数据库连接、RPC

@@ -193,6 +193,8 @@ class BloomFilter:
 | 基础 | 实现带 add/mightContain 的布隆过滤器 | `exercises/typescript/bloom-filter/01-basic.test.ts` |
 | 进阶 | 使用布隆过滤器字典的拼写检查器 | `exercises/typescript/bloom-filter/02-intermediate.test.ts` |
 
+运行练习：`pnpm test`
+
 ## 何时使用
 
 - **数据库键查找** — 跳过对一定不存在的键的磁盘读取（LevelDB、Cassandra、HBase）
