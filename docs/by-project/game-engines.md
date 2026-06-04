@@ -20,6 +20,47 @@ Game engines push patterns to their limits — every frame counts at 60fps.
 | [Dirty Flag](/patterns/dirty-flag/) | Godot / Unity | Transform hierarchies | Dirty flag on parent transform invalidates child world matrices — recompute only when accessed |
 | [Event Loop](/patterns/event-loop/) | Godot | [`main_loop.h`](https://github.com/godotengine/godot/blob/master/core/os/main_loop.h) | Main game loop — process input, update, render in fixed-step cycle |
 
+## How They Compose: One Game Frame
+
+At 60fps, each frame has ~16ms. Multiple patterns work together inside that budget:
+
+```text
+Frame N starts
+  │
+  ▼
+┌───────────────────────────────────────────────────┐
+│ 1. EVENT LOOP — the main loop ticks: process      │
+│    input, run physics, update game state, render.  │
+│    Fixed timestep ensures deterministic simulation. │
+├───────────────────────────────────────────────────┤
+│ 2. OBJECT POOL + FREE LIST — spawning a bullet    │
+│    grabs a slot from the pool (O(1)), not malloc.  │
+│    Destroyed entities return to the free list.     │
+├───────────────────────────────────────────────────┤
+│ 3. DIRTY FLAG — moving a parent transform marks    │
+│    children dirty. Only recompute world matrices   │
+│    for nodes that actually changed this frame.     │
+├───────────────────────────────────────────────────┤
+│ 4. STATE MACHINE — character animation transitions │
+│    (idle → run → jump) driven by state machine.    │
+│    Each state knows its blend tree and exit rules.  │
+├───────────────────────────────────────────────────┤
+│ 5. BATCH PROCESSING — draw calls are batched by    │
+│    material/texture to minimize GPU state changes.  │
+│    100 sprites with same texture = 1 draw call.    │
+├───────────────────────────────────────────────────┤
+│ 6. DOUBLE BUFFERING — the back buffer is swapped   │
+│    to front atomically. Players see a complete     │
+│    frame, never a half-drawn one.                  │
+├───────────────────────────────────────────────────┤
+│ 7. ARENA ALLOCATOR — per-frame temp allocations    │
+│    (particles, debug draws) use a bump allocator.  │
+│    At frame end: reset pointer to zero. Done.      │
+└───────────────────────────────────────────────────┘
+```
+
+The key insight: game engines minimize per-object overhead. Pools avoid malloc, dirty flags avoid recomputation, batching avoids GPU calls, and arenas avoid per-object deallocation. All of these share the same design philosophy — pay O(1) per operation, defer or amortize the expensive work.
+
 ## Further Reading
 
 - [Godot Engine (GitHub)](https://github.com/godotengine/godot) · [SDL (GitHub)](https://github.com/libsdl-org/SDL)
