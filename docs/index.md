@@ -58,6 +58,8 @@ features:
 
 ## 46 Patterns in 5 Categories
 
+> **Prefer exploring by era?** These patterns span 80 years of computing history — see the [Pattern Timeline →](/guide/timeline)
+
 ### Data Structures
 
 | Pattern | Key Insight | Source Projects |
