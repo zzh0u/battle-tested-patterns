@@ -195,7 +195,7 @@ class BloomFilter:
 | Basic | Implement a bloom filter with add/mightContain | `exercises/typescript/bloom-filter/01-basic.test.ts` |
 | Intermediate | Spell checker using a bloom filter dictionary | `exercises/typescript/bloom-filter/02-intermediate.test.ts` |
 
-Run exercises: `pnpm test`
+Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go)
 
 ## When to Use
 

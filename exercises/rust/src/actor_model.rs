@@ -8,7 +8,7 @@ enum Message {
 }
 
 struct Actor {
-    sender: mpsc::Sender<Message>,
+    sender: Option<mpsc::Sender<Message>>,
     state: Arc<Mutex<i64>>,
     handle: Option<thread::JoinHandle<()>>,
 }
@@ -30,21 +30,18 @@ impl Actor {
         });
 
         Self {
-            sender,
+            sender: Some(sender),
             state,
             handle: Some(handle),
         }
     }
 
     fn send(&self, msg: Message) {
-        self.sender.send(msg).unwrap();
+        self.sender.as_ref().unwrap().send(msg).unwrap();
     }
 
     fn stop(&mut self) {
-        drop(self.sender.clone());
-        // Drop the original sender by replacing it
-        let (dummy, _) = mpsc::channel();
-        let _ = std::mem::replace(&mut self.sender, dummy);
+        self.sender.take();
         if let Some(h) = self.handle.take() {
             h.join().unwrap();
         }
@@ -83,7 +80,7 @@ mod tests {
     #[test]
     fn test_actor_concurrent_senders() {
         let mut a = Actor::new();
-        let sender = a.sender.clone();
+        let sender = a.sender.as_ref().unwrap().clone();
 
         let handles: Vec<_> = (0..100)
             .map(|_| {

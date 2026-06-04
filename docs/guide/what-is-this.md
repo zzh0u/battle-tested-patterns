@@ -49,7 +49,7 @@ Start with patterns you already use (possibly without realizing it):
 4. [Observer](/patterns/observer/) — Redux, EventEmitter
 5. [Double Buffering](/patterns/double-buffering/) — React Fiber's `current` / `workInProgress`
 
-Then see them compose: [Patterns from React](/by-project/react)
+Then see them compose: [Patterns from React](/by-project/react) · Quick reference: [Cheat Sheet](/guide/cheatsheet)
 
 ### Backend / Systems Developer
 
@@ -61,7 +61,7 @@ Start with patterns that appear in databases and distributed systems:
 4. [Rate Limiter](/patterns/rate-limiter/) — token bucket for throughput control
 5. [Consistent Hashing](/patterns/consistent-hashing/) — distribute keys across nodes
 
-Then see the full picture: [Patterns from Distributed Systems](/by-project/distributed-systems)
+Then see the full picture: [Patterns from Distributed Systems](/by-project/distributed-systems) · Quick reference: [Cheat Sheet](/guide/cheatsheet)
 
 ### Performance / Low-Level Engineer
 
@@ -73,7 +73,7 @@ Start with memory and concurrency patterns:
 4. [Work Stealing](/patterns/work-stealing/) — Go runtime, Tokio scheduler
 5. [Ring Buffer](/patterns/ring-buffer/) — lock-free queues
 
-Then see how they compose: [Patterns from Go Runtime](/by-project/go-runtime) · [Patterns from Linux](/by-project/linux)
+Then see how they compose: [Patterns from Go Runtime](/by-project/go-runtime) · [Patterns from Linux](/by-project/linux) · Quick reference: [Cheat Sheet](/guide/cheatsheet)
 
 ## How to Use This
 

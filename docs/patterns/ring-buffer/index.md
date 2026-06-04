@@ -192,7 +192,7 @@ class RingBuffer:
 | Basic | Implement a ring buffer with enqueue/dequeue | `exercises/typescript/ring-buffer/01-basic.test.ts` |
 | Intermediate | Streaming moving average over last N values | `exercises/typescript/ring-buffer/02-intermediate.test.ts` |
 
-Run exercises: `pnpm test`
+Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go)
 
 ## When to Use
 

@@ -239,7 +239,7 @@ impl WriteAheadLog {
 | Basic | Implement an in-memory write-ahead log | `exercises/typescript/write-ahead-log/01-basic.test.ts` |
 | Intermediate | Checkpoint recovery — replay only after last checkpoint | `exercises/typescript/write-ahead-log/02-intermediate.test.ts` |
 
-Run exercises: `pnpm test`
+Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go)
 
 ## When to Use
 

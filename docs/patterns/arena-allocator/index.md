@@ -160,7 +160,7 @@ class Arena:
 | Basic | Implement a bump allocator with alloc/reset | `exercises/typescript/arena-allocator/01-basic.test.ts` |
 | Intermediate | String arena with handle-based allocation | `exercises/typescript/arena-allocator/02-intermediate.test.ts` |
 
-Run exercises: `pnpm test`
+Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go)
 
 ## When to Use
 
@@ -179,7 +179,7 @@ Run exercises: `pnpm test`
 ## More Production Uses
 
 - [Go arena](https://github.com/golang/go/blob/master/src/arena/arena.go) — experimental arena API in Go standard library
-- [V8](https://github.com/nickel-org/nickel.rs) — Zone allocator for temporary AST/IR allocations
+- [V8](https://github.com/nickel-org/nickel.rs) — TODO: find correct V8 Zone allocator source link
 - [Zig](https://github.com/ziglang/zig) — `std.mem.ArenaAllocator` as a core allocator pattern
 - [ECS game engines](https://github.com/SanderMertens/flecs) — component storage with arena-style allocation
 

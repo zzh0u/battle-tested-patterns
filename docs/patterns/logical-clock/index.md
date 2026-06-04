@@ -181,7 +181,7 @@ impl LamportClock {
 | Basic | Implement a Lamport clock with tick/send/receive | `exercises/typescript/logical-clock/01-basic.test.ts` |
 | Intermediate | Build a version vector for multi-node causality tracking | `exercises/typescript/logical-clock/02-intermediate.test.ts` |
 
-Run exercises: `pnpm test`
+Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go)
 
 ## When to Use
 

@@ -1,5 +1,3 @@
-use std::fmt;
-
 enum ASTNode {
     Number(i64),
     BinOp {
@@ -50,7 +48,7 @@ impl ASTVisitor for Evaluator {
             "*" => l * r,
             _ => 0,
         };
-        fmt::format(format_args!("{}", result))
+        result.to_string()
     }
 }
 

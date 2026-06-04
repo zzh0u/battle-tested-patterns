@@ -388,7 +388,7 @@ impl CheckpointableStore {
 | Basic | WAL with checkpoint and recovery | `exercises/typescript/checkpointing/01-basic.test.ts` |
 | Intermediate | Incremental checkpoint (only dirty pages) | `exercises/typescript/checkpointing/02-intermediate.test.ts` |
 
-Run exercises: `pnpm test`
+Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go)
 
 ## When to Use
 

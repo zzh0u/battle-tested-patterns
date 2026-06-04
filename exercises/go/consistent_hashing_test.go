@@ -1,6 +1,7 @@
 package exercises
 
 import (
+	"fmt"
 	"hash/fnv"
 	"sort"
 	"testing"
@@ -24,7 +25,7 @@ func hashKey(key string) uint32 {
 
 func (hr *HashRing) AddNode(node string) {
 	for i := 0; i < hr.replicas; i++ {
-		vkey := node + "#" + string(rune('0'+i))
+		vkey := fmt.Sprintf("%s#%d", node, i)
 		hash := hashKey(vkey)
 		hr.ring = append(hr.ring, hash)
 		hr.nodeMap[hash] = node
@@ -95,7 +96,7 @@ func TestHashRingMinimalDisruption(t *testing.T) {
 	before := make(map[string]string)
 	keys := make([]string, 100)
 	for i := range keys {
-		keys[i] = string(rune('a' + i%26))
+		keys[i] = fmt.Sprintf("key-%d", i)
 		before[keys[i]] = hr.GetNode(keys[i])
 	}
 

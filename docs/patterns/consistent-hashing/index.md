@@ -222,7 +222,7 @@ impl HashRing {
 | Basic | Implement a hash ring with addNode/getNode | `exercises/typescript/consistent-hashing/01-basic.test.ts` |
 | Intermediate | Consistent hash ring with virtual nodes | `exercises/typescript/consistent-hashing/02-intermediate.test.ts` |
 
-Run exercises: `pnpm test`
+Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go)
 
 ## When to Use
 

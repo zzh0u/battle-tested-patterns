@@ -173,7 +173,7 @@ impl<S> Actor<S> {
 | Basic | Implement an actor with mailbox and message processing | `exercises/typescript/actor-model/01-basic.test.ts` |
 | Intermediate | Actor supervision — parent restarts crashed children | `exercises/typescript/actor-model/02-intermediate.test.ts` |
 
-Run exercises: `pnpm test`
+Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go)
 
 ## When to Use
 

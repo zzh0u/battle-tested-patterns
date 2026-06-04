@@ -256,7 +256,7 @@ impl SkipList {
 | Basic | Implement a skip list with insert/search/delete | `exercises/typescript/skip-list/01-basic.test.ts` |
 | Intermediate | Skip list with range query | `exercises/typescript/skip-list/02-intermediate.test.ts` |
 
-Run exercises: `pnpm test`
+Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go)
 
 ## When to Use
 

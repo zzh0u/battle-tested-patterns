@@ -26,17 +26,16 @@ impl CircuitBreaker {
         }
     }
 
-    pub fn call<F, E>(&mut self, f: F) -> Result<(), E>
+    pub fn call<F>(&mut self, f: F) -> Result<(), String>
     where
-        F: FnOnce() -> Result<(), E>,
-        E: std::fmt::Display,
+        F: FnOnce() -> Result<(), String>,
     {
         if self.state == State::Open {
             if let Some(opened) = self.opened_at {
                 if opened.elapsed() > self.timeout {
                     self.state = State::HalfOpen;
                 } else {
-                    return Err(self.circuit_open_error());
+                    return Err("circuit open".to_string());
                 }
             }
         }
@@ -56,13 +55,6 @@ impl CircuitBreaker {
                 Err(e)
             }
         }
-    }
-
-    fn circuit_open_error<E>(&self) -> E
-    where
-        E: std::fmt::Display,
-    {
-        panic!("circuit open");
     }
 
     pub fn state(&self) -> &State {
@@ -91,6 +83,18 @@ mod tests {
         assert_eq!(cb.state(), &State::Closed);
         let _ = cb.call(fail);
         assert_eq!(cb.state(), &State::Open);
+    }
+
+    #[test]
+    fn test_rejects_when_open() {
+        let mut cb = CircuitBreaker::new(2, Duration::from_secs(60));
+        let _ = cb.call(|| -> Result<(), String> { Err("fail".into()) });
+        let _ = cb.call(|| -> Result<(), String> { Err("fail".into()) });
+        assert_eq!(cb.state(), &State::Open);
+
+        let result: Result<(), String> = cb.call(|| Ok(()));
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "circuit open");
     }
 
     #[test]

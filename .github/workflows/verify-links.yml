@@ -33,7 +33,7 @@ jobs:
           pnpm verify-links --ci 2>&1 | tee verify-output.txt
         continue-on-error: true
       - name: Create issue for broken links
-        if: failure()
+        if: steps.verify.outcome == 'failure'
         uses: actions/github-script@v7
         with:
           script: |
