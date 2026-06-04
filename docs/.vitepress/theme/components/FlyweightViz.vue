@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface Flyweight {
   glyph: string;
@@ -43,7 +46,7 @@ const instances = ref<CharInstance[]>([
   { id: nextId++, glyphKey: 'A', x: 40, y: 70, color: COLORS[2] },
 ]);
 
-const message = ref('3 character instances share 2 flyweight objects. Add more to see reuse.');
+const message = ref(t('3 character instances share 2 flyweight objects. Add more to see reuse.', '3 个字符实例共享 2 个 Flyweight 对象。添加更多以查看复用。'));
 const lastAddedId = ref(-1);
 
 const usageCounts = computed(() => {
@@ -88,9 +91,15 @@ function addCharacter() {
 
   const isReuse = usageCounts.value[glyphKey] > 1;
   if (isReuse) {
-    message.value = `Added "${glyphKey}" at (${x}, ${y}) — reused existing flyweight. No new glyph object created.`;
+    message.value = t(
+      `Added "${glyphKey}" at (${x}, ${y}) — reused existing flyweight. No new glyph object created.`,
+      `已添加 "${glyphKey}" 在 (${x}, ${y}) — 复用已有 Flyweight，未创建新字形对象。`
+    );
   } else {
-    message.value = `Added "${glyphKey}" at (${x}, ${y}) — first use of this glyph flyweight.`;
+    message.value = t(
+      `Added "${glyphKey}" at (${x}, ${y}) — first use of this glyph flyweight.`,
+      `已添加 "${glyphKey}" 在 (${x}, ${y}) — 首次使用此字形 Flyweight。`
+    );
   }
 }
 
@@ -102,7 +111,7 @@ function reset() {
     { id: nextId++, glyphKey: 'A', x: 40, y: 70, color: COLORS[2] },
   ];
   lastAddedId.value = -1;
-  message.value = 'Reset — 3 instances sharing 2 flyweight objects.';
+  message.value = t('Reset — 3 instances sharing 2 flyweight objects.', '已重置 — 3 个实例共享 2 个 Flyweight 对象。');
 }
 
 function getFlyweight(key: string): Flyweight {
@@ -112,20 +121,20 @@ function getFlyweight(key: string): Flyweight {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Flyweight</div>
+    <div class="viz-title">{{ t('Interactive Flyweight', '交互式 Flyweight') }}</div>
 
     <!-- Memory comparison -->
     <div class="fw-stats">
       <div class="fw-stat">
-        <span class="fw-stat-label">Without sharing:</span>
-        <span class="fw-stat-value fw-stat-wasteful">{{ totalInstances }} objects</span>
+        <span class="fw-stat-label">{{ t('Without sharing:', '不共享:') }}</span>
+        <span class="fw-stat-value fw-stat-wasteful">{{ totalInstances }} {{ t('objects', '个对象') }}</span>
       </div>
       <div class="fw-stat">
-        <span class="fw-stat-label">With flyweight:</span>
-        <span class="fw-stat-value fw-stat-efficient">{{ flyweightCount }} objects</span>
+        <span class="fw-stat-label">{{ t('With flyweight:', '使用 Flyweight:') }}</span>
+        <span class="fw-stat-value fw-stat-efficient">{{ flyweightCount }} {{ t('objects', '个对象') }}</span>
       </div>
       <div class="fw-stat fw-stat-highlight">
-        <span class="fw-stat-label">Memory saved:</span>
+        <span class="fw-stat-label">{{ t('Memory saved:', '节省内存:') }}</span>
         <span class="fw-stat-value fw-stat-saved">{{ memorySaved }}%</span>
       </div>
     </div>
@@ -133,7 +142,7 @@ function getFlyweight(key: string): Flyweight {
     <div class="fw-layout">
       <!-- Flyweight pool -->
       <div class="fw-pool">
-        <div class="fw-section-label">Flyweight Pool (intrinsic state)</div>
+        <div class="fw-section-label">{{ t('Flyweight Pool (intrinsic state)', 'Flyweight 池（内在状态）') }}</div>
         <div class="fw-pool-items">
           <div
             v-for="key in GLYPH_KEYS"
@@ -162,7 +171,7 @@ function getFlyweight(key: string): Flyweight {
 
       <!-- Canvas showing instances -->
       <div class="fw-canvas-section">
-        <div class="fw-section-label">Canvas — {{ totalInstances }} instances (extrinsic state)</div>
+        <div class="fw-section-label">{{ t(`Canvas — ${totalInstances} instances (extrinsic state)`, `画布 — ${totalInstances} 个实例（外在状态）`) }}</div>
         <div class="fw-canvas">
           <div
             v-for="inst in instances"
@@ -180,15 +189,15 @@ function getFlyweight(key: string): Flyweight {
             :title="`'${inst.glyphKey}' at (${inst.x}, ${inst.y})`"
           >{{ inst.glyphKey }}</div>
           <div v-if="instances.length === 0" class="fw-canvas-empty">
-            Canvas is empty. Add characters to see the flyweight pattern.
+            {{ t('Canvas is empty. Add characters to see the flyweight pattern.', '画布为空。添加字符以查看 Flyweight 模式。') }}
           </div>
         </div>
       </div>
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="addCharacter">Add Character</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="addCharacter">{{ t('Add Character', '添加字符') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

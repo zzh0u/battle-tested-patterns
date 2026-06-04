@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface Item {
   id: number;
@@ -21,7 +24,7 @@ let nextBatchId = 1;
 const buffer = ref<Item[]>([]);
 const batches = ref<BatchRecord[]>([]);
 const totalItems = ref(0);
-const message = ref(`Items collect in the buffer — auto-flush at ${BATCH_THRESHOLD} items`);
+const message = ref(t(`Items collect in the buffer — auto-flush at ${BATCH_THRESHOLD} items`, `元素在缓冲区中收集 — 达到 ${BATCH_THRESHOLD} 个时自动刷新`));
 const flushing = ref(false);
 
 const batchCount = computed(() => batches.value.length);
@@ -41,7 +44,10 @@ function addItem() {
   };
   buffer.value = [...buffer.value, item];
   totalItems.value++;
-  message.value = `Added ${item.label} — buffer ${buffer.value.length}/${BATCH_THRESHOLD}`;
+  message.value = t(
+    `Added ${item.label} — buffer ${buffer.value.length}/${BATCH_THRESHOLD}`,
+    `已添加 ${item.label} — 缓冲区 ${buffer.value.length}/${BATCH_THRESHOLD}`
+  );
 
   if (buffer.value.length >= BATCH_THRESHOLD) {
     flushBatch();
@@ -50,7 +56,7 @@ function addItem() {
 
 function flushBatch() {
   if (buffer.value.length === 0) {
-    message.value = 'Buffer empty — nothing to flush';
+    message.value = t('Buffer empty — nothing to flush', '缓冲区为空 — 无需刷新');
     return;
   }
   if (flushing.value) return;
@@ -60,7 +66,7 @@ function flushBatch() {
   for (const item of items) {
     item.state = 'flushing';
   }
-  message.value = `Flushing batch of ${items.length} items...`;
+  message.value = t(`Flushing batch of ${items.length} items...`, `正在刷新 ${items.length} 个元素的批次...`);
 
   setTimeout(() => {
     const batch: BatchRecord = {
@@ -71,7 +77,10 @@ function flushBatch() {
     batches.value = [...batches.value, batch];
     buffer.value = [];
     flushing.value = false;
-    message.value = `Batch #${batch.id} flushed (${batch.size} items) — buffer cleared`;
+    message.value = t(
+      `Batch #${batch.id} flushed (${batch.size} items) — buffer cleared`,
+      `批次 #${batch.id} 已刷新（${batch.size} 个元素）— 缓冲区已清空`
+    );
   }, 600);
 }
 
@@ -82,27 +91,30 @@ function reset() {
   nextItemId = 1;
   nextBatchId = 1;
   flushing.value = false;
-  message.value = `Reset — add items to fill the buffer (threshold: ${BATCH_THRESHOLD})`;
+  message.value = t(
+    `Reset — add items to fill the buffer (threshold: ${BATCH_THRESHOLD})`,
+    `已重置 — 添加元素填满缓冲区（阈值: ${BATCH_THRESHOLD}）`
+  );
 }
 </script>
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Batch Processing</div>
+    <div class="viz-title">{{ t('Interactive Batch Processing', '交互式批处理') }}</div>
 
     <!-- Stats -->
     <div class="bp-stats">
       <div class="bp-stat">
         <span class="bp-stat-value">{{ totalItems }}</span>
-        <span class="viz-label">Total Items</span>
+        <span class="viz-label">{{ t('Total Items', '总元素') }}</span>
       </div>
       <div class="bp-stat">
         <span class="bp-stat-value bp-stat--primary">{{ batchCount }}</span>
-        <span class="viz-label">Batches</span>
+        <span class="viz-label">{{ t('Batches', '批次') }}</span>
       </div>
       <div class="bp-stat">
         <span class="bp-stat-value bp-stat--success">{{ avgPerBatch }}</span>
-        <span class="viz-label">Avg/Batch</span>
+        <span class="viz-label">{{ t('Avg/Batch', '均值/批') }}</span>
       </div>
     </div>
 
@@ -110,7 +122,7 @@ function reset() {
       <!-- Buffer -->
       <div class="bp-section">
         <div class="bp-section-title">
-          Buffer ({{ buffer.length }}/{{ BATCH_THRESHOLD }})
+          {{ t('Buffer', '缓冲区') }} ({{ buffer.length }}/{{ BATCH_THRESHOLD }})
         </div>
         <div class="bp-buffer">
           <div class="bp-slots">
@@ -140,12 +152,12 @@ function reset() {
 
       <!-- Arrow -->
       <div class="bp-arrow" :class="{ 'bp-arrow--active': flushing }">
-        {{ flushing ? 'flushing...' : 'flush' }} &#8594;
+        {{ flushing ? t('flushing...', '刷新中...') : t('flush', '刷新') }} &#8594;
       </div>
 
       <!-- Processed batches -->
       <div class="bp-section">
-        <div class="bp-section-title">Processed Batches</div>
+        <div class="bp-section-title">{{ t('Processed Batches', '已处理批次') }}</div>
         <div class="bp-batches">
           <div
             v-for="batch in batches"
@@ -153,17 +165,17 @@ function reset() {
             class="bp-batch"
           >
             <span class="bp-batch-id">Batch #{{ batch.id }}</span>
-            <span class="bp-batch-size">{{ batch.size }} items</span>
+            <span class="bp-batch-size">{{ batch.size }} {{ t('items', '个元素') }}</span>
           </div>
-          <div v-if="batches.length === 0" class="bp-empty">no batches yet</div>
+          <div v-if="batches.length === 0" class="bp-empty">{{ t('no batches yet', '暂无批次') }}</div>
         </div>
       </div>
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="addItem" :disabled="flushing">Add Item</button>
-      <button class="viz-btn" @click="flushBatch" :disabled="flushing || buffer.length === 0">Force Flush</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="addItem" :disabled="flushing">{{ t('Add Item', '添加元素') }}</button>
+      <button class="viz-btn" @click="flushBatch" :disabled="flushing || buffer.length === 0">{{ t('Force Flush', '强制刷新') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

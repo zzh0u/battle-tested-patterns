@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useI18n } from '../composables/useI18n';
+const { t } = useI18n();
 
 interface LogEntry {
   lsn: number;
@@ -17,13 +19,13 @@ let nextLSN = 1;
 
 const log = ref<LogEntry[]>([]);
 const table = ref<TableRow[]>([]);
-const message = ref('Write operations go to WAL first, then to the table');
+const message = ref(t('Write operations go to WAL first, then to the table', '写入操作先进入 WAL，然后再写入表'));
 const crashed = ref(false);
 const lastAction = ref('');
 
 function writeOp(key: string, value: string) {
   if (crashed.value) {
-    message.value = 'System crashed! Click "Recover" to replay the WAL';
+    message.value = t('System crashed! Click "Recover" to replay the WAL', '系统已崩溃！点击"恢复"重放 WAL');
     return;
   }
   const entry: LogEntry = {
@@ -34,17 +36,17 @@ function writeOp(key: string, value: string) {
   };
   log.value = [...log.value, entry];
   lastAction.value = `write-${entry.lsn}`;
-  message.value = `WAL: logged SET ${key}=${value} (LSN ${entry.lsn}) — not yet applied`;
+  message.value = t(`WAL: logged SET ${key}=${value} (LSN ${entry.lsn}) — not yet applied`, `WAL：已记录 SET ${key}=${value} (LSN ${entry.lsn}) — 尚未应用`);
 }
 
 function flush() {
   if (crashed.value) {
-    message.value = 'System crashed! Recover first';
+    message.value = t('System crashed! Recover first', '系统已崩溃！请先恢复');
     return;
   }
   const unflushed = log.value.filter(e => !e.flushed);
   if (unflushed.length === 0) {
-    message.value = 'Nothing to flush — WAL is clean';
+    message.value = t('Nothing to flush — WAL is clean', '无需刷写 — WAL 已是最新');
     return;
   }
 
@@ -59,7 +61,7 @@ function flush() {
     entry.flushed = true;
   }
   lastAction.value = 'flush';
-  message.value = `Flushed ${unflushed.length} entries to table`;
+  message.value = t(`Flushed ${unflushed.length} entries to table`, `已刷写 ${unflushed.length} 条记录到表`);
 }
 
 function simulateCrash() {
@@ -69,7 +71,7 @@ function simulateCrash() {
   });
   crashed.value = true;
   lastAction.value = 'crash';
-  message.value = `CRASH! ${unflushed.length} unflushed entries in WAL — data lost from table`;
+  message.value = t(`CRASH! ${unflushed.length} unflushed entries in WAL — data lost from table`, `崩溃！WAL 中有 ${unflushed.length} 条未刷写记录 — 数据从表中丢失`);
 }
 
 function recover() {
@@ -87,7 +89,7 @@ function recover() {
   }
   crashed.value = false;
   lastAction.value = 'recover';
-  message.value = `Recovered! Replayed ${unflushed.length} WAL entries — data restored`;
+  message.value = t(`Recovered! Replayed ${unflushed.length} WAL entries — data restored`, `已恢复！重放了 ${unflushed.length} 条 WAL 记录 — 数据已还原`);
 }
 
 function reset() {
@@ -96,7 +98,7 @@ function reset() {
   table.value = [];
   crashed.value = false;
   lastAction.value = '';
-  message.value = 'Reset — start writing operations';
+  message.value = t('Reset — start writing operations', '已重置 — 开始写入操作');
 }
 
 const presets = [
@@ -116,12 +118,12 @@ function autoWrite() {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Write-Ahead Log</div>
+    <div class="viz-title">{{ t('Interactive Write-Ahead Log', '交互式 Write-Ahead Log') }}</div>
 
     <div class="wal-layout">
       <!-- WAL -->
       <div class="wal-section">
-        <div class="wal-section-title">WAL (on disk)</div>
+        <div class="wal-section-title">{{ t('WAL (on disk)', 'WAL（磁盘）') }}</div>
         <div class="wal-entries">
           <div
             v-for="entry in log"
@@ -139,35 +141,35 @@ function autoWrite() {
               {{ entry.flushed ? '✓' : '○' }}
             </span>
           </div>
-          <div v-if="log.length === 0" class="wal-empty">empty</div>
+          <div v-if="log.length === 0" class="wal-empty">{{ t('empty', '空') }}</div>
         </div>
       </div>
 
       <!-- Arrow -->
       <div class="wal-arrow">
-        <span v-if="!crashed">flush →</span>
-        <span v-else class="wal-crash-label">CRASH ✗</span>
+        <span v-if="!crashed">{{ t('flush →', '刷写 →') }}</span>
+        <span v-else class="wal-crash-label">{{ t('CRASH ✗', '崩溃 ✗') }}</span>
       </div>
 
       <!-- Table -->
       <div class="wal-section">
-        <div class="wal-section-title">Table (in memory)</div>
+        <div class="wal-section-title">{{ t('Table (in memory)', '表（内存）') }}</div>
         <div class="wal-table">
           <div v-for="row in table" :key="row.key" class="wal-row">
             <span class="wal-key">{{ row.key }}</span>
             <span class="wal-value">{{ row.value }}</span>
           </div>
-          <div v-if="table.length === 0" class="wal-empty">empty</div>
+          <div v-if="table.length === 0" class="wal-empty">{{ t('empty', '空') }}</div>
         </div>
       </div>
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="autoWrite" :disabled="crashed">Write</button>
-      <button class="viz-btn" @click="flush" :disabled="crashed">Flush to Table</button>
-      <button class="viz-btn viz-btn--danger" @click="simulateCrash" :disabled="crashed || log.length === 0">Crash!</button>
-      <button v-if="crashed" class="viz-btn viz-btn--primary" @click="recover">Recover</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="autoWrite" :disabled="crashed">{{ t('Write', '写入') }}</button>
+      <button class="viz-btn" @click="flush" :disabled="crashed">{{ t('Flush to Table', '刷写到表') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="simulateCrash" :disabled="crashed || log.length === 0">{{ t('Crash!', '崩溃！') }}</button>
+      <button v-if="crashed" class="viz-btn viz-btn--primary" @click="recover">{{ t('Recover', '恢复') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status" :class="{ 'wal-crash-status': crashed }">{{ message }}</div>

@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 const heap = ref<number[]>([]);
-const message = ref('Insert values to build a min-heap, then extract the minimum');
+const message = ref(t('Insert values to build a min-heap, then extract the minimum', '插入值来构建最小堆，然后提取最小值'));
 const highlightIndices = ref<number[]>([]);
 const animType = ref<'insert' | 'extract' | 'swap' | ''>('');
 let nextVal = 1;
@@ -47,7 +50,7 @@ async function insert() {
   let i = heap.value.length - 1;
   highlightIndices.value = [i];
   animType.value = 'insert';
-  message.value = `Inserted ${val} at index ${i}`;
+  message.value = t(`Inserted ${val} at index ${i}`, `已插入 ${val}，索引 ${i}`);
 
   await delay(300);
 
@@ -55,7 +58,7 @@ async function insert() {
     const parent = Math.floor((i - 1) / 2);
     if (heap.value[i] < heap.value[parent]) {
       highlightIndices.value = [i, parent];
-      message.value = `Bubble up: swap ${heap.value[i]} ↔ ${heap.value[parent]}`;
+      message.value = t(`Bubble up: swap ${heap.value[i]} ↔ ${heap.value[parent]}`, `上浮：交换 ${heap.value[i]} ↔ ${heap.value[parent]}`);
       await delay(400);
       [heap.value[i], heap.value[parent]] = [heap.value[parent], heap.value[i]];
       i = parent;
@@ -65,7 +68,7 @@ async function insert() {
   }
 
   highlightIndices.value = [i];
-  message.value = `${val} settled at index ${i} — heap property restored`;
+  message.value = t(`${val} settled at index ${i} — heap property restored`, `${val} 落在索引 ${i} — 堆性质已恢复`);
   await delay(300);
   highlightIndices.value = [];
   animType.value = '';
@@ -73,21 +76,21 @@ async function insert() {
 
 async function extractMin() {
   if (heap.value.length === 0) {
-    message.value = 'Heap is empty!';
+    message.value = t('Heap is empty!', '堆为空！');
     return;
   }
 
   const min = heap.value[0];
   animType.value = 'extract';
   highlightIndices.value = [0];
-  message.value = `Extracting min = ${min}`;
+  message.value = t(`Extracting min = ${min}`, `正在提取最小值 = ${min}`);
   await delay(300);
 
   if (heap.value.length === 1) {
     heap.value.pop();
     highlightIndices.value = [];
     animType.value = '';
-    message.value = `Extracted ${min} — heap is now empty`;
+    message.value = t(`Extracted ${min} — heap is now empty`, `已提取 ${min} — 堆现在为空`);
     return;
   }
 
@@ -104,7 +107,7 @@ async function extractMin() {
 
     if (smallest !== i) {
       highlightIndices.value = [i, smallest];
-      message.value = `Sift down: swap ${heap.value[i]} ↔ ${heap.value[smallest]}`;
+      message.value = t(`Sift down: swap ${heap.value[i]} ↔ ${heap.value[smallest]}`, `下沉：交换 ${heap.value[i]} ↔ ${heap.value[smallest]}`);
       await delay(400);
       [heap.value[i], heap.value[smallest]] = [heap.value[smallest], heap.value[i]];
       i = smallest;
@@ -115,14 +118,14 @@ async function extractMin() {
 
   highlightIndices.value = [];
   animType.value = '';
-  message.value = `Extracted min = ${min} — heap property restored`;
+  message.value = t(`Extracted min = ${min} — heap property restored`, `已提取最小值 = ${min} — 堆性质已恢复`);
 }
 
 function reset() {
   heap.value = [];
   highlightIndices.value = [];
   animType.value = '';
-  message.value = 'Heap cleared!';
+  message.value = t('Heap cleared!', '堆已清空！');
 }
 
 function delay(ms: number) {
@@ -132,7 +135,7 @@ function delay(ms: number) {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Min Heap</div>
+    <div class="viz-title">{{ t('Interactive Min Heap', '交互式 Min Heap') }}</div>
 
     <!-- Tree view -->
     <svg :viewBox="`0 0 ${SVG_W} ${Math.max(SVG_H, (Math.floor(Math.log2(Math.max(heap.length, 1))) + 1) * 50 + 40)}`" class="heap-svg">
@@ -171,13 +174,13 @@ function delay(ms: number) {
 
       <!-- Empty state -->
       <text v-if="heap.length === 0" :x="SVG_W / 2" :y="SVG_H / 2" text-anchor="middle" fill="var(--viz-muted)" font-size="13">
-        Empty — click Insert to add values
+        {{ t('Empty — click Insert to add values', '空 — 点击插入来添加值') }}
       </text>
     </svg>
 
     <!-- Array view -->
     <div v-if="heap.length > 0" class="heap-array">
-      <span class="viz-label">Array:&nbsp;</span>
+      <span class="viz-label">{{ t('Array:', '数组：') }}&nbsp;</span>
       <span
         v-for="(val, i) in heap"
         :key="i"
@@ -187,9 +190,9 @@ function delay(ms: number) {
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="insert">Insert Random</button>
-      <button class="viz-btn" @click="extractMin">Extract Min</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="insert">{{ t('Insert Random', '插入随机值') }}</button>
+      <button class="viz-btn" @click="extractMin">{{ t('Extract Min', '提取最小值') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

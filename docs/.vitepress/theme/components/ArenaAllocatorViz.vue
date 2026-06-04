@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface Allocation {
   id: number;
@@ -25,7 +28,7 @@ let colorIdx = 0;
 
 const pointer = ref(0);
 const allocations = ref<Allocation[]>([]);
-const message = ref('Arena is empty — click "Allocate" to bump the pointer forward');
+const message = ref(t('Arena is empty — click "Allocate" to bump the pointer forward', 'Arena 为空 — 点击"分配"将指针向前推进'));
 
 const usedBytes = computed(() => pointer.value);
 const freeBytes = computed(() => ARENA_SIZE - pointer.value);
@@ -39,7 +42,10 @@ function randomSize(): number {
 function allocate() {
   const size = randomSize();
   if (pointer.value + size > ARENA_SIZE) {
-    message.value = `Cannot allocate ${size} bytes — only ${freeBytes.value} bytes free. Reset the arena.`;
+    message.value = t(
+      `Cannot allocate ${size} bytes — only ${freeBytes.value} bytes free. Reset the arena.`,
+      `无法分配 ${size} 字节 — 仅剩 ${freeBytes.value} 字节可用。请重置 Arena。`
+    );
     return;
   }
 
@@ -54,7 +60,10 @@ function allocate() {
 
   allocations.value = [...allocations.value, alloc];
   pointer.value += size;
-  message.value = `Allocated ${size} bytes at offset ${alloc.offset} — pointer now at ${pointer.value}`;
+  message.value = t(
+    `Allocated ${size} bytes at offset ${alloc.offset} — pointer now at ${pointer.value}`,
+    `已分配 ${size} 字节在偏移量 ${alloc.offset} — 指针现在位于 ${pointer.value}`
+  );
 }
 
 function resetArena() {
@@ -62,7 +71,7 @@ function resetArena() {
   allocations.value = [];
   nextId = 1;
   colorIdx = 0;
-  message.value = 'Arena reset — all memory freed at once (O(1) deallocation)';
+  message.value = t('Arena reset — all memory freed at once (O(1) deallocation)', 'Arena 已重置 — 所有内存一次性释放（O(1) 释放）');
 }
 
 function slotState(index: number): Allocation | null {
@@ -72,25 +81,25 @@ function slotState(index: number): Allocation | null {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Arena Allocator</div>
+    <div class="viz-title">{{ t('Interactive Arena Allocator', '交互式 Arena 分配器') }}</div>
 
     <!-- Stats -->
     <div class="arena-stats">
       <div class="arena-stat">
         <span class="arena-stat-value arena-stat--primary">{{ usedBytes }}</span>
-        <span class="viz-label">Used</span>
+        <span class="viz-label">{{ t('Used', '已使用') }}</span>
       </div>
       <div class="arena-stat">
         <span class="arena-stat-value arena-stat--success">{{ freeBytes }}</span>
-        <span class="viz-label">Free</span>
+        <span class="viz-label">{{ t('Free', '空闲') }}</span>
       </div>
       <div class="arena-stat">
         <span class="arena-stat-value">{{ ARENA_SIZE }}</span>
-        <span class="viz-label">Total</span>
+        <span class="viz-label">{{ t('Total', '总计') }}</span>
       </div>
       <div class="arena-stat">
         <span class="arena-stat-value">{{ allocCount }}</span>
-        <span class="viz-label">Allocations</span>
+        <span class="viz-label">{{ t('Allocations', '分配次数') }}</span>
       </div>
     </div>
 
@@ -134,8 +143,8 @@ function slotState(index: number): Allocation | null {
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="allocate">Allocate</button>
-      <button class="viz-btn viz-btn--danger" @click="resetArena">Reset Arena</button>
+      <button class="viz-btn viz-btn--primary" @click="allocate">{{ t('Allocate', '分配') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="resetArena">{{ t('Reset Arena', '重置 Arena') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface InternEntry {
   value: string;
@@ -14,7 +17,7 @@ interface VarRef {
 
 const pool = ref<InternEntry[]>([]);
 const variables = ref<VarRef[]>([]);
-const message = ref('Click "Intern" to add strings to the pool');
+const message = ref(t('Click "Intern" to add strings to the pool', '点击 "Intern" 将字符串添加到池中'));
 const highlightValue = ref('');
 let entryIdCounter = 0;
 let varIdCounter = 0;
@@ -45,7 +48,10 @@ function intern() {
       id: ++varIdCounter,
     });
     highlightValue.value = str;
-    message.value = `intern("${str}") -> reused existing entry, assigned to ${varName}`;
+    message.value = t(
+      `intern("${str}") -> reused existing entry, assigned to ${varName}`,
+      `intern("${str}") -> 复用已有条目，赋值给 ${varName}`
+    );
   } else {
     pool.value.push({ value: str, id: ++entryIdCounter });
     variables.value.push({
@@ -54,7 +60,10 @@ function intern() {
       id: ++varIdCounter,
     });
     highlightValue.value = str;
-    message.value = `intern("${str}") -> new entry added to pool, assigned to ${varName}`;
+    message.value = t(
+      `intern("${str}") -> new entry added to pool, assigned to ${varName}`,
+      `intern("${str}") -> 新条目已添加到池中，赋值给 ${varName}`
+    );
   }
   setTimeout(() => { highlightValue.value = ''; }, 600);
 }
@@ -62,7 +71,7 @@ function intern() {
 function reset() {
   pool.value = [];
   variables.value = [];
-  message.value = 'Pool cleared';
+  message.value = t('Pool cleared', '池已清空');
   highlightValue.value = '';
   presetIndex = 0;
   varNameCounter = 0;
@@ -75,17 +84,17 @@ function refsForEntry(value: string): VarRef[] {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive String Interning</div>
+    <div class="viz-title">{{ t('Interactive String Interning', '交互式字符串 Interning') }}</div>
 
     <div class="in-stats">
-      <span class="in-stat">unique strings: <strong>{{ uniqueCount }}</strong></span>
-      <span class="in-stat">total references: <strong>{{ totalRefs }}</strong></span>
+      <span class="in-stat">{{ t('unique strings', '唯一字符串') }}: <strong>{{ uniqueCount }}</strong></span>
+      <span class="in-stat">{{ t('total references', '总引用数') }}: <strong>{{ totalRefs }}</strong></span>
     </div>
 
     <div class="in-layout">
       <!-- Variables column -->
       <div class="in-section">
-        <div class="in-section-header">Variables</div>
+        <div class="in-section-header">{{ t('Variables', '变量') }}</div>
         <div class="in-vars">
           <div
             v-for="v in variables"
@@ -99,13 +108,13 @@ function refsForEntry(value: string): VarRef[] {
             </svg>
             <span class="in-var-target">"{{ v.targetValue }}"</span>
           </div>
-          <div v-if="variables.length === 0" class="in-empty">No variables yet</div>
+          <div v-if="variables.length === 0" class="in-empty">{{ t('No variables yet', '暂无变量') }}</div>
         </div>
       </div>
 
       <!-- Pool column -->
       <div class="in-section">
-        <div class="in-section-header">Intern Pool</div>
+        <div class="in-section-header">{{ t('Intern Pool', 'Intern 池') }}</div>
         <div class="in-pool">
           <div
             v-for="entry in pool"
@@ -115,10 +124,10 @@ function refsForEntry(value: string): VarRef[] {
           >
             <span class="in-entry-value">"{{ entry.value }}"</span>
             <span class="in-entry-refs">
-              {{ refsForEntry(entry.value).length }} ref{{ refsForEntry(entry.value).length !== 1 ? 's' : '' }}
+              {{ refsForEntry(entry.value).length }} {{ t(refsForEntry(entry.value).length !== 1 ? 'refs' : 'ref', '个引用') }}
             </span>
           </div>
-          <div v-if="pool.length === 0" class="in-empty">Pool is empty</div>
+          <div v-if="pool.length === 0" class="in-empty">{{ t('Pool is empty', '池为空') }}</div>
         </div>
       </div>
     </div>
@@ -127,7 +136,7 @@ function refsForEntry(value: string): VarRef[] {
       <button class="viz-btn viz-btn--primary" @click="intern">
         Intern("{{ presetStrings[presetIndex % presetStrings.length] }}")
       </button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

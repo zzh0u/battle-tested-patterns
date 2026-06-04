@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface Entity {
   id: number;
@@ -18,7 +21,7 @@ const entities = ref<Entity[]>([
   { id: nextId++, name: 'NPC', x: 300, y: 100, dirty: false, lastComputed: '(300,100)' },
 ]);
 
-const message = ref('Move entities to mark them dirty, then recompute only what changed');
+const message = ref(t('Move entities to mark them dirty, then recompute only what changed', '移动实体标记为脏，然后仅重新计算变更部分'));
 const recomputeCount = ref(0);
 const skipCount = ref(0);
 
@@ -27,7 +30,7 @@ function moveEntity(idx: number) {
   e.x = Math.round(50 + Math.random() * 280);
   e.y = Math.round(30 + Math.random() * 100);
   e.dirty = true;
-  message.value = `${e.name} moved to (${e.x},${e.y}) — marked DIRTY`;
+  message.value = t(`${e.name} moved to (${e.x},${e.y}) — marked DIRTY`, `${e.name} 移动到 (${e.x},${e.y}) - 标记为脏`);
 }
 
 function recompute() {
@@ -46,7 +49,7 @@ function recompute() {
 
   recomputeCount.value += computed;
   skipCount.value += skipped;
-  message.value = `Recomputed: ${computed} dirty | Skipped: ${skipped} clean — total saved: ${skipCount.value}`;
+  message.value = t(`Recomputed: ${computed} dirty | Skipped: ${skipped} clean — total saved: ${skipCount.value}`, `已重算: ${computed} 个脏 | 跳过: ${skipped} 个干净 - 累计节省: ${skipCount.value}`);
 }
 
 function recomputeAll() {
@@ -55,7 +58,7 @@ function recomputeAll() {
     e.dirty = false;
   }
   recomputeCount.value += entities.value.length;
-  message.value = `Recomputed ALL ${entities.value.length} entities (no dirty flag optimization)`;
+  message.value = t(`Recomputed ALL ${entities.value.length} entities (no dirty flag optimization)`, `重算全部 ${entities.value.length} 个实体（无 Dirty Flag 优化）`);
 }
 
 function reset() {
@@ -67,7 +70,7 @@ function reset() {
   ];
   recomputeCount.value = 0;
   skipCount.value = 0;
-  message.value = 'Reset — move entities and recompute';
+  message.value = t('Reset — move entities and recompute', '已重置 - 移动实体并重新计算');
 }
 
 const dirtyCount = computed(() => entities.value.filter(e => e.dirty).length);
@@ -75,7 +78,7 @@ const dirtyCount = computed(() => entities.value.filter(e => e.dirty).length);
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Dirty Flag</div>
+    <div class="viz-title">{{ t('Interactive Dirty Flag', '交互式 Dirty Flag') }}</div>
 
     <svg viewBox="0 0 380 150" class="df-svg">
       <g v-for="(e, i) in entities" :key="e.id">
@@ -115,22 +118,22 @@ const dirtyCount = computed(() => entities.value.filter(e => e.dirty).length);
           fill="var(--viz-muted)"
           font-size="8"
           font-family="var(--vp-font-family-mono)"
-        >cached: {{ e.lastComputed }}</text>
+        >{{ t('cached:', '缓存:') }} {{ e.lastComputed }}</text>
       </g>
     </svg>
 
     <div class="df-stats">
-      <span class="df-stat">Dirty: <strong :style="{ color: dirtyCount > 0 ? 'var(--viz-warning)' : 'var(--viz-success)' }">{{ dirtyCount }}</strong></span>
-      <span class="df-stat">Recomputed: <strong>{{ recomputeCount }}</strong></span>
-      <span class="df-stat">Skipped: <strong style="color: var(--viz-success)">{{ skipCount }}</strong></span>
+      <span class="df-stat">{{ t('Dirty:', '脏:') }} <strong :style="{ color: dirtyCount > 0 ? 'var(--viz-warning)' : 'var(--viz-success)' }">{{ dirtyCount }}</strong></span>
+      <span class="df-stat">{{ t('Recomputed:', '已重算:') }} <strong>{{ recomputeCount }}</strong></span>
+      <span class="df-stat">{{ t('Skipped:', '已跳过:') }} <strong style="color: var(--viz-success)">{{ skipCount }}</strong></span>
     </div>
 
-    <div class="df-hint">Click entities to move them (marks dirty)</div>
+    <div class="df-hint">{{ t('Click entities to move them (marks dirty)', '点击实体移动它们（标记为脏）') }}</div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="recompute">Recompute (dirty only)</button>
-      <button class="viz-btn" @click="recomputeAll">Recompute ALL (no optimization)</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="recompute">{{ t('Recompute (dirty only)', '重算（仅脏数据）') }}</button>
+      <button class="viz-btn" @click="recomputeAll">{{ t('Recompute ALL (no optimization)', '重算全部（无优化）') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

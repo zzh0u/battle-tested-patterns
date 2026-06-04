@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+const { t } = useI18n();
 
 interface RCObject {
   id: number;
@@ -27,7 +29,7 @@ const references = ref<Reference[]>([
   { from: 'var z', toId: 2, color: 'var(--viz-warning)' },
 ]);
 
-const message = ref('Drop references to decrement ref counts. Objects are freed at rc=0');
+const message = ref(t('Drop references to decrement ref counts. Objects are freed at rc=0', '删除引用以减少引用计数。rc=0 时对象将被释放'));
 const lastFreed = ref(-1);
 
 function dropRef(refIdx: number) {
@@ -41,17 +43,17 @@ function dropRef(refIdx: number) {
   if (obj.refCount <= 0) {
     obj.freed = true;
     lastFreed.value = obj.id;
-    message.value = `Dropped ${r.from} → ${obj.name} — rc=0, FREED!`;
+    message.value = t(`Dropped ${r.from} → ${obj.name} — rc=0, FREED!`, `已删除 ${r.from} → ${obj.name} — rc=0，已释放！`);
     setTimeout(() => { lastFreed.value = -1; }, 600);
   } else {
-    message.value = `Dropped ${r.from} → ${obj.name} — rc=${obj.refCount}`;
+    message.value = t(`Dropped ${r.from} → ${obj.name} — rc=${obj.refCount}`, `已删除 ${r.from} → ${obj.name} — rc=${obj.refCount}`);
   }
 }
 
 function addRef() {
   const liveObjs = objects.value.filter(o => !o.freed);
   if (liveObjs.length === 0) {
-    message.value = 'No live objects to reference';
+    message.value = t('No live objects to reference', '没有可引用的存活对象');
     return;
   }
   const target = liveObjs[Math.floor(Math.random() * liveObjs.length)];
@@ -61,17 +63,17 @@ function addRef() {
 
   references.value = [...references.value, { from: varName, toId: target.id, color }];
   target.refCount++;
-  message.value = `Added ${varName} → ${target.name} — rc=${target.refCount}`;
+  message.value = t(`Added ${varName} → ${target.name} — rc=${target.refCount}`, `已添加 ${varName} → ${target.name} — rc=${target.refCount}`);
 }
 
 function addObject() {
   if (objects.value.filter(o => !o.freed).length >= 5) {
-    message.value = 'Maximum 5 live objects';
+    message.value = t('Maximum 5 live objects', '最多 5 个存活对象');
     return;
   }
   const obj: RCObject = { id: nextObjId++, name: `Obj ${String.fromCharCode(64 + nextObjId - 1)}`, refCount: 0, freed: false };
   objects.value = [...objects.value, obj];
-  message.value = `Created ${obj.name} with rc=0 — add a reference or it stays unreachable`;
+  message.value = t(`Created ${obj.name} with rc=0 — add a reference or it stays unreachable`, `已创建 ${obj.name}，rc=0 — 添加引用否则将不可达`);
 }
 
 function reset() {
@@ -86,7 +88,7 @@ function reset() {
     { from: 'var z', toId: 2, color: 'var(--viz-warning)' },
   ];
   lastFreed.value = -1;
-  message.value = 'Reset — drop references to see ref counting in action';
+  message.value = t('Reset — drop references to see ref counting in action', '已重置 — 删除引用以查看引用计数的工作过程');
 }
 
 const liveCount = computed(() => objects.value.filter(o => !o.freed).length);
@@ -95,12 +97,12 @@ const freedCount = computed(() => objects.value.filter(o => o.freed).length);
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Reference Counting</div>
+    <div class="viz-title">{{ t('Interactive Reference Counting', '交互式 Reference Counting') }}</div>
 
     <div class="rc-layout">
       <!-- References -->
       <div class="rc-refs">
-        <div class="rc-section-title">Variables</div>
+        <div class="rc-section-title">{{ t('Variables', '变量') }}</div>
         <div
           v-for="(r, i) in references"
           :key="i"
@@ -112,13 +114,13 @@ const freedCount = computed(() => objects.value.filter(o => o.freed).length);
           <span class="rc-ref-arrow">→</span>
           <span class="rc-ref-target">{{ objects.find(o => o.id === r.toId)?.name }}</span>
         </div>
-        <div v-if="references.length === 0" class="rc-empty">no references</div>
-        <div class="rc-hint">Click to drop</div>
+        <div v-if="references.length === 0" class="rc-empty">{{ t('no references', '无引用') }}</div>
+        <div class="rc-hint">{{ t('Click to drop', '点击删除') }}</div>
       </div>
 
       <!-- Objects -->
       <div class="rc-objects">
-        <div class="rc-section-title">Heap Objects</div>
+        <div class="rc-section-title">{{ t('Heap Objects', '堆对象') }}</div>
         <div
           v-for="obj in objects"
           :key="obj.id"
@@ -132,21 +134,21 @@ const freedCount = computed(() => objects.value.filter(o => o.freed).length);
           <span class="rc-obj-rc" :class="{ 'rc-obj-rc-zero': obj.refCount <= 0 }">
             rc={{ obj.refCount }}
           </span>
-          <span v-if="obj.freed" class="rc-freed-badge">FREED</span>
+          <span v-if="obj.freed" class="rc-freed-badge">{{ t('FREED', '已释放') }}</span>
         </div>
       </div>
     </div>
 
     <div class="rc-stats">
-      <span class="rc-stat">Live: <strong>{{ liveCount }}</strong></span>
-      <span class="rc-stat">Freed: <strong style="color: var(--viz-danger)">{{ freedCount }}</strong></span>
-      <span class="rc-stat">Refs: <strong>{{ references.length }}</strong></span>
+      <span class="rc-stat">{{ t('Live:', '存活：') }} <strong>{{ liveCount }}</strong></span>
+      <span class="rc-stat">{{ t('Freed:', '已释放：') }} <strong style="color: var(--viz-danger)">{{ freedCount }}</strong></span>
+      <span class="rc-stat">{{ t('Refs:', '引用：') }} <strong>{{ references.length }}</strong></span>
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="addRef">+ Reference</button>
-      <button class="viz-btn" @click="addObject">+ Object</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="addRef">{{ t('+ Reference', '+ 引用') }}</button>
+      <button class="viz-btn" @click="addObject">{{ t('+ Object', '+ 对象') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

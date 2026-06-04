@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 const CX = 150, CY = 150, R = 110;
 
@@ -15,7 +18,7 @@ const nodes = ref<Node[]>([
 ]);
 
 const keys = ref<Key[]>([]);
-const message = ref('Add keys to see which node owns them. Try removing a node!');
+const message = ref(t('Add keys to see which node owns them. Try removing a node!', '添加键来查看哪个节点拥有它们。试试删除一个节点！'));
 const animHash = ref(-1);
 let nextKeyId = 1;
 
@@ -62,22 +65,22 @@ function addKey() {
   keys.value.push({ id, hash: h });
   const owner = findOwner(h);
   animHash.value = h;
-  message.value = `Key "${id}" (hash=${h.toFixed(2)}) → owned by node ${owner?.id ?? 'none'}`;
+  message.value = t(`Key "${id}" (hash=${h.toFixed(2)}) → owned by node ${owner?.id ?? 'none'}`, `键 "${id}" (hash=${h.toFixed(2)}) → 归属节点 ${owner?.id ?? '无'}`);
   setTimeout(() => { animHash.value = -1; }, 500);
 }
 
 function addNode() {
-  if (nodes.value.length >= 6) { message.value = 'Max 6 nodes'; return; }
+  if (nodes.value.length >= 6) { message.value = t('Max 6 nodes', '最多 6 个节点'); return; }
   const id = String.fromCharCode(65 + nodes.value.length);
   const h = simpleHash(id + Date.now());
   nodes.value.push({ id, hash: h, color: COLORS[nodes.value.length] });
-  message.value = `Added node ${id} at position ${h.toFixed(2)} — some keys may have moved!`;
+  message.value = t(`Added node ${id} at position ${h.toFixed(2)} — some keys may have moved!`, `已添加节点 ${id}，位置 ${h.toFixed(2)} — 部分键可能已迁移！`);
 }
 
 function removeNode() {
-  if (nodes.value.length <= 1) { message.value = 'Need at least 1 node'; return; }
+  if (nodes.value.length <= 1) { message.value = t('Need at least 1 node', '至少需要 1 个节点'); return; }
   const removed = nodes.value.pop()!;
-  message.value = `Removed node ${removed.id} — only its keys are redistributed (minimal disruption!)`;
+  message.value = t(`Removed node ${removed.id} — only its keys are redistributed (minimal disruption!)`, `已删除节点 ${removed.id} — 仅其键被重新分配（最小影响！）`);
 }
 
 function reset() {
@@ -88,13 +91,13 @@ function reset() {
   ];
   keys.value = [];
   nextKeyId = 1;
-  message.value = 'Reset! Add keys to see consistent hashing in action.';
+  message.value = t('Reset! Add keys to see consistent hashing in action.', '已重置！添加键来查看一致性哈希的效果。');
 }
 </script>
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Consistent Hashing Ring</div>
+    <div class="viz-title">{{ t('Interactive Consistent Hashing Ring', '交互式一致性哈希环') }}</div>
 
     <svg viewBox="0 0 300 300" class="ch-svg">
       <circle :cx="CX" :cy="CY" :r="R" fill="none" stroke="var(--viz-border)" stroke-width="1.5" />
@@ -146,18 +149,18 @@ function reset() {
 
       <!-- Center label -->
       <text :x="CX" :y="CY - 6" text-anchor="middle" fill="var(--viz-text)" font-size="12" font-weight="700">
-        {{ nodes.length }} nodes
+        {{ nodes.length }} {{ t('nodes', '个节点') }}
       </text>
       <text :x="CX" :y="CY + 10" text-anchor="middle" fill="var(--viz-muted)" font-size="10">
-        {{ keys.length }} keys
+        {{ keys.length }} {{ t('keys', '个键') }}
       </text>
     </svg>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="addKey">Add Key</button>
-      <button class="viz-btn" @click="addNode">Add Node</button>
-      <button class="viz-btn" @click="removeNode">Remove Node</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="addKey">{{ t('Add Key', '添加键') }}</button>
+      <button class="viz-btn" @click="addNode">{{ t('Add Node', '添加节点') }}</button>
+      <button class="viz-btn" @click="removeNode">{{ t('Remove Node', '删除节点') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

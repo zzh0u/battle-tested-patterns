@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface LogEntry {
   id: number;
@@ -26,7 +29,7 @@ const recovering = ref(false);
 const replayedCount = ref(0);
 const totalEntries = ref(0);
 const highlightedEntries = ref<Set<number>>(new Set());
-const message = ref('Perform operations to build a WAL, then checkpoint to save snapshots');
+const message = ref(t('Perform operations to build a WAL, then checkpoint to save snapshots', '执行操作以构建 WAL，然后通过 Checkpoint 保存快照'));
 
 function now(): string {
   const d = new Date();
@@ -48,7 +51,7 @@ const ops = [
 
 function applyOp(op: typeof ops[0]) {
   if (crashed.value) {
-    message.value = 'State is corrupted! Recover from checkpoint first';
+    message.value = t('State is corrupted! Recover from checkpoint first', '状态已损坏！请先从 Checkpoint 恢复');
     return;
   }
   const before = stateValue.value;
@@ -64,12 +67,12 @@ function applyOp(op: typeof ops[0]) {
     afterCheckpoint: false,
   };
   log.value = [...log.value, entry];
-  message.value = `Op ${op.label}: ${before} -> ${stateValue.value} (logged as entry #${entry.id})`;
+  message.value = t(`Op ${op.label}: ${before} -> ${stateValue.value} (logged as entry #${entry.id})`, `操作 ${op.label}：${before} -> ${stateValue.value}（记录为条目 #${entry.id}）`);
 }
 
 function checkpoint() {
   if (crashed.value) {
-    message.value = 'Cannot checkpoint corrupted state';
+    message.value = t('Cannot checkpoint corrupted state', '无法对损坏状态进行 Checkpoint');
     return;
   }
   const cp: Checkpoint = {
@@ -81,7 +84,7 @@ function checkpoint() {
   checkpoints.value = [...checkpoints.value, cp];
   // Mark all current entries as before this checkpoint
   log.value = log.value.map(e => ({ ...e, afterCheckpoint: false }));
-  message.value = `Checkpoint #${cp.id} saved at state=${cp.stateValue} after log entry #${cp.afterLogId}`;
+  message.value = t(`Checkpoint #${cp.id} saved at state=${cp.stateValue} after log entry #${cp.afterLogId}`, `Checkpoint #${cp.id} 已保存，state=${cp.stateValue}，位于日志条目 #${cp.afterLogId} 之后`);
 }
 
 function crash() {
@@ -89,14 +92,14 @@ function crash() {
   crashed.value = true;
   stateValue.value = -1;
   totalEntries.value = log.value.length;
-  message.value = 'CRASH! State corrupted. Use "Recover" to restore from last checkpoint and replay WAL';
+  message.value = t('CRASH! State corrupted. Use "Recover" to restore from last checkpoint and replay WAL', 'CRASH！状态已损坏。使用"恢复"从最近的 Checkpoint 恢复并重放 WAL');
 }
 
 function recover() {
   if (!crashed.value) return;
   const cp = lastCheckpoint.value;
   if (!cp) {
-    message.value = 'No checkpoint available! All data is lost.';
+    message.value = t('No checkpoint available! All data is lost.', '没有可用的 Checkpoint！所有数据已丢失。');
     crashed.value = false;
     stateValue.value = 0;
     log.value = [];
@@ -126,18 +129,18 @@ function recover() {
   function replayNext() {
     if (replayIdx >= entriesAfterCp.length) {
       recovering.value = false;
-      message.value = `Recovery complete! Replayed ${replayedCount.value} of ${totalEntries.value} entries from checkpoint #${cp!.id}`;
+      message.value = t(`Recovery complete! Replayed ${replayedCount.value} of ${totalEntries.value} entries from checkpoint #${cp!.id}`, `恢复完成！从 Checkpoint #${cp!.id} 重放了 ${totalEntries.value} 条中的 ${replayedCount.value} 条`);
       return;
     }
     const entry = entriesAfterCp[replayIdx];
     highlightedEntries.value = new Set([...highlightedEntries.value, entry.id]);
     stateValue.value = entry.value;
-    message.value = `Replaying entry #${entry.id}: ${entry.op} -> state=${entry.value}`;
+    message.value = t(`Replaying entry #${entry.id}: ${entry.op} -> state=${entry.value}`, `重放条目 #${entry.id}：${entry.op} -> state=${entry.value}`);
     replayIdx++;
     setTimeout(replayNext, 400);
   }
 
-  message.value = `Restored checkpoint #${cp.id} (state=${cp.stateValue}). Replaying ${entriesAfterCp.length} entries...`;
+  message.value = t(`Restored checkpoint #${cp.id} (state=${cp.stateValue}). Replaying ${entriesAfterCp.length} entries...`, `已恢复 Checkpoint #${cp.id}（state=${cp.stateValue}）。正在重放 ${entriesAfterCp.length} 条记录...`);
   setTimeout(replayNext, 500);
 }
 
@@ -152,7 +155,7 @@ function reset() {
   highlightedEntries.value = new Set();
   nextEntryId = 1;
   nextCpId = 1;
-  message.value = 'Reset. Perform operations to build a WAL';
+  message.value = t('Reset. Perform operations to build a WAL', '已重置。执行操作以构建 WAL');
 }
 
 function isCheckpointAfter(entryId: number): number | null {
@@ -165,14 +168,14 @@ function isCheckpointAfter(entryId: number): number | null {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Checkpointing</div>
+    <div class="viz-title">{{ t('Interactive Checkpointing', '交互式 Checkpointing') }}</div>
 
     <div class="cp-layout">
       <!-- WAL Log (left) -->
       <div class="cp-wal">
-        <div class="cp-section-label">Write-Ahead Log</div>
+        <div class="cp-section-label">{{ t('Write-Ahead Log', '预写日志') }}</div>
         <div class="cp-log-list">
-          <div v-if="log.length === 0" class="cp-empty">no entries yet</div>
+          <div v-if="log.length === 0" class="cp-empty">{{ t('no entries yet', '暂无条目') }}</div>
           <template v-for="entry in log" :key="entry.id">
             <div
               class="cp-log-entry"
@@ -206,31 +209,31 @@ function isCheckpointAfter(entryId: number): number | null {
 
       <!-- State box (right) -->
       <div class="cp-state-panel">
-        <div class="cp-section-label">Current State</div>
+        <div class="cp-section-label">{{ t('Current State', '当前状态') }}</div>
         <div class="cp-state-box" :class="{ 'cp-state-box--crashed': crashed, 'cp-state-box--recovering': recovering }">
           <div v-if="!crashed" class="cp-state-value">{{ stateValue }}</div>
-          <div v-else class="cp-state-corrupted">CORRUPTED</div>
+          <div v-else class="cp-state-corrupted">{{ t('CORRUPTED', '已损坏') }}</div>
         </div>
 
         <!-- Recovery stats -->
         <div v-if="replayedCount > 0 && !recovering" class="cp-recovery-stats">
           <div class="cp-recovery-stat">
             <span class="cp-recovery-num">{{ replayedCount }}</span>
-            <span class="cp-recovery-label">entries replayed</span>
+            <span class="cp-recovery-label">{{ t('entries replayed', '条已重放') }}</span>
           </div>
           <div class="cp-recovery-stat">
             <span class="cp-recovery-num">{{ totalEntries }}</span>
-            <span class="cp-recovery-label">total entries</span>
+            <span class="cp-recovery-label">{{ t('total entries', '总条目') }}</span>
           </div>
           <div class="cp-recovery-stat">
             <span class="cp-recovery-num cp-recovery-saved">{{ totalEntries - replayedCount }}</span>
-            <span class="cp-recovery-label">skipped (in checkpoint)</span>
+            <span class="cp-recovery-label">{{ t('skipped (in checkpoint)', '已跳过（在 Checkpoint 中）') }}</span>
           </div>
         </div>
 
         <!-- Checkpoint list -->
         <div v-if="checkpoints.length > 0" class="cp-snapshots">
-          <div class="cp-section-label">Snapshots</div>
+          <div class="cp-section-label">{{ t('Snapshots', '快照') }}</div>
           <div v-for="cp in [...checkpoints].reverse()" :key="cp.id" class="cp-snapshot">
             <span class="cp-snap-id">#{{ cp.id }}</span>
             <span class="cp-snap-val">state={{ cp.stateValue }}</span>
@@ -248,10 +251,10 @@ function isCheckpointAfter(entryId: number): number | null {
         :disabled="crashed || recovering"
         @click="applyOp(op)"
       >{{ op.label }}</button>
-      <button class="viz-btn viz-btn--primary" :disabled="crashed || recovering" @click="checkpoint">Checkpoint</button>
-      <button class="viz-btn viz-btn--danger" :disabled="crashed || recovering" @click="crash">Crash</button>
-      <button v-if="crashed" class="viz-btn viz-btn--primary" @click="recover">Recover</button>
-      <button class="viz-btn" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" :disabled="crashed || recovering" @click="checkpoint">{{ t('Checkpoint', '创建快照') }}</button>
+      <button class="viz-btn viz-btn--danger" :disabled="crashed || recovering" @click="crash">{{ t('Crash', '模拟崩溃') }}</button>
+      <button v-if="crashed" class="viz-btn viz-btn--primary" @click="recover">{{ t('Recover', '恢复') }}</button>
+      <button class="viz-btn" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status" :class="{ 'cp-status--crash': crashed }">{{ message }}</div>

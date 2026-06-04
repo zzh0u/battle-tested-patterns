@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 const CAPACITY = 4;
 
@@ -10,7 +13,7 @@ interface CacheEntry {
 }
 
 const entries = ref<CacheEntry[]>([]);
-const message = ref('Try get("A") or put("A","1") to start');
+const message = ref(t('Try get("A") or put("A","1") to start', '试试 get("A") 或 put("A","1") 开始'));
 const animKey = ref('');
 const animAction = ref<'hit' | 'miss' | 'evict' | 'insert' | ''>('');
 const inputKey = ref('');
@@ -25,7 +28,7 @@ let presetIndex = 0;
 function put(key?: string, value?: string) {
   const k = key ?? inputKey.value.trim().toUpperCase();
   const v = value ?? inputValue.value.trim();
-  if (!k) { message.value = 'Enter a key first'; return; }
+  if (!k) { message.value = t('Enter a key first', '请先输入键'); return; }
   const val = v || String(++presetIndex);
 
   const existIdx = entries.value.findIndex(e => e.key === k);
@@ -34,15 +37,15 @@ function put(key?: string, value?: string) {
     entries.value.unshift({ key: k, value: val, id: ++idCounter });
     animKey.value = k;
     animAction.value = 'hit';
-    message.value = `put("${k}", "${val}") → key exists, moved to front`;
+    message.value = t(`put("${k}", "${val}") → key exists, moved to front`, `put("${k}", "${val}") → 键已存在，移至头部`);
   } else {
     if (entries.value.length >= CAPACITY) {
       const evicted = entries.value.pop()!;
       animKey.value = evicted.key;
       animAction.value = 'evict';
-      message.value = `put("${k}", "${val}") → evicted "${evicted.key}", inserted at front`;
+      message.value = t(`put("${k}", "${val}") → evicted "${evicted.key}", inserted at front`, `put("${k}", "${val}") → 淘汰 "${evicted.key}"，插入头部`);
     } else {
-      message.value = `put("${k}", "${val}") → inserted at front`;
+      message.value = t(`put("${k}", "${val}") → inserted at front`, `put("${k}", "${val}") → 插入头部`);
     }
     entries.value.unshift({ key: k, value: val, id: ++idCounter });
     setTimeout(() => { animKey.value = k; animAction.value = 'insert'; }, 50);
@@ -54,7 +57,7 @@ function put(key?: string, value?: string) {
 
 function get(key?: string) {
   const k = key ?? inputKey.value.trim().toUpperCase();
-  if (!k) { message.value = 'Enter a key first'; return; }
+  if (!k) { message.value = t('Enter a key first', '请先输入键'); return; }
 
   const idx = entries.value.findIndex(e => e.key === k);
   if (idx >= 0) {
@@ -62,11 +65,11 @@ function get(key?: string) {
     entries.value.unshift(entry);
     animKey.value = k;
     animAction.value = 'hit';
-    message.value = `get("${k}") → HIT! value="${entry.value}", moved to front`;
+    message.value = t(`get("${k}") → HIT! value="${entry.value}", moved to front`, `get("${k}") → 命中！value="${entry.value}"，移至头部`);
   } else {
     animKey.value = k;
     animAction.value = 'miss';
-    message.value = `get("${k}") → MISS! key not in cache`;
+    message.value = t(`get("${k}") → MISS! key not in cache`, `get("${k}") → 未命中！键不在缓存中`);
   }
   inputKey.value = '';
   setTimeout(() => { animKey.value = ''; animAction.value = ''; }, 500);
@@ -80,7 +83,7 @@ function quickPut() {
 
 function reset() {
   entries.value = [];
-  message.value = 'Cache cleared!';
+  message.value = t('Cache cleared!', '缓存已清空！');
   animKey.value = '';
   animAction.value = '';
   presetIndex = 0;
@@ -91,7 +94,7 @@ const emptySlots = computed(() => Math.max(0, CAPACITY - entries.value.length));
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive LRU Cache · capacity={{ CAPACITY }}</div>
+    <div class="viz-title">{{ t('Interactive LRU Cache', '交互式 LRU Cache') }} · {{ t('capacity', '容量') }}={{ CAPACITY }}</div>
 
     <!-- Visual: Doubly Linked List -->
     <div class="lru-chain">
@@ -126,14 +129,14 @@ const emptySlots = computed(() => Math.max(0, CAPACITY - entries.value.length));
     <!-- Controls -->
     <div class="lru-control-row">
       <div class="lru-input-group">
-        <input v-model="inputKey" class="lru-input" placeholder="Key" maxlength="3" @keyup.enter="put()" />
-        <input v-model="inputValue" class="lru-input" placeholder="Val" maxlength="4" @keyup.enter="put()" />
+        <input v-model="inputKey" class="lru-input" :placeholder="t('Key', '键')" maxlength="3" @keyup.enter="put()" />
+        <input v-model="inputValue" class="lru-input" :placeholder="t('Val', '值')" maxlength="4" @keyup.enter="put()" />
       </div>
       <div class="viz-controls" style="margin-top: 0">
         <button class="viz-btn viz-btn--primary" @click="put()">Put</button>
         <button class="viz-btn" @click="get()">Get</button>
-        <button class="viz-btn" @click="quickPut">Auto Put</button>
-        <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+        <button class="viz-btn" @click="quickPut">{{ t('Auto Put', '自动 Put') }}</button>
+        <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
       </div>
     </div>
 

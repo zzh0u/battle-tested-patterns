@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 type State = 'idle' | 'loading' | 'success' | 'error';
 type Event = 'FETCH' | 'RESOLVE' | 'REJECT' | 'RETRY' | 'RESET';
@@ -13,7 +16,7 @@ const transitions: Record<State, Partial<Record<Event, State>>> = {
 
 const currentState = ref<State>('idle');
 const history = ref<{ from: State; event: Event; to: State }[]>([]);
-const message = ref('Click an event button to trigger a state transition');
+const message = ref(t('Click an event button to trigger a state transition', '点击事件按钮触发状态转换'));
 const lastTransition = ref<string>('');
 
 const statePositions: Record<State, { x: number; y: number }> = {
@@ -40,7 +43,7 @@ const allEvents: Event[] = ['FETCH', 'RESOLVE', 'REJECT', 'RETRY', 'RESET'];
 function triggerEvent(event: Event) {
   const nextState = transitions[currentState.value][event];
   if (!nextState) {
-    message.value = `Cannot trigger ${event} from ${currentState.value.toUpperCase()}`;
+    message.value = t(`Cannot trigger ${event} from ${currentState.value.toUpperCase()}`, `无法从 ${currentState.value.toUpperCase()} 触发 ${event}`);
     return;
   }
 
@@ -48,7 +51,7 @@ function triggerEvent(event: Event) {
   currentState.value = nextState;
   lastTransition.value = `${from}-${event}-${nextState}`;
   history.value.push({ from, event, to: nextState });
-  message.value = `${from.toUpperCase()} —[${event}]→ ${nextState.toUpperCase()}`;
+  message.value = t(`${from.toUpperCase()} —[${event}]→ ${nextState.toUpperCase()}`, `${from.toUpperCase()} —[${event}]→ ${nextState.toUpperCase()}`);
 
   if (history.value.length > 10) {
     history.value = history.value.slice(-10);
@@ -59,7 +62,7 @@ function reset() {
   currentState.value = 'idle';
   history.value = [];
   lastTransition.value = '';
-  message.value = 'State machine reset to IDLE';
+  message.value = t('State machine reset to IDLE', '状态机已重置为 IDLE');
 }
 
 const edgeData = [
@@ -90,7 +93,7 @@ function edgeLabelPos(from: State, to: State, curve: number): { x: number; y: nu
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive State Machine</div>
+    <div class="viz-title">{{ t('Interactive State Machine', '交互式状态机') }}</div>
 
     <svg viewBox="0 0 380 280" class="sm-svg">
       <defs>
@@ -144,7 +147,7 @@ function edgeLabelPos(from: State, to: State, curve: number): { x: number; y: nu
 
     <!-- Event history -->
     <div v-if="history.length > 0" class="sm-history">
-      <span class="viz-label">Log:&nbsp;</span>
+      <span class="viz-label">{{ t('Log:', '日志：') }}&nbsp;</span>
       <span
         v-for="(h, i) in history.slice(-6)"
         :key="i"
@@ -164,7 +167,7 @@ function edgeLabelPos(from: State, to: State, curve: number): { x: number; y: nu
         :disabled="!availableEvents.includes(event)"
         @click="triggerEvent(event)"
       >{{ event }}</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

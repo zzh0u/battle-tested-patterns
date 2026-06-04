@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onUnmounted } from 'vue';
+import { useI18n } from '../composables/useI18n';
+const { t } = useI18n();
 
 interface Worker {
   id: number;
@@ -10,7 +12,7 @@ interface Worker {
 
 const MAX_PERMITS = ref(3);
 const workers = ref<Worker[]>([]);
-const message = ref('Click "Acquire" to spawn a worker that claims a permit');
+const message = ref(t('Click "Acquire" to spawn a worker that claims a permit', '点击"获取"生成一个申请许可的工作线程'));
 let nextId = 1;
 const timers = ref<ReturnType<typeof setInterval>[]>([]);
 
@@ -51,7 +53,7 @@ function tryPromoteWaiting() {
   next.state = 'active';
   next.permitIndex = slot;
   next.remainingMs = randomDuration();
-  message.value = `Worker #${next.id} acquired permit ${slot + 1} from queue`;
+  message.value = t(`Worker #${next.id} acquired permit ${slot + 1} from queue`, `工作线程 #${next.id} 从队列获取了许可 ${slot + 1}`);
   startWorkerTimer(next);
 }
 
@@ -77,7 +79,7 @@ function startWorkerTimer(w: Worker) {
 }
 
 function releaseWorker(w: Worker) {
-  message.value = `Worker #${w.id} released permit ${w.permitIndex + 1}`;
+  message.value = t(`Worker #${w.id} released permit ${w.permitIndex + 1}`, `工作线程 #${w.id} 释放了许可 ${w.permitIndex + 1}`);
   w.state = 'done';
   workers.value = workers.value.filter((x) => x.id !== w.id);
   tryPromoteWaiting();
@@ -94,7 +96,7 @@ function acquire() {
       remainingMs: randomDuration(),
     };
     workers.value.push(w);
-    message.value = `Worker #${id} acquired permit ${slot + 1}`;
+    message.value = t(`Worker #${id} acquired permit ${slot + 1}`, `工作线程 #${id} 获取了许可 ${slot + 1}`);
     startWorkerTimer(w);
   } else {
     const w: Worker = {
@@ -104,7 +106,7 @@ function acquire() {
       remainingMs: 0,
     };
     workers.value.push(w);
-    message.value = `No permits available — Worker #${id} is waiting in queue`;
+    message.value = t(`No permits available — Worker #${id} is waiting in queue`, `无可用许可 — 工作线程 #${id} 正在队列中等待`);
   }
 }
 
@@ -113,7 +115,7 @@ function reset() {
   timers.value = [];
   workers.value = [];
   nextId = 1;
-  message.value = 'Reset — all workers cleared';
+  message.value = t('Reset — all workers cleared', '已重置 — 所有工作线程已清除');
 }
 
 function permitColor(taken: boolean): string {
@@ -132,18 +134,18 @@ onUnmounted(() => {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Semaphore</div>
+    <div class="viz-title">{{ t('Interactive Semaphore', '交互式 Semaphore') }}</div>
 
     <!-- Stats bar -->
     <div class="sem-stats">
       <span class="sem-stat">
-        Active: <strong>{{ activeWorkers.length }}</strong>
+        {{ t('Active:', '活跃：') }} <strong>{{ activeWorkers.length }}</strong>
       </span>
       <span class="sem-stat">
-        Waiting: <strong>{{ waitingWorkers.length }}</strong>
+        {{ t('Waiting:', '等待：') }} <strong>{{ waitingWorkers.length }}</strong>
       </span>
       <span class="sem-stat sem-stat--permits">
-        Available: <strong>{{ availablePermits }}/{{ MAX_PERMITS }}</strong>
+        {{ t('Available:', '可用：') }} <strong>{{ availablePermits }}/{{ MAX_PERMITS }}</strong>
       </span>
     </div>
 
@@ -167,7 +169,7 @@ onUnmounted(() => {
           x="200" y="28"
           text-anchor="middle"
           class="sem-svg-label"
-        >Semaphore ({{ MAX_PERMITS }})</text>
+        >{{ t('Semaphore', 'Semaphore') }} ({{ MAX_PERMITS }})</text>
 
         <!-- Permit circles -->
         <g v-for="(p, i) in permits" :key="'p' + i">
@@ -194,7 +196,7 @@ onUnmounted(() => {
           x="200" y="86"
           text-anchor="middle"
           class="sem-svg-section"
-        >Active Workers</text>
+        >{{ t('Active Workers', '活跃工作线程') }}</text>
 
         <g v-for="(w, i) in activeWorkers" :key="'a' + w.id">
           <rect
@@ -237,7 +239,7 @@ onUnmounted(() => {
           x="200" y="116"
           text-anchor="middle"
           class="sem-svg-empty"
-        >none</text>
+        >{{ t('none', '无') }}</text>
 
         <!-- Waiting queue area -->
         <line
@@ -251,7 +253,7 @@ onUnmounted(() => {
           x="200" :y="160"
           text-anchor="middle"
           class="sem-svg-section"
-        >Waiting Queue</text>
+        >{{ t('Waiting Queue', '等待队列') }}</text>
 
         <g v-for="(w, i) in waitingWorkers" :key="'w' + w.id">
           <rect
@@ -270,7 +272,7 @@ onUnmounted(() => {
             :y="186 + i * 34"
             text-anchor="middle"
             class="sem-svg-worker sem-svg-waiting"
-          >#{{ w.id }} waiting...</text>
+          >#{{ w.id }} {{ t('waiting...', '等待中...') }}</text>
         </g>
 
         <text
@@ -278,20 +280,20 @@ onUnmounted(() => {
           x="200" :y="182"
           text-anchor="middle"
           class="sem-svg-empty"
-        >empty</text>
+        >{{ t('empty', '空') }}</text>
       </svg>
     </div>
 
     <!-- Controls -->
     <div class="viz-controls">
       <button class="viz-btn viz-btn--primary" @click="acquire">
-        Acquire
+        {{ t('Acquire', '获取') }}
       </button>
       <button class="viz-btn viz-btn--danger" @click="reset">
-        Reset
+        {{ t('Reset', '重置') }}
       </button>
       <label class="sem-permit-label">
-        <span class="viz-label">Max permits</span>
+        <span class="viz-label">{{ t('Max permits', '最大许可数') }}</span>
         <select v-model.number="MAX_PERMITS" class="sem-select" @change="reset">
           <option :value="1">1</option>
           <option :value="2">2</option>

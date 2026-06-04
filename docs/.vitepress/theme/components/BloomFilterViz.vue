@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 const BIT_COUNT = 16;
 const HASH_COUNT = 3;
 
 const bits = reactive<boolean[]>(Array(BIT_COUNT).fill(false));
 const items = ref<string[]>([]);
-const message = ref('Add items to the Bloom filter, then test membership');
+const message = ref(t('Add items to the Bloom filter, then test membership', '向 Bloom Filter 添加元素，然后测试成员关系'));
 const highlightBits = ref<number[]>([]);
 const highlightType = ref<'add' | 'hit' | 'miss' | 'false-positive' | ''>('');
 const inputText = ref('');
@@ -25,7 +28,7 @@ function getHashes(str: string): number[] {
 
 function add(item?: string) {
   const val = (item ?? inputText.value.trim()).toLowerCase();
-  if (!val) { message.value = 'Enter a value first'; return; }
+  if (!val) { message.value = t('Enter a value first', '请先输入一个值'); return; }
 
   const hashes = getHashes(val);
   hashes.forEach(h => { bits[h] = true; });
@@ -33,14 +36,14 @@ function add(item?: string) {
 
   highlightBits.value = hashes;
   highlightType.value = 'add';
-  message.value = `Added "${val}" → set bits [${hashes.join(', ')}]`;
+  message.value = t(`Added "${val}" → set bits [${hashes.join(', ')}]`, `已添加 "${val}" → 设置位 [${hashes.join(', ')}]`);
   inputText.value = '';
   setTimeout(() => { highlightBits.value = []; highlightType.value = ''; }, 600);
 }
 
 function test(item?: string) {
   const val = (item ?? inputText.value.trim()).toLowerCase();
-  if (!val) { message.value = 'Enter a value to test'; return; }
+  if (!val) { message.value = t('Enter a value to test', '请输入要测试的值'); return; }
 
   const hashes = getHashes(val);
   const allSet = hashes.every(h => bits[h]);
@@ -50,14 +53,14 @@ function test(item?: string) {
 
   if (allSet && actuallyExists) {
     highlightType.value = 'hit';
-    message.value = `"${val}" → Probably in set (true positive) ✓ bits [${hashes.join(', ')}] all set`;
+    message.value = t(`"${val}" → Probably in set (true positive) ✓ bits [${hashes.join(', ')}] all set`, `"${val}" → 可能在集合中（真阳性）✓ 位 [${hashes.join(', ')}] 均已设置`);
   } else if (allSet && !actuallyExists) {
     highlightType.value = 'false-positive';
-    message.value = `"${val}" → FALSE POSITIVE! bits [${hashes.join(', ')}] all set, but "${val}" was never added!`;
+    message.value = t(`"${val}" → FALSE POSITIVE! bits [${hashes.join(', ')}] all set, but "${val}" was never added!`, `"${val}" → 假阳性！位 [${hashes.join(', ')}] 均已设置，但 "${val}" 从未被添加！`);
   } else {
     const zeroBits = hashes.filter(h => !bits[h]);
     highlightType.value = 'miss';
-    message.value = `"${val}" → Definitely NOT in set. bits [${zeroBits.join(', ')}] are 0`;
+    message.value = t(`"${val}" → Definitely NOT in set. bits [${zeroBits.join(', ')}] are 0`, `"${val}" → 确定不在集合中。位 [${zeroBits.join(', ')}] 为 0`);
   }
   inputText.value = '';
   setTimeout(() => { highlightBits.value = []; highlightType.value = ''; }, 800);
@@ -68,7 +71,7 @@ function reset() {
   items.value = [];
   highlightBits.value = [];
   highlightType.value = '';
-  message.value = 'Filter cleared!';
+  message.value = t('Filter cleared!', '过滤器已清空！');
 }
 
 function demo() {
@@ -77,7 +80,7 @@ function demo() {
   setTimeout(() => add('dog'), 500);
   setTimeout(() => add('bird'), 900);
   setTimeout(() => {
-    message.value = 'Now try: test("cat") = true positive, test("rat") = false positive!';
+    message.value = t('Now try: test("cat") = true positive, test("rat") = false positive!', '现在试试：test("cat") = 真阳性，test("rat") = 假阳性！');
   }, 1300);
 }
 
@@ -86,7 +89,7 @@ const presetTests = ['cat', 'rat', 'fox', 'ant'];
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Bloom Filter · {{ BIT_COUNT }} bits · {{ HASH_COUNT }} hash functions</div>
+    <div class="viz-title">{{ t('Interactive Bloom Filter', '交互式 Bloom Filter') }} · {{ BIT_COUNT }} {{ t('bits', '位') }} · {{ HASH_COUNT }} {{ t('hash functions', '个哈希函数') }}</div>
 
     <!-- Bit array -->
     <div class="bloom-bits">
@@ -108,24 +111,24 @@ const presetTests = ['cat', 'rat', 'fox', 'ant'];
 
     <!-- Added items -->
     <div v-if="items.length" class="bloom-items">
-      <span class="bloom-items-label">In filter:</span>
+      <span class="bloom-items-label">{{ t('In filter:', '已添加：') }}</span>
       <span v-for="item in items" :key="item" class="bloom-tag">{{ item }}</span>
     </div>
 
     <!-- Controls -->
     <div class="bloom-control-row">
-      <input v-model="inputText" class="bloom-input" placeholder="Enter value..." @keyup.enter="add()" />
+      <input v-model="inputText" class="bloom-input" :placeholder="t('Enter value...', '输入值...')" @keyup.enter="add()" />
       <div class="viz-controls" style="margin-top: 0">
-        <button class="viz-btn viz-btn--primary" @click="add()">Add</button>
-        <button class="viz-btn" @click="test()">Test</button>
-        <button class="viz-btn" @click="demo">Demo</button>
-        <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+        <button class="viz-btn viz-btn--primary" @click="add()">{{ t('Add', '添加') }}</button>
+        <button class="viz-btn" @click="test()">{{ t('Test', '测试') }}</button>
+        <button class="viz-btn" @click="demo">{{ t('Demo', '演示') }}</button>
+        <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
       </div>
     </div>
 
     <div class="bloom-presets">
-      <span class="viz-label">Quick test:&nbsp;</span>
-      <button v-for="t in presetTests" :key="t" class="bloom-preset-btn" @click="test(t)">test("{{ t }}")</button>
+      <span class="viz-label">{{ t('Quick test:', '快速测试：') }}&nbsp;</span>
+      <button v-for="pt in presetTests" :key="pt" class="bloom-preset-btn" @click="test(pt)">test("{{ pt }}")</button>
     </div>
 
     <div class="viz-status" :class="{

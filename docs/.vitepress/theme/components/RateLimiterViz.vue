@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { ref, onUnmounted } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 const capacity = 8;
 const refillRate = 2;
 const tokens = ref(capacity);
 const requestLog = ref<{ time: number; accepted: boolean }[]>([]);
-const message = ref('Click "Send Request" to consume tokens');
+const message = ref(t('Click "Send Request" to consume tokens', '点击"发送请求"消耗令牌'));
 const autoRefillId = ref<ReturnType<typeof setInterval> | null>(null);
 const running = ref(false);
 
@@ -17,7 +20,7 @@ function startRefill() {
       tokens.value = Math.min(capacity, tokens.value + 1);
     }
   }, 1000 / refillRate);
-  message.value = `Auto-refilling at ${refillRate} tokens/sec`;
+  message.value = t(`Auto-refilling at ${refillRate} tokens/sec`, `自动补充中，${refillRate} 令牌/秒`);
 }
 
 function stopRefill() {
@@ -26,7 +29,7 @@ function stopRefill() {
     autoRefillId.value = null;
   }
   running.value = false;
-  message.value = 'Auto-refill stopped';
+  message.value = t('Auto-refill stopped', '自动补充已停止');
 }
 
 function sendRequest() {
@@ -34,10 +37,10 @@ function sendRequest() {
   if (tokens.value > 0) {
     tokens.value--;
     requestLog.value.push({ time: now, accepted: true });
-    message.value = `Request accepted (${tokens.value} tokens left)`;
+    message.value = t(`Request accepted (${tokens.value} tokens left)`, `请求已接受（剩余 ${tokens.value} 令牌）`);
   } else {
     requestLog.value.push({ time: now, accepted: false });
-    message.value = 'Request REJECTED — bucket empty!';
+    message.value = t('Request REJECTED — bucket empty!', '请求被拒绝 - 令牌桶为空！');
   }
   if (requestLog.value.length > 20) {
     requestLog.value = requestLog.value.slice(-20);
@@ -54,7 +57,7 @@ function reset() {
   stopRefill();
   tokens.value = capacity;
   requestLog.value = [];
-  message.value = 'Bucket refilled to capacity';
+  message.value = t('Bucket refilled to capacity', '令牌桶已补满');
 }
 
 onUnmounted(() => {
@@ -69,11 +72,11 @@ function tokenColor(i: number) {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Token Bucket Rate Limiter</div>
+    <div class="viz-title">{{ t('Interactive Token Bucket Rate Limiter', '交互式令牌桶 Rate Limiter') }}</div>
 
     <!-- Bucket visualization -->
     <div class="rl-bucket-wrap">
-      <div class="rl-bucket-label">{{ tokens }}/{{ capacity }} tokens</div>
+      <div class="rl-bucket-label">{{ tokens }}/{{ capacity }} {{ t('tokens', '令牌') }}</div>
       <svg :viewBox="`0 0 ${capacity * 32 + 16} 48`" class="rl-svg">
         <rect
           v-for="i in capacity"
@@ -105,22 +108,22 @@ function tokenColor(i: number) {
 
     <!-- Request log -->
     <div v-if="requestLog.length > 0" class="rl-log">
-      <span class="viz-label">Requests:&nbsp;</span>
+      <span class="viz-label">{{ t('Requests:', '请求:') }}&nbsp;</span>
       <span
         v-for="(req, i) in requestLog.slice(-12)"
         :key="i"
         class="rl-log-dot"
         :class="req.accepted ? 'rl-dot-ok' : 'rl-dot-reject'"
-        :title="req.accepted ? 'Accepted' : 'Rejected'"
+        :title="req.accepted ? t('Accepted', '已接受') : t('Rejected', '已拒绝')"
       >{{ req.accepted ? '✓' : '✗' }}</span>
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="sendRequest">Send Request</button>
-      <button class="viz-btn" @click="sendBurst">Burst (×5)</button>
-      <button v-if="!running" class="viz-btn" @click="startRefill">Start Refill</button>
-      <button v-else class="viz-btn viz-btn--danger" @click="stopRefill">Stop Refill</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="sendRequest">{{ t('Send Request', '发送请求') }}</button>
+      <button class="viz-btn" @click="sendBurst">{{ t('Burst (×5)', '突发 (×5)') }}</button>
+      <button v-if="!running" class="viz-btn" @click="startRefill">{{ t('Start Refill', '开始补充') }}</button>
+      <button v-else class="viz-btn viz-btn--danger" @click="stopRefill">{{ t('Stop Refill', '停止补充') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

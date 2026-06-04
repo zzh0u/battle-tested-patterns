@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 const SOURCE = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const TAKE_COUNT = 3;
@@ -30,7 +33,7 @@ const state = reactive<PipelineState>({
 const activeStage = ref<string | null>(null);
 const activeValue = ref<number | null>(null);
 const animating = ref(false);
-const message = ref('Click "Pull Next" to pull one element through the lazy pipeline');
+const message = ref(t('Click "Pull Next" to pull one element through the lazy pipeline', '点击"拉取下一个"将一个元素拉过惰性管道'));
 
 const hasNext = computed(() => !state.done && state.sourceIdx < SOURCE.length - 1);
 
@@ -43,7 +46,7 @@ async function pullNext() {
 
   if (state.taken.length >= TAKE_COUNT) {
     state.done = true;
-    message.value = `Take(${TAKE_COUNT}) satisfied! Pipeline complete. Only ${state.elementsProcessed} of ${SOURCE.length} source elements were touched.`;
+    message.value = t(`Take(${TAKE_COUNT}) satisfied! Pipeline complete. Only ${state.elementsProcessed} of ${SOURCE.length} source elements were touched.`, `Take(${TAKE_COUNT}) 已满足！管道完成。仅访问了 ${SOURCE.length} 个源元素中的 ${state.elementsProcessed} 个。`);
     activeStage.value = null;
     activeValue.value = null;
     return;
@@ -60,46 +63,46 @@ async function pullNext() {
 
     activeStage.value = 'source';
     activeValue.value = val;
-    message.value = `Source: pulling element ${val}`;
+    message.value = t(`Source: pulling element ${val}`, `Source：拉取元素 ${val}`);
     await delay(400);
 
     // Stage 2: Filter - keep only odd numbers
     activeStage.value = 'filter';
-    message.value = `Filter(isOdd): checking ${val}...`;
+    message.value = t(`Filter(isOdd): checking ${val}...`, `Filter(isOdd)：检查 ${val}...`);
     await delay(400);
 
     if (val % 2 === 0) {
       // Rejected by filter
       state.filterRejected = [...state.filterRejected, val];
       activeStage.value = 'filter-reject';
-      message.value = `Filter: ${val} is even -> rejected. Pulling next from source...`;
+      message.value = t(`Filter: ${val} is even -> rejected. Pulling next from source...`, `Filter：${val} 是偶数 -> 已过滤。从 Source 拉取下一个...`);
       await delay(300);
       continue; // Pull next from source
     }
 
     // Passed filter
     state.filterPassed = [...state.filterPassed, val];
-    message.value = `Filter: ${val} is odd -> passed!`;
+    message.value = t(`Filter: ${val} is odd -> passed!`, `Filter：${val} 是奇数 -> 通过！`);
     await delay(300);
 
     // Stage 3: Map - multiply by 10
     activeStage.value = 'map';
     const mapped = val * 10;
-    message.value = `Map(*10): ${val} -> ${mapped}`;
+    message.value = t(`Map(*10): ${val} -> ${mapped}`, `Map(*10)：${val} -> ${mapped}`);
     activeValue.value = mapped;
     await delay(400);
     state.mapResults = [...state.mapResults, mapped];
 
     // Stage 4: Take
     activeStage.value = 'take';
-    message.value = `Take(${TAKE_COUNT}): collected ${state.taken.length + 1} of ${TAKE_COUNT}`;
+    message.value = t(`Take(${TAKE_COUNT}): collected ${state.taken.length + 1} of ${TAKE_COUNT}`, `Take(${TAKE_COUNT})：已收集 ${state.taken.length + 1}/${TAKE_COUNT}`);
     await delay(300);
     state.taken = [...state.taken, mapped];
 
     // Stage 5: Collect
     activeStage.value = 'collect';
     state.collected = [...state.collected, mapped];
-    message.value = `Collected: [${state.collected.join(', ')}]`;
+    message.value = t(`Collected: [${state.collected.join(', ')}]`, `已收集：[${state.collected.join(', ')}]`);
     await delay(300);
 
     break; // One element pulled through successfully
@@ -107,10 +110,10 @@ async function pullNext() {
 
   if (state.taken.length >= TAKE_COUNT) {
     state.done = true;
-    message.value = `Pipeline complete! Result: [${state.collected.join(', ')}]. Processed ${state.elementsProcessed} of ${SOURCE.length} elements (laziness saved ${SOURCE.length - state.elementsProcessed}!)`;
+    message.value = t(`Pipeline complete! Result: [${state.collected.join(', ')}]. Processed ${state.elementsProcessed} of ${SOURCE.length} elements (laziness saved ${SOURCE.length - state.elementsProcessed}!)`, `管道完成！结果：[${state.collected.join(', ')}]。处理了 ${SOURCE.length} 个元素中的 ${state.elementsProcessed} 个（惰性求值节省了 ${SOURCE.length - state.elementsProcessed} 个！）`);
   } else if (state.sourceIdx >= SOURCE.length - 1 && state.taken.length < TAKE_COUNT) {
     state.done = true;
-    message.value = `Source exhausted. Got [${state.collected.join(', ')}] (${state.taken.length} of ${TAKE_COUNT} requested)`;
+    message.value = t(`Source exhausted. Got [${state.collected.join(', ')}] (${state.taken.length} of ${TAKE_COUNT} requested)`, `Source 已耗尽。获得 [${state.collected.join(', ')}]（请求 ${TAKE_COUNT} 个，实际 ${state.taken.length} 个）`);
   }
 
   activeStage.value = null;
@@ -130,7 +133,7 @@ function reset() {
   activeStage.value = null;
   activeValue.value = null;
   animating.value = false;
-  message.value = 'Reset. Click "Pull Next" to start pulling elements lazily.';
+  message.value = t('Reset. Click "Pull Next" to start pulling elements lazily.', '已重置。点击"拉取下一个"开始惰性拉取元素。');
 }
 
 function stageActive(name: string): boolean {
@@ -146,25 +149,25 @@ function sourceState(idx: number): string {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Lazy Iterator Pipeline</div>
+    <div class="viz-title">{{ t('Interactive Lazy Iterator Pipeline', '交互式惰性 Iterator 管道') }}</div>
 
     <!-- Stats bar -->
     <div class="it-stats">
       <div class="it-stat">
         <span class="it-stat-value">{{ state.elementsProcessed }}</span>
-        <span class="viz-label">Processed</span>
+        <span class="viz-label">{{ t('Processed', '已处理') }}</span>
       </div>
       <div class="it-stat">
         <span class="it-stat-value">{{ SOURCE.length }}</span>
-        <span class="viz-label">In Source</span>
+        <span class="viz-label">{{ t('In Source', '源中总数') }}</span>
       </div>
       <div class="it-stat">
         <span class="it-stat-value it-stat-value--success">{{ state.collected.length }}</span>
-        <span class="viz-label">Collected</span>
+        <span class="viz-label">{{ t('Collected', '已收集') }}</span>
       </div>
       <div class="it-stat">
         <span class="it-stat-value it-stat-value--saved">{{ SOURCE.length - state.elementsProcessed }}</span>
-        <span class="viz-label">Never Touched</span>
+        <span class="viz-label">{{ t('Never Touched', '未访问') }}</span>
       </div>
     </div>
 
@@ -250,13 +253,13 @@ function sourceState(idx: number): string {
 
     <!-- Active value indicator -->
     <div v-if="activeValue !== null" class="it-active-indicator">
-      <span class="it-active-label">Current value:</span>
+      <span class="it-active-label">{{ t('Current value:', '当前值：') }}</span>
       <span class="it-active-val">{{ activeValue }}</span>
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="pullNext" :disabled="state.done || animating">Pull Next</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="pullNext" :disabled="state.done || animating">{{ t('Pull Next', '拉取下一个') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

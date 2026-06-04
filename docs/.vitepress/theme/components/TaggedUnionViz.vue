@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 type Tag = 'Number' | 'String' | 'Bool' | 'None';
 
@@ -10,7 +13,7 @@ interface TaggedValue {
 }
 
 const currentTag = ref<Tag>('Number');
-const message = ref('Click a type button to set the variable. Watch the tag and value change together.');
+const message = ref(t('Click a type button to set the variable. Watch the tag and value change together.', '点击类型按钮设置变量。观察标签和值一起变化。'));
 const matchHighlight = ref<Tag | null>(null);
 const showMatchResult = ref(false);
 const matchResultText = ref('');
@@ -62,18 +65,18 @@ const matchOutputs: Record<Tag, string> = {
   None: '"got nothing"',
 };
 
-function setTag(t: Tag) {
-  currentTag.value = t;
+function setTag(tag: Tag) {
+  currentTag.value = tag;
   showMatchResult.value = false;
   matchHighlight.value = null;
-  message.value = `Variable set to ${t}(${values[t].display}). Tag byte = ${tagMeta[t].byte}.`;
+  message.value = t(`Variable set to ${tag}(${values[tag].display}). Tag byte = ${tagMeta[tag].byte}.`, `变量设置为 ${tag}(${values[tag].display})。标签字节 = ${tagMeta[tag].byte}。`);
 }
 
 function runMatch() {
   matchHighlight.value = currentTag.value;
   showMatchResult.value = true;
   matchResultText.value = matchOutputs[currentTag.value];
-  message.value = `match dispatched to ${currentTag.value} branch -> ${matchResultText.value}`;
+  message.value = t(`match dispatched to ${currentTag.value} branch -> ${matchResultText.value}`, `match 分派到 ${currentTag.value} 分支 -> ${matchResultText.value}`);
 }
 
 watch(currentTag, () => {
@@ -86,27 +89,27 @@ function reset() {
   matchHighlight.value = null;
   showMatchResult.value = false;
   matchResultText.value = '';
-  message.value = 'Click a type button to set the variable. Watch the tag and value change together.';
+  message.value = t('Click a type button to set the variable. Watch the tag and value change together.', '点击类型按钮设置变量。观察标签和值一起变化。');
 }
 </script>
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Tagged Union</div>
+    <div class="viz-title">{{ t('Interactive Tagged Union', '交互式 Tagged Union') }}</div>
 
     <!-- Type selector buttons -->
     <div class="tu-selector">
-      <div class="tu-selector-label">Set variable to:</div>
+      <div class="tu-selector-label">{{ t('Set variable to:', '设置变量为：') }}</div>
       <div class="tu-type-btns">
         <button
-          v-for="t in (['Number', 'String', 'Bool', 'None'] as Tag[])"
-          :key="t"
+          v-for="tag in (['Number', 'String', 'Bool', 'None'] as Tag[])"
+          :key="tag"
           class="tu-type-btn"
-          :class="{ 'tu-type-btn--active': currentTag === t }"
-          :style="currentTag === t ? { borderColor: tagMeta[t].color, background: tagMeta[t].color } : {}"
-          @click="setTag(t)"
+          :class="{ 'tu-type-btn--active': currentTag === tag }"
+          :style="currentTag === tag ? { borderColor: tagMeta[tag].color, background: tagMeta[tag].color } : {}"
+          @click="setTag(tag)"
         >
-          {{ t }}({{ values[t].display }})
+          {{ tag }}({{ values[tag].display }})
         </button>
       </div>
     </div>
@@ -114,7 +117,7 @@ function reset() {
     <!-- Variable box -->
     <div class="tu-variable-box" :style="{ borderColor: meta.color }">
       <div class="tu-var-header">
-        <span class="tu-var-label">Variable</span>
+        <span class="tu-var-label">{{ t('Variable', '变量') }}</span>
       </div>
       <div class="tu-var-content">
         <span
@@ -128,7 +131,7 @@ function reset() {
 
     <!-- Memory layout -->
     <div class="tu-memory">
-      <div class="tu-memory-title">Memory Layout (tag byte + value bytes)</div>
+      <div class="tu-memory-title">{{ t('Memory Layout (tag byte + value bytes)', '内存布局（标签字节 + 值字节）') }}</div>
       <div class="tu-memory-cells">
         <div
           v-for="(byte, i) in current.rawBytes"
@@ -150,11 +153,11 @@ function reset() {
       <div class="tu-mem-legend">
         <span class="tu-legend-item">
           <span class="tu-legend-dot tu-legend-dot--tag"></span>
-          Tag (determines type)
+          {{ t('Tag (determines type)', 'Tag（决定类型）') }}
         </span>
         <span class="tu-legend-item">
           <span class="tu-legend-dot tu-legend-dot--data"></span>
-          Value (interpreted per tag)
+          {{ t('Value (interpreted per tag)', 'Value（按标签解释）') }}
         </span>
       </div>
     </div>
@@ -179,20 +182,20 @@ function reset() {
           v-if="matchHighlight === branch.tag"
           class="tu-arm-indicator"
           :style="{ color: tagMeta[branch.tag].color }"
-        >&lt;-- executes</span>
+        >&lt;-- {{ t('executes', '执行') }}</span>
       </div>
       <div class="tu-match-footer">}</div>
     </div>
 
     <!-- Match result -->
     <div v-if="showMatchResult" class="tu-match-result">
-      <span class="tu-result-label">Output:</span>
+      <span class="tu-result-label">{{ t('Output:', '输出：') }}</span>
       <span class="tu-result-value">{{ matchResultText }}</span>
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="runMatch">Run match</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="runMatch">{{ t('Run match', '运行 match') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

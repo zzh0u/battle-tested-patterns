@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 type State = 'CLOSED' | 'OPEN' | 'HALF_OPEN';
 
@@ -8,7 +11,7 @@ const failureCount = ref(0);
 const successCount = ref(0);
 const threshold = 3;
 const halfOpenMax = 2;
-const message = ref('Circuit is CLOSED — all requests pass through. Try sending some failures!');
+const message = ref(t('Circuit is CLOSED — all requests pass through. Try sending some failures!', '熔断器已关闭 — 所有请求正常通过。试试发送一些失败请求！'));
 const lastResult = ref<'success' | 'failure' | ''>('');
 const requestLog = ref<{ type: 'success' | 'failure' | 'rejected'; id: number }[]>([]);
 let reqId = 0;
@@ -26,7 +29,7 @@ const stateLabel = computed(() => state.value.replace('_', '-'));
 function sendSuccess() {
   if (state.value === 'OPEN') {
     requestLog.value.unshift({ type: 'rejected', id: ++reqId });
-    message.value = 'REJECTED — circuit is OPEN, request not sent';
+    message.value = t('REJECTED — circuit is OPEN, request not sent', '已拒绝 — 熔断器已打开，请求未发送');
     lastResult.value = 'failure';
     cleanLog();
     return;
@@ -41,12 +44,12 @@ function sendSuccess() {
       state.value = 'CLOSED';
       failureCount.value = 0;
       successCount.value = 0;
-      message.value = `${halfOpenMax} successes in HALF-OPEN → circuit CLOSED again!`;
+      message.value = t(`${halfOpenMax} successes in HALF-OPEN → circuit CLOSED again!`, `HALF-OPEN 中 ${halfOpenMax} 次成功 → 熔断器重新关闭！`);
     } else {
-      message.value = `Success in HALF-OPEN (${successCount.value}/${halfOpenMax} needed to close)`;
+      message.value = t(`Success in HALF-OPEN (${successCount.value}/${halfOpenMax} needed to close)`, `HALF-OPEN 中成功（需 ${successCount.value}/${halfOpenMax} 次关闭）`);
     }
   } else {
-    message.value = 'Request succeeded — circuit stays CLOSED';
+    message.value = t('Request succeeded — circuit stays CLOSED', '请求成功 — 熔断器保持关闭');
   }
   cleanLog();
 }
@@ -54,7 +57,7 @@ function sendSuccess() {
 function sendFailure() {
   if (state.value === 'OPEN') {
     requestLog.value.unshift({ type: 'rejected', id: ++reqId });
-    message.value = 'REJECTED — circuit is OPEN, request not sent';
+    message.value = t('REJECTED — circuit is OPEN, request not sent', '已拒绝 — 熔断器已打开，请求未发送');
     lastResult.value = 'failure';
     cleanLog();
     return;
@@ -66,14 +69,14 @@ function sendFailure() {
   if (state.value === 'HALF_OPEN') {
     state.value = 'OPEN';
     successCount.value = 0;
-    message.value = 'Failure in HALF-OPEN → circuit OPEN again!';
+    message.value = t('Failure in HALF-OPEN → circuit OPEN again!', 'HALF-OPEN 中失败 → 熔断器重新打开！');
   } else {
     failureCount.value++;
     if (failureCount.value >= threshold) {
       state.value = 'OPEN';
-      message.value = `${threshold} failures reached — circuit OPEN! Requests will be rejected.`;
+      message.value = t(`${threshold} failures reached — circuit OPEN! Requests will be rejected.`, `已达 ${threshold} 次失败 — 熔断器打开！请求将被拒绝。`);
     } else {
-      message.value = `Failure ${failureCount.value}/${threshold} — circuit still CLOSED`;
+      message.value = t(`Failure ${failureCount.value}/${threshold} — circuit still CLOSED`, `失败 ${failureCount.value}/${threshold} — 熔断器仍然关闭`);
     }
   }
   cleanLog();
@@ -81,12 +84,12 @@ function sendFailure() {
 
 function tryReset() {
   if (state.value !== 'OPEN') {
-    message.value = 'Circuit is not OPEN — no timeout needed';
+    message.value = t('Circuit is not OPEN — no timeout needed', '熔断器未打开 — 无需超时重置');
     return;
   }
   state.value = 'HALF_OPEN';
   successCount.value = 0;
-  message.value = 'Timeout expired → HALF-OPEN — next request is a probe';
+  message.value = t('Timeout expired → HALF-OPEN — next request is a probe', '超时到期 → HALF-OPEN — 下一个请求将作为探测');
 }
 
 function reset() {
@@ -95,7 +98,7 @@ function reset() {
   successCount.value = 0;
   requestLog.value = [];
   lastResult.value = '';
-  message.value = 'Reset! Circuit is CLOSED.';
+  message.value = t('Reset! Circuit is CLOSED.', '已重置！熔断器已关闭。');
 }
 
 function cleanLog() {
@@ -111,7 +114,7 @@ const states: { key: State; label: string; x: number; y: number }[] = [
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Circuit Breaker · threshold={{ threshold }}</div>
+    <div class="viz-title">{{ t('Interactive Circuit Breaker', '交互式 Circuit Breaker') }} · {{ t('threshold', '阈值') }}={{ threshold }}</div>
 
     <!-- State machine diagram -->
     <svg viewBox="0 0 300 200" class="cb-svg">
@@ -124,19 +127,19 @@ const states: { key: State; label: string; x: number; y: number }[] = [
 
       <!-- CLOSED → OPEN -->
       <line x1="95" y1="55" x2="200" y2="55" stroke="var(--viz-muted)" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="4,3" />
-      <text x="148" y="46" text-anchor="middle" fill="var(--viz-muted)" font-size="8">{{ threshold }} failures</text>
+      <text x="148" y="46" text-anchor="middle" fill="var(--viz-muted)" font-size="8">{{ threshold }} {{ t('failures', '次失败') }}</text>
 
       <!-- OPEN → HALF_OPEN -->
       <line x1="225" y1="85" x2="175" y2="140" stroke="var(--viz-muted)" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="4,3" />
-      <text x="210" y="118" text-anchor="middle" fill="var(--viz-muted)" font-size="8">timeout</text>
+      <text x="210" y="118" text-anchor="middle" fill="var(--viz-muted)" font-size="8">{{ t('timeout', '超时') }}</text>
 
       <!-- HALF_OPEN → CLOSED -->
       <line x1="120" y1="148" x2="72" y2="90" stroke="var(--viz-muted)" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="4,3" />
-      <text x="82" y="126" text-anchor="middle" fill="var(--viz-muted)" font-size="8">success</text>
+      <text x="82" y="126" text-anchor="middle" fill="var(--viz-muted)" font-size="8">{{ t('success', '成功') }}</text>
 
       <!-- HALF_OPEN → OPEN -->
       <line x1="180" y1="148" x2="228" y2="90" stroke="var(--viz-muted)" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="4,3" />
-      <text x="218" y="130" text-anchor="middle" fill="var(--viz-muted)" font-size="8">failure</text>
+      <text x="218" y="130" text-anchor="middle" fill="var(--viz-muted)" font-size="8">{{ t('failure', '失败') }}</text>
 
       <!-- State circles -->
       <g v-for="s in states" :key="s.key">
@@ -179,10 +182,10 @@ const states: { key: State; label: string; x: number; y: number }[] = [
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="sendSuccess">Send Success</button>
-      <button class="viz-btn viz-btn--danger" @click="sendFailure">Send Failure</button>
-      <button class="viz-btn" @click="tryReset" :disabled="state !== 'OPEN'">Timeout Reset</button>
-      <button class="viz-btn" @click="reset">Reset All</button>
+      <button class="viz-btn viz-btn--primary" @click="sendSuccess">{{ t('Send Success', '发送成功') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="sendFailure">{{ t('Send Failure', '发送失败') }}</button>
+      <button class="viz-btn" @click="tryReset" :disabled="state !== 'OPEN'">{{ t('Timeout Reset', '超时重置') }}</button>
+      <button class="viz-btn" @click="reset">{{ t('Reset All', '全部重置') }}</button>
     </div>
 
     <div class="viz-status" :style="{ borderLeft: `3px solid ${stateColor}` }">

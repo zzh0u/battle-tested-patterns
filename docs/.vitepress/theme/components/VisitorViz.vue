@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface AstNode {
   id: number;
@@ -40,7 +43,7 @@ const currentNodeId = ref(-1);
 const visitorType = ref<'print' | 'count'>('print');
 const output = reactive<string[]>([]);
 const nodeCount = ref(0);
-const message = ref('Select a visitor type and click "Visit" to traverse the AST');
+const message = ref(t('Select a visitor type and click "Visit" to traverse the AST', '选择访问者类型并点击"访问"以遍历 AST'));
 
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -84,7 +87,7 @@ async function startVisit() {
   nodeCount.value = 0;
 
   const label = visitorType.value === 'print' ? 'Print Visitor' : 'Count Visitor';
-  message.value = `${label} traversing...`;
+  message.value = t(`${label} traversing...`, `${label} 遍历中...`);
 
   // Reset visited state
   for (const n of allNodes.value) {
@@ -95,9 +98,9 @@ async function startVisit() {
 
   currentNodeId.value = -1;
   if (visitorType.value === 'print') {
-    message.value = `Print Visitor finished — visited ${totalNodes.value} nodes`;
+    message.value = t(`Print Visitor finished — visited ${totalNodes.value} nodes`, `Print Visitor 完成 — 访问了 ${totalNodes.value} 个节点`);
   } else {
-    message.value = `Count Visitor finished — total: ${nodeCount.value} nodes`;
+    message.value = t(`Count Visitor finished — total: ${nodeCount.value} nodes`, `Count Visitor 完成 — 总计：${nodeCount.value} 个节点`);
   }
   visiting.value = false;
 }
@@ -108,7 +111,7 @@ function reset() {
   currentNodeId.value = -1;
   output.length = 0;
   nodeCount.value = 0;
-  message.value = 'Select a visitor type and click "Visit" to traverse the AST';
+  message.value = t('Select a visitor type and click "Visit" to traverse the AST', '选择访问者类型并点击"访问"以遍历 AST');
 }
 
 /* ---- Tree layout for SVG ---- */
@@ -190,7 +193,7 @@ function shortLabel(type: string): string {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Visitor Pattern</div>
+    <div class="viz-title">{{ t('Interactive Visitor Pattern', '交互式 Visitor 模式') }}</div>
 
     <!-- AST Tree -->
     <svg :viewBox="`0 0 ${svgW} ${svgH}`" class="vv-svg">
@@ -246,7 +249,7 @@ function shortLabel(type: string): string {
 
     <!-- Visitor type selector -->
     <div class="vv-visitor-select">
-      <span class="vv-label">Visitor:</span>
+      <span class="vv-label">{{ t('Visitor:', '访问者：') }}</span>
       <button
         class="vv-type-btn"
         :class="{ 'vv-type-active': visitorType === 'print' }"
@@ -264,7 +267,7 @@ function shortLabel(type: string): string {
     <!-- Visitor output log -->
     <div v-if="output.length > 0" class="vv-output">
       <div class="vv-output-header">
-        Visitor Output
+        {{ t('Visitor Output', '访问者输出') }}
         <span class="vv-output-count">{{ visitedCount }}/{{ totalNodes }}</span>
       </div>
       <div class="vv-output-lines">
@@ -273,8 +276,8 @@ function shortLabel(type: string): string {
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" :disabled="visiting" @click="startVisit">Visit</button>
-      <button class="viz-btn viz-btn--danger" :disabled="visiting" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" :disabled="visiting" @click="startVisit">{{ t('Visit', '访问') }}</button>
+      <button class="viz-btn viz-btn--danger" :disabled="visiting" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

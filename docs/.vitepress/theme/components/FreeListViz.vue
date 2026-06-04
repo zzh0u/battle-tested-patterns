@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 const BLOCK_COUNT = 8;
 
@@ -17,7 +20,7 @@ const blocks = ref<Block[]>(
   }))
 );
 
-const message = ref('All blocks free — click "Allocate" to claim one');
+const message = ref(t('All blocks free — click "Allocate" to claim one', '所有块空闲 — 点击"分配"来占用一个'));
 let allocCounter = 0;
 const allocLabels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
@@ -35,26 +38,32 @@ const freeCount = computed(() => blocks.value.filter(b => !b.allocated).length);
 function allocate() {
   const freeIdx = blocks.value.findIndex(b => !b.allocated);
   if (freeIdx < 0) {
-    message.value = 'No free blocks — free one first!';
+    message.value = t('No free blocks — free one first!', '没有空闲块 — 请先释放一个！');
     return;
   }
   const label = allocLabels[allocCounter % allocLabels.length];
   allocCounter++;
   blocks.value[freeIdx].allocated = true;
   blocks.value[freeIdx].label = label;
-  message.value = `Allocated block ${freeIdx} as "${label}" — head moved to ${freeHead.value ?? 'null'}`;
+  message.value = t(
+    `Allocated block ${freeIdx} as "${label}" — head moved to ${freeHead.value ?? 'null'}`,
+    `已分配块 ${freeIdx} 为 "${label}" — head 移至 ${freeHead.value ?? 'null'}`
+  );
 }
 
 function freeBlock(id: number) {
   const block = blocks.value[id];
   if (!block.allocated) {
-    message.value = `Block ${id} is already free`;
+    message.value = t(`Block ${id} is already free`, `块 ${id} 已经是空闲的`);
     return;
   }
   const oldLabel = block.label;
   block.allocated = false;
   block.label = '';
-  message.value = `Freed block ${id} ("${oldLabel}") — returned to free list, head is ${freeHead.value}`;
+  message.value = t(
+    `Freed block ${id} ("${oldLabel}") — returned to free list, head is ${freeHead.value}`,
+    `已释放块 ${id}（"${oldLabel}"）— 已归还到 Free List，head 为 ${freeHead.value}`
+  );
 }
 
 function reset() {
@@ -64,7 +73,7 @@ function reset() {
     label: '',
   }));
   allocCounter = 0;
-  message.value = 'All blocks freed';
+  message.value = t('All blocks freed', '所有块已释放');
 }
 
 function freeListArrowTarget(idx: number): number | null {
@@ -79,14 +88,14 @@ function freeListArrowTarget(idx: number): number | null {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Free List</div>
+    <div class="viz-title">{{ t('Interactive Free List', '交互式 Free List') }}</div>
 
     <div class="fl-info">
       <span class="fl-tag fl-tag--head">
-        head &rarr; {{ freeHead !== null ? `block ${freeHead}` : 'null' }}
+        head &rarr; {{ freeHead !== null ? `${t('block', '块')} ${freeHead}` : 'null' }}
       </span>
-      <span class="fl-tag">allocated: {{ allocatedCount }}</span>
-      <span class="fl-tag">free: {{ freeCount }}</span>
+      <span class="fl-tag">{{ t('allocated', '已分配') }}: {{ allocatedCount }}</span>
+      <span class="fl-tag">{{ t('free', '空闲') }}: {{ freeCount }}</span>
     </div>
 
     <div class="fl-memory">
@@ -99,18 +108,18 @@ function freeListArrowTarget(idx: number): number | null {
           'fl-block--head': freeHead === block.id,
         }"
         @click="block.allocated ? freeBlock(block.id) : undefined"
-        :title="block.allocated ? 'Click to free' : 'Free block'"
+        :title="block.allocated ? t('Click to free', '点击释放') : t('Free block', '空闲块')"
       >
         <div class="fl-block-id">{{ block.id }}</div>
         <div class="fl-block-content">
           <template v-if="block.allocated">{{ block.label }}</template>
-          <template v-else>free</template>
+          <template v-else>{{ t('free', '空闲') }}</template>
         </div>
       </div>
     </div>
 
     <div class="fl-chain">
-      <span class="fl-chain-label">Free list:</span>
+      <span class="fl-chain-label">{{ t('Free list:', 'Free List:') }}</span>
       <template v-if="freeList.length > 0">
         <span class="fl-chain-item fl-chain-head">head</span>
         <template v-for="(id, i) in freeList" :key="'fl-' + id">
@@ -125,13 +134,13 @@ function freeListArrowTarget(idx: number): number | null {
         <span class="fl-chain-item fl-chain-null">null</span>
       </template>
       <template v-else>
-        <span class="fl-chain-item fl-chain-null">empty (all allocated)</span>
+        <span class="fl-chain-item fl-chain-null">{{ t('empty (all allocated)', '空（全部已分配）') }}</span>
       </template>
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="allocate">Allocate</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="allocate">{{ t('Allocate', '分配') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

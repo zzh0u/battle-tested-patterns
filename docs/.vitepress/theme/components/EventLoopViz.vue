@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface Task {
   label: string;
@@ -13,27 +16,27 @@ const callStack = ref<Task[]>([]);
 const macroQueue = ref<Task[]>([]);
 const microQueue = ref<Task[]>([]);
 const log = ref<string[]>([]);
-const message = ref('Add tasks and step through the event loop');
+const message = ref(t('Add tasks and step through the event loop', '添加任务并逐步执行 Event Loop'));
 const running = ref(false);
 const currentPhase = ref<'idle' | 'stack' | 'micro' | 'macro'>('idle');
 
 function addSync() {
   callStack.value.push({ label: `fn${nextId}()`, type: 'sync', id: nextId++ });
-  message.value = 'Synchronous function pushed to call stack';
+  message.value = t('Synchronous function pushed to call stack', '同步函数已压入调用栈');
 }
 
 function addMacro() {
   const labels = ['setTimeout cb', 'setInterval cb', 'I/O callback', 'click handler'];
   const label = labels[nextId % labels.length];
   macroQueue.value.push({ label, type: 'macro', id: nextId++ });
-  message.value = `"${label}" added to macrotask queue`;
+  message.value = t(`"${label}" added to macrotask queue`, `"${label}" 已添加到宏任务队列`);
 }
 
 function addMicro() {
   const labels = ['Promise.then', 'queueMicrotask', 'MutationObserver', 'await resume'];
   const label = labels[nextId % labels.length];
   microQueue.value.push({ label, type: 'micro', id: nextId++ });
-  message.value = `"${label}" added to microtask queue`;
+  message.value = t(`"${label}" added to microtask queue`, `"${label}" 已添加到微任务队列`);
 }
 
 function loadDemo() {
@@ -47,7 +50,7 @@ function loadDemo() {
     { label: 'Promise.then', type: 'micro', id: nextId++ },
     { label: 'await resume', type: 'micro', id: nextId++ },
   );
-  message.value = 'Demo loaded — click Step to walk through execution';
+  message.value = t('Demo loaded — click Step to walk through execution', '示例已加载 - 点击"单步"逐步执行');
 }
 
 function delay(ms: number) {
@@ -63,7 +66,7 @@ async function step() {
     currentPhase.value = 'stack';
     const task = callStack.value.pop()!;
     log.value.push(`▶ ${task.label}`);
-    message.value = `Executing "${task.label}" from call stack`;
+    message.value = t(`Executing "${task.label}" from call stack`, `正在执行调用栈中的 "${task.label}"`);
     await delay(400);
     running.value = false;
     if (callStack.value.length === 0 && microQueue.value.length === 0 && macroQueue.value.length === 0) {
@@ -78,11 +81,11 @@ async function step() {
     while (microQueue.value.length > 0) {
       const task = microQueue.value.shift()!;
       callStack.value.push(task);
-      message.value = `Microtask "${task.label}" → call stack`;
+      message.value = t(`Microtask "${task.label}" → call stack`, `微任务 "${task.label}" → 调用栈`);
       await delay(300);
       callStack.value.pop();
       log.value.push(`▶ ${task.label}`);
-      message.value = `Executed "${task.label}"`;
+      message.value = t(`Executed "${task.label}"`, `已执行 "${task.label}"`);
       await delay(200);
     }
     running.value = false;
@@ -95,18 +98,18 @@ async function step() {
     currentPhase.value = 'macro';
     const task = macroQueue.value.shift()!;
     callStack.value.push(task);
-    message.value = `Macrotask "${task.label}" → call stack`;
+    message.value = t(`Macrotask "${task.label}" → call stack`, `宏任务 "${task.label}" → 调用栈`);
     await delay(300);
     callStack.value.pop();
     log.value.push(`▶ ${task.label}`);
-    message.value = `Executed "${task.label}" — check microtasks next`;
+    message.value = t(`Executed "${task.label}" — check microtasks next`, `已执行 "${task.label}" - 接下来检查微任务`);
     await delay(200);
     running.value = false;
     currentPhase.value = 'idle';
     return;
   }
 
-  message.value = 'All queues empty — event loop is idle';
+  message.value = t('All queues empty — event loop is idle', '所有队列为空 - Event Loop 空闲');
   currentPhase.value = 'idle';
   running.value = false;
 }
@@ -126,16 +129,16 @@ function reset() {
   log.value = [];
   currentPhase.value = 'idle';
   running.value = false;
-  message.value = 'Event loop reset';
+  message.value = t('Event loop reset', 'Event Loop 已重置');
   nextId = 0;
 }
 
 const phaseLabel = computed(() => {
   switch (currentPhase.value) {
-    case 'stack': return 'EXECUTING STACK';
-    case 'micro': return 'DRAINING MICROTASKS';
-    case 'macro': return 'PROCESSING MACROTASK';
-    default: return 'IDLE';
+    case 'stack': return t('EXECUTING STACK', '执行调用栈');
+    case 'micro': return t('DRAINING MICROTASKS', '清空微任务');
+    case 'macro': return t('PROCESSING MACROTASK', '处理宏任务');
+    default: return t('IDLE', '空闲');
   }
 });
 
@@ -151,7 +154,7 @@ const phaseColor = computed(() => {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Event Loop</div>
+    <div class="viz-title">{{ t('Interactive Event Loop', '交互式 Event Loop') }}</div>
 
     <div class="el-phase" :style="{ borderColor: phaseColor }">
       <span class="el-phase-dot" :style="{ background: phaseColor }"></span>
@@ -161,9 +164,9 @@ const phaseColor = computed(() => {
     <div class="el-columns">
       <!-- Call Stack -->
       <div class="el-column">
-        <div class="el-col-header">Call Stack</div>
+        <div class="el-col-header">{{ t('Call Stack', '调用栈') }}</div>
         <div class="el-stack">
-          <div v-if="callStack.length === 0" class="el-empty">empty</div>
+          <div v-if="callStack.length === 0" class="el-empty">{{ t('empty', '空') }}</div>
           <div
             v-for="task in [...callStack].reverse()"
             :key="task.id"
@@ -174,9 +177,9 @@ const phaseColor = computed(() => {
 
       <!-- Microtask Queue -->
       <div class="el-column">
-        <div class="el-col-header">Microtask Queue</div>
+        <div class="el-col-header">{{ t('Microtask Queue', '微任务队列') }}</div>
         <div class="el-queue">
-          <div v-if="microQueue.length === 0" class="el-empty">empty</div>
+          <div v-if="microQueue.length === 0" class="el-empty">{{ t('empty', '空') }}</div>
           <div
             v-for="task in microQueue"
             :key="task.id"
@@ -187,9 +190,9 @@ const phaseColor = computed(() => {
 
       <!-- Macrotask Queue -->
       <div class="el-column">
-        <div class="el-col-header">Macrotask Queue</div>
+        <div class="el-col-header">{{ t('Macrotask Queue', '宏任务队列') }}</div>
         <div class="el-queue">
-          <div v-if="macroQueue.length === 0" class="el-empty">empty</div>
+          <div v-if="macroQueue.length === 0" class="el-empty">{{ t('empty', '空') }}</div>
           <div
             v-for="task in macroQueue"
             :key="task.id"
@@ -201,18 +204,18 @@ const phaseColor = computed(() => {
 
     <!-- Execution Log -->
     <div v-if="log.length > 0" class="el-log">
-      <span class="viz-label">Log:&nbsp;</span>
+      <span class="viz-label">{{ t('Log:', '日志:') }}&nbsp;</span>
       <span v-for="(entry, i) in log.slice(-8)" :key="i" class="el-log-entry">{{ entry }}</span>
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn" @click="addSync">+ Sync</button>
-      <button class="viz-btn" @click="addMacro">+ Macro</button>
-      <button class="viz-btn" @click="addMicro">+ Micro</button>
-      <button class="viz-btn viz-btn--primary" @click="step" :disabled="running">Step</button>
-      <button class="viz-btn" @click="runAll" :disabled="running">Run All</button>
-      <button class="viz-btn" @click="loadDemo">Demo</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn" @click="addSync">{{ t('+ Sync', '+ 同步') }}</button>
+      <button class="viz-btn" @click="addMacro">{{ t('+ Macro', '+ 宏任务') }}</button>
+      <button class="viz-btn" @click="addMicro">{{ t('+ Micro', '+ 微任务') }}</button>
+      <button class="viz-btn viz-btn--primary" @click="step" :disabled="running">{{ t('Step', '单步') }}</button>
+      <button class="viz-btn" @click="runAll" :disabled="running">{{ t('Run All', '全部执行') }}</button>
+      <button class="viz-btn" @click="loadDemo">{{ t('Demo', '示例') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

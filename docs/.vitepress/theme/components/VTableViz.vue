@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface VTableEntry {
   name: string;
@@ -57,7 +60,7 @@ const activeClass = ref('');
 const activeMethod = ref('');
 const activeStep = ref(0); // 0=idle, 1=obj, 2=vptr, 3=vtable, 4=method
 const dispatchResult = ref('');
-const message = ref('Click an object and a method to see vtable dispatch');
+const message = ref(t('Click an object and a method to see vtable dispatch', '点击对象和方法以查看 vtable 分派'));
 
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -84,25 +87,25 @@ async function callMethod(obj: ObjInstance, methodName: string) {
   activeClass.value = '';
   activeMethod.value = '';
   activeStep.value = 1;
-  message.value = `${obj.label}.${methodName} called — reading object's vptr...`;
+  message.value = t(`${obj.label}.${methodName} called — reading object's vptr...`, `${obj.label}.${methodName} 被调用 — 读取对象的 vptr...`);
   await delay(700);
 
   // Step 2: follow vptr to class
   activeClass.value = obj.className;
   activeStep.value = 2;
-  message.value = `vptr points to ${obj.className}'s vtable`;
+  message.value = t(`vptr points to ${obj.className}'s vtable`, `vptr 指向 ${obj.className} 的 vtable`);
   await delay(700);
 
   // Step 3: look up method in vtable
   activeMethod.value = methodName;
   activeStep.value = 3;
-  message.value = `Looking up ${methodName} in ${obj.className} vtable...`;
+  message.value = t(`Looking up ${methodName} in ${obj.className} vtable...`, `在 ${obj.className} vtable 中查找 ${methodName}...`);
   await delay(700);
 
   // Step 4: dispatch result
   activeStep.value = 4;
   dispatchResult.value = entry.impl;
-  message.value = `Dispatched: ${entry.impl}`;
+  message.value = t(`Dispatched: ${entry.impl}`, `已分派：${entry.impl}`);
   await delay(1200);
 
   // Reset
@@ -120,18 +123,18 @@ function reset() {
   activeMethod.value = '';
   activeStep.value = 0;
   dispatchResult.value = '';
-  message.value = 'Click an object and a method to see vtable dispatch';
+  message.value = t('Click an object and a method to see vtable dispatch', '点击对象和方法以查看 vtable 分派');
 }
 </script>
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive VTable Dispatch</div>
+    <div class="viz-title">{{ t('Interactive VTable Dispatch', '交互式 VTable 分派') }}</div>
 
     <div class="vt-layout">
       <!-- Objects column -->
       <div class="vt-col">
-        <div class="vt-col-label">Objects</div>
+        <div class="vt-col-label">{{ t('Objects', '对象') }}</div>
         <div
           v-for="obj in objects"
           :key="obj.id"
@@ -182,7 +185,7 @@ function reset() {
 
       <!-- VTables column -->
       <div class="vt-col">
-        <div class="vt-col-label">VTables</div>
+        <div class="vt-col-label">{{ t('VTables', 'VTables') }}</div>
         <div
           v-for="cls in classes.slice(1)"
           :key="cls.name"
@@ -211,14 +214,14 @@ function reset() {
 
     <!-- Dispatch result -->
     <div v-if="dispatchResult" class="vt-result">
-      <span class="vt-result-label">Result:</span>
+      <span class="vt-result-label">{{ t('Result:', '结果：') }}</span>
       <span class="vt-result-value">{{ dispatchResult }}</span>
     </div>
 
     <!-- Dispatch chain diagram -->
     <div v-if="activeStep > 0" class="vt-chain">
       <span class="vt-chain-step" :class="{ 'vt-step-active': activeStep >= 1 }">
-        object
+        {{ t('object', '对象') }}
       </span>
       <span class="vt-chain-arrow" :class="{ 'vt-step-active': activeStep >= 2 }">&#x2192;</span>
       <span class="vt-chain-step" :class="{ 'vt-step-active': activeStep >= 2 }">
@@ -230,12 +233,12 @@ function reset() {
       </span>
       <span class="vt-chain-arrow" :class="{ 'vt-step-active': activeStep >= 4 }">&#x2192;</span>
       <span class="vt-chain-step" :class="{ 'vt-step-active': activeStep >= 4 }">
-        method
+        {{ t('method', '方法') }}
       </span>
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--danger" :disabled="dispatching" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--danger" :disabled="dispatching" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

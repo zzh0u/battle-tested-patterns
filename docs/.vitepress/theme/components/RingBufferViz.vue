@@ -130,13 +130,13 @@ function reset() {
 
       <div class="ringbuf-info">
         <div class="ringbuf-legend">
-          <span class="ringbuf-legend-item"><span class="ringbuf-dot ringbuf-dot--head"></span> Head (read)</span>
-          <span class="ringbuf-legend-item"><span class="ringbuf-dot ringbuf-dot--tail"></span> Tail (write)</span>
+          <span class="ringbuf-legend-item"><span class="ringbuf-dot ringbuf-dot--head"></span> {{ t('Head (read)', 'Head（读取）') }}</span>
+          <span class="ringbuf-legend-item"><span class="ringbuf-dot ringbuf-dot--tail"></span> {{ t('Tail (write)', 'Tail（写入）') }}</span>
         </div>
         <div class="viz-controls">
-          <button class="viz-btn viz-btn--primary" @click="enqueue">Enqueue</button>
-          <button class="viz-btn" @click="dequeue">Dequeue</button>
-          <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+          <button class="viz-btn viz-btn--primary" @click="enqueue">{{ t('Enqueue', '入队') }}</button>
+          <button class="viz-btn" @click="dequeue">{{ t('Dequeue', '出队') }}</button>
+          <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
         </div>
         <div class="viz-status">{{ message }}</div>
       </div>

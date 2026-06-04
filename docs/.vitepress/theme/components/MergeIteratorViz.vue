@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface Iterator {
   label: string;
@@ -8,7 +11,7 @@ interface Iterator {
 }
 
 const output = ref<number[]>([]);
-const message = ref('Press "Next" to pick the minimum head and advance');
+const message = ref(t('Press "Next" to pick the minimum head and advance', '按"下一个"选择最小的头元素并推进'));
 const highlightIdx = ref(-1);
 const pickedValue = ref<number | null>(null);
 const done = ref(false);
@@ -47,7 +50,7 @@ function next() {
 
   if (minIdx === -1) {
     done.value = true;
-    message.value = 'Merge complete! All iterators exhausted.';
+    message.value = t('Merge complete! All iterators exhausted.', '合并完成！所有迭代器已耗尽。');
     highlightIdx.value = -1;
     pickedValue.value = null;
     return;
@@ -59,11 +62,11 @@ function next() {
   output.value.push(minVal);
 
   const remaining = iterators.value.filter((it) => it.pos < it.items.length).length;
-  message.value = `Picked ${minVal} from ${iterators.value[minIdx].label} (min of heads). ${remaining} iterator(s) still active.`;
+  message.value = t(`Picked ${minVal} from ${iterators.value[minIdx].label} (min of heads). ${remaining} iterator(s) still active.`, `从 ${iterators.value[minIdx].label} 选取 ${minVal}（头元素最小值）。${remaining} 个迭代器仍活跃。`);
 
   if (remaining === 0) {
     done.value = true;
-    message.value = `Picked ${minVal}. Merge complete! Output: [${output.value.join(', ')}]`;
+    message.value = t(`Picked ${minVal}. Merge complete! Output: [${output.value.join(', ')}]`, `选取 ${minVal}。合并完成！输出：[${output.value.join(', ')}]`);
   }
 }
 
@@ -88,13 +91,13 @@ function reset() {
   highlightIdx.value = -1;
   pickedValue.value = null;
   done.value = false;
-  message.value = 'Press "Next" to pick the minimum head and advance';
+  message.value = t('Press "Next" to pick the minimum head and advance', '按"下一个"选择最小的头元素并推进');
 }
 </script>
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Merge Iterator</div>
+    <div class="viz-title">{{ t('Interactive Merge Iterator', '交互式 Merge Iterator') }}</div>
 
     <div class="mi-iterators">
       <div
@@ -122,7 +125,7 @@ function reset() {
             head={{ it.items[it.pos] }}
           </template>
           <template v-else>
-            <span class="mi-exhausted">done</span>
+            <span class="mi-exhausted">{{ t('done', '完成') }}</span>
           </template>
         </div>
       </div>
@@ -132,11 +135,11 @@ function reset() {
       <svg viewBox="0 0 24 24" width="20" height="20">
         <path d="M12 4 L12 18 M8 14 L12 18 L16 14" stroke="var(--viz-primary)" stroke-width="2" fill="none"/>
       </svg>
-      <span>merge (pick min)</span>
+      <span>{{ t('merge (pick min)', '合并（选最小值）') }}</span>
     </div>
 
     <div class="mi-output">
-      <div class="mi-output-label">Output</div>
+      <div class="mi-output-label">{{ t('Output', '输出') }}</div>
       <div class="mi-output-cells">
         <div
           v-for="(val, i) in output"
@@ -149,9 +152,9 @@ function reset() {
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" :disabled="done" @click="next">Next</button>
-      <button class="viz-btn" :disabled="done" @click="autoRun">Auto Run</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" :disabled="done" @click="next">{{ t('Next', '下一个') }}</button>
+      <button class="viz-btn" :disabled="done" @click="autoRun">{{ t('Auto Run', '自动运行') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

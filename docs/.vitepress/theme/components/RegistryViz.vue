@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface Handler {
   name: string;
@@ -21,7 +24,7 @@ const availablePlugins = ref([
 
 const registry = ref<Handler[]>([]);
 const lookupQuery = ref('');
-const message = ref('Register handlers into the registry, then look them up by name.');
+const message = ref(t('Register handlers into the registry, then look them up by name.', '将处理器注册到注册表中，然后按名称查找。'));
 const lookupResult = ref<Handler | null>(null);
 const lookupNotFound = ref(false);
 const dispatchTarget = ref<string | null>(null);
@@ -42,7 +45,7 @@ function registerHandler(pluginName: string) {
   flashId.value = handler.id;
   lookupResult.value = null;
   lookupNotFound.value = false;
-  message.value = `Registered "${plugin.name}" (order #${handler.registeredAt}). Registry now has ${registry.value.length} handler(s).`;
+  message.value = t(`Registered "${plugin.name}" (order #${handler.registeredAt}). Registry now has ${registry.value.length} handler(s).`, `已注册 "${plugin.name}"（顺序 #${handler.registeredAt}）。注册表现有 ${registry.value.length} 个处理器。`);
   setTimeout(() => { flashId.value = -1; }, 600);
 }
 
@@ -55,13 +58,13 @@ function unregisterHandler(handler: Handler) {
   if (lookupResult.value?.id === handler.id) {
     lookupResult.value = null;
   }
-  message.value = `Unregistered "${handler.name}". ${registry.value.length} handler(s) remain.`;
+  message.value = t(`Unregistered "${handler.name}". ${registry.value.length} handler(s) remain.`, `已注销 "${handler.name}"。剩余 ${registry.value.length} 个处理器。`);
 }
 
 function doLookup() {
   const q = lookupQuery.value.trim();
   if (!q) {
-    message.value = 'Type a handler name to look up.';
+    message.value = t('Type a handler name to look up.', '输入处理器名称以查找。');
     return;
   }
   dispatchTarget.value = q;
@@ -73,12 +76,12 @@ function doLookup() {
       lookupResult.value = found;
       lookupNotFound.value = false;
       flashId.value = found.id;
-      message.value = `FOUND: "${found.name}" -> ${found.description}`;
+      message.value = t(`FOUND: "${found.name}" -> ${found.description}`, `已找到："${found.name}" -> ${found.description}`);
       setTimeout(() => { flashId.value = -1; }, 600);
     } else {
       lookupResult.value = null;
       lookupNotFound.value = true;
-      message.value = `NOT FOUND: No handler registered for "${q}".`;
+      message.value = t(`NOT FOUND: No handler registered for "${q}".`, `未找到：没有为 "${q}" 注册的处理器。`);
     }
     setTimeout(() => { dispatchTarget.value = null; }, 800);
   }, 300);
@@ -101,7 +104,7 @@ function reset() {
   lookupNotFound.value = false;
   dispatchTarget.value = null;
   flashId.value = -1;
-  message.value = 'Registry cleared. Register handlers to begin.';
+  message.value = t('Registry cleared. Register handlers to begin.', '注册表已清空。注册处理器以开始。');
 }
 
 const registeredCount = computed(() => registry.value.length);
@@ -110,12 +113,12 @@ const availableCount = computed(() => availablePlugins.value.filter((p) => !p.re
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Registry</div>
+    <div class="viz-title">{{ t('Interactive Registry', '交互式 Registry') }}</div>
 
     <div class="rg-layout">
       <!-- Left: available plugins -->
       <div class="rg-panel rg-panel--plugins">
-        <div class="rg-panel-header">Available Plugins</div>
+        <div class="rg-panel-header">{{ t('Available Plugins', '可用插件') }}</div>
         <div class="rg-plugin-list">
           <div
             v-for="plugin in availablePlugins"
@@ -131,8 +134,8 @@ const availableCount = computed(() => availablePlugins.value.filter((p) => !p.re
               v-if="!plugin.registered"
               class="viz-btn viz-btn--primary rg-btn-sm"
               @click="registerHandler(plugin.name)"
-            >Register</button>
-            <span v-else class="rg-registered-badge">registered</span>
+            >{{ t('Register', '注册') }}</button>
+            <span v-else class="rg-registered-badge">{{ t('registered', '已注册') }}</span>
           </div>
         </div>
       </div>
@@ -140,14 +143,14 @@ const availableCount = computed(() => availablePlugins.value.filter((p) => !p.re
       <!-- Center: registry table -->
       <div class="rg-panel rg-panel--registry">
         <div class="rg-panel-header">
-          Registry Table
+          {{ t('Registry Table', '注册表') }}
           <span class="rg-count">({{ registeredCount }})</span>
         </div>
 
         <!-- Dispatch arrow animation -->
         <div v-if="dispatchTarget" class="rg-dispatch-indicator">
           <span class="rg-dispatch-arrow">--&gt;</span>
-          looking up "{{ dispatchTarget }}"...
+          {{ t(`looking up "${dispatchTarget}"...`, `正在查找 "${dispatchTarget}"...`) }}
         </div>
 
         <div class="rg-table-wrap">
@@ -155,14 +158,14 @@ const availableCount = computed(() => availablePlugins.value.filter((p) => !p.re
             <thead>
               <tr>
                 <th>#</th>
-                <th>Name</th>
-                <th>Handler</th>
+                <th>{{ t('Name', '名称') }}</th>
+                <th>{{ t('Handler', '处理器') }}</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               <tr v-if="registry.length === 0">
-                <td colspan="4" class="rg-empty">No handlers registered</td>
+                <td colspan="4" class="rg-empty">{{ t('No handlers registered', '暂无注册的处理器') }}</td>
               </tr>
               <tr
                 v-for="handler in registry"
@@ -181,7 +184,7 @@ const availableCount = computed(() => availablePlugins.value.filter((p) => !p.re
                     class="rg-action rg-action--rm"
                     title="Unregister"
                     @click="unregisterHandler(handler)"
-                  >unregister</button>
+                  >{{ t('unregister', '注销') }}</button>
                 </td>
               </tr>
             </tbody>
@@ -191,7 +194,7 @@ const availableCount = computed(() => availablePlugins.value.filter((p) => !p.re
 
       <!-- Right: lookup -->
       <div class="rg-panel rg-panel--lookup">
-        <div class="rg-panel-header">Lookup</div>
+        <div class="rg-panel-header">{{ t('Lookup', '查找') }}</div>
         <div class="rg-lookup-form">
           <input
             v-model="lookupQuery"
@@ -200,23 +203,23 @@ const availableCount = computed(() => availablePlugins.value.filter((p) => !p.re
             maxlength="24"
             @keyup.enter="doLookup"
           />
-          <button class="viz-btn viz-btn--primary rg-btn-sm" @click="doLookup">Resolve</button>
+          <button class="viz-btn viz-btn--primary rg-btn-sm" @click="doLookup">{{ t('Resolve', '解析') }}</button>
         </div>
 
         <!-- Lookup result -->
         <div v-if="lookupResult" class="rg-lookup-result rg-lookup-result--found">
-          <div class="rg-result-label">Resolved:</div>
+          <div class="rg-result-label">{{ t('Resolved:', '已解析：') }}</div>
           <div class="rg-result-name">{{ lookupResult.name }}</div>
           <div class="rg-result-desc">{{ lookupResult.description }}</div>
         </div>
         <div v-else-if="lookupNotFound" class="rg-lookup-result rg-lookup-result--miss">
-          <div class="rg-result-label">Not Found</div>
-          <div class="rg-result-desc">No handler matches this key</div>
+          <div class="rg-result-label">{{ t('Not Found', '未找到') }}</div>
+          <div class="rg-result-desc">{{ t('No handler matches this key', '没有匹配此键的处理器') }}</div>
         </div>
 
         <!-- Quick lookup buttons -->
         <div class="rg-quick-lookups">
-          <div class="rg-quick-label">Quick lookup:</div>
+          <div class="rg-quick-label">{{ t('Quick lookup:', '快速查找：') }}</div>
           <button
             v-for="plugin in availablePlugins"
             :key="plugin.name"
@@ -229,8 +232,8 @@ const availableCount = computed(() => availablePlugins.value.filter((p) => !p.re
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn" @click="registerAll">Register All</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn" @click="registerAll">{{ t('Register All', '全部注册') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

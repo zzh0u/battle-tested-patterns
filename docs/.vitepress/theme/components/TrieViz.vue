@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface TrieNode {
   char: string;
@@ -16,18 +19,18 @@ function createNode(char: string): TrieNode {
 
 const root = ref<TrieNode>(createNode(''));
 const inputWord = ref('');
-const message = ref('Type a word and insert it into the trie');
+const message = ref(t('Type a word and insert it into the trie', '输入一个单词并插入到 Trie 中'));
 const highlightIds = ref<Set<number>>(new Set());
 const words = ref<string[]>([]);
 
 function insertWord() {
   const word = inputWord.value.trim().toLowerCase();
   if (!word || !/^[a-z]+$/.test(word)) {
-    message.value = 'Enter lowercase letters only';
+    message.value = t('Enter lowercase letters only', '请只输入小写字母');
     return;
   }
   if (words.value.includes(word)) {
-    message.value = `"${word}" already exists`;
+    message.value = t(`"${word}" already exists`, `"${word}" 已存在`);
     return;
   }
 
@@ -44,7 +47,7 @@ function insertWord() {
   words.value.push(word);
 
   highlightIds.value = new Set(path);
-  message.value = `Inserted "${word}" (${word.length} nodes traversed)`;
+  message.value = t(`Inserted "${word}" (${word.length} nodes traversed)`, `已插入 "${word}"（遍历 ${word.length} 个节点）`);
   inputWord.value = '';
 
   setTimeout(() => { highlightIds.value = new Set(); }, 800);
@@ -53,7 +56,7 @@ function insertWord() {
 async function searchWord() {
   const word = inputWord.value.trim().toLowerCase();
   if (!word) {
-    message.value = 'Enter a word to search';
+    message.value = t('Enter a word to search', '请输入要搜索的单词');
     return;
   }
 
@@ -64,7 +67,7 @@ async function searchWord() {
     highlightIds.value = new Set(path);
     await delay(200);
     if (!current.children.has(ch)) {
-      message.value = `"${word}" not found — no '${ch}' edge from current node`;
+      message.value = t(`"${word}" not found — no '${ch}' edge from current node`, `未找到 "${word}" — 当前节点无 '${ch}' 边`);
       setTimeout(() => { highlightIds.value = new Set(); }, 800);
       return;
     }
@@ -74,9 +77,9 @@ async function searchWord() {
 
   highlightIds.value = new Set(path);
   if (current.isEnd) {
-    message.value = `Found "${word}"!`;
+    message.value = t(`Found "${word}"!`, `找到 "${word}"！`);
   } else {
-    message.value = `"${word}" is a prefix but not a stored word`;
+    message.value = t(`"${word}" is a prefix but not a stored word`, `"${word}" 是前缀但不是已存储的单词`);
   }
   setTimeout(() => { highlightIds.value = new Set(); }, 1200);
 }
@@ -86,7 +89,7 @@ function addPresets() {
     inputWord.value = w;
     insertWord();
   }
-  message.value = 'Added preset words: cat, car, card, care, dog, do';
+  message.value = t('Added preset words: cat, car, card, care, dog, do', '已添加预设单词：cat, car, card, care, dog, do');
 }
 
 function reset() {
@@ -94,7 +97,7 @@ function reset() {
   root.value = createNode('');
   words.value = [];
   highlightIds.value = new Set();
-  message.value = 'Trie cleared!';
+  message.value = t('Trie cleared!', 'Trie 已清空！');
   inputWord.value = '';
 }
 
@@ -160,7 +163,7 @@ const edges = computed(() => edgesFromLayout(treeLayout.value));
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Trie (Prefix Tree)</div>
+    <div class="viz-title">{{ t('Interactive Trie (Prefix Tree)', '交互式 Trie（前缀树）') }}</div>
 
     <svg :viewBox="`0 0 ${svgW} ${svgH}`" class="trie-svg">
       <!-- Edges -->
@@ -205,13 +208,13 @@ const edges = computed(() => edgesFromLayout(treeLayout.value));
 
       <!-- Empty state -->
       <text v-if="words.length === 0" :x="svgW / 2" :y="svgH / 2" text-anchor="middle" fill="var(--viz-muted)" font-size="13">
-        Empty — insert words to build the trie
+        {{ t('Empty — insert words to build the trie', '空 — 插入单词来构建 Trie') }}
       </text>
     </svg>
 
     <!-- Stored words -->
     <div v-if="words.length > 0" class="trie-words">
-      <span class="viz-label">Words:&nbsp;</span>
+      <span class="viz-label">{{ t('Words:', '单词：') }}&nbsp;</span>
       <span v-for="w in words" :key="w" class="trie-word-tag">{{ w }}</span>
     </div>
 
@@ -219,14 +222,14 @@ const edges = computed(() => edgesFromLayout(treeLayout.value));
       <input
         v-model="inputWord"
         class="viz-input"
-        placeholder="word"
+        :placeholder="t('word', '单词')"
         maxlength="10"
         @keydown.enter="insertWord"
       />
-      <button class="viz-btn viz-btn--primary" @click="insertWord">Insert</button>
-      <button class="viz-btn" @click="searchWord">Search</button>
-      <button class="viz-btn" @click="addPresets">Demo</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="insertWord">{{ t('Insert', '插入') }}</button>
+      <button class="viz-btn" @click="searchWord">{{ t('Search', '搜索') }}</button>
+      <button class="viz-btn" @click="addPresets">{{ t('Demo', '演示') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

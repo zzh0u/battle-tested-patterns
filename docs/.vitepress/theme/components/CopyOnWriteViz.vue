@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useI18n } from '../composables/useI18n';
+const { t } = useI18n();
 
 interface DataBlock {
   id: number;
@@ -22,7 +24,7 @@ const readers = ref<Reader[]>([
   { name: 'C', dataId: 0, color: 'var(--viz-warning)' },
 ]);
 
-const message = ref('All readers share the same data. Click "Write" to trigger CoW.');
+const message = ref(t('All readers share the same data. Click "Write" to trigger CoW.', '所有读取者共享同一数据。点击"写入"触发 Copy-on-Write。'));
 const lastAction = ref('');
 
 function writeFromReader(readerIdx: number) {
@@ -32,14 +34,14 @@ function writeFromReader(readerIdx: number) {
   if (block.refCount === 1) {
     block.value = block.value + '!';
     lastAction.value = `direct-${reader.name}`;
-    message.value = `${reader.name} has exclusive ownership — modified in place`;
+    message.value = t(`${reader.name} has exclusive ownership — modified in place`, `${reader.name} 拥有独占所有权 — 直接原地修改`);
   } else {
     block.refCount--;
     const newBlock: DataBlock = { id: nextId++, value: block.value + '*', refCount: 1 };
     blocks.value.push(newBlock);
     reader.dataId = newBlock.id;
     lastAction.value = `cow-${reader.name}`;
-    message.value = `Copy-on-Write: ${reader.name} got a private copy "${newBlock.value}"`;
+    message.value = t(`Copy-on-Write: ${reader.name} got a private copy "${newBlock.value}"`, `Copy-on-Write: ${reader.name} 获得了私有副本 "${newBlock.value}"`);
   }
 }
 
@@ -52,7 +54,7 @@ function reset() {
     { name: 'C', dataId: 0, color: 'var(--viz-warning)' },
   ];
   lastAction.value = '';
-  message.value = 'Reset — all readers share the same data again';
+  message.value = t('Reset — all readers share the same data again', '已重置 — 所有读取者再次共享同一数据');
 }
 
 function getBlock(id: number) {
@@ -62,7 +64,7 @@ function getBlock(id: number) {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Copy-on-Write</div>
+    <div class="viz-title">{{ t('Interactive Copy-on-Write', '交互式 Copy-on-Write') }}</div>
 
     <div class="cow-layout">
       <!-- Readers -->
@@ -74,7 +76,7 @@ function getBlock(id: number) {
           :style="{ borderColor: r.color }"
         >
           <div class="cow-reader-name" :style="{ color: r.color }">{{ r.name }}</div>
-          <button class="viz-btn cow-write-btn" @click="writeFromReader(i)">Write</button>
+          <button class="viz-btn cow-write-btn" @click="writeFromReader(i)">{{ t('Write', '写入') }}</button>
         </div>
       </div>
 
@@ -106,7 +108,7 @@ function getBlock(id: number) {
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

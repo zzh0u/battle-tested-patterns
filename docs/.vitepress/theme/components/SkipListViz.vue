@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface SkipNode {
   val: number;
@@ -7,7 +10,7 @@ interface SkipNode {
 }
 
 const nodes = ref<SkipNode[]>([]);
-const message = ref('Insert values to build a skip list');
+const message = ref(t('Insert values to build a skip list', '插入值来构建 Skip List'));
 const highlightPath = ref<{ nodeIdx: number; level: number }[]>([]);
 const searchTarget = ref<number | null>(null);
 
@@ -45,7 +48,7 @@ function isHighlighted(nodeIdx: number, level: number) {
 async function insert() {
   const val = Math.floor(Math.random() * 99) + 1;
   if (nodes.value.some(n => n.val === val)) {
-    message.value = `${val} already exists — try again`;
+    message.value = t(`${val} already exists — try again`, `${val} 已存在 — 请重试`);
     return;
   }
   const levels = randomLevel();
@@ -59,20 +62,20 @@ async function insert() {
   }
 
   highlightPath.value = [{ nodeIdx: insertIdx === -1 ? nodes.value.length - 1 : insertIdx, level: 0 }];
-  message.value = `Inserted ${val} with ${levels} level${levels > 1 ? 's' : ''}`;
+  message.value = t(`Inserted ${val} with ${levels} level${levels > 1 ? 's' : ''}`, `已插入 ${val}，${levels} 层`);
   await delay(500);
   highlightPath.value = [];
 }
 
 async function search() {
   if (nodes.value.length === 0) {
-    message.value = 'Skip list is empty!';
+    message.value = t('Skip list is empty!', 'Skip List 为空！');
     return;
   }
   const target = nodes.value[Math.floor(Math.random() * nodes.value.length)].val;
   searchTarget.value = target;
   highlightPath.value = [];
-  message.value = `Searching for ${target}...`;
+  message.value = t(`Searching for ${target}...`, `正在搜索 ${target}...`);
 
   let currentLevel = maxLevel.value - 1;
   let currentIdx = -1;
@@ -85,7 +88,7 @@ async function search() {
           highlightPath.value = [...highlightPath.value, { nodeIdx: nextIdx, level: currentLevel }];
           await delay(300);
           if (nodes.value[nextIdx].val === target) {
-            message.value = `Found ${target} at index ${nextIdx}!`;
+            message.value = t(`Found ${target} at index ${nextIdx}!`, `找到 ${target}，索引 ${nextIdx}！`);
             searchTarget.value = null;
             await delay(800);
             highlightPath.value = [];
@@ -102,7 +105,7 @@ async function search() {
     }
     currentLevel--;
   }
-  message.value = `${target} not found`;
+  message.value = t(`${target} not found`, `未找到 ${target}`);
   searchTarget.value = null;
   await delay(800);
   highlightPath.value = [];
@@ -112,7 +115,7 @@ function reset() {
   nodes.value = [];
   highlightPath.value = [];
   searchTarget.value = null;
-  message.value = 'Skip list cleared!';
+  message.value = t('Skip list cleared!', 'Skip List 已清空！');
 }
 
 function delay(ms: number) {
@@ -122,7 +125,7 @@ function delay(ms: number) {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Skip List</div>
+    <div class="viz-title">{{ t('Interactive Skip List', '交互式 Skip List') }}</div>
 
     <svg :viewBox="`0 0 ${svgW} ${svgH}`" class="skiplist-svg">
       <!-- Level labels -->
@@ -237,14 +240,14 @@ function delay(ms: number) {
 
       <!-- Empty state -->
       <text v-if="nodes.length === 0" :x="svgW / 2" :y="svgH / 2" text-anchor="middle" fill="var(--viz-muted)" font-size="13">
-        Empty — click Insert to add values
+        {{ t('Empty — click Insert to add values', '空 — 点击插入来添加值') }}
       </text>
     </svg>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="insert">Insert Random</button>
-      <button class="viz-btn" @click="search">Search Random</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="insert">{{ t('Insert Random', '插入随机值') }}</button>
+      <button class="viz-btn" @click="search">{{ t('Search Random', '搜索随机值') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

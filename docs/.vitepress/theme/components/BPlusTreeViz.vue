@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 const ORDER = 3; // max keys per node
 
@@ -16,7 +19,7 @@ function createNode(isLeaf: boolean): BNode {
 }
 
 const root = ref<BNode>(createNode(true));
-const message = ref('Insert values to build a B+ tree');
+const message = ref(t('Insert values to build a B+ tree', '插入值来构建 B+ Tree'));
 const highlightIds = ref<Set<number>>(new Set());
 
 function insertKey(node: BNode, key: number): { split: boolean; midKey: number; left: BNode; right: BNode } | null {
@@ -60,7 +63,7 @@ function insert() {
   const key = Math.floor(Math.random() * 99) + 1;
   const allKeys = collectKeys(root.value);
   if (allKeys.includes(key)) {
-    message.value = `${key} already exists`;
+    message.value = t(`${key} already exists`, `${key} 已存在`);
     return;
   }
 
@@ -73,7 +76,7 @@ function insert() {
   }
 
   highlightIds.value = new Set();
-  message.value = `Inserted ${key}`;
+  message.value = t(`Inserted ${key}`, `已插入 ${key}`);
 }
 
 function collectKeys(node: BNode): number[] {
@@ -84,12 +87,12 @@ function collectKeys(node: BNode): number[] {
 async function search() {
   const allKeys = collectKeys(root.value);
   if (allKeys.length === 0) {
-    message.value = 'Tree is empty';
+    message.value = t('Tree is empty', '树为空');
     return;
   }
   const target = allKeys[Math.floor(Math.random() * allKeys.length)];
   highlightIds.value = new Set();
-  message.value = `Searching for ${target}...`;
+  message.value = t(`Searching for ${target}...`, `正在搜索 ${target}...`);
 
   let current = root.value;
   while (current) {
@@ -98,7 +101,7 @@ async function search() {
 
     if (current.isLeaf) {
       if (current.keys.includes(target)) {
-        message.value = `Found ${target} in leaf node`;
+        message.value = t(`Found ${target} in leaf node`, `在叶节点中找到 ${target}`);
       }
       break;
     }
@@ -115,7 +118,7 @@ function reset() {
   nextId = 0;
   root.value = createNode(true);
   highlightIds.value = new Set();
-  message.value = 'Tree cleared';
+  message.value = t('Tree cleared', '树已清空');
 }
 
 function loadDemo() {
@@ -129,7 +132,7 @@ function loadDemo() {
       root.value = newRoot;
     }
   }
-  message.value = 'Demo loaded: 9 keys inserted';
+  message.value = t('Demo loaded: 9 keys inserted', '示例已加载：已插入 9 个键');
 }
 
 function delay(ms: number) {
@@ -192,7 +195,7 @@ const edges = computed(() => getEdges(treeLayout.value));
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive B+ Tree (order={{ ORDER }})</div>
+    <div class="viz-title">{{ t('Interactive B+ Tree', '交互式 B+ Tree') }} (order={{ ORDER }})</div>
 
     <svg :viewBox="`0 0 ${svgW} ${svgH}`" class="bptree-svg">
       <!-- Edges -->
@@ -236,15 +239,15 @@ const edges = computed(() => getEdges(treeLayout.value));
 
       <!-- Empty state -->
       <text v-if="root.keys.length === 0" :x="svgW / 2" :y="svgH / 2" text-anchor="middle" fill="var(--viz-muted)" font-size="13">
-        Empty — insert keys to build the tree
+        {{ t('Empty — insert keys to build the tree', '空 - 插入键来构建树') }}
       </text>
     </svg>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="insert">Insert Random</button>
-      <button class="viz-btn" @click="search">Search Random</button>
-      <button class="viz-btn" @click="loadDemo">Demo</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="insert">{{ t('Insert Random', '随机插入') }}</button>
+      <button class="viz-btn" @click="search">{{ t('Search Random', '随机搜索') }}</button>
+      <button class="viz-btn" @click="loadDemo">{{ t('Demo', '示例') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

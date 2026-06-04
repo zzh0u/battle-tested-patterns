@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, onUnmounted } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 const QUEUE_CAP = 12;
 const queue = ref<number[]>([]);
@@ -8,7 +11,7 @@ const consumed = ref(0);
 const dropped = ref(0);
 const producerRate = ref(3);
 const consumerRate = ref(1);
-const message = ref('Start producer & consumer to see backpressure in action');
+const message = ref(t('Start producer & consumer to see backpressure in action', '启动生产者和消费者，观察 Backpressure 机制'));
 const producerTimer = ref<ReturnType<typeof setInterval> | null>(null);
 const consumerTimer = ref<ReturnType<typeof setInterval> | null>(null);
 let nextItem = 1;
@@ -18,12 +21,12 @@ function startProducer() {
   producerTimer.value = setInterval(() => {
     if (queue.value.length >= QUEUE_CAP) {
       dropped.value++;
-      message.value = `Backpressure! Item #${nextItem} DROPPED (queue full)`;
+      message.value = t(`Backpressure! Item #${nextItem} DROPPED (queue full)`, `Backpressure! 项目 #${nextItem} 被丢弃（队列已满）`);
       nextItem++;
     } else {
       queue.value.push(nextItem);
       produced.value++;
-      message.value = `Produced #${nextItem}`;
+      message.value = t(`Produced #${nextItem}`, `已生产 #${nextItem}`);
       nextItem++;
     }
   }, 1000 / producerRate.value);
@@ -35,7 +38,7 @@ function startConsumer() {
     if (queue.value.length > 0) {
       const item = queue.value.shift()!;
       consumed.value++;
-      message.value = `Consumed #${item}`;
+      message.value = t(`Consumed #${item}`, `已消费 #${item}`);
     }
   }, 1000 / consumerRate.value);
 }
@@ -43,7 +46,7 @@ function startConsumer() {
 function stopAll() {
   if (producerTimer.value) { clearInterval(producerTimer.value); producerTimer.value = null; }
   if (consumerTimer.value) { clearInterval(consumerTimer.value); consumerTimer.value = null; }
-  message.value = 'Stopped';
+  message.value = t('Stopped', '已停止');
 }
 
 function reset() {
@@ -53,7 +56,7 @@ function reset() {
   consumed.value = 0;
   dropped.value = 0;
   nextItem = 1;
-  message.value = 'Reset';
+  message.value = t('Reset', '已重置');
 }
 
 onUnmounted(() => {
@@ -75,12 +78,12 @@ function fillColor() {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Backpressure</div>
+    <div class="viz-title">{{ t('Interactive Backpressure', '交互式 Backpressure') }}</div>
 
     <div class="bp-flow">
       <!-- Producer -->
       <div class="bp-actor bp-producer">
-        <div class="bp-actor-label">Producer</div>
+        <div class="bp-actor-label">{{ t('Producer', '生产者') }}</div>
         <div class="bp-actor-rate">{{ producerRate }}/s</div>
       </div>
 
@@ -88,7 +91,7 @@ function fillColor() {
 
       <!-- Queue -->
       <div class="bp-queue-wrap">
-        <div class="bp-queue-label">Queue ({{ queue.length }}/{{ QUEUE_CAP }})</div>
+        <div class="bp-queue-label">{{ t('Queue', '队列') }} ({{ queue.length }}/{{ QUEUE_CAP }})</div>
         <div class="bp-queue">
           <div
             v-for="i in QUEUE_CAP"
@@ -107,23 +110,23 @@ function fillColor() {
 
       <!-- Consumer -->
       <div class="bp-actor bp-consumer">
-        <div class="bp-actor-label">Consumer</div>
+        <div class="bp-actor-label">{{ t('Consumer', '消费者') }}</div>
         <div class="bp-actor-rate">{{ consumerRate }}/s</div>
       </div>
     </div>
 
     <!-- Stats -->
     <div class="bp-stats">
-      <span class="bp-stat">Produced: <strong>{{ produced }}</strong></span>
-      <span class="bp-stat">Consumed: <strong>{{ consumed }}</strong></span>
-      <span class="bp-stat bp-stat-drop">Dropped: <strong>{{ dropped }}</strong></span>
+      <span class="bp-stat">{{ t('Produced:', '已生产:') }} <strong>{{ produced }}</strong></span>
+      <span class="bp-stat">{{ t('Consumed:', '已消费:') }} <strong>{{ consumed }}</strong></span>
+      <span class="bp-stat bp-stat-drop">{{ t('Dropped:', '已丢弃:') }} <strong>{{ dropped }}</strong></span>
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="startProducer" :disabled="!!producerTimer">Start Producer</button>
-      <button class="viz-btn" @click="startConsumer" :disabled="!!consumerTimer">Start Consumer</button>
-      <button class="viz-btn" @click="stopAll">Stop All</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="startProducer" :disabled="!!producerTimer">{{ t('Start Producer', '启动生产者') }}</button>
+      <button class="viz-btn" @click="startConsumer" :disabled="!!consumerTimer">{{ t('Start Consumer', '启动消费者') }}</button>
+      <button class="viz-btn" @click="stopAll">{{ t('Stop All', '全部停止') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
 
+const { t } = useI18n();
 const LABELS = ['READ', 'WRITE', 'EXEC', 'ADMIN', 'LOG', 'NET', 'GPU', 'IO'];
 const bits = ref(0);
-const message = ref('Toggle bits to build a permission mask');
+const message = ref(t('Toggle bits to build a permission mask', '切换位来构建权限掩码'));
 const lastOp = ref('');
 
 function toggle(idx: number) {
@@ -11,17 +13,20 @@ function toggle(idx: number) {
   const label = LABELS[idx];
   const on = (bits.value >> idx) & 1;
   lastOp.value = `toggle-${idx}`;
-  message.value = `${label} ${on ? 'ON' : 'OFF'} — mask is now 0b${bits.value.toString(2).padStart(8, '0')} (${bits.value})`;
+  message.value = t(
+    `${label} ${on ? 'ON' : 'OFF'} — mask is now 0b${bits.value.toString(2).padStart(8, '0')} (${bits.value})`,
+    `${label} ${on ? '开启' : '关闭'} — 掩码现为 0b${bits.value.toString(2).padStart(8, '0')} (${bits.value})`
+  );
 }
 
 function setAll() {
   bits.value = 0xFF;
-  message.value = 'All flags set — mask = 0xFF (255)';
+  message.value = t('All flags set — mask = 0xFF (255)', '所有标志已设置 — 掩码 = 0xFF (255)');
 }
 
 function clearAll() {
   bits.value = 0;
-  message.value = 'All flags cleared — mask = 0x00 (0)';
+  message.value = t('All flags cleared — mask = 0x00 (0)', '所有标志已清除 — 掩码 = 0x00 (0)');
 }
 
 const binaryStr = computed(() => bits.value.toString(2).padStart(8, '0'));
@@ -32,13 +37,16 @@ function testOp() {
   const b = 0b00000101; // READ | EXEC
   const andResult = a & b;
   const orResult = a | b;
-  message.value = `mask & 0x05 = ${andResult} (${andResult.toString(2).padStart(8, '0')})  |  mask | 0x05 = ${orResult} (${orResult.toString(2).padStart(8, '0')})`;
+  message.value = t(
+    `mask & 0x05 = ${andResult} (${andResult.toString(2).padStart(8, '0')})  |  mask | 0x05 = ${orResult} (${orResult.toString(2).padStart(8, '0')})`,
+    `掩码 & 0x05 = ${andResult} (${andResult.toString(2).padStart(8, '0')})  |  掩码 | 0x05 = ${orResult} (${orResult.toString(2).padStart(8, '0')})`
+  );
 }
 </script>
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Bitmask</div>
+    <div class="viz-title">{{ t('Interactive Bitmask', '交互式 Bitmask') }}</div>
 
     <div class="bm-display">
       <div class="bm-binary">
@@ -70,9 +78,9 @@ function testOp() {
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="testOp">Test AND/OR with 0x05</button>
-      <button class="viz-btn" @click="setAll">Set All</button>
-      <button class="viz-btn viz-btn--danger" @click="clearAll">Clear All</button>
+      <button class="viz-btn viz-btn--primary" @click="testOp">{{ t('Test AND/OR with 0x05', '测试 AND/OR 与 0x05') }}</button>
+      <button class="viz-btn" @click="setAll">{{ t('Set All', '全部设置') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="clearAll">{{ t('Clear All', '全部清除') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

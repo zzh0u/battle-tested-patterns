@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface Version {
   ver: number;
@@ -28,7 +31,7 @@ const store = ref<KeyVersions[]>([
 ]);
 
 const transactions = ref<Transaction[]>([]);
-const message = ref('Begin a transaction to start. Each gets a snapshot version.');
+const message = ref(t('Begin a transaction to start. Each gets a snapshot version.', '开始一个事务。每个事务获取一个快照版本。'));
 const highlightKey = ref('');
 const highlightVer = ref(-1);
 
@@ -41,7 +44,7 @@ function beginTxn() {
     writes: [],
   };
   transactions.value.push(txn);
-  message.value = `T${txn.id} started at snapshot version ${txn.snapshotVer}. It will read data as of v${txn.snapshotVer}.`;
+  message.value = t(`T${txn.id} started at snapshot version ${txn.snapshotVer}. It will read data as of v${txn.snapshotVer}.`, `T${txn.id} 在快照版本 ${txn.snapshotVer} 启动。它将读取 v${txn.snapshotVer} 时的数据。`);
 }
 
 const activeTxns = computed(() =>
@@ -56,24 +59,24 @@ function selectTxn(id: number) {
   selectedTxn.value = id;
   const txn = transactions.value.find((t) => t.id === id);
   if (txn) {
-    message.value = `Selected T${id} (snapshot v${txn.snapshotVer}). Use Read/Write below.`;
+    message.value = t(`Selected T${id} (snapshot v${txn.snapshotVer}). Use Read/Write below.`, `已选择 T${id}（快照 v${txn.snapshotVer}）。使用下方的读/写操作。`);
   }
 }
 
 function readKey(key: string) {
   if (selectedTxn.value === null) {
-    message.value = 'Select a transaction first.';
+    message.value = t('Select a transaction first.', '请先选择一个事务。');
     return;
   }
   const txn = transactions.value.find((t) => t.id === selectedTxn.value);
   if (!txn || txn.status !== 'active') {
-    message.value = 'Transaction is not active.';
+    message.value = t('Transaction is not active.', '事务未处于活跃状态。');
     return;
   }
 
   const kv = store.value.find((s) => s.key === key);
   if (!kv) {
-    message.value = `T${txn.id} READ "${key}" -> key not found`;
+    message.value = t(`T${txn.id} READ "${key}" -> key not found`, `T${txn.id} READ "${key}" -> 键未找到`);
     return;
   }
 
@@ -81,7 +84,7 @@ function readKey(key: string) {
   if (ownWrite) {
     highlightKey.value = key;
     highlightVer.value = -1;
-    message.value = `T${txn.id} READ "${key}" -> ${ownWrite.value} (own uncommitted write)`;
+    message.value = t(`T${txn.id} READ "${key}" -> ${ownWrite.value} (own uncommitted write)`, `T${txn.id} READ "${key}" -> ${ownWrite.value}（自身未提交写入）`);
     setTimeout(() => { highlightKey.value = ''; }, 600);
     return;
   }
@@ -91,46 +94,46 @@ function readKey(key: string) {
     .sort((a, b) => b.ver - a.ver);
 
   if (visible.length === 0) {
-    message.value = `T${txn.id} READ "${key}" -> no visible version at v${txn.snapshotVer}`;
+    message.value = t(`T${txn.id} READ "${key}" -> no visible version at v${txn.snapshotVer}`, `T${txn.id} READ "${key}" -> 在 v${txn.snapshotVer} 无可见版本`);
     return;
   }
 
   const found = visible[0];
   highlightKey.value = key;
   highlightVer.value = found.ver;
-  message.value = `T${txn.id} READ "${key}" -> ${found.value} (version ${found.ver}). Newer versions invisible to snapshot v${txn.snapshotVer}.`;
+  message.value = t(`T${txn.id} READ "${key}" -> ${found.value} (version ${found.ver}). Newer versions invisible to snapshot v${txn.snapshotVer}.`, `T${txn.id} READ "${key}" -> ${found.value}（版本 ${found.ver}）。更新版本对快照 v${txn.snapshotVer} 不可见。`);
   setTimeout(() => { highlightKey.value = ''; highlightVer.value = -1; }, 800);
 }
 
 function writeToKey() {
   if (selectedTxn.value === null) {
-    message.value = 'Select a transaction first.';
+    message.value = t('Select a transaction first.', '请先选择一个事务。');
     return;
   }
   const txn = transactions.value.find((t) => t.id === selectedTxn.value);
   if (!txn || txn.status !== 'active') {
-    message.value = 'Transaction is not active.';
+    message.value = t('Transaction is not active.', '事务未处于活跃状态。');
     return;
   }
   const val = writeValue.value.trim();
   if (!val) {
-    message.value = 'Enter a value to write.';
+    message.value = t('Enter a value to write.', '请输入要写入的值。');
     return;
   }
 
   txn.writes.push({ key: writeKey.value, value: val });
-  message.value = `T${txn.id} staged WRITE "${writeKey.value}" = ${val}. Not visible to others until commit.`;
+  message.value = t(`T${txn.id} staged WRITE "${writeKey.value}" = ${val}. Not visible to others until commit.`, `T${txn.id} 暂存写入 "${writeKey.value}" = ${val}。提交前对其他事务不可见。`);
   writeValue.value = '';
 }
 
 function commitTxn() {
   if (selectedTxn.value === null) {
-    message.value = 'Select a transaction first.';
+    message.value = t('Select a transaction first.', '请先选择一个事务。');
     return;
   }
   const txn = transactions.value.find((t) => t.id === selectedTxn.value);
   if (!txn || txn.status !== 'active') {
-    message.value = 'Transaction is not active.';
+    message.value = t('Transaction is not active.', '事务未处于活跃状态。');
     return;
   }
 
@@ -148,22 +151,22 @@ function commitTxn() {
 
   txn.status = 'committed';
   const writeCount = txn.writes.length;
-  message.value = `T${txn.id} COMMITTED at version ${newVer}. ${writeCount} write(s) now visible to new transactions.`;
+  message.value = t(`T${txn.id} COMMITTED at version ${newVer}. ${writeCount} write(s) now visible to new transactions.`, `T${txn.id} 在版本 ${newVer} 提交。${writeCount} 个写入现在对新事务可见。`);
   selectedTxn.value = null;
 }
 
 function abortTxn() {
   if (selectedTxn.value === null) {
-    message.value = 'Select a transaction first.';
+    message.value = t('Select a transaction first.', '请先选择一个事务。');
     return;
   }
   const txn = transactions.value.find((t) => t.id === selectedTxn.value);
   if (!txn || txn.status !== 'active') {
-    message.value = 'Transaction is not active.';
+    message.value = t('Transaction is not active.', '事务未处于活跃状态。');
     return;
   }
   txn.status = 'aborted';
-  message.value = `T${txn.id} ABORTED. All staged writes discarded.`;
+  message.value = t(`T${txn.id} ABORTED. All staged writes discarded.`, `T${txn.id} 已中止。所有暂存写入已丢弃。`);
   selectedTxn.value = null;
 }
 
@@ -178,19 +181,19 @@ function reset() {
   selectedTxn.value = null;
   highlightKey.value = '';
   highlightVer.value = -1;
-  message.value = 'Begin a transaction to start. Each gets a snapshot version.';
+  message.value = t('Begin a transaction to start. Each gets a snapshot version.', '开始一个事务。每个事务获取一个快照版本。');
 }
 </script>
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive MVCC</div>
+    <div class="viz-title">{{ t('Interactive MVCC', '交互式 MVCC') }}</div>
 
-    <div class="mv-global">Global Version: <strong>v{{ globalVer }}</strong></div>
+    <div class="mv-global">{{ t('Global Version:', '全局版本：') }} <strong>v{{ globalVer }}</strong></div>
 
     <!-- Version chains -->
     <div class="mv-store">
-      <div class="mv-store-title">Version Chains</div>
+      <div class="mv-store-title">{{ t('Version Chains', '版本链') }}</div>
       <div v-for="kv in store" :key="kv.key" class="mv-chain">
         <div class="mv-chain-key" :class="{ 'mv-chain-key--hl': highlightKey === kv.key }">{{ kv.key }}</div>
         <div class="mv-chain-arrow">-></div>
@@ -213,8 +216,8 @@ function reset() {
 
     <!-- Transactions -->
     <div class="mv-txns">
-      <div class="mv-txns-title">Transactions</div>
-      <div v-if="transactions.length === 0" class="mv-txn-empty">No transactions yet</div>
+      <div class="mv-txns-title">{{ t('Transactions', '事务') }}</div>
+      <div v-if="transactions.length === 0" class="mv-txn-empty">{{ t('No transactions yet', '暂无事务') }}</div>
       <div
         v-for="txn in transactions"
         :key="txn.id"
@@ -242,12 +245,12 @@ function reset() {
 
     <!-- Controls -->
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="beginTxn">Begin Txn</button>
-      <button class="viz-btn" :disabled="selectedTxn === null" @click="readKey('user')">Read user</button>
-      <button class="viz-btn" :disabled="selectedTxn === null" @click="readKey('balance')">Read balance</button>
-      <button class="viz-btn" :disabled="selectedTxn === null" @click="commitTxn">Commit</button>
-      <button class="viz-btn viz-btn--danger" :disabled="selectedTxn === null" @click="abortTxn">Abort</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="beginTxn">{{ t('Begin Txn', '开始事务') }}</button>
+      <button class="viz-btn" :disabled="selectedTxn === null" @click="readKey('user')">{{ t('Read user', '读取 user') }}</button>
+      <button class="viz-btn" :disabled="selectedTxn === null" @click="readKey('balance')">{{ t('Read balance', '读取 balance') }}</button>
+      <button class="viz-btn" :disabled="selectedTxn === null" @click="commitTxn">{{ t('Commit', '提交') }}</button>
+      <button class="viz-btn viz-btn--danger" :disabled="selectedTxn === null" @click="abortTxn">{{ t('Abort', '中止') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div v-if="selectedTxn !== null" class="mv-write-row">
@@ -255,8 +258,8 @@ function reset() {
         <option value="user">user</option>
         <option value="balance">balance</option>
       </select>
-      <input v-model="writeValue" class="mv-input" placeholder="value" @keyup.enter="writeToKey" />
-      <button class="viz-btn viz-btn--primary" @click="writeToKey">Write</button>
+      <input v-model="writeValue" class="mv-input" :placeholder="t('value', '值')" @keyup.enter="writeToKey" />
+      <button class="viz-btn viz-btn--primary" @click="writeToKey">{{ t('Write', '写入') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface GNode {
   id: string;
@@ -28,7 +31,7 @@ const edges = ref<GEdge[]>([
 
 const sortedOrder = ref<string[]>([]);
 const highlightNode = ref<string>('');
-const message = ref('Click "Topo Sort" to find valid execution order');
+const message = ref(t('Click "Topo Sort" to find valid execution order', '点击"拓扑排序"查找有效执行顺序'));
 const sorting = ref(false);
 
 function getNode(id: string) {
@@ -61,14 +64,14 @@ async function topoSort() {
     if (inDegree[n.id] === 0) queue.push(n.id);
   }
 
-  message.value = `Starting — zero in-degree: ${queue.join(', ')}`;
+  message.value = t(`Starting — zero in-degree: ${queue.join(', ')}`, `开始 - 入度为零: ${queue.join(', ')}`);
   await delay(600);
 
   while (queue.length > 0) {
     const id = queue.shift()!;
     highlightNode.value = id;
     sortedOrder.value = [...sortedOrder.value, id];
-    message.value = `Processing ${id} (in-degree = 0)`;
+    message.value = t(`Processing ${id} (in-degree = 0)`, `处理 ${id}（入度 = 0）`);
     await delay(500);
 
     for (const next of adj[id]) {
@@ -78,9 +81,9 @@ async function topoSort() {
   }
 
   if (sortedOrder.value.length < nodes.value.length) {
-    message.value = 'Cycle detected — not all nodes processed!';
+    message.value = t('Cycle detected — not all nodes processed!', '检测到环 - 未处理所有节点！');
   } else {
-    message.value = `Topological order: ${sortedOrder.value.join(' → ')}`;
+    message.value = t(`Topological order: ${sortedOrder.value.join(' → ')}`, `拓扑排序: ${sortedOrder.value.join(' → ')}`);
   }
   highlightNode.value = '';
   sorting.value = false;
@@ -93,19 +96,19 @@ function addEdge() {
   if (from === to) to = ids[(ids.indexOf(to) + 1) % ids.length];
 
   if (edges.value.some(e => e.from === from && e.to === to)) {
-    message.value = `Edge ${from}→${to} already exists`;
+    message.value = t(`Edge ${from}→${to} already exists`, `边 ${from}→${to} 已存在`);
     return;
   }
 
   edges.value.push({ from, to });
   sortedOrder.value = [];
-  message.value = `Added edge ${from} → ${to}`;
+  message.value = t(`Added edge ${from} → ${to}`, `已添加边 ${from} → ${to}`);
 }
 
 function addNode() {
   const nextChar = String.fromCharCode(65 + nodes.value.length);
   if (nodes.value.length >= 8) {
-    message.value = 'Maximum 8 nodes';
+    message.value = t('Maximum 8 nodes', '最多 8 个节点');
     return;
   }
   const angles = [0, Math.PI / 3, Math.PI / 2, Math.PI, (4 * Math.PI) / 3, (5 * Math.PI) / 3, Math.PI / 6, (5 * Math.PI) / 6];
@@ -116,7 +119,7 @@ function addNode() {
     y: 80 + Math.sin(a) * 60 + Math.random() * 20,
   });
   sortedOrder.value = [];
-  message.value = `Added node ${nextChar}`;
+  message.value = t(`Added node ${nextChar}`, `已添加节点 ${nextChar}`);
 }
 
 function reset() {
@@ -134,7 +137,7 @@ function reset() {
   ];
   sortedOrder.value = [];
   highlightNode.value = '';
-  message.value = 'Graph reset';
+  message.value = t('Graph reset', '图已重置');
   sorting.value = false;
 }
 
@@ -147,7 +150,7 @@ const sortedIdx = computed(() => {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Dependency Graph</div>
+    <div class="viz-title">{{ t('Interactive Dependency Graph', '交互式依赖图') }}</div>
 
     <svg viewBox="0 0 380 160" class="depgraph-svg">
       <defs>
@@ -201,17 +204,17 @@ const sortedIdx = computed(() => {
 
     <!-- Sorted order display -->
     <div v-if="sortedOrder.length > 0" class="dg-order">
-      <span class="viz-label">Order:&nbsp;</span>
+      <span class="viz-label">{{ t('Order:', '顺序:') }}&nbsp;</span>
       <span v-for="(id, i) in sortedOrder" :key="id" class="dg-order-item">
         {{ id }}<span v-if="i < sortedOrder.length - 1"> → </span>
       </span>
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="topoSort" :disabled="sorting">Topo Sort</button>
-      <button class="viz-btn" @click="addNode" :disabled="sorting">+ Node</button>
-      <button class="viz-btn" @click="addEdge" :disabled="sorting">+ Edge</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="topoSort" :disabled="sorting">{{ t('Topo Sort', '拓扑排序') }}</button>
+      <button class="viz-btn" @click="addNode" :disabled="sorting">{{ t('+ Node', '+ 节点') }}</button>
+      <button class="viz-btn" @click="addEdge" :disabled="sorting">{{ t('+ Edge', '+ 边') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface Subscriber {
   id: number;
@@ -18,7 +21,7 @@ const subscribers = ref<Subscriber[]>([
 const events = ['click', 'submit', 'error', 'login'];
 const lastEvent = ref('');
 const broadcasting = ref(false);
-const message = ref('Click "Emit Event" to broadcast to all subscribers');
+const message = ref(t('Click "Emit Event" to broadcast to all subscribers', '点击"发送事件"向所有订阅者广播'));
 
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -29,7 +32,7 @@ async function emitEvent() {
   broadcasting.value = true;
   const event = events[Math.floor(Math.random() * events.length)];
   lastEvent.value = event;
-  message.value = `Broadcasting "${event}" to ${subscribers.value.length} subscribers...`;
+  message.value = t(`Broadcasting "${event}" to ${subscribers.value.length} subscribers...`, `正在向 ${subscribers.value.length} 个订阅者广播 "${event}"...`);
 
   for (const sub of subscribers.value) {
     sub.messages = [...sub.messages, event];
@@ -37,7 +40,7 @@ async function emitEvent() {
     await delay(200);
   }
 
-  message.value = `"${event}" delivered to all subscribers`;
+  message.value = t(`"${event}" delivered to all subscribers`, `"${event}" 已送达所有订阅者`);
   await delay(400);
   lastEvent.value = '';
   broadcasting.value = false;
@@ -47,20 +50,20 @@ function addSubscriber() {
   const names = ['DB Writer', 'Cache', 'Notifier', 'Metrics', 'Auditor'];
   const name = names[subscribers.value.length % names.length];
   if (subscribers.value.length >= 6) {
-    message.value = 'Maximum 6 subscribers';
+    message.value = t('Maximum 6 subscribers', '最多 6 个订阅者');
     return;
   }
   subscribers.value.push({ id: nextId++, name, messages: [] });
-  message.value = `${name} subscribed`;
+  message.value = t(`${name} subscribed`, `${name} 已订阅`);
 }
 
 function removeSubscriber() {
   if (subscribers.value.length <= 1) {
-    message.value = 'Need at least 1 subscriber';
+    message.value = t('Need at least 1 subscriber', '至少需要 1 个订阅者');
     return;
   }
   const removed = subscribers.value.pop()!;
-  message.value = `${removed.name} unsubscribed`;
+  message.value = t(`${removed.name} unsubscribed`, `${removed.name} 已取消订阅`);
 }
 
 function reset() {
@@ -72,18 +75,18 @@ function reset() {
   ];
   lastEvent.value = '';
   broadcasting.value = false;
-  message.value = 'Observer reset';
+  message.value = t('Observer reset', 'Observer 已重置');
 }
 </script>
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Observer Pattern</div>
+    <div class="viz-title">{{ t('Interactive Observer Pattern', '交互式 Observer 模式') }}</div>
 
     <div class="obs-layout">
       <!-- Publisher -->
       <div class="obs-publisher" :class="{ 'obs-active': broadcasting }">
-        <div class="obs-pub-label">Publisher</div>
+        <div class="obs-pub-label">{{ t('Publisher', '发布者') }}</div>
         <div v-if="lastEvent" class="obs-event-badge">{{ lastEvent }}</div>
       </div>
 
@@ -115,10 +118,10 @@ function reset() {
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="emitEvent" :disabled="broadcasting">Emit Event</button>
-      <button class="viz-btn" @click="addSubscriber" :disabled="broadcasting">+ Subscribe</button>
-      <button class="viz-btn" @click="removeSubscriber" :disabled="broadcasting">- Unsubscribe</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="emitEvent" :disabled="broadcasting">{{ t('Emit Event', '发送事件') }}</button>
+      <button class="viz-btn" @click="addSubscriber" :disabled="broadcasting">{{ t('+ Subscribe', '+ 订阅') }}</button>
+      <button class="viz-btn" @click="removeSubscriber" :disabled="broadcasting">{{ t('- Unsubscribe', '- 取消订阅') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

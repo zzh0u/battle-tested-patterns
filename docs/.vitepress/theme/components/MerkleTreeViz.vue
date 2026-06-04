@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 const leaves = ref<string[]>(['A', 'B', 'C', 'D']);
 const highlightPath = ref<Set<number>>(new Set());
 const tampered = ref<number | null>(null);
-const message = ref('A Merkle tree of 4 data blocks — click Verify or Tamper');
+const message = ref(t('A Merkle tree of 4 data blocks — click Verify or Tamper', '4 个数据块的 Merkle Tree - 点击验证或篡改'));
 
 function simpleHash(s: string): string {
   let h = 0;
@@ -70,7 +73,7 @@ async function verifyLeaf(leafIdx: number) {
   highlightPath.value = new Set();
   tampered.value = null;
   const treeIdx = leafIdx + 3;
-  message.value = `Verifying Data ${leaves.value[leafIdx]}...`;
+  message.value = t(`Verifying Data ${leaves.value[leafIdx]}...`, `正在验证数据 ${leaves.value[leafIdx]}...`);
 
   // Highlight the leaf
   highlightPath.value = new Set([treeIdx]);
@@ -91,7 +94,7 @@ async function verifyLeaf(leafIdx: number) {
   highlightPath.value = new Set([treeIdx, sibling, parent, uncle, 0]);
   await delay(400);
 
-  message.value = `Verified: root hash matches — Data ${leaves.value[leafIdx]} is intact`;
+  message.value = t(`Verified: root hash matches — Data ${leaves.value[leafIdx]} is intact`, `验证通过：根哈希匹配 - 数据 ${leaves.value[leafIdx]} 完整`);
   await delay(1200);
   highlightPath.value = new Set();
 }
@@ -102,20 +105,20 @@ async function tamperLeaf() {
   const original = leaves.value[idx];
   leaves.value[idx] = original + '!';
   tampered.value = idx + 3;
-  message.value = `Tampered Data ${original} → ${leaves.value[idx]} — root hash changed!`;
+  message.value = t(`Tampered Data ${original} → ${leaves.value[idx]} — root hash changed!`, `篡改数据 ${original} → ${leaves.value[idx]} - 根哈希已改变！`);
 }
 
 function reset() {
   leaves.value = ['A', 'B', 'C', 'D'];
   highlightPath.value = new Set();
   tampered.value = null;
-  message.value = 'Merkle tree reset';
+  message.value = t('Merkle tree reset', 'Merkle Tree 已重置');
 }
 </script>
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Merkle Tree</div>
+    <div class="viz-title">{{ t('Interactive Merkle Tree', '交互式 Merkle Tree') }}</div>
 
     <svg viewBox="0 0 400 230" class="merkle-svg">
       <!-- Edges -->
@@ -160,10 +163,10 @@ function reset() {
     </svg>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="verifyLeaf(0)">Verify A</button>
-      <button class="viz-btn viz-btn--primary" @click="verifyLeaf(2)">Verify C</button>
-      <button class="viz-btn viz-btn--danger" @click="tamperLeaf">Tamper!</button>
-      <button class="viz-btn" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="verifyLeaf(0)">{{ t('Verify A', '验证 A') }}</button>
+      <button class="viz-btn viz-btn--primary" @click="verifyLeaf(2)">{{ t('Verify C', '验证 C') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="tamperLeaf">{{ t('Tamper!', '篡改！') }}</button>
+      <button class="viz-btn" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

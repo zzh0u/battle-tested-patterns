@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, onUnmounted } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface PoolObject {
   id: number;
@@ -14,7 +17,7 @@ const TICK = 100; // ms
 const pool = ref<PoolObject[]>(createPool());
 const waitQueue = ref(0);
 const totalAcquisitions = ref(0);
-const message = ref('Pool ready — click "Acquire" to check out a connection');
+const message = ref(t('Pool ready — click "Acquire" to check out a connection', 'Object Pool 就绪 — 点击"获取"来签出连接'));
 const timers = new Set<ReturnType<typeof setInterval>>();
 
 function createPool(): PoolObject[] {
@@ -36,7 +39,7 @@ function acquire() {
   const obj = pool.value.find((o) => o.state === 'available');
   if (!obj) {
     waitQueue.value++;
-    message.value = `Pool exhausted — waiting... (${waitQueue.value} queued)`;
+    message.value = t(`Pool exhausted — waiting... (${waitQueue.value} queued)`, `池已耗尽 — 等待中... (${waitQueue.value} 个排队)`);
     return;
   }
   checkOut(obj);
@@ -46,7 +49,7 @@ function checkOut(obj: PoolObject) {
   totalAcquisitions.value++;
   obj.state = 'in-use';
   obj.remaining = USE_DURATION;
-  message.value = `Conn #${obj.id} acquired (returns in ${(USE_DURATION / 1000).toFixed(1)}s)`;
+  message.value = t(`Conn #${obj.id} acquired (returns in ${(USE_DURATION / 1000).toFixed(1)}s)`, `连接 #${obj.id} 已获取（${(USE_DURATION / 1000).toFixed(1)}s 后归还）`);
 
   const timer = setInterval(() => {
     obj.remaining -= TICK;
@@ -66,10 +69,10 @@ function returnObject(obj: PoolObject) {
 
   if (waitQueue.value > 0) {
     waitQueue.value--;
-    message.value = `Conn #${obj.id} returned — immediately handed to waiting request`;
+    message.value = t(`Conn #${obj.id} returned — immediately handed to waiting request`, `连接 #${obj.id} 已归还 — 立即分配给等待中的请求`);
     checkOut(obj);
   } else {
-    message.value = `Conn #${obj.id} returned to pool`;
+    message.value = t(`Conn #${obj.id} returned to pool`, `连接 #${obj.id} 已归还到池`);
   }
 }
 
@@ -79,7 +82,7 @@ function reset() {
   pool.value = createPool();
   waitQueue.value = 0;
   totalAcquisitions.value = 0;
-  message.value = 'Pool reset — all connections available';
+  message.value = t('Pool reset — all connections available', '池已重置 — 所有连接可用');
 }
 
 function stateColor(s: PoolObject['state']): string {
@@ -106,25 +109,25 @@ onUnmounted(() => {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Object Pool</div>
+    <div class="viz-title">{{ t('Interactive Object Pool', '交互式 Object Pool') }}</div>
 
     <!-- Stats bar -->
     <div class="op-stats">
       <div class="op-stat">
         <span class="op-stat-value">{{ POOL_SIZE }}</span>
-        <span class="viz-label">Total</span>
+        <span class="viz-label">{{ t('Total', '总计') }}</span>
       </div>
       <div class="op-stat">
         <span class="op-stat-value op-stat--primary">{{ inUseCount }}</span>
-        <span class="viz-label">In Use</span>
+        <span class="viz-label">{{ t('In Use', '使用中') }}</span>
       </div>
       <div class="op-stat">
         <span class="op-stat-value op-stat--success">{{ availableCount }}</span>
-        <span class="viz-label">Available</span>
+        <span class="viz-label">{{ t('Available', '可用') }}</span>
       </div>
       <div class="op-stat">
         <span class="op-stat-value">{{ totalAcquisitions }}</span>
-        <span class="viz-label">Acquisitions</span>
+        <span class="viz-label">{{ t('Acquisitions', '获取次数') }}</span>
       </div>
     </div>
 
@@ -149,7 +152,7 @@ onUnmounted(() => {
         </div>
         <div class="op-label">Conn #{{ obj.id }}</div>
         <div class="op-state-tag" :style="{ color: stateColor(obj.state) }">
-          {{ obj.state === 'in-use' ? 'in use' : obj.state }}
+          {{ obj.state === 'in-use' ? t('in use', '使用中') : obj.state === 'available' ? t('available', '可用') : t('creating', '创建中') }}
         </div>
       </div>
     </div>
@@ -157,12 +160,12 @@ onUnmounted(() => {
     <!-- Wait queue indicator -->
     <div v-if="waitQueue > 0" class="op-queue">
       <span class="op-queue-icon">&#9203;</span>
-      {{ waitQueue }} request{{ waitQueue > 1 ? 's' : '' }} waiting for a connection...
+      {{ t(`${waitQueue} request${waitQueue > 1 ? 's' : ''} waiting for a connection...`, `${waitQueue} 个请求等待连接中...`) }}
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="acquire">Acquire</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="acquire">{{ t('Acquire', '获取') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

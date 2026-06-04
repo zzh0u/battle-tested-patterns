@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, onUnmounted } from 'vue';
+import { useI18n } from '../composables/useI18n';
+const { t } = useI18n();
 
 const COLS = 4;
 const ROWS = 3;
@@ -73,7 +75,7 @@ const frameCount = ref(0);
 const nextFrame = ref(1);
 const swapping = ref(false);
 const autoMode = ref(false);
-const message = ref('Draw a frame in the back buffer, then swap to display it');
+const message = ref(t('Draw a frame in the back buffer, then swap to display it', '在后端缓冲区绘制帧，然后交换以显示'));
 
 let autoTimer: ReturnType<typeof setInterval> | null = null;
 
@@ -81,7 +83,7 @@ function drawFrame() {
   const frame = nextFrame.value++;
   backBuffer.value = generateFrame(frame);
   frameCount.value++;
-  message.value = `Frame #${frameCount.value} drawn in back buffer`;
+  message.value = t(`Frame #${frameCount.value} drawn in back buffer`, `帧 #${frameCount.value} 已绘制到后端缓冲区`);
 }
 
 function swapBuffers() {
@@ -93,14 +95,14 @@ function swapBuffers() {
     frontBuffer.value = backBuffer.value;
     backBuffer.value = temp;
     swapping.value = false;
-    message.value = `Buffers swapped — frame now visible on front buffer`;
+    message.value = t(`Buffers swapped — frame now visible on front buffer`, `缓冲区已交换 — 帧现在显示在前端缓冲区`);
   }, 300);
 }
 
 function toggleAuto() {
   autoMode.value = !autoMode.value;
   if (autoMode.value) {
-    message.value = 'Auto mode: drawing + swapping every 500ms';
+    message.value = t('Auto mode: drawing + swapping every 500ms', '自动模式：每 500ms 绘制 + 交换');
     autoTimer = setInterval(() => {
       drawFrame();
       setTimeout(() => swapBuffers(), 200);
@@ -110,7 +112,7 @@ function toggleAuto() {
       clearInterval(autoTimer);
       autoTimer = null;
     }
-    message.value = 'Auto mode stopped';
+    message.value = t('Auto mode stopped', '自动模式已停止');
   }
 }
 
@@ -125,7 +127,7 @@ function reset() {
   frameCount.value = 0;
   nextFrame.value = 1;
   swapping.value = false;
-  message.value = 'Reset! Draw a frame to start.';
+  message.value = t('Reset! Draw a frame to start.', '已重置！绘制帧以开始。');
 }
 
 onUnmounted(() => {
@@ -138,14 +140,14 @@ onUnmounted(() => {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Double Buffering</div>
+    <div class="viz-title">{{ t('Interactive Double Buffering', '交互式 Double Buffering') }}</div>
 
     <div class="db-layout" :class="{ 'db-swapping': swapping }">
       <!-- Front Buffer -->
       <div class="db-buffer">
         <div class="db-buffer-label">
           <span class="db-dot db-dot--front"></span>
-          Front Buffer (Display)
+          {{ t('Front Buffer (Display)', '前端缓冲区（显示）') }}
         </div>
         <div class="db-grid">
           <div
@@ -156,7 +158,7 @@ onUnmounted(() => {
             :style="color ? { backgroundColor: color } : {}"
           />
         </div>
-        <div class="db-badge db-badge--active">VISIBLE</div>
+        <div class="db-badge db-badge--active">{{ t('VISIBLE', '可见') }}</div>
       </div>
 
       <!-- Swap Arrow -->
@@ -185,7 +187,7 @@ onUnmounted(() => {
       <div class="db-buffer">
         <div class="db-buffer-label">
           <span class="db-dot db-dot--back"></span>
-          Back Buffer (Drawing)
+          {{ t('Back Buffer (Drawing)', '后端缓冲区（绘制）') }}
         </div>
         <div class="db-grid">
           <div
@@ -196,25 +198,25 @@ onUnmounted(() => {
             :style="color ? { backgroundColor: color } : {}"
           />
         </div>
-        <div class="db-badge db-badge--drawing">DRAWING</div>
+        <div class="db-badge db-badge--drawing">{{ t('DRAWING', '绘制中') }}</div>
       </div>
     </div>
 
     <div class="db-frame-counter">
-      Frame: <span class="db-frame-number">{{ frameCount }}</span>
+      {{ t('Frame:', '帧：') }} <span class="db-frame-number">{{ frameCount }}</span>
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn" :disabled="autoMode" @click="drawFrame">Draw Frame</button>
-      <button class="viz-btn viz-btn--primary" :disabled="autoMode || swapping" @click="swapBuffers">Swap</button>
+      <button class="viz-btn" :disabled="autoMode" @click="drawFrame">{{ t('Draw Frame', '绘制帧') }}</button>
+      <button class="viz-btn viz-btn--primary" :disabled="autoMode || swapping" @click="swapBuffers">{{ t('Swap', '交换') }}</button>
       <button
         class="viz-btn"
         :class="{ 'db-btn--auto-active': autoMode }"
         @click="toggleAuto"
       >
-        {{ autoMode ? 'Stop Auto' : 'Auto' }}
+        {{ autoMode ? t('Stop Auto', '停止自动') : t('Auto', '自动') }}
       </button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

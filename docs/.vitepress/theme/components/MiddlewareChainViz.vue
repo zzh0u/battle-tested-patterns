@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface Middleware {
   name: string;
@@ -17,7 +20,7 @@ const middlewares = ref<Middleware[]>([
 const activeIdx = ref(-1);
 const phase = ref<'idle' | 'forward' | 'backward'>('idle');
 const running = ref(false);
-const message = ref('Click "Send Request" to see the middleware chain in action');
+const message = ref(t('Click "Send Request" to see the middleware chain in action', '点击"发送请求"查看 Middleware 链的运行过程'));
 const rejected = ref(false);
 const rejectAt = ref(-1);
 
@@ -31,7 +34,7 @@ async function sendRequest() {
   rejected.value = false;
   rejectAt.value = -1;
   phase.value = 'forward';
-  message.value = 'Request entering middleware chain...';
+  message.value = t('Request entering middleware chain...', '请求正在进入 Middleware 链...');
 
   const enabled = middlewares.value.filter(m => m.enabled);
   const shouldReject = Math.random() < 0.3 && enabled.length > 2;
@@ -40,13 +43,13 @@ async function sendRequest() {
   for (let i = 0; i < middlewares.value.length; i++) {
     if (!middlewares.value[i].enabled) continue;
     activeIdx.value = i;
-    message.value = `→ ${middlewares.value[i].name}: processing request...`;
+    message.value = t(`→ ${middlewares.value[i].name}: processing request...`, `→ ${middlewares.value[i].name}: 正在处理请求...`);
     await delay(500);
 
     if (shouldReject && i === rejectIdx) {
       rejected.value = true;
       rejectAt.value = i;
-      message.value = `✗ ${middlewares.value[i].name}: REJECTED (e.g., auth failed)`;
+      message.value = t(`✗ ${middlewares.value[i].name}: REJECTED (e.g., auth failed)`, `✗ ${middlewares.value[i].name}: 已拒绝（如认证失败）`);
       await delay(600);
       break;
     }
@@ -54,7 +57,7 @@ async function sendRequest() {
 
   phase.value = 'backward';
   if (!rejected.value) {
-    message.value = 'Response flowing back through chain...';
+    message.value = t('Response flowing back through chain...', '响应正在沿链路返回...');
     await delay(300);
   }
 
@@ -62,27 +65,30 @@ async function sendRequest() {
   for (let i = startFrom; i >= 0; i--) {
     if (!middlewares.value[i].enabled) continue;
     activeIdx.value = i;
-    message.value = `← ${middlewares.value[i].name}: ${rejected.value ? 'error response' : 'adding response headers'}...`;
+    message.value = t(
+      `← ${middlewares.value[i].name}: ${rejected.value ? 'error response' : 'adding response headers'}...`,
+      `← ${middlewares.value[i].name}: ${rejected.value ? '错误响应' : '添加响应头'}...`
+    );
     await delay(400);
   }
 
   activeIdx.value = -1;
   phase.value = 'idle';
   message.value = rejected.value
-    ? 'Request rejected — error response sent'
-    : 'Request completed successfully through all middleware';
+    ? t('Request rejected — error response sent', '请求被拒绝 — 已发送错误响应')
+    : t('Request completed successfully through all middleware', '请求已成功通过所有 Middleware');
   running.value = false;
 }
 
 function toggleMiddleware(idx: number) {
   if (running.value) return;
   if (idx === middlewares.value.length - 1) {
-    message.value = 'Handler cannot be disabled';
+    message.value = t('Handler cannot be disabled', 'Handler 不能被禁用');
     return;
   }
   middlewares.value[idx].enabled = !middlewares.value[idx].enabled;
   const m = middlewares.value[idx];
-  message.value = `${m.name} ${m.enabled ? 'enabled' : 'disabled'}`;
+  message.value = t(`${m.name} ${m.enabled ? 'enabled' : 'disabled'}`, `${m.name} ${m.enabled ? '已启用' : '已禁用'}`);
 }
 
 function reset() {
@@ -92,13 +98,13 @@ function reset() {
   rejected.value = false;
   rejectAt.value = -1;
   middlewares.value.forEach(m => { m.enabled = true; });
-  message.value = 'Reset — click "Send Request" to start';
+  message.value = t('Reset — click "Send Request" to start', '已重置 — 点击"发送请求"开始');
 }
 </script>
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Middleware Chain</div>
+    <div class="viz-title">{{ t('Interactive Middleware Chain', '交互式 Middleware 链') }}</div>
 
     <div class="mw-chain">
       <div class="mw-request" :class="{ 'mw-active': phase === 'forward' }">REQ</div>
@@ -120,7 +126,7 @@ function reset() {
           <div class="mw-node-name" :style="{ color: m.enabled ? m.color : 'var(--viz-muted)' }">
             {{ m.name }}
           </div>
-          <div v-if="!m.enabled" class="mw-node-skip">skip</div>
+          <div v-if="!m.enabled" class="mw-node-skip">{{ t('skip', '跳过') }}</div>
         </div>
       </template>
 
@@ -130,11 +136,11 @@ function reset() {
       </div>
     </div>
 
-    <div class="mw-hint">Click middleware names to enable/disable</div>
+    <div class="mw-hint">{{ t('Click middleware names to enable/disable', '点击 Middleware 名称启用/禁用') }}</div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="sendRequest" :disabled="running">Send Request</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--primary" @click="sendRequest" :disabled="running">{{ t('Send Request', '发送请求') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface Entry {
   key: string;
@@ -12,7 +15,7 @@ let nextId = 0;
 const CAPACITY = 12;
 
 const store = ref<Entry[]>(createInitial());
-const message = ref('A key-value store using tombstone deletion. Write, delete, read, and compact.');
+const message = ref(t('A key-value store using tombstone deletion. Write, delete, read, and compact.', '使用墓碑删除的键值存储。写入、删除、读取和压缩。'));
 const writeKey = ref('');
 const writeValue = ref('');
 const readKey = ref('');
@@ -70,7 +73,7 @@ function doWrite() {
     if (presetIdx < presetWrites.length) {
       [key, value] = presetWrites[presetIdx++];
     } else {
-      message.value = 'Enter a key and value to write.';
+      message.value = t('Enter a key and value to write.', '请输入键和值以写入。');
       return;
     }
   }
@@ -80,7 +83,7 @@ function doWrite() {
   if (existing) {
     existing.value = value;
     flashId.value = existing.id;
-    message.value = `Updated "${key}" = "${value}" (overwrite).`;
+    message.value = t(`Updated "${key}" = "${value}" (overwrite).`, `已更新 "${key}" = "${value}"（覆写）。`);
     writeKey.value = '';
     writeValue.value = '';
     setTimeout(() => { flashId.value = -1; }, 600);
@@ -90,7 +93,7 @@ function doWrite() {
   // Find first free slot
   const freeSlot = store.value.find((e) => e.status === 'free');
   if (!freeSlot) {
-    message.value = 'Store is full! Compact to reclaim tombstoned slots.';
+    message.value = t('Store is full! Compact to reclaim tombstoned slots.', '存储已满！压缩以回收已标记删除的槽位。');
     return;
   }
 
@@ -98,7 +101,7 @@ function doWrite() {
   freeSlot.value = value;
   freeSlot.status = 'active';
   flashId.value = freeSlot.id;
-  message.value = `Wrote "${key}" = "${value}". ${stats.value.free - 1} free slot(s) remaining.`;
+  message.value = t(`Wrote "${key}" = "${value}". ${stats.value.free - 1} free slot(s) remaining.`, `已写入 "${key}" = "${value}"。剩余 ${stats.value.free - 1} 个空闲槽位。`);
   writeKey.value = '';
   writeValue.value = '';
   setTimeout(() => { flashId.value = -1; }, 600);
@@ -108,7 +111,7 @@ function doDelete(entry: Entry) {
   if (entry.status !== 'active') return;
   entry.status = 'tombstoned';
   flashId.value = entry.id;
-  message.value = `Tombstoned "${entry.key}". Data remains but is marked deleted. Compact to reclaim.`;
+  message.value = t(`Tombstoned "${entry.key}". Data remains but is marked deleted. Compact to reclaim.`, `已标记删除 "${entry.key}"。数据仍在但已标记为删除。压缩以回收。`);
   if (readResult.value) {
     readResult.value = null;
   }
@@ -118,23 +121,23 @@ function doDelete(entry: Entry) {
 function doRead() {
   const key = readKey.value.trim();
   if (!key) {
-    message.value = 'Enter a key to read.';
+    message.value = t('Enter a key to read.', '请输入要读取的键。');
     return;
   }
 
   const entry = store.value.find((e) => e.key === key && (e.status === 'active' || e.status === 'tombstoned'));
   if (!entry) {
     readResult.value = { found: false };
-    message.value = `Read "${key}": NOT FOUND (key does not exist).`;
+    message.value = t(`Read "${key}": NOT FOUND (key does not exist).`, `读取 "${key}"：未找到（键不存在）。`);
   } else if (entry.status === 'tombstoned') {
     readResult.value = { found: false, tombstoned: true };
     flashId.value = entry.id;
-    message.value = `Read "${key}": NOT FOUND (tombstoned). Data exists but is logically deleted.`;
+    message.value = t(`Read "${key}": NOT FOUND (tombstoned). Data exists but is logically deleted.`, `读取 "${key}"：未找到（已标记删除）。数据存在但已逻辑删除。`);
     setTimeout(() => { flashId.value = -1; }, 600);
   } else {
     readResult.value = { found: true, value: entry.value };
     flashId.value = entry.id;
-    message.value = `Read "${key}": FOUND -> "${entry.value}"`;
+    message.value = t(`Read "${key}": FOUND -> "${entry.value}"`, `读取 "${key}"：找到 -> "${entry.value}"`);
     setTimeout(() => { flashId.value = -1; }, 600);
   }
   readKey.value = '';
@@ -146,12 +149,12 @@ async function doCompact() {
 
   const tombstoned = store.value.filter((e) => e.status === 'tombstoned');
   if (tombstoned.length === 0) {
-    message.value = 'Nothing to compact. No tombstoned entries.';
+    message.value = t('Nothing to compact. No tombstoned entries.', '无需压缩。没有已标记删除的条目。');
     compacting.value = false;
     return;
   }
 
-  message.value = `Compacting... removing ${tombstoned.length} tombstoned entry(s).`;
+  message.value = t(`Compacting... removing ${tombstoned.length} tombstoned entry(s).`, `压缩中...移除 ${tombstoned.length} 个已标记删除的条目。`);
 
   // Animate each tombstoned entry removal
   for (const entry of tombstoned) {
@@ -173,7 +176,7 @@ async function doCompact() {
 
   flashId.value = -1;
   compacting.value = false;
-  message.value = `Compaction done. Reclaimed ${tombstoned.length} slot(s). Active entries shifted left.`;
+  message.value = t(`Compaction done. Reclaimed ${tombstoned.length} slot(s). Active entries shifted left.`, `压缩完成。回收了 ${tombstoned.length} 个槽位。活跃条目已左移。`);
 }
 
 function reset() {
@@ -185,13 +188,13 @@ function reset() {
   readResult.value = null;
   flashId.value = -1;
   compacting.value = false;
-  message.value = 'Store reset. Write, delete, read, and compact to explore tombstone deletion.';
+  message.value = t('Store reset. Write, delete, read, and compact to explore tombstone deletion.', '存储已重置。写入、删除、读取和压缩以探索墓碑删除。');
 }
 </script>
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Tombstone Deletion</div>
+    <div class="viz-title">{{ t('Interactive Tombstone Deletion', '交互式 Tombstone 删除') }}</div>
 
     <!-- Space usage bar -->
     <div class="ts-usage">
@@ -208,17 +211,17 @@ function reset() {
       <div class="ts-usage-stats">
         <span class="ts-stat">
           <span class="ts-stat-dot ts-stat-dot--active"></span>
-          Active: {{ stats.active }}
+          {{ t('Active:', '活跃：') }} {{ stats.active }}
         </span>
         <span class="ts-stat">
           <span class="ts-stat-dot ts-stat-dot--tombstoned"></span>
-          Tombstoned: {{ stats.tombstoned }}
+          {{ t('Tombstoned:', '已标记删除：') }} {{ stats.tombstoned }}
         </span>
         <span class="ts-stat">
           <span class="ts-stat-dot ts-stat-dot--free"></span>
-          Free: {{ stats.free }}
+          {{ t('Free:', '空闲：') }} {{ stats.free }}
         </span>
-        <span class="ts-stat ts-stat--pct">{{ usagePercent }}% used</span>
+        <span class="ts-stat ts-stat--pct">{{ usagePercent }}% {{ t('used', '已用') }}</span>
       </div>
     </div>
 
@@ -236,7 +239,7 @@ function reset() {
         }"
       >
         <template v-if="entry.status === 'free'">
-          <div class="ts-cell-empty">FREE</div>
+          <div class="ts-cell-empty">{{ t('FREE', '空闲') }}</div>
         </template>
         <template v-else>
           <div class="ts-cell-header">
@@ -257,8 +260,8 @@ function reset() {
             </template>
           </div>
           <div class="ts-cell-status">
-            <span v-if="entry.status === 'active'" class="ts-badge ts-badge--active">active</span>
-            <span v-else class="ts-badge ts-badge--tombstoned">tombstoned</span>
+            <span v-if="entry.status === 'active'" class="ts-badge ts-badge--active">{{ t('active', '活跃') }}</span>
+            <span v-else class="ts-badge ts-badge--tombstoned">{{ t('tombstoned', '已标记删除') }}</span>
           </div>
         </template>
       </div>
@@ -268,38 +271,38 @@ function reset() {
     <div class="ts-controls-grid">
       <!-- Write -->
       <div class="ts-control-panel">
-        <div class="ts-control-label">Write</div>
+        <div class="ts-control-label">{{ t('Write', '写入') }}</div>
         <div class="ts-control-row">
           <input
             v-model="writeKey"
             class="ts-input"
-            placeholder="key"
+            :placeholder="t('key', '键')"
             maxlength="12"
             @keyup.enter="doWrite"
           />
           <input
             v-model="writeValue"
             class="ts-input"
-            placeholder="value"
+            :placeholder="t('value', '值')"
             maxlength="12"
             @keyup.enter="doWrite"
           />
-          <button class="viz-btn viz-btn--primary ts-btn-sm" @click="doWrite">Write</button>
+          <button class="viz-btn viz-btn--primary ts-btn-sm" @click="doWrite">{{ t('Write', '写入') }}</button>
         </div>
       </div>
 
       <!-- Read -->
       <div class="ts-control-panel">
-        <div class="ts-control-label">Read</div>
+        <div class="ts-control-label">{{ t('Read', '读取') }}</div>
         <div class="ts-control-row">
           <input
             v-model="readKey"
             class="ts-input ts-input--wide"
-            placeholder="key to read"
+            :placeholder="t('key to read', '要读取的键')"
             maxlength="12"
             @keyup.enter="doRead"
           />
-          <button class="viz-btn ts-btn-sm" @click="doRead">Read</button>
+          <button class="viz-btn ts-btn-sm" @click="doRead">{{ t('Read', '读取') }}</button>
         </div>
         <!-- Read result -->
         <div v-if="readResult" class="ts-read-result" :class="{
@@ -307,13 +310,13 @@ function reset() {
           'ts-read-result--miss': !readResult.found,
         }">
           <template v-if="readResult.found">
-            FOUND: "{{ readResult.value }}"
+            {{ t('FOUND:', '找到：') }} "{{ readResult.value }}"
           </template>
           <template v-else-if="readResult.tombstoned">
-            NOT FOUND (tombstoned)
+            {{ t('NOT FOUND (tombstoned)', '未找到（已标记删除）') }}
           </template>
           <template v-else>
-            NOT FOUND
+            {{ t('NOT FOUND', '未找到') }}
           </template>
         </div>
       </div>
@@ -325,9 +328,9 @@ function reset() {
         :disabled="compacting || stats.tombstoned === 0"
         @click="doCompact"
       >
-        {{ compacting ? 'Compacting...' : `Compact (reclaim ${stats.tombstoned})` }}
+        {{ compacting ? t('Compacting...', '压缩中...') : t(`Compact (reclaim ${stats.tombstoned})`, `压缩（回收 ${stats.tombstoned}）`) }}
       </button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface KV {
   key: string;
@@ -28,7 +31,7 @@ const highlightLevel = ref<string | null>(null);
 const highlightKey = ref<string | null>(null);
 const flushing = ref(false);
 const compacting = ref(false);
-const message = ref('Write key-value pairs. Memtable auto-flushes at 4 entries.');
+const message = ref(t('Write key-value pairs. Memtable auto-flushes at 4 entries.', '写入键值对。Memtable 在 4 条时自动刷盘。'));
 
 const memtableSorted = computed(() => {
   return [...memtable.value].sort((a, b) => a.key.localeCompare(b.key));
@@ -48,7 +51,7 @@ async function write() {
   const k = writeKey.value.trim();
   const v = writeValue.value.trim();
   if (!k || !v) {
-    message.value = 'Enter both key and value';
+    message.value = t('Enter both key and value', '请输入键和值');
     return;
   }
 
@@ -62,7 +65,7 @@ async function write() {
   memtable.value = insertSorted(memtable.value, { key: k, value: v });
   writeKey.value = '';
   writeValue.value = '';
-  message.value = `Wrote "${k}=${v}" to memtable (${memtable.value.length}/${MEMTABLE_CAPACITY})`;
+  message.value = t(`Wrote "${k}=${v}" to memtable (${memtable.value.length}/${MEMTABLE_CAPACITY})`, `已写入 "${k}=${v}" 到 Memtable（${memtable.value.length}/${MEMTABLE_CAPACITY}）`);
 
   // Auto-flush when memtable is full
   if (memtable.value.length >= MEMTABLE_CAPACITY) {
@@ -74,7 +77,7 @@ async function write() {
 async function flush() {
   if (memtable.value.length === 0 || flushing.value) return;
   flushing.value = true;
-  message.value = 'Flushing memtable to Level 0 SSTable...';
+  message.value = t('Flushing memtable to Level 0 SSTable...', '正在将 Memtable 刷盘到 Level 0 SSTable...');
   await delay(500);
 
   const sst: SSTable = {
@@ -84,13 +87,13 @@ async function flush() {
   level0.value = [...level0.value, sst];
   memtable.value = [];
   flushing.value = false;
-  message.value = `Flushed! Created SSTable #${sst.id} in Level 0 with ${sst.entries.length} entries`;
+  message.value = t(`Flushed! Created SSTable #${sst.id} in Level 0 with ${sst.entries.length} entries`, `已刷盘！在 Level 0 创建 SSTable #${sst.id}，含 ${sst.entries.length} 条记录`);
 }
 
 async function compact() {
   if (level0.value.length === 0 || compacting.value) return;
   compacting.value = true;
-  message.value = 'Compacting: merging Level 0 SSTables into Level 1...';
+  message.value = t('Compacting: merging Level 0 SSTables into Level 1...', '压缩中：将 Level 0 SSTable 合并到 Level 1...');
   await delay(600);
 
   // Merge all L0 SSTables with existing L1 SSTables
@@ -124,13 +127,13 @@ async function compact() {
   level1.value = [sst];
   level0.value = [];
   compacting.value = false;
-  message.value = `Compaction done! Merged ${l0Count} L0 SSTable(s) into Level 1 SSTable #${sst.id} (${merged.length} entries)`;
+  message.value = t(`Compaction done! Merged ${l0Count} L0 SSTable(s) into Level 1 SSTable #${sst.id} (${merged.length} entries)`, `压缩完成！将 ${l0Count} 个 L0 SSTable 合并为 Level 1 SSTable #${sst.id}（${merged.length} 条记录）`);
 }
 
 async function read() {
   const k = readKey.value.trim();
   if (!k) {
-    message.value = 'Enter a key to search';
+    message.value = t('Enter a key to search', '请输入要搜索的键');
     return;
   }
 
@@ -141,13 +144,13 @@ async function read() {
   // Search memtable first
   highlightLevel.value = 'memtable';
   searchPath.value = ['memtable'];
-  message.value = `Searching memtable for "${k}"...`;
+  message.value = t(`Searching memtable for "${k}"...`, `正在 Memtable 中搜索 "${k}"...`);
   await delay(400);
 
   const memEntry = memtable.value.find(e => e.key === k);
   if (memEntry) {
     searchResult.value = { found: true, value: memEntry.value, level: 'Memtable' };
-    message.value = `Found "${k}=${memEntry.value}" in Memtable (fastest path!)`;
+    message.value = t(`Found "${k}=${memEntry.value}" in Memtable (fastest path!)`, `在 Memtable 中找到 "${k}=${memEntry.value}"（最快路径！）`);
     return;
   }
 
@@ -156,13 +159,13 @@ async function read() {
     const sst = level0.value[i];
     highlightLevel.value = `l0-${sst.id}`;
     searchPath.value = [...searchPath.value, `l0-${sst.id}`];
-    message.value = `Searching L0 SSTable #${sst.id} for "${k}"...`;
+    message.value = t(`Searching L0 SSTable #${sst.id} for "${k}"...`, `正在 L0 SSTable #${sst.id} 中搜索 "${k}"...`);
     await delay(400);
 
     const entry = sst.entries.find(e => e.key === k);
     if (entry) {
       searchResult.value = { found: true, value: entry.value, level: `L0 SSTable #${sst.id}` };
-      message.value = `Found "${k}=${entry.value}" in L0 SSTable #${sst.id}`;
+      message.value = t(`Found "${k}=${entry.value}" in L0 SSTable #${sst.id}`, `在 L0 SSTable #${sst.id} 中找到 "${k}=${entry.value}"`);
       return;
     }
   }
@@ -171,20 +174,20 @@ async function read() {
   for (const sst of level1.value) {
     highlightLevel.value = `l1-${sst.id}`;
     searchPath.value = [...searchPath.value, `l1-${sst.id}`];
-    message.value = `Searching L1 SSTable #${sst.id} for "${k}"...`;
+    message.value = t(`Searching L1 SSTable #${sst.id} for "${k}"...`, `正在 L1 SSTable #${sst.id} 中搜索 "${k}"...`);
     await delay(400);
 
     const entry = sst.entries.find(e => e.key === k);
     if (entry) {
       searchResult.value = { found: true, value: entry.value, level: `L1 SSTable #${sst.id}` };
-      message.value = `Found "${k}=${entry.value}" in L1 SSTable #${sst.id}`;
+      message.value = t(`Found "${k}=${entry.value}" in L1 SSTable #${sst.id}`, `在 L1 SSTable #${sst.id} 中找到 "${k}=${entry.value}"`);
       return;
     }
   }
 
   searchResult.value = { found: false, value: '', level: '' };
   highlightLevel.value = null;
-  message.value = `Key "${k}" not found. Searched ${searchPath.value.length} level(s).`;
+  message.value = t(`Key "${k}" not found. Searched ${searchPath.value.length} level(s).`, `未找到键 "${k}"。已搜索 ${searchPath.value.length} 个层级。`);
 }
 
 function reset() {
@@ -201,7 +204,7 @@ function reset() {
   flushing.value = false;
   compacting.value = false;
   nextSstId = 1;
-  message.value = 'Reset. Write key-value pairs to begin.';
+  message.value = t('Reset. Write key-value pairs to begin.', '已重置。写入键值对以开始。');
 }
 
 function isLevelHighlighted(levelId: string): boolean {
@@ -215,7 +218,7 @@ function isInSearchPath(levelId: string): boolean {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive LSM-Tree</div>
+    <div class="viz-title">{{ t('Interactive LSM-Tree', '交互式 LSM Tree') }}</div>
 
     <!-- Layers -->
     <div class="lsm-layers">
@@ -244,7 +247,7 @@ function isInSearchPath(levelId: string): boolean {
             <span class="lsm-sep">=</span>
             <span class="lsm-val">{{ entry.value }}</span>
           </div>
-          <div v-if="memtable.length === 0" class="lsm-empty">empty</div>
+          <div v-if="memtable.length === 0" class="lsm-empty">{{ t('empty', '空') }}</div>
         </div>
         <!-- Capacity bar -->
         <div class="lsm-capacity-track">
@@ -261,7 +264,7 @@ function isInSearchPath(levelId: string): boolean {
         <svg width="24" height="28" viewBox="0 0 24 28">
           <path d="M12 2 L12 20 M7 16 L12 22 L17 16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span class="lsm-arrow-label">flush</span>
+        <span class="lsm-arrow-label">{{ t('flush', '刷盘') }}</span>
       </div>
 
       <!-- Level 0 -->
@@ -295,7 +298,7 @@ function isInSearchPath(levelId: string): boolean {
               </div>
             </div>
           </div>
-          <div v-if="level0.length === 0" class="lsm-empty-level">no SSTables</div>
+          <div v-if="level0.length === 0" class="lsm-empty-level">{{ t('no SSTables', '无 SSTable') }}</div>
         </div>
       </div>
 
@@ -304,7 +307,7 @@ function isInSearchPath(levelId: string): boolean {
         <svg width="24" height="28" viewBox="0 0 24 28">
           <path d="M12 2 L12 20 M7 16 L12 22 L17 16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span class="lsm-arrow-label">compact</span>
+        <span class="lsm-arrow-label">{{ t('compact', '压缩') }}</span>
       </div>
 
       <!-- Level 1 -->
@@ -338,7 +341,7 @@ function isInSearchPath(levelId: string): boolean {
               </div>
             </div>
           </div>
-          <div v-if="level1.length === 0" class="lsm-empty-level">no SSTables</div>
+          <div v-if="level1.length === 0" class="lsm-empty-level">{{ t('no SSTables', '无 SSTable') }}</div>
         </div>
       </div>
     </div>
@@ -347,52 +350,52 @@ function isInSearchPath(levelId: string): boolean {
     <div v-if="searchResult" class="lsm-search-result" :class="searchResult.found ? 'lsm-search-result--found' : 'lsm-search-result--miss'">
       <span v-if="searchResult.found">Found: <strong>{{ highlightKey }}={{ searchResult.value }}</strong> in {{ searchResult.level }}</span>
       <span v-else>Key "<strong>{{ highlightKey }}</strong>" not found</span>
-      <span class="lsm-search-path">Search path: {{ searchPath.length }} level(s) checked</span>
+      <span class="lsm-search-path">{{ t(`Search path: ${searchPath.length} level(s) checked`, `搜索路径：已检查 ${searchPath.length} 个层级`) }}</span>
     </div>
 
     <!-- Controls -->
     <div class="lsm-controls-grid">
       <!-- Write controls -->
       <div class="lsm-control-group">
-        <span class="lsm-control-label">Write</span>
+        <span class="lsm-control-label">{{ t('Write', '写入') }}</span>
         <div class="lsm-input-row">
           <input
             v-model="writeKey"
             class="lsm-input"
-            placeholder="key"
+            :placeholder="t('key', '键')"
             maxlength="6"
             @keydown.enter="write"
           />
           <input
             v-model="writeValue"
             class="lsm-input"
-            placeholder="value"
+            :placeholder="t('value', '值')"
             maxlength="6"
             @keydown.enter="write"
           />
-          <button class="viz-btn viz-btn--primary" @click="write" :disabled="flushing || compacting">Write</button>
+          <button class="viz-btn viz-btn--primary" @click="write" :disabled="flushing || compacting">{{ t('Write', '写入') }}</button>
         </div>
       </div>
 
       <!-- Read controls -->
       <div class="lsm-control-group">
-        <span class="lsm-control-label">Read</span>
+        <span class="lsm-control-label">{{ t('Read', '读取') }}</span>
         <div class="lsm-input-row">
           <input
             v-model="readKey"
             class="lsm-input"
-            placeholder="search key"
+            :placeholder="t('search key', '搜索键')"
             maxlength="6"
             @keydown.enter="read"
           />
-          <button class="viz-btn" @click="read">Read</button>
+          <button class="viz-btn" @click="read">{{ t('Read', '读取') }}</button>
         </div>
       </div>
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn" @click="compact" :disabled="level0.length === 0 || compacting || flushing">Compact L0 -> L1</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn" @click="compact" :disabled="level0.length === 0 || compacting || flushing">{{ t('Compact L0 -> L1', '压缩 L0 -> L1') }}</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

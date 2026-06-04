@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 interface DiffLine {
   type: 'keep' | 'add' | 'del';
@@ -15,7 +18,7 @@ const originalLines = ref<string[]>([
 
 const modifiedLines = ref<string[]>([...originalLines.value]);
 const diffResult = ref<DiffLine[]>([]);
-const message = ref('Click "Modify" to make random edits, then "Diff" to compare');
+const message = ref(t('Click "Modify" to make random edits, then "Diff" to compare', '点击"修改"进行随机编辑，然后点击"Diff"进行对比'));
 const hasDiff = ref(false);
 const patched = ref(false);
 
@@ -57,7 +60,7 @@ function modify() {
   diffResult.value = [];
   hasDiff.value = false;
   patched.value = false;
-  message.value = 'Modified panel updated — click "Diff" to see changes';
+  message.value = t('Modified panel updated — click "Diff" to see changes', '修改面板已更新 — 点击"Diff"查看变更');
 }
 
 function computeDiff() {
@@ -102,17 +105,17 @@ function computeDiff() {
 
   const adds = stack.filter(l => l.type === 'add').length;
   const dels = stack.filter(l => l.type === 'del').length;
-  message.value = `Diff computed: +${adds} additions, -${dels} deletions`;
+  message.value = t(`Diff computed: +${adds} additions, -${dels} deletions`, `Diff 计算完成：+${adds} 新增，-${dels} 删除`);
 }
 
 function patch() {
   if (!hasDiff.value) {
-    message.value = 'Generate a diff first';
+    message.value = t('Generate a diff first', '请先生成 Diff');
     return;
   }
   originalLines.value = [...modifiedLines.value];
   patched.value = true;
-  message.value = 'Patch applied — original now matches modified';
+  message.value = t('Patch applied — original now matches modified', 'Patch 已应用 — 原始文件已与修改后一致');
 }
 
 function reset() {
@@ -126,7 +129,7 @@ function reset() {
   diffResult.value = [];
   hasDiff.value = false;
   patched.value = false;
-  message.value = 'Reset to initial state';
+  message.value = t('Reset to initial state', '已重置为初始状态');
 }
 
 const diffPrefix = (type: string) => {
@@ -138,11 +141,11 @@ const diffPrefix = (type: string) => {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Diff &amp; Patch</div>
+    <div class="viz-title">{{ t('Interactive Diff & Patch', '交互式 Diff & Patch') }}</div>
 
     <div class="dp-panels">
       <div class="dp-panel">
-        <div class="dp-panel-header">Original</div>
+        <div class="dp-panel-header">{{ t('Original', '原始') }}</div>
         <div class="dp-panel-body">
           <div v-for="(line, i) in originalLines" :key="'o-' + i" class="dp-line">
             <span class="dp-line-num">{{ i + 1 }}</span>
@@ -155,7 +158,7 @@ const diffPrefix = (type: string) => {
       </div>
 
       <div class="dp-panel">
-        <div class="dp-panel-header">Modified</div>
+        <div class="dp-panel-header">{{ t('Modified', '修改后') }}</div>
         <div class="dp-panel-body">
           <div v-for="(line, i) in modifiedLines" :key="'m-' + i" class="dp-line">
             <span class="dp-line-num">{{ i + 1 }}</span>
@@ -166,7 +169,7 @@ const diffPrefix = (type: string) => {
     </div>
 
     <div v-if="diffResult.length > 0" class="dp-diff">
-      <div class="dp-panel-header">Diff Output</div>
+      <div class="dp-panel-header">{{ t('Diff Output', 'Diff 输出') }}</div>
       <div class="dp-diff-body">
         <div
           v-for="(line, i) in diffResult"
@@ -184,10 +187,10 @@ const diffPrefix = (type: string) => {
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn" @click="modify">Modify</button>
+      <button class="viz-btn" @click="modify">{{ t('Modify', '修改') }}</button>
       <button class="viz-btn viz-btn--primary" @click="computeDiff">Diff</button>
       <button class="viz-btn viz-btn--primary" :disabled="!hasDiff || patched" @click="patch">Patch</button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

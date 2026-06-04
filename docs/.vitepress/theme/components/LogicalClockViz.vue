@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useI18n } from '../composables/useI18n';
+const { t } = useI18n();
 
 interface Process {
   name: string;
@@ -14,14 +16,14 @@ const processes = ref<Process[]>([
   { name: 'P3', color: 'var(--viz-warning)', clock: 0, events: [] },
 ]);
 
-const message = ref('Perform local events and send messages between processes');
+const message = ref(t('Perform local events and send messages between processes', '执行本地事件并在进程间发送消息'));
 const pendingMessages = ref<{ from: number; clock: number }[]>([]);
 
 function localEvent(idx: number) {
   const p = processes.value[idx];
   p.clock++;
   p.events = [...p.events, { type: 'local', clock: p.clock, label: 'local' }];
-  message.value = `${p.name}: local event → clock = ${p.clock}`;
+  message.value = t(`${p.name}: local event → clock = ${p.clock}`, `${p.name}：本地事件 → 时钟 = ${p.clock}`);
 }
 
 function sendMessage(fromIdx: number) {
@@ -29,17 +31,17 @@ function sendMessage(fromIdx: number) {
   from.clock++;
   from.events = [...from.events, { type: 'send', clock: from.clock, label: 'send' }];
   pendingMessages.value = [...pendingMessages.value, { from: fromIdx, clock: from.clock }];
-  message.value = `${from.name}: sent message (clock=${from.clock}) — click "Receive" on another process`;
+  message.value = t(`${from.name}: sent message (clock=${from.clock}) — click "Receive" on another process`, `${from.name}：已发送消息 (clock=${from.clock}) — 在其他进程上点击"接收"`);
 }
 
 function receiveMessage(toIdx: number) {
   if (pendingMessages.value.length === 0) {
-    message.value = 'No pending messages — send one first';
+    message.value = t('No pending messages — send one first', '没有待处理消息 — 请先发送一条');
     return;
   }
   const msg = pendingMessages.value[0];
   if (msg.from === toIdx) {
-    message.value = 'Cannot receive your own message — pick a different process';
+    message.value = t('Cannot receive your own message — pick a different process', '不能接收自己的消息 — 请选择其他进程');
     return;
   }
   pendingMessages.value = pendingMessages.value.slice(1);
@@ -47,7 +49,7 @@ function receiveMessage(toIdx: number) {
   const to = processes.value[toIdx];
   to.clock = Math.max(to.clock, msg.clock) + 1;
   to.events = [...to.events, { type: 'recv', clock: to.clock, label: `recv(${msg.clock})` }];
-  message.value = `${to.name}: received (sender clock=${msg.clock}) → max(${to.clock - 1}, ${msg.clock}) + 1 = ${to.clock}`;
+  message.value = t(`${to.name}: received (sender clock=${msg.clock}) → max(${to.clock - 1}, ${msg.clock}) + 1 = ${to.clock}`, `${to.name}：已接收 (发送方 clock=${msg.clock}) → max(${to.clock - 1}, ${msg.clock}) + 1 = ${to.clock}`);
 }
 
 function reset() {
@@ -57,13 +59,13 @@ function reset() {
     { name: 'P3', color: 'var(--viz-warning)', clock: 0, events: [] },
   ];
   pendingMessages.value = [];
-  message.value = 'Reset — perform events to see Lamport clocks';
+  message.value = t('Reset — perform events to see Lamport clocks', '已重置 — 执行事件以查看 Lamport 时钟');
 }
 </script>
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Lamport Clock</div>
+    <div class="viz-title">{{ t('Interactive Lamport Clock', '交互式 Lamport 时钟') }}</div>
 
     <div class="lc-processes">
       <div
@@ -74,7 +76,7 @@ function reset() {
       >
         <div class="lc-header">
           <span class="lc-name" :style="{ color: p.color }">{{ p.name }}</span>
-          <span class="lc-clock">clock: {{ p.clock }}</span>
+          <span class="lc-clock">{{ t('clock:', '时钟：') }} {{ p.clock }}</span>
         </div>
 
         <div class="lc-timeline">
@@ -90,19 +92,19 @@ function reset() {
         </div>
 
         <div class="lc-actions">
-          <button class="viz-btn lc-btn" @click="localEvent(i)">Local</button>
-          <button class="viz-btn lc-btn" @click="sendMessage(i)">Send</button>
-          <button class="viz-btn lc-btn" @click="receiveMessage(i)">Receive</button>
+          <button class="viz-btn lc-btn" @click="localEvent(i)">{{ t('Local', '本地') }}</button>
+          <button class="viz-btn lc-btn" @click="sendMessage(i)">{{ t('Send', '发送') }}</button>
+          <button class="viz-btn lc-btn" @click="receiveMessage(i)">{{ t('Receive', '接收') }}</button>
         </div>
       </div>
     </div>
 
     <div v-if="pendingMessages.length > 0" class="lc-pending">
-      Pending messages: {{ pendingMessages.map(m => `from ${processes[m.from].name}(${m.clock})`).join(', ') }}
+      {{ t('Pending messages:', '待处理消息：') }} {{ pendingMessages.map(m => t(`from ${processes[m.from].name}(${m.clock})`, `来自 ${processes[m.from].name}(${m.clock})`)).join(', ') }}
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status">{{ message }}</div>

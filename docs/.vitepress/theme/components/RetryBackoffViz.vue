@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onUnmounted } from 'vue';
+import { useI18n } from '../composables/useI18n';
+const { t } = useI18n();
 
 interface Attempt {
   number: number;
@@ -15,7 +17,7 @@ const BASE_DELAY = 1000;
 const failureRate = ref(70);
 const running = ref(false);
 const attempts = ref<Attempt[]>([]);
-const message = ref('Configure failure rate and click "Send Request" to begin');
+const message = ref(t('Configure failure rate and click "Send Request" to begin', '配置失败率并点击"发送请求"开始'));
 const finalOutcome = ref<'idle' | 'success' | 'exhausted'>('idle');
 const activeTimers = ref<ReturnType<typeof setTimeout>[]>([]);
 
@@ -50,7 +52,7 @@ async function startRequest() {
   running.value = true;
   attempts.value = [];
   finalOutcome.value = 'idle';
-  message.value = 'Sending initial request...';
+  message.value = t('Sending initial request...', '正在发送初始请求...');
 
   for (let i = 0; i < MAX_RETRIES; i++) {
     const attemptDelay = i === 0 ? 0 : BASE_DELAY * Math.pow(2, i - 1);
@@ -68,14 +70,14 @@ async function startRequest() {
     attempts.value.push(attempt);
 
     if (i > 0) {
-      message.value = `Waiting ${totalDelay}ms before attempt #${i + 1} (${attemptDelay}ms + ${jitter >= 0 ? '+' : ''}${jitter}ms jitter)...`;
+      message.value = t(`Waiting ${totalDelay}ms before attempt #${i + 1} (${attemptDelay}ms + ${jitter >= 0 ? '+' : ''}${jitter}ms jitter)...`, `等待 ${totalDelay}ms 后进行第 ${i + 1} 次尝试 (${attemptDelay}ms + ${jitter >= 0 ? '+' : ''}${jitter}ms 抖动)...`);
       const scaledDelay = Math.min(totalDelay / 2, 1500);
       await delay(scaledDelay);
       if (!running.value) return;
     }
 
     attempts.value[i].result = 'pending';
-    message.value = `Attempt #${i + 1} — sending request...`;
+    message.value = t(`Attempt #${i + 1} — sending request...`, `第 ${i + 1} 次尝试 — 正在发送请求...`);
     await delay(300);
     if (!running.value) return;
 
@@ -84,7 +86,7 @@ async function startRequest() {
     if (success) {
       attempts.value[i].result = 'success';
       finalOutcome.value = 'success';
-      message.value = `Success on attempt #${i + 1}!${i > 0 ? ` (after ${i} ${i === 1 ? 'retry' : 'retries'})` : ' (first try)'}`;
+      message.value = t(`Success on attempt #${i + 1}!${i > 0 ? ` (after ${i} ${i === 1 ? 'retry' : 'retries'})` : ' (first try)'}`, `第 ${i + 1} 次尝试成功！${i > 0 ? `（经过 ${i} 次重试）` : '（首次尝试）'}`);
       running.value = false;
       return;
     }
@@ -92,7 +94,7 @@ async function startRequest() {
     attempts.value[i].result = 'fail';
     if (i === MAX_RETRIES - 1) {
       finalOutcome.value = 'exhausted';
-      message.value = `All ${MAX_RETRIES} attempts failed — retries exhausted!`;
+      message.value = t(`All ${MAX_RETRIES} attempts failed — retries exhausted!`, `全部 ${MAX_RETRIES} 次尝试均失败 — 重试已耗尽！`);
     }
   }
 
@@ -105,7 +107,7 @@ function reset() {
   activeTimers.value = [];
   attempts.value = [];
   finalOutcome.value = 'idle';
-  message.value = 'Configure failure rate and click "Send Request" to begin';
+  message.value = t('Configure failure rate and click "Send Request" to begin', '配置失败率并点击"发送请求"开始');
 }
 
 const timelineTotalMs = computed(() => {
@@ -134,9 +136,9 @@ function barColor(result: Attempt['result']): string {
 
 function resultLabel(result: Attempt['result']): string {
   switch (result) {
-    case 'success': return 'OK';
-    case 'fail': return 'FAIL';
-    case 'waiting': return 'WAIT';
+    case 'success': return t('OK', '成功');
+    case 'fail': return t('FAIL', '失败');
+    case 'waiting': return t('WAIT', '等待');
     case 'pending': return '...';
   }
 }
@@ -156,12 +158,12 @@ onUnmounted(() => {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">Interactive Retry with Backoff</div>
+    <div class="viz-title">{{ t('Interactive Retry with Backoff', '交互式 Retry Backoff') }}</div>
 
     <!-- Failure rate slider -->
     <div class="rb-config">
       <label class="rb-slider-label">
-        <span class="viz-label">Failure Rate:</span>
+        <span class="viz-label">{{ t('Failure Rate:', '失败率：') }}</span>
         <input
           type="range"
           min="0"
@@ -174,8 +176,8 @@ onUnmounted(() => {
         <span class="rb-slider-value">{{ failureRate }}%</span>
       </label>
       <div class="rb-config-info">
-        <span class="viz-label">Base delay: {{ BASE_DELAY / 1000 }}s</span>
-        <span class="viz-label">Max retries: {{ MAX_RETRIES }}</span>
+        <span class="viz-label">{{ t('Base delay:', '基础延迟：') }} {{ BASE_DELAY / 1000 }}s</span>
+        <span class="viz-label">{{ t('Max retries:', '最大重试：') }} {{ MAX_RETRIES }}</span>
       </div>
     </div>
 
@@ -217,10 +219,10 @@ onUnmounted(() => {
         </div>
 
         <div class="rb-attempt-detail">
-          <span v-if="attempt.number === 1" class="viz-label">No delay (first attempt)</span>
+          <span v-if="attempt.number === 1" class="viz-label">{{ t('No delay (first attempt)', '无延迟（首次尝试）') }}</span>
           <span v-else class="viz-label">
             {{ attempt.delay }}ms
-            <span class="rb-jitter">{{ attempt.jitter >= 0 ? '+' : '' }}{{ attempt.jitter }}ms jitter</span>
+            <span class="rb-jitter">{{ attempt.jitter >= 0 ? '+' : '' }}{{ attempt.jitter }}ms {{ t('jitter', '抖动') }}</span>
             = {{ attempt.totalDelay }}ms
           </span>
         </div>
@@ -230,7 +232,7 @@ onUnmounted(() => {
     <!-- Empty state -->
     <div v-else class="rb-empty">
       <svg viewBox="0 0 200 80" class="rb-empty-svg">
-        <text x="100" y="20" text-anchor="middle" fill="var(--viz-muted)" font-size="11">Retry timeline will appear here</text>
+        <text x="100" y="20" text-anchor="middle" fill="var(--viz-muted)" font-size="11">{{ t('Retry timeline will appear here', '重试时间线将在此显示') }}</text>
         <g v-for="i in 5" :key="i">
           <rect
             :x="10 + (i - 1) * 38"
@@ -255,11 +257,11 @@ onUnmounted(() => {
     <!-- Summary -->
     <div v-if="attempts.length && !running" class="rb-summary">
       <span class="viz-label">
-        Total attempts: {{ attempts.length }} |
-        Total wait: {{ timelineTotalMs }}ms |
-        Outcome:
+        {{ t('Total attempts:', '总尝试：') }} {{ attempts.length }} |
+        {{ t('Total wait:', '总等待：') }} {{ timelineTotalMs }}ms |
+        {{ t('Outcome:', '结果：') }}
         <strong :style="{ color: finalOutcome === 'success' ? 'var(--viz-success)' : 'var(--viz-danger)' }">
-          {{ finalOutcome === 'success' ? 'Succeeded' : 'Exhausted' }}
+          {{ finalOutcome === 'success' ? t('Succeeded', '成功') : t('Exhausted', '已耗尽') }}
         </strong>
       </span>
     </div>
@@ -271,9 +273,9 @@ onUnmounted(() => {
         @click="startRequest"
         :disabled="running"
       >
-        {{ running ? 'Running...' : 'Send Request' }}
+        {{ running ? t('Running...', '运行中...') : t('Send Request', '发送请求') }}
       </button>
-      <button class="viz-btn viz-btn--danger" @click="reset">Reset</button>
+      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
 
     <div class="viz-status" :style="{ borderLeft: `3px solid ${statusBorderColor}` }">
