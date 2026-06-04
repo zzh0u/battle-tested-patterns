@@ -12,7 +12,7 @@ type TokenBucket struct {
 	lastRefill time.Time
 }
 
-func NewTokenBucket(maxTokens float64, refillRate float64) *TokenBucket {
+func NewTokenBucket(maxTokens float64, refillRate float64) *TokenBucket { // TODO: implement
 	return &TokenBucket{
 		tokens:     maxTokens,
 		maxTokens:  maxTokens,
@@ -21,7 +21,7 @@ func NewTokenBucket(maxTokens float64, refillRate float64) *TokenBucket {
 	}
 }
 
-func (tb *TokenBucket) refill() {
+func (tb *TokenBucket) refill() { // TODO: implement
 	now := time.Now()
 	elapsed := now.Sub(tb.lastRefill).Seconds()
 	tb.tokens += elapsed * tb.refillRate
@@ -31,7 +31,7 @@ func (tb *TokenBucket) refill() {
 	tb.lastRefill = now
 }
 
-func (tb *TokenBucket) Allow() bool {
+func (tb *TokenBucket) Allow() bool { // TODO: implement
 	tb.refill()
 	if tb.tokens >= 1 {
 		tb.tokens--

@@ -7,19 +7,19 @@ type TombstoneStore struct {
 	dead map[string]bool
 }
 
-func NewTombstoneStore() *TombstoneStore {
+func NewTombstoneStore() *TombstoneStore { // TODO: implement
 	return &TombstoneStore{
 		data: make(map[string]string),
 		dead: make(map[string]bool),
 	}
 }
 
-func (s *TombstoneStore) Put(key, value string) {
+func (s *TombstoneStore) Put(key, value string) { // TODO: implement
 	s.data[key] = value
 	delete(s.dead, key)
 }
 
-func (s *TombstoneStore) Get(key string) (string, bool) {
+func (s *TombstoneStore) Get(key string) (string, bool) { // TODO: implement
 	if s.dead[key] {
 		return "", false
 	}
@@ -27,22 +27,22 @@ func (s *TombstoneStore) Get(key string) (string, bool) {
 	return v, ok
 }
 
-func (s *TombstoneStore) Delete(key string) {
+func (s *TombstoneStore) Delete(key string) { // TODO: implement
 	s.dead[key] = true
 }
 
-func (s *TombstoneStore) IsDeleted(key string) bool {
+func (s *TombstoneStore) IsDeleted(key string) bool { // TODO: implement
 	return s.dead[key]
 }
 
-func (s *TombstoneStore) Compact() {
+func (s *TombstoneStore) Compact() { // TODO: implement
 	for k := range s.dead {
 		delete(s.data, k)
 		delete(s.dead, k)
 	}
 }
 
-func (s *TombstoneStore) Len() int {
+func (s *TombstoneStore) Len() int { // TODO: implement
 	count := 0
 	for k := range s.data {
 		if !s.dead[k] {

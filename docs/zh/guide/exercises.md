@@ -137,6 +137,22 @@ pytest test_ring_buffer.py # Python
 
 分隔线以上是你的练习区域。分隔线以下是测试套件。
 
+### 成功 / 失败示例
+
+实现正确时：
+
+```text
+✓ Ring Buffer - Basic: should enqueue and dequeue in FIFO order (2ms)
+✓ Ring Buffer - Basic: should reject enqueue when full
+```
+
+实现有误时：
+
+```text
+✗ Ring Buffer - Basic: should enqueue and dequeue in FIFO order
+  → expected 1, got undefined
+```
+
 ## 答案文件
 
 参考实现位于 `exercises/answers/<language>/`：
@@ -155,10 +171,10 @@ exercises/answers/
 
 ```bash
 # 在项目根目录：
-pnpm test                        # TypeScript（491 个测试）
-cd exercises/rust && cargo test  # Rust（173 个测试）
-cd exercises/go && go test ./... # Go（约 170 个测试）
-cd exercises/python && pytest    # Python（233 个测试）
+pnpm test                                  # TypeScript（491 个测试）
+(cd exercises/rust && cargo test)          # Rust（173 个测试）
+(cd exercises/go && go test ./...)         # Go（约 170 个测试）
+(cd exercises/python && pytest)            # Python（233 个测试）
 ```
 
 ## 常见问题

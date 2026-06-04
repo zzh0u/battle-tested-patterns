@@ -11,21 +11,21 @@ type LSMTree struct {
 	sstables  []map[string]string
 }
 
-func NewLSMTree(threshold int) *LSMTree {
+func NewLSMTree(threshold int) *LSMTree { // TODO: implement
 	return &LSMTree{
 		memTable:  make(map[string]string),
 		threshold: threshold,
 	}
 }
 
-func (l *LSMTree) Put(key, value string) {
+func (l *LSMTree) Put(key, value string) { // TODO: implement
 	l.memTable[key] = value
 	if len(l.memTable) >= l.threshold {
 		l.flush()
 	}
 }
 
-func (l *LSMTree) flush() {
+func (l *LSMTree) flush() { // TODO: implement
 	if len(l.memTable) == 0 {
 		return
 	}
@@ -34,7 +34,7 @@ func (l *LSMTree) flush() {
 	l.sstables = append(l.sstables, frozen)
 }
 
-func (l *LSMTree) Get(key string) (string, bool) {
+func (l *LSMTree) Get(key string) (string, bool) { // TODO: implement
 	// Check memtable first (newest)
 	if v, ok := l.memTable[key]; ok {
 		return v, true
@@ -52,7 +52,7 @@ func (l *LSMTree) Flush() { l.flush() }
 
 func (l *LSMTree) SSTCount() int { return len(l.sstables) }
 
-func (l *LSMTree) AllKeys() []string {
+func (l *LSMTree) AllKeys() []string { // TODO: implement
 	seen := make(map[string]bool)
 	for k := range l.memTable {
 		seen[k] = true

@@ -7,7 +7,7 @@ type EditOp struct {
 	Text string
 }
 
-func DiffLines(old, new []string) []EditOp {
+func DiffLines(old, new []string) []EditOp { // TODO: implement
 	m, n := len(old), len(new)
 	// LCS DP
 	dp := make([][]int, m+1)
@@ -50,7 +50,7 @@ func DiffLines(old, new []string) []EditOp {
 	return ops
 }
 
-func Patch(old []string, ops []EditOp) []string {
+func Patch(old []string, ops []EditOp) []string { // TODO: implement
 	var result []string
 	for _, op := range ops {
 		switch op.Kind {

@@ -11,7 +11,7 @@ type RetryConfig struct {
 	BaseDelay  time.Duration
 }
 
-func WithRetry(cfg RetryConfig, fn func() error) (int, error) {
+func WithRetry(cfg RetryConfig, fn func() error) (int, error) { // TODO: implement
 	var lastErr error
 	for attempt := 0; attempt <= cfg.MaxRetries; attempt++ {
 		lastErr = fn()

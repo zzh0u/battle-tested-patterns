@@ -10,11 +10,11 @@ type VTable struct {
 	methods  map[string]func(data any) string
 }
 
-func NewVTable(typeName string) *VTable {
+func NewVTable(typeName string) *VTable { // TODO: implement
 	return &VTable{typeName: typeName, methods: make(map[string]func(data any) string)}
 }
 
-func (vt *VTable) AddMethod(name string, fn func(data any) string) {
+func (vt *VTable) AddMethod(name string, fn func(data any) string) { // TODO: implement
 	vt.methods[name] = fn
 }
 
@@ -23,11 +23,11 @@ type DynObject struct {
 	data   any
 }
 
-func NewDynObject(vtable *VTable, data any) *DynObject {
+func NewDynObject(vtable *VTable, data any) *DynObject { // TODO: implement
 	return &DynObject{vtable: vtable, data: data}
 }
 
-func (o *DynObject) Call(method string) (string, bool) {
+func (o *DynObject) Call(method string) (string, bool) { // TODO: implement
 	fn, ok := o.vtable.methods[method]
 	if !ok {
 		return "", false

@@ -25,11 +25,11 @@ type StateMachine struct {
 	transitions []transition
 }
 
-func NewStateMachine(initial SMState, transitions []transition) *StateMachine {
+func NewStateMachine(initial SMState, transitions []transition) *StateMachine { // TODO: implement
 	return &StateMachine{current: initial, transitions: transitions}
 }
 
-func (sm *StateMachine) Send(event string) error {
+func (sm *StateMachine) Send(event string) error { // TODO: implement
 	for _, t := range sm.transitions {
 		if t.from == sm.current && t.event == event {
 			sm.current = t.to
@@ -39,7 +39,7 @@ func (sm *StateMachine) Send(event string) error {
 	return errors.New("invalid transition")
 }
 
-func (sm *StateMachine) Can(event string) bool {
+func (sm *StateMachine) Can(event string) bool { // TODO: implement
 	for _, t := range sm.transitions {
 		if t.from == sm.current && t.event == event {
 			return true
@@ -50,7 +50,7 @@ func (sm *StateMachine) Can(event string) bool {
 
 func (sm *StateMachine) Current() SMState { return sm.current }
 
-func newApprovalMachine() *StateMachine {
+func newApprovalMachine() *StateMachine { // TODO: implement
 	return NewStateMachine(Idle, []transition{
 		{Idle, "submit", Pending},
 		{Pending, "approve", Approved},

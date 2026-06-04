@@ -9,17 +9,17 @@ type ObjectPool[T any] struct {
 	pool sync.Pool
 }
 
-func NewObjectPool[T any](factory func() T) *ObjectPool[T] {
+func NewObjectPool[T any](factory func() T) *ObjectPool[T] { // TODO: implement
 	return &ObjectPool[T]{
 		pool: sync.Pool{New: func() any { return factory() }},
 	}
 }
 
-func (p *ObjectPool[T]) Get() T {
+func (p *ObjectPool[T]) Get() T { // TODO: implement
 	return p.pool.Get().(T)
 }
 
-func (p *ObjectPool[T]) Put(obj T) {
+func (p *ObjectPool[T]) Put(obj T) { // TODO: implement
 	p.pool.Put(obj)
 }
 

@@ -31,22 +31,22 @@ func (b *BinOpNode) Accept(v ASTVisitor) string { return v.VisitBinOp(b) }
 // Printer visitor
 type Printer struct{}
 
-func (p Printer) VisitNumber(n *NumberNode) string {
+func (p Printer) VisitNumber(n *NumberNode) string { // TODO: implement
 	return fmt.Sprintf("%d", n.Value)
 }
 
-func (p Printer) VisitBinOp(b *BinOpNode) string {
+func (p Printer) VisitBinOp(b *BinOpNode) string { // TODO: implement
 	return fmt.Sprintf("(%s %s %s)", b.Left.Accept(p), b.Op, b.Right.Accept(p))
 }
 
 // Evaluator visitor
 type Evaluator struct{}
 
-func (e Evaluator) VisitNumber(n *NumberNode) string {
+func (e Evaluator) VisitNumber(n *NumberNode) string { // TODO: implement
 	return fmt.Sprintf("%d", n.Value)
 }
 
-func (e Evaluator) VisitBinOp(b *BinOpNode) string {
+func (e Evaluator) VisitBinOp(b *BinOpNode) string { // TODO: implement
 	left := evalInt(b.Left.Accept(e))
 	right := evalInt(b.Right.Accept(e))
 	switch b.Op {
@@ -59,7 +59,7 @@ func (e Evaluator) VisitBinOp(b *BinOpNode) string {
 	}
 }
 
-func evalInt(s string) int {
+func evalInt(s string) int { // TODO: implement
 	var n int
 	fmt.Sscanf(s, "%d", &n)
 	return n

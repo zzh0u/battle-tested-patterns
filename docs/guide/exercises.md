@@ -137,6 +137,22 @@ pytest test_ring_buffer.py # Python
 
 Everything above this line is your playground. Everything below is the test suite.
 
+### What success / failure looks like
+
+When your implementation is correct:
+
+```text
+✓ Ring Buffer - Basic: should enqueue and dequeue in FIFO order (2ms)
+✓ Ring Buffer - Basic: should reject enqueue when full
+```
+
+When something is wrong:
+
+```text
+✗ Ring Buffer - Basic: should enqueue and dequeue in FIFO order
+  → expected 1, got undefined
+```
+
 ## Answer Files
 
 Reference implementations live in `exercises/answers/<language>/`:
@@ -155,10 +171,10 @@ These contain pure implementation code (no tests). Use them to check your work o
 
 ```bash
 # From the project root:
-pnpm test                        # TypeScript (491 tests)
-cd exercises/rust && cargo test  # Rust (173 tests)
-cd exercises/go && go test ./... # Go (~170 tests)
-cd exercises/python && pytest    # Python (233 tests)
+pnpm test                                  # TypeScript (491 tests)
+(cd exercises/rust && cargo test)          # Rust (173 tests)
+(cd exercises/go && go test ./...)         # Go (~170 tests)
+(cd exercises/python && pytest)            # Python (233 tests)
 ```
 
 ## Troubleshooting

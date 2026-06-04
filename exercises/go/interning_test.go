@@ -6,11 +6,11 @@ type Interner struct {
 	pool map[string]*string
 }
 
-func NewInterner() *Interner {
+func NewInterner() *Interner { // TODO: implement
 	return &Interner{pool: make(map[string]*string)}
 }
 
-func (in *Interner) Intern(s string) *string {
+func (in *Interner) Intern(s string) *string { // TODO: implement
 	if ptr, ok := in.pool[s]; ok {
 		return ptr
 	}

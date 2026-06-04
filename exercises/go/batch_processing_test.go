@@ -8,18 +8,18 @@ type Batch[T any] struct {
 	batches [][]T
 }
 
-func NewBatch[T any](size int) *Batch[T] {
+func NewBatch[T any](size int) *Batch[T] { // TODO: implement
 	return &Batch[T]{size: size}
 }
 
-func (b *Batch[T]) Add(item T) {
+func (b *Batch[T]) Add(item T) { // TODO: implement
 	b.buffer = append(b.buffer, item)
 	if len(b.buffer) >= b.size {
 		b.flush()
 	}
 }
 
-func (b *Batch[T]) flush() {
+func (b *Batch[T]) flush() { // TODO: implement
 	if len(b.buffer) == 0 {
 		return
 	}
@@ -29,11 +29,11 @@ func (b *Batch[T]) flush() {
 	b.buffer = b.buffer[:0]
 }
 
-func (b *Batch[T]) Flush() {
+func (b *Batch[T]) Flush() { // TODO: implement
 	b.flush()
 }
 
-func (b *Batch[T]) Batches() [][]T {
+func (b *Batch[T]) Batches() [][]T { // TODO: implement
 	return b.batches
 }
 

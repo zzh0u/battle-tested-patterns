@@ -7,27 +7,27 @@ type MinHeap struct {
 	data []int
 }
 
-func NewMinHeap() *MinHeap {
+func NewMinHeap() *MinHeap { // TODO: implement
 	return &MinHeap{}
 }
 
-func (h *MinHeap) Len() int {
+func (h *MinHeap) Len() int { // TODO: implement
 	return len(h.data)
 }
 
-func (h *MinHeap) Peek() (int, bool) {
+func (h *MinHeap) Peek() (int, bool) { // TODO: implement
 	if len(h.data) == 0 {
 		return 0, false
 	}
 	return h.data[0], true
 }
 
-func (h *MinHeap) Push(val int) {
+func (h *MinHeap) Push(val int) { // TODO: implement
 	h.data = append(h.data, val)
 	h.siftUp(len(h.data) - 1)
 }
 
-func (h *MinHeap) Pop() (int, bool) {
+func (h *MinHeap) Pop() (int, bool) { // TODO: implement
 	if len(h.data) == 0 {
 		return 0, false
 	}
@@ -41,7 +41,7 @@ func (h *MinHeap) Pop() (int, bool) {
 	return val, true
 }
 
-func (h *MinHeap) siftUp(i int) {
+func (h *MinHeap) siftUp(i int) { // TODO: implement
 	for i > 0 {
 		parent := (i - 1) / 2
 		if h.data[i] < h.data[parent] {
@@ -53,7 +53,7 @@ func (h *MinHeap) siftUp(i int) {
 	}
 }
 
-func (h *MinHeap) siftDown(i int) {
+func (h *MinHeap) siftDown(i int) { // TODO: implement
 	n := len(h.data)
 	for {
 		left := 2*i + 1

@@ -17,7 +17,7 @@ func (h mergeHeap) Len() int            { return len(h) }
 func (h mergeHeap) Less(i, j int) bool   { return h[i].value < h[j].value }
 func (h mergeHeap) Swap(i, j int)        { h[i], h[j] = h[j], h[i] }
 func (h *mergeHeap) Push(x any)          { *h = append(*h, x.(mergeItem)) }
-func (h *mergeHeap) Pop() any {
+func (h *mergeHeap) Pop() any { // TODO: implement
 	old := *h
 	n := len(old)
 	item := old[n-1]
@@ -25,7 +25,7 @@ func (h *mergeHeap) Pop() any {
 	return item
 }
 
-func MergeKSorted(lists [][]int) []int {
+func MergeKSorted(lists [][]int) []int { // TODO: implement
 	h := &mergeHeap{}
 	heap.Init(h)
 

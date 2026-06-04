@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func FilterSeq[T any](seq iter.Seq[T], pred func(T) bool) iter.Seq[T] {
+func FilterSeq[T any](seq iter.Seq[T], pred func(T) bool) iter.Seq[T] { // TODO: implement
 	return func(yield func(T) bool) {
 		for v := range seq {
 			if pred(v) && !yield(v) {
@@ -16,7 +16,7 @@ func FilterSeq[T any](seq iter.Seq[T], pred func(T) bool) iter.Seq[T] {
 	}
 }
 
-func MapSeq[T, U any](seq iter.Seq[T], fn func(T) U) iter.Seq[U] {
+func MapSeq[T, U any](seq iter.Seq[T], fn func(T) U) iter.Seq[U] { // TODO: implement
 	return func(yield func(U) bool) {
 		for v := range seq {
 			if !yield(fn(v)) {
@@ -38,7 +38,7 @@ func TakeSeq[T any](seq iter.Seq[T], n int) iter.Seq[T] {
 	}
 }
 
-func CollectSeq[T any](seq iter.Seq[T]) []T {
+func CollectSeq[T any](seq iter.Seq[T]) []T { // TODO: implement
 	var out []T
 	for v := range seq {
 		out = append(out, v)

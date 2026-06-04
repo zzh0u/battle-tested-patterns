@@ -11,11 +11,11 @@ type Registry struct {
 	handlers map[string]Handler
 }
 
-func NewRegistry() *Registry {
+func NewRegistry() *Registry { // TODO: implement
 	return &Registry{handlers: make(map[string]Handler)}
 }
 
-func (r *Registry) Register(name string, h Handler) error {
+func (r *Registry) Register(name string, h Handler) error { // TODO: implement
 	if _, exists := r.handlers[name]; exists {
 		return fmt.Errorf("handler %q already registered", name)
 	}
@@ -23,12 +23,12 @@ func (r *Registry) Register(name string, h Handler) error {
 	return nil
 }
 
-func (r *Registry) Get(name string) (Handler, bool) {
+func (r *Registry) Get(name string) (Handler, bool) { // TODO: implement
 	h, ok := r.handlers[name]
 	return h, ok
 }
 
-func (r *Registry) Names() []string {
+func (r *Registry) Names() []string { // TODO: implement
 	names := make([]string, 0, len(r.handlers))
 	for k := range r.handlers {
 		names = append(names, k)

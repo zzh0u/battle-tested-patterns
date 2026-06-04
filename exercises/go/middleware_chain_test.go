@@ -17,15 +17,15 @@ type Pipeline struct {
 	middlewares []Middleware
 }
 
-func NewPipeline() *Pipeline {
+func NewPipeline() *Pipeline { // TODO: implement
 	return &Pipeline{}
 }
 
-func (p *Pipeline) Use(mw Middleware) {
+func (p *Pipeline) Use(mw Middleware) { // TODO: implement
 	p.middlewares = append(p.middlewares, mw)
 }
 
-func (p *Pipeline) Execute(ctx *Context) {
+func (p *Pipeline) Execute(ctx *Context) { // TODO: implement
 	index := 0
 	var run func()
 	run = func() {

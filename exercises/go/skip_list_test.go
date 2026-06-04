@@ -19,12 +19,12 @@ type SkipList struct {
 	rng   *rand.Rand
 }
 
-func NewSkipList() *SkipList {
+func NewSkipList() *SkipList { // TODO: implement
 	head := &skipNode{next: make([]*skipNode, skipMaxLevel)}
 	return &SkipList{head: head, level: 0, rng: rand.New(rand.NewSource(42))}
 }
 
-func (sl *SkipList) randomLevel() int {
+func (sl *SkipList) randomLevel() int { // TODO: implement
 	lvl := 0
 	for lvl < skipMaxLevel-1 && sl.rng.Float64() < 0.5 {
 		lvl++
@@ -32,7 +32,7 @@ func (sl *SkipList) randomLevel() int {
 	return lvl
 }
 
-func (sl *SkipList) Insert(key int, value string) {
+func (sl *SkipList) Insert(key int, value string) { // TODO: implement
 	update := make([]*skipNode, skipMaxLevel)
 	cur := sl.head
 	for i := sl.level; i >= 0; i-- {
@@ -62,7 +62,7 @@ func (sl *SkipList) Insert(key int, value string) {
 	}
 }
 
-func (sl *SkipList) Search(key int) (string, bool) {
+func (sl *SkipList) Search(key int) (string, bool) { // TODO: implement
 	cur := sl.head
 	for i := sl.level; i >= 0; i-- {
 		for cur.next[i] != nil && cur.next[i].key < key {
@@ -76,7 +76,7 @@ func (sl *SkipList) Search(key int) (string, bool) {
 	return "", false
 }
 
-func (sl *SkipList) Delete(key int) bool {
+func (sl *SkipList) Delete(key int) bool { // TODO: implement
 	update := make([]*skipNode, skipMaxLevel)
 	cur := sl.head
 	for i := sl.level; i >= 0; i-- {

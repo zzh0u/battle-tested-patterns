@@ -13,17 +13,17 @@ type MVCCStore struct {
 	clock   uint64
 }
 
-func NewMVCCStore() *MVCCStore {
+func NewMVCCStore() *MVCCStore { // TODO: implement
 	return &MVCCStore{data: make(map[string][]Version)}
 }
 
-func (s *MVCCStore) Put(key, value string) uint64 {
+func (s *MVCCStore) Put(key, value string) uint64 { // TODO: implement
 	s.clock++
 	s.data[key] = append(s.data[key], Version{value: value, timestamp: s.clock})
 	return s.clock
 }
 
-func (s *MVCCStore) Get(key string, asOf uint64) (string, bool) {
+func (s *MVCCStore) Get(key string, asOf uint64) (string, bool) { // TODO: implement
 	versions := s.data[key]
 	for i := len(versions) - 1; i >= 0; i-- {
 		if versions[i].timestamp <= asOf {
@@ -36,7 +36,7 @@ func (s *MVCCStore) Get(key string, asOf uint64) (string, bool) {
 	return "", false
 }
 
-func (s *MVCCStore) Delete(key string) uint64 {
+func (s *MVCCStore) Delete(key string) uint64 { // TODO: implement
 	s.clock++
 	s.data[key] = append(s.data[key], Version{deleted: true, timestamp: s.clock})
 	return s.clock

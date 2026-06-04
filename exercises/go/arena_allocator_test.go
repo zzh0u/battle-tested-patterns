@@ -7,11 +7,11 @@ type Arena struct {
 	off int
 }
 
-func NewArena(size int) *Arena {
+func NewArena(size int) *Arena { // TODO: implement
 	return &Arena{buf: make([]byte, size)}
 }
 
-func (a *Arena) Alloc(n int) ([]byte, bool) {
+func (a *Arena) Alloc(n int) ([]byte, bool) { // TODO: implement
 	if a.off+n > len(a.buf) {
 		return nil, false
 	}
@@ -20,7 +20,7 @@ func (a *Arena) Alloc(n int) ([]byte, bool) {
 	return slice, true
 }
 
-func (a *Arena) Reset() {
+func (a *Arena) Reset() { // TODO: implement
 	a.off = 0
 }
 

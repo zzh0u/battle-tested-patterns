@@ -10,11 +10,11 @@ type RingBuffer[T any] struct {
 	cap  int
 }
 
-func NewRingBuffer[T any](capacity int) *RingBuffer[T] {
+func NewRingBuffer[T any](capacity int) *RingBuffer[T] { // TODO: implement
 	return &RingBuffer[T]{buf: make([]T, capacity), cap: capacity}
 }
 
-func (r *RingBuffer[T]) Enqueue(item T) bool {
+func (r *RingBuffer[T]) Enqueue(item T) bool { // TODO: implement
 	if r.cnt == r.cap {
 		return false
 	}
@@ -24,7 +24,7 @@ func (r *RingBuffer[T]) Enqueue(item T) bool {
 	return true
 }
 
-func (r *RingBuffer[T]) Dequeue() (T, bool) {
+func (r *RingBuffer[T]) Dequeue() (T, bool) { // TODO: implement
 	var zero T
 	if r.cnt == 0 {
 		return zero, false

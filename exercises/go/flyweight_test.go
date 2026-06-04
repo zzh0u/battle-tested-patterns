@@ -10,11 +10,11 @@ type ColorFactory struct {
 	cache map[string]*Color
 }
 
-func NewColorFactory() *ColorFactory {
+func NewColorFactory() *ColorFactory { // TODO: implement
 	return &ColorFactory{cache: make(map[string]*Color)}
 }
 
-func (f *ColorFactory) Get(name string) *Color {
+func (f *ColorFactory) Get(name string) *Color { // TODO: implement
 	if c, ok := f.cache[name]; ok {
 		return c
 	}

@@ -7,7 +7,7 @@ type FreeList struct {
 	free []int
 }
 
-func NewFreeList(size int) *FreeList {
+func NewFreeList(size int) *FreeList { // TODO: implement
 	free := make([]int, size)
 	for i := range free {
 		free[i] = size - 1 - i // stack: top = 0
@@ -18,7 +18,7 @@ func NewFreeList(size int) *FreeList {
 	}
 }
 
-func (fl *FreeList) Alloc() (int, bool) {
+func (fl *FreeList) Alloc() (int, bool) { // TODO: implement
 	if len(fl.free) == 0 {
 		return -1, false
 	}
@@ -27,7 +27,7 @@ func (fl *FreeList) Alloc() (int, bool) {
 	return idx, true
 }
 
-func (fl *FreeList) Free(idx int) {
+func (fl *FreeList) Free(idx int) { // TODO: implement
 	fl.free = append(fl.free, idx)
 	fl.pool[idx] = 0
 }

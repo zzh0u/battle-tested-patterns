@@ -1,6 +1,7 @@
 """Circuit Breaker — fail fast when a service is down."""
 
 import time
+import pytest
 
 
 class CircuitBreaker:
@@ -79,11 +80,8 @@ def test_circuit_breaker_rejects_when_open():
     except RuntimeError:
         pass
 
-    try:
+    with pytest.raises(RuntimeError, match="Circuit is OPEN"):
         cb.call(lambda: "ok")
-        assert False, "should have raised"
-    except RuntimeError as e:
-        assert str(e) == "Circuit is OPEN"
 
 
 def test_circuit_breaker_recovery():

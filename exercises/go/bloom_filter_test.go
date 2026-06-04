@@ -11,11 +11,11 @@ type BloomFilter struct {
 	k    int
 }
 
-func NewBloomFilter(size uint32, numHashes int) *BloomFilter {
+func NewBloomFilter(size uint32, numHashes int) *BloomFilter { // TODO: implement
 	return &BloomFilter{bits: make([]bool, size), size: size, k: numHashes}
 }
 
-func (bf *BloomFilter) hashes(item string) []uint32 {
+func (bf *BloomFilter) hashes(item string) []uint32 { // TODO: implement
 	h := fnv.New32a()
 	h.Write([]byte(item))
 	h1 := h.Sum32()
@@ -30,13 +30,13 @@ func (bf *BloomFilter) hashes(item string) []uint32 {
 	return indices
 }
 
-func (bf *BloomFilter) Add(item string) {
+func (bf *BloomFilter) Add(item string) { // TODO: implement
 	for _, idx := range bf.hashes(item) {
 		bf.bits[idx] = true
 	}
 }
 
-func (bf *BloomFilter) MayContain(item string) bool {
+func (bf *BloomFilter) MayContain(item string) bool { // TODO: implement
 	for _, idx := range bf.hashes(item) {
 		if !bf.bits[idx] {
 			return false

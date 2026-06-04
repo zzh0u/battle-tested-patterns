@@ -6,21 +6,21 @@ type LamportClock struct {
 	time uint64
 }
 
-func NewLamportClock() *LamportClock {
+func NewLamportClock() *LamportClock { // TODO: implement
 	return &LamportClock{}
 }
 
-func (c *LamportClock) Tick() uint64 {
+func (c *LamportClock) Tick() uint64 { // TODO: implement
 	c.time++
 	return c.time
 }
 
-func (c *LamportClock) Send() uint64 {
+func (c *LamportClock) Send() uint64 { // TODO: implement
 	c.time++
 	return c.time
 }
 
-func (c *LamportClock) Receive(remote uint64) uint64 {
+func (c *LamportClock) Receive(remote uint64) uint64 { // TODO: implement
 	if remote > c.time {
 		c.time = remote
 	}

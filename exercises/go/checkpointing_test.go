@@ -6,15 +6,15 @@ type Checkpoint[T any] struct {
 	history []T
 }
 
-func NewCheckpoint[T any]() *Checkpoint[T] {
+func NewCheckpoint[T any]() *Checkpoint[T] { // TODO: implement
 	return &Checkpoint[T]{}
 }
 
-func (c *Checkpoint[T]) Save(state T) {
+func (c *Checkpoint[T]) Save(state T) { // TODO: implement
 	c.history = append(c.history, state)
 }
 
-func (c *Checkpoint[T]) Restore(index int) (T, bool) {
+func (c *Checkpoint[T]) Restore(index int) (T, bool) { // TODO: implement
 	if index < 0 || index >= len(c.history) {
 		var zero T
 		return zero, false
@@ -22,7 +22,7 @@ func (c *Checkpoint[T]) Restore(index int) (T, bool) {
 	return c.history[index], true
 }
 
-func (c *Checkpoint[T]) Latest() (T, bool) {
+func (c *Checkpoint[T]) Latest() (T, bool) { // TODO: implement
 	if len(c.history) == 0 {
 		var zero T
 		return zero, false

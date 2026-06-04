@@ -9,8 +9,8 @@ from collections import deque
 
 
 class WorkStealingPool:
-    def __init__(self, worker_count: int):
-        self._queues: list[deque[int]] = [deque() for _ in range(worker_count)]  # TODO: implement
+    def __init__(self, worker_count: int):  # TODO: implement
+        self._queues: list[deque[int]] = [deque() for _ in range(worker_count)]
 
     def push(self, worker_idx: int, task: int) -> None:  # TODO: implement
         self._queues[worker_idx].append(task)
@@ -28,9 +28,9 @@ class WorkStealingPool:
                 return q.popleft()
         return None
 
-    def process(self, worker_idx: int) -> int | None:
+    def process(self, worker_idx: int) -> int | None:  # TODO: implement
         """Try own queue first, then steal from others."""
-        result = self.pop(worker_idx)  # TODO: implement
+        result = self.pop(worker_idx)
         if result is not None:
             return result
         return self.steal(worker_idx)

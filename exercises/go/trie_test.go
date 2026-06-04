@@ -14,11 +14,11 @@ type Trie struct {
 	root *TrieNode
 }
 
-func NewTrie() *Trie {
+func NewTrie() *Trie { // TODO: implement
 	return &Trie{root: &TrieNode{children: make(map[byte]*TrieNode)}}
 }
 
-func (t *Trie) Insert(word string) {
+func (t *Trie) Insert(word string) { // TODO: implement
 	node := t.root
 	for i := 0; i < len(word); i++ {
 		ch := word[i]
@@ -30,7 +30,7 @@ func (t *Trie) Insert(word string) {
 	node.isEnd = true
 }
 
-func (t *Trie) Search(word string) bool {
+func (t *Trie) Search(word string) bool { // TODO: implement
 	node := t.root
 	for i := 0; i < len(word); i++ {
 		child, ok := node.children[word[i]]
@@ -42,7 +42,7 @@ func (t *Trie) Search(word string) bool {
 	return node.isEnd
 }
 
-func (t *Trie) StartsWith(prefix string) bool {
+func (t *Trie) StartsWith(prefix string) bool { // TODO: implement
 	node := t.root
 	for i := 0; i < len(prefix); i++ {
 		child, ok := node.children[prefix[i]]
@@ -54,7 +54,7 @@ func (t *Trie) StartsWith(prefix string) bool {
 	return true
 }
 
-func (t *Trie) collectWords(node *TrieNode, prefix string, results *[]string) {
+func (t *Trie) collectWords(node *TrieNode, prefix string, results *[]string) { // TODO: implement
 	if node.isEnd {
 		*results = append(*results, prefix)
 	}
@@ -63,7 +63,7 @@ func (t *Trie) collectWords(node *TrieNode, prefix string, results *[]string) {
 	}
 }
 
-func (t *Trie) AutoComplete(prefix string) []string {
+func (t *Trie) AutoComplete(prefix string) []string { // TODO: implement
 	node := t.root
 	for i := 0; i < len(prefix); i++ {
 		child, ok := node.children[prefix[i]]

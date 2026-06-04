@@ -6,12 +6,12 @@ import (
 	"testing"
 )
 
-func hashLeaf(data string) string {
+func hashLeaf(data string) string { // TODO: implement
 	h := sha256.Sum256([]byte(data))
 	return hex.EncodeToString(h[:])
 }
 
-func hashPair(a, b string) string {
+func hashPair(a, b string) string { // TODO: implement
 	h := sha256.Sum256([]byte(a + b))
 	return hex.EncodeToString(h[:])
 }
@@ -22,7 +22,7 @@ type MerkleTree struct {
 	layers [][]string
 }
 
-func BuildMerkle(data []string) *MerkleTree {
+func BuildMerkle(data []string) *MerkleTree { // TODO: implement
 	if len(data) == 0 {
 		return &MerkleTree{}
 	}

@@ -13,17 +13,17 @@ type HashRing struct {
 	replicas int
 }
 
-func NewHashRing(replicas int) *HashRing {
+func NewHashRing(replicas int) *HashRing { // TODO: implement
 	return &HashRing{replicas: replicas, nodeMap: make(map[uint32]string)}
 }
 
-func hashKey(key string) uint32 {
+func hashKey(key string) uint32 { // TODO: implement
 	h := fnv.New32a()
 	h.Write([]byte(key))
 	return h.Sum32()
 }
 
-func (hr *HashRing) AddNode(node string) {
+func (hr *HashRing) AddNode(node string) { // TODO: implement
 	for i := 0; i < hr.replicas; i++ {
 		vkey := fmt.Sprintf("%s#%d", node, i)
 		hash := hashKey(vkey)
@@ -33,7 +33,7 @@ func (hr *HashRing) AddNode(node string) {
 	sort.Slice(hr.ring, func(i, j int) bool { return hr.ring[i] < hr.ring[j] })
 }
 
-func (hr *HashRing) RemoveNode(node string) {
+func (hr *HashRing) RemoveNode(node string) { // TODO: implement
 	var newRing []uint32
 	for _, hash := range hr.ring {
 		if hr.nodeMap[hash] != node {
@@ -45,7 +45,7 @@ func (hr *HashRing) RemoveNode(node string) {
 	hr.ring = newRing
 }
 
-func (hr *HashRing) GetNode(key string) string {
+func (hr *HashRing) GetNode(key string) string { // TODO: implement
 	if len(hr.ring) == 0 {
 		return ""
 	}

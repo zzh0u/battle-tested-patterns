@@ -26,7 +26,7 @@ func StringValue(v string) TaggedValue { return TaggedValue{tag: TagString, strV
 
 func (tv TaggedValue) Tag() ValueTag { return tv.tag }
 
-func (tv TaggedValue) Display() string {
+func (tv TaggedValue) Display() string { // TODO: implement
 	switch tv.tag {
 	case TagInt:
 		return fmt.Sprintf("Int(%d)", tv.intVal)
@@ -39,7 +39,7 @@ func (tv TaggedValue) Display() string {
 	}
 }
 
-func (tv TaggedValue) IsNumeric() bool {
+func (tv TaggedValue) IsNumeric() bool { // TODO: implement
 	return tv.tag == TagInt || tv.tag == TagFloat
 }
 

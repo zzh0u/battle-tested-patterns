@@ -7,22 +7,22 @@ type DoubleBuffer struct {
 	front   int
 }
 
-func NewDoubleBuffer(size int) *DoubleBuffer {
+func NewDoubleBuffer(size int) *DoubleBuffer { // TODO: implement
 	return &DoubleBuffer{
 		buffers: [2][]byte{make([]byte, size), make([]byte, size)},
 		front:   0,
 	}
 }
 
-func (db *DoubleBuffer) Back() []byte {
+func (db *DoubleBuffer) Back() []byte { // TODO: implement
 	return db.buffers[1-db.front]
 }
 
-func (db *DoubleBuffer) Front() []byte {
+func (db *DoubleBuffer) Front() []byte { // TODO: implement
 	return db.buffers[db.front]
 }
 
-func (db *DoubleBuffer) Swap() {
+func (db *DoubleBuffer) Swap() { // TODO: implement
 	db.front = 1 - db.front
 }
 

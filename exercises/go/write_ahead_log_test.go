@@ -17,18 +17,18 @@ type WAL struct {
 	committed int
 }
 
-func NewWAL() *WAL {
+func NewWAL() *WAL { // TODO: implement
 	return &WAL{committed: -1}
 }
 
-func (w *WAL) Append(op, data string) int {
+func (w *WAL) Append(op, data string) int { // TODO: implement
 	lsn := w.nextLSN
 	w.log = append(w.log, WALEntry{LSN: lsn, Op: op, Data: data})
 	w.nextLSN++
 	return lsn
 }
 
-func (w *WAL) Commit(lsn int) error {
+func (w *WAL) Commit(lsn int) error { // TODO: implement
 	if lsn < 0 || lsn >= w.nextLSN {
 		return fmt.Errorf("invalid LSN: %d", lsn)
 	}
@@ -38,7 +38,7 @@ func (w *WAL) Commit(lsn int) error {
 	return nil
 }
 
-func (w *WAL) Replay() []WALEntry {
+func (w *WAL) Replay() []WALEntry { // TODO: implement
 	var result []WALEntry
 	for _, e := range w.log {
 		if e.LSN <= w.committed {

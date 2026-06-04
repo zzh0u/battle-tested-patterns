@@ -9,18 +9,18 @@ type DepGraph struct {
 	edges map[string][]string
 }
 
-func NewDepGraph() *DepGraph {
+func NewDepGraph() *DepGraph { // TODO: implement
 	return &DepGraph{edges: make(map[string][]string)}
 }
 
-func (g *DepGraph) AddDep(node, dep string) {
+func (g *DepGraph) AddDep(node, dep string) { // TODO: implement
 	g.edges[node] = append(g.edges[node], dep)
 	if _, ok := g.edges[dep]; !ok {
 		g.edges[dep] = nil
 	}
 }
 
-func (g *DepGraph) TopoSort() ([]string, error) {
+func (g *DepGraph) TopoSort() ([]string, error) { // TODO: implement
 	visited := make(map[string]int) // 0=unvisited, 1=visiting, 2=done
 	var result []string
 

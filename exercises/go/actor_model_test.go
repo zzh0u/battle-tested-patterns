@@ -17,7 +17,7 @@ type Actor struct {
 	done    chan struct{}
 }
 
-func NewActor() *Actor {
+func NewActor() *Actor { // TODO: implement
 	a := &Actor{
 		mailbox: make(chan Message, 100),
 		done:    make(chan struct{}),
@@ -26,7 +26,7 @@ func NewActor() *Actor {
 	return a
 }
 
-func (a *Actor) run() {
+func (a *Actor) run() { // TODO: implement
 	for msg := range a.mailbox {
 		a.mu.Lock()
 		switch msg.Type {
@@ -40,16 +40,16 @@ func (a *Actor) run() {
 	close(a.done)
 }
 
-func (a *Actor) Send(msg Message) {
+func (a *Actor) Send(msg Message) { // TODO: implement
 	a.mailbox <- msg
 }
 
-func (a *Actor) Stop() {
+func (a *Actor) Stop() { // TODO: implement
 	close(a.mailbox)
 	<-a.done
 }
 
-func (a *Actor) State() int {
+func (a *Actor) State() int { // TODO: implement
 	a.mu.Lock()
 	defer a.mu.Unlock()
 	return a.state

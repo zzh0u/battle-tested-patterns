@@ -5,19 +5,19 @@ import time
 
 
 class Semaphore:
-    def __init__(self, permits: int):
-        self._permits = permits  # TODO: implement
+    def __init__(self, permits: int):  # TODO: implement
+        self._permits = permits
         self._lock = threading.Lock()
         self._condition = threading.Condition(self._lock)
 
-    def acquire(self) -> None:
-        with self._condition:  # TODO: implement
+    def acquire(self) -> None:  # TODO: implement
+        with self._condition:
             while self._permits <= 0:
                 self._condition.wait()
             self._permits -= 1
 
-    def release(self) -> None:
-        with self._condition:  # TODO: implement
+    def release(self) -> None:  # TODO: implement
+        with self._condition:
             self._permits += 1
             self._condition.notify()
 

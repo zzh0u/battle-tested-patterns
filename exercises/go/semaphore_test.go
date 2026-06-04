@@ -11,15 +11,15 @@ type Semaphore struct {
 	ch chan struct{}
 }
 
-func NewSemaphore(permits int) *Semaphore {
+func NewSemaphore(permits int) *Semaphore { // TODO: implement
 	return &Semaphore{ch: make(chan struct{}, permits)}
 }
 
-func (s *Semaphore) Acquire() {
+func (s *Semaphore) Acquire() { // TODO: implement
 	s.ch <- struct{}{}
 }
 
-func (s *Semaphore) Release() {
+func (s *Semaphore) Release() { // TODO: implement
 	<-s.ch
 }
 
@@ -59,4 +59,18 @@ func TestSemaphoreLimits(t *testing.T) {
 	if maxConcurrent > 2 {
 		t.Errorf("max concurrent %d exceeded semaphore limit 2", maxConcurrent)
 	}
+}
+
+func TestSemaphoreAvailableSlots(t *testing.T) {
+	sem := NewSemaphore(3)
+	sem.Acquire()
+	sem.Acquire()
+	sem.Release()
+	sem.Release()
+	sem.Acquire()
+	sem.Acquire()
+	sem.Acquire()
+	sem.Release()
+	sem.Release()
+	sem.Release()
 }

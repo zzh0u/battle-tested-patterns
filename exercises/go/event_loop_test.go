@@ -11,15 +11,15 @@ type EventLoop struct {
 	queue []Task
 }
 
-func NewEventLoop() *EventLoop {
+func NewEventLoop() *EventLoop { // TODO: implement
 	return &EventLoop{}
 }
 
-func (el *EventLoop) Enqueue(name string, fn func()) {
+func (el *EventLoop) Enqueue(name string, fn func()) { // TODO: implement
 	el.queue = append(el.queue, Task{name: name, fn: fn})
 }
 
-func (el *EventLoop) Run() []string {
+func (el *EventLoop) Run() []string { // TODO: implement
 	var executed []string
 	for len(el.queue) > 0 {
 		task := el.queue[0]

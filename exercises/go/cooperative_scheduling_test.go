@@ -12,15 +12,15 @@ type Scheduler struct {
 	results []string
 }
 
-func NewScheduler() *Scheduler {
+func NewScheduler() *Scheduler { // TODO: implement
 	return &Scheduler{}
 }
 
-func (s *Scheduler) AddTask(name string, steps []func() string) {
+func (s *Scheduler) AddTask(name string, steps []func() string) { // TODO: implement
 	s.tasks = append(s.tasks, CoopTask{name: name, steps: steps})
 }
 
-func (s *Scheduler) Run() []string {
+func (s *Scheduler) Run() []string { // TODO: implement
 	cursors := make([]int, len(s.tasks))
 	s.results = nil
 

@@ -7,19 +7,19 @@ type COWList struct {
 	refCount *int
 }
 
-func NewCOWList(items []int) COWList {
+func NewCOWList(items []int) COWList { // TODO: implement
 	cp := make([]int, len(items))
 	copy(cp, items)
 	rc := 1
 	return COWList{data: cp, refCount: &rc}
 }
 
-func (c COWList) Clone() COWList {
+func (c COWList) Clone() COWList { // TODO: implement
 	*c.refCount++
 	return COWList{data: c.data, refCount: c.refCount}
 }
 
-func (c *COWList) ensureUnique() {
+func (c *COWList) ensureUnique() { // TODO: implement
 	if *c.refCount > 1 {
 		*c.refCount--
 		cp := make([]int, len(c.data))
@@ -30,16 +30,16 @@ func (c *COWList) ensureUnique() {
 	}
 }
 
-func (c *COWList) Set(index int, value int) {
+func (c *COWList) Set(index int, value int) { // TODO: implement
 	c.ensureUnique()
 	c.data[index] = value
 }
 
-func (c COWList) Get(index int) int {
+func (c COWList) Get(index int) int { // TODO: implement
 	return c.data[index]
 }
 
-func (c COWList) Len() int {
+func (c COWList) Len() int { // TODO: implement
 	return len(c.data)
 }
 

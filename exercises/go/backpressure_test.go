@@ -10,11 +10,11 @@ type BoundedQueue struct {
 	cap  int
 }
 
-func NewBoundedQueue(capacity int) *BoundedQueue {
+func NewBoundedQueue(capacity int) *BoundedQueue { // TODO: implement
 	return &BoundedQueue{cap: capacity}
 }
 
-func (q *BoundedQueue) Push(item int) error {
+func (q *BoundedQueue) Push(item int) error { // TODO: implement
 	if len(q.buf) >= q.cap {
 		return errors.New("queue full: backpressure")
 	}
@@ -22,7 +22,7 @@ func (q *BoundedQueue) Push(item int) error {
 	return nil
 }
 
-func (q *BoundedQueue) Pop() (int, bool) {
+func (q *BoundedQueue) Pop() (int, bool) { // TODO: implement
 	if len(q.buf) == 0 {
 		return 0, false
 	}

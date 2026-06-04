@@ -9,8 +9,8 @@ import time
 
 
 class TombstoneMap:
-    def __init__(self):
-        self._store: dict[str, dict] = {}  # TODO: implement
+    def __init__(self):  # TODO: implement
+        self._store: dict[str, dict] = {}
         self._tombstone_count = 0
 
     def put(self, key: str, value: str) -> None:  # TODO: implement

@@ -11,11 +11,11 @@ type Transform struct {
 	cachedS string
 }
 
-func NewTransform(x, y float64) *Transform {
+func NewTransform(x, y float64) *Transform { // TODO: implement
 	return &Transform{x: x, y: y, dirty: true}
 }
 
-func (t *Transform) SetPosition(x, y float64) {
+func (t *Transform) SetPosition(x, y float64) { // TODO: implement
 	if t.x != x || t.y != y {
 		t.x = x
 		t.y = y
@@ -23,7 +23,7 @@ func (t *Transform) SetPosition(x, y float64) {
 	}
 }
 
-func (t *Transform) WorldMatrix() string {
+func (t *Transform) WorldMatrix() string { // TODO: implement
 	if t.dirty {
 		t.cachedS = strings.Repeat(".", int(t.x+t.y)) // simulate expensive computation
 		t.dirty = false

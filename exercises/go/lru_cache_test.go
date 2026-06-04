@@ -15,7 +15,7 @@ type LRUCache struct {
 	tail  *lruEntry
 }
 
-func NewLRUCache(capacity int) *LRUCache {
+func NewLRUCache(capacity int) *LRUCache { // TODO: implement
 	head := &lruEntry{}
 	tail := &lruEntry{}
 	head.next = tail
@@ -23,19 +23,19 @@ func NewLRUCache(capacity int) *LRUCache {
 	return &LRUCache{cap: capacity, items: make(map[string]*lruEntry), head: head, tail: tail}
 }
 
-func (c *LRUCache) remove(e *lruEntry) {
+func (c *LRUCache) remove(e *lruEntry) { // TODO: implement
 	e.prev.next = e.next
 	e.next.prev = e.prev
 }
 
-func (c *LRUCache) pushFront(e *lruEntry) {
+func (c *LRUCache) pushFront(e *lruEntry) { // TODO: implement
 	e.next = c.head.next
 	e.prev = c.head
 	c.head.next.prev = e
 	c.head.next = e
 }
 
-func (c *LRUCache) Get(key string) (int, bool) {
+func (c *LRUCache) Get(key string) (int, bool) { // TODO: implement
 	e, ok := c.items[key]
 	if !ok {
 		return 0, false
@@ -45,7 +45,7 @@ func (c *LRUCache) Get(key string) (int, bool) {
 	return e.value, true
 }
 
-func (c *LRUCache) Put(key string, value int) {
+func (c *LRUCache) Put(key string, value int) { // TODO: implement
 	if e, ok := c.items[key]; ok {
 		e.value = value
 		c.remove(e)

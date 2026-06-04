@@ -12,19 +12,19 @@ const (
 	Delete                         // 0b1000
 )
 
-func HasFlag(flags, flag Permission) bool {
+func HasFlag(flags, flag Permission) bool { // TODO: implement
 	return flags&flag == flag
 }
 
-func HasAny(flags, mask Permission) bool {
+func HasAny(flags, mask Permission) bool { // TODO: implement
 	return flags&mask != 0
 }
 
-func SetFlag(flags, flag Permission) Permission {
+func SetFlag(flags, flag Permission) Permission { // TODO: implement
 	return flags | flag
 }
 
-func ClearFlag(flags, flag Permission) Permission {
+func ClearFlag(flags, flag Permission) Permission { // TODO: implement
 	return flags &^ flag // Go's AND NOT operator
 }
 

@@ -10,15 +10,15 @@ type EventBus struct {
 	listeners map[string][]Observer
 }
 
-func NewEventBus() *EventBus {
+func NewEventBus() *EventBus { // TODO: implement
 	return &EventBus{listeners: make(map[string][]Observer)}
 }
 
-func (eb *EventBus) Subscribe(event string, obs Observer) {
+func (eb *EventBus) Subscribe(event string, obs Observer) { // TODO: implement
 	eb.listeners[event] = append(eb.listeners[event], obs)
 }
 
-func (eb *EventBus) Unsubscribe(event string, obs Observer) {
+func (eb *EventBus) Unsubscribe(event string, obs Observer) { // TODO: implement
 	subs := eb.listeners[event]
 	for i, o := range subs {
 		if o == obs {
@@ -28,7 +28,7 @@ func (eb *EventBus) Unsubscribe(event string, obs Observer) {
 	}
 }
 
-func (eb *EventBus) Publish(event string) {
+func (eb *EventBus) Publish(event string) { // TODO: implement
 	for _, obs := range eb.listeners[event] {
 		obs.Update(event)
 	}
@@ -38,7 +38,7 @@ type recorder struct {
 	events []string
 }
 
-func (r *recorder) Update(event string) {
+func (r *recorder) Update(event string) { // TODO: implement
 	r.events = append(r.events, event)
 }
 

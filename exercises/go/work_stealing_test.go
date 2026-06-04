@@ -10,13 +10,13 @@ type WorkQueue struct {
 	items []int
 }
 
-func (q *WorkQueue) Push(item int) {
+func (q *WorkQueue) Push(item int) { // TODO: implement
 	q.mu.Lock()
 	q.items = append(q.items, item)
 	q.mu.Unlock()
 }
 
-func (q *WorkQueue) Pop() (int, bool) {
+func (q *WorkQueue) Pop() (int, bool) { // TODO: implement
 	q.mu.Lock()
 	defer q.mu.Unlock()
 	if len(q.items) == 0 {
@@ -27,7 +27,7 @@ func (q *WorkQueue) Pop() (int, bool) {
 	return item, true
 }
 
-func (q *WorkQueue) Steal() (int, bool) {
+func (q *WorkQueue) Steal() (int, bool) { // TODO: implement
 	q.mu.Lock()
 	defer q.mu.Unlock()
 	if len(q.items) == 0 {
@@ -38,7 +38,7 @@ func (q *WorkQueue) Steal() (int, bool) {
 	return item, true
 }
 
-func (q *WorkQueue) Len() int {
+func (q *WorkQueue) Len() int { // TODO: implement
 	q.mu.Lock()
 	defer q.mu.Unlock()
 	return len(q.items)
@@ -48,7 +48,7 @@ type WorkStealingPool struct {
 	queues []*WorkQueue
 }
 
-func NewWorkStealingPool(workers int) *WorkStealingPool {
+func NewWorkStealingPool(workers int) *WorkStealingPool { // TODO: implement
 	queues := make([]*WorkQueue, workers)
 	for i := range queues {
 		queues[i] = &WorkQueue{}
@@ -56,11 +56,11 @@ func NewWorkStealingPool(workers int) *WorkStealingPool {
 	return &WorkStealingPool{queues: queues}
 }
 
-func (p *WorkStealingPool) Submit(worker, item int) {
+func (p *WorkStealingPool) Submit(worker, item int) { // TODO: implement
 	p.queues[worker].Push(item)
 }
 
-func (p *WorkStealingPool) Process(worker int) (int, bool) {
+func (p *WorkStealingPool) Process(worker int) (int, bool) { // TODO: implement
 	// Try own queue first
 	if item, ok := p.queues[worker].Pop(); ok {
 		return item, true

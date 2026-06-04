@@ -22,11 +22,11 @@ type CircuitBreaker struct {
 	openedAt  time.Time
 }
 
-func NewCircuitBreaker(threshold int, timeout time.Duration) *CircuitBreaker {
+func NewCircuitBreaker(threshold int, timeout time.Duration) *CircuitBreaker { // TODO: implement
 	return &CircuitBreaker{state: CBClosed, threshold: threshold, timeout: timeout}
 }
 
-func (cb *CircuitBreaker) Call(fn func() error) error {
+func (cb *CircuitBreaker) Call(fn func() error) error { // TODO: implement
 	switch cb.state {
 	case CBOpen:
 		if time.Since(cb.openedAt) > cb.timeout {

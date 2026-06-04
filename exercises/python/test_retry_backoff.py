@@ -7,6 +7,7 @@ Lines marked # TODO: implement are the key logic for learners to delete and rewr
 
 import time
 import random
+import pytest
 
 
 def retry_with_backoff(  # TODO: implement
@@ -60,27 +61,28 @@ def test_succeeds_after_failures():
     assert attempts == 3
 
 
+def _raise_value_error():
+    raise ValueError("permanent")
+
+
 def test_exhausts_retries():
-    try:
-        retry_with_backoff(
-            lambda: (_ for _ in ()).throw(ValueError("permanent")),
-            max_retries=2,
-            base_delay=0.001,
-        )
-        assert False, "Should have raised ValueError"
-    except ValueError:
-        pass
+    with pytest.raises(ValueError):
+        retry_with_backoff(_raise_value_error, max_retries=2, base_delay=0.001)
+
+
+def _raise_runtime_error():
+    raise RuntimeError("fail")
 
 
 def test_exponential_delay():
     start = time.monotonic()
     try:
         retry_with_backoff(
-            lambda: (_ for _ in ()).throw(RuntimeError("fail")),
+            _raise_runtime_error,
             max_retries=3,
             base_delay=0.005,
             max_delay=1.0,
-            jitter=0.0,  # No jitter for predictable timing
+            jitter=0.0,
         )
     except RuntimeError:
         pass
@@ -102,7 +104,7 @@ def test_max_delay_cap():
     time.sleep = mock_sleep
     try:
         retry_with_backoff(
-            lambda: (_ for _ in ()).throw(RuntimeError("fail")),
+            _raise_runtime_error,
             max_retries=10,
             base_delay=1.0,
             max_delay=5.0,

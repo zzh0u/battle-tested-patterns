@@ -15,26 +15,26 @@ type Rc[T any] struct {
 	inner *RcInner[T]
 }
 
-func NewRc[T any](value T, dropped *bool) Rc[T] {
+func NewRc[T any](value T, dropped *bool) Rc[T] { // TODO: implement
 	return Rc[T]{inner: &RcInner[T]{value: value, refCount: 1, dropped: dropped}}
 }
 
-func (r Rc[T]) Clone() Rc[T] {
+func (r Rc[T]) Clone() Rc[T] { // TODO: implement
 	atomic.AddInt64(&r.inner.refCount, 1)
 	return Rc[T]{inner: r.inner}
 }
 
-func (r Rc[T]) Drop() {
+func (r Rc[T]) Drop() { // TODO: implement
 	if atomic.AddInt64(&r.inner.refCount, -1) == 0 {
 		*r.inner.dropped = true
 	}
 }
 
-func (r Rc[T]) RefCount() int64 {
+func (r Rc[T]) RefCount() int64 { // TODO: implement
 	return atomic.LoadInt64(&r.inner.refCount)
 }
 
-func (r Rc[T]) Value() T {
+func (r Rc[T]) Value() T { // TODO: implement
 	return r.inner.value
 }
 
