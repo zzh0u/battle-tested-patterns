@@ -1,6 +1,7 @@
 import DefaultTheme from 'vitepress/theme';
 import type { Theme } from 'vitepress';
 import { defineAsyncComponent, defineComponent, h } from 'vue';
+import VizSkeleton from './components/VizSkeleton.vue';
 import './custom.css';
 
 const vizComponents: Record<string, () => Promise<any>> = {
@@ -55,7 +56,11 @@ const vizComponents: Record<string, () => Promise<any>> = {
 };
 
 function clientOnly(loader: () => Promise<any>) {
-  const AsyncComp = defineAsyncComponent(loader);
+  const AsyncComp = defineAsyncComponent({
+    loader,
+    loadingComponent: VizSkeleton,
+    delay: 0,
+  });
   return defineComponent({
     setup() {
       return () =>
