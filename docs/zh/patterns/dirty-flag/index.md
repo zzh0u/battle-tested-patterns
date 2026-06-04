@@ -60,7 +60,7 @@ difficulty: "beginner"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Chromium/Blink | [layout_object.h (NeedsLayout)](https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/core/layout/layout_object.h) | `NeedsLayout()` 返回布局对象的几何是否脏。CSS 属性变更时，`SetNeedsLayout()` 将节点及祖先标记为脏。布局计算仅在下一个布局阶段执行——不会在每次样式变更时触发。这将数百次 DOM 变更批处理为单次布局计算。 |
+| Chromium/Blink | [layout_object.h#L1425-L1430](https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/core/layout/layout_object.h#L1425-L1430) | `NeedsLayout()` 返回布局对象的几何是否脏。CSS 属性变更时，`SetNeedsLayout()` 将节点及祖先标记为脏。布局计算仅在下一个布局阶段执行——不会在每次样式变更时触发。这将数百次 DOM 变更批处理为单次布局计算。 |
 | React | [ReactFiberFlags.js#L18-L22](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactFiberFlags.js#L18-L22) | Fiber 标志如 `Placement`、`Update`、`Deletion` 是 fiber 节点上的脏标记。状态变更时，fiber 被标记。提交阶段仅处理具有非零标志的 fiber，完全跳过未变化的子树。 |
 
 ## 实现

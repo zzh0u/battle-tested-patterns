@@ -67,7 +67,7 @@ difficulty: "beginner"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| CPython | [refcount.h#L255-L310](https://github.com/python/cpython/blob/main/Include/refcount.h#L255-L310) | `Py_INCREF`（L255-L310）是递增 `ob_refcnt` 的内联函数。`Py_DECREF`（L417-L430）递减并在归零时调用 `_Py_Dealloc`。每个 Python 对象在 `PyObject`（[object.h](https://github.com/python/cpython/blob/main/Include/object.h)）中携带 `ob_refcnt`。这是主要的内存管理机制——GC 仅用于打破引用循环。 |
+| CPython | [refcount.h#L255-L310](https://github.com/python/cpython/blob/main/Include/refcount.h#L255-L310) | `Py_INCREF`（L255-L310）是递增 `ob_refcnt` 的内联函数。`Py_DECREF`（L417-L430）递减并在归零时调用 `_Py_Dealloc`。每个 Python 对象在 `PyObject`（[object.h#L127-L150](https://github.com/python/cpython/blob/main/Include/object.h#L127-L150)）中携带 `ob_refcnt`。这是主要的内存管理机制——GC 仅用于打破引用循环。 |
 | Rust std | [sync.rs#L269-L276](https://github.com/rust-lang/rust/blob/master/library/alloc/src/sync.rs#L269-L276) | `Arc<T>`（原子引用计数）结构体定义在 L269。`Drop` 实现（L2799-L2875）对强计数调用 `fetch_sub(1, Release)`，Acquire 屏障，归零时调用 `drop_slow()`。在 Tokio、Actix 和操作系统级 Rust 代码中广泛使用。 |
 
 ## 实现

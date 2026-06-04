@@ -67,7 +67,7 @@ Reference counting assigns each shared resource a counter. Every new owner (clon
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| CPython | [refcount.h#L255-L310](https://github.com/python/cpython/blob/main/Include/refcount.h#L255-L310) | `Py_INCREF` (L255-L310) is the inline function that increments `ob_refcnt`. `Py_DECREF` (L417-L430) decrements and calls `_Py_Dealloc` at zero. Every Python object carries `ob_refcnt` in `PyObject` ([object.h](https://github.com/python/cpython/blob/main/Include/object.h)). This is the primary memory management mechanism -- GC only exists to break reference cycles. |
+| CPython | [refcount.h#L255-L310](https://github.com/python/cpython/blob/main/Include/refcount.h#L255-L310) | `Py_INCREF` (L255-L310) is the inline function that increments `ob_refcnt`. `Py_DECREF` (L417-L430) decrements and calls `_Py_Dealloc` at zero. Every Python object carries `ob_refcnt` in `PyObject` ([object.h#L127-L150](https://github.com/python/cpython/blob/main/Include/object.h#L127-L150)). This is the primary memory management mechanism -- GC only exists to break reference cycles. |
 | Rust std | [sync.rs#L269-L276](https://github.com/rust-lang/rust/blob/master/library/alloc/src/sync.rs#L269-L276) | `Arc<T>` (Atomic Reference Counted) struct at L269. `Drop` impl (L2799-L2875) calls `fetch_sub(1, Release)` on strong count, Acquire fence, then `drop_slow()` at zero. Used pervasively across Tokio, Actix, and OS-level Rust code. |
 
 ## Implementation
