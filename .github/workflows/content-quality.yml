@@ -5,10 +5,12 @@ on:
     branches: [main]
     paths:
       - "docs/patterns/**"
+      - "docs/zh/patterns/**"
       - "exercises/**"
   pull_request:
     paths:
       - "docs/patterns/**"
+      - "docs/zh/patterns/**"
       - "exercises/**"
 
 jobs:
@@ -56,6 +58,62 @@ jobs:
             fi
           done
           exit $exit_code
+
+  check-zh-parity:
+    name: Verify EN-ZH code parity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check ZH code blocks match EN
+        run: |
+          python3 - <<'PYEOF'
+          import re, os, sys
+
+          base = 'docs/patterns'
+          zh_base = 'docs/zh/patterns'
+          errors = 0
+
+          for d in sorted(os.listdir(base)):
+              en_path = os.path.join(base, d, 'index.md')
+              zh_path = os.path.join(zh_base, d, 'index.md')
+              if not os.path.isfile(en_path):
+                  continue
+              if not os.path.isfile(zh_path):
+                  print(f"::error file={en_path}::Missing ZH translation: {zh_path}")
+                  errors += 1
+                  continue
+
+              with open(en_path) as f:
+                  en = f.read()
+              with open(zh_path) as f:
+                  zh = f.read()
+
+              code_langs = {'typescript', 'python', 'rust', 'go'}
+              en_blocks = [(l, c) for l, c in re.findall(r'```(\w+).*?\n(.*?)```', en, re.DOTALL) if l in code_langs]
+              zh_blocks = [(l, c) for l, c in re.findall(r'```(\w+).*?\n(.*?)```', zh, re.DOTALL) if l in code_langs]
+
+              if len(en_blocks) != len(zh_blocks):
+                  print(f"::error file={zh_path}::Code block count mismatch: EN={len(en_blocks)}, ZH={len(zh_blocks)}")
+                  errors += 1
+                  continue
+
+              for i, ((el, ec), (zl, zc)) in enumerate(zip(en_blocks, zh_blocks)):
+                  if el != zl:
+                      print(f"::error file={zh_path}::Block {i} language mismatch: EN={el}, ZH={zl} (tab order wrong)")
+                      errors += 1
+                  elif ec != zc:
+                      print(f"::error file={zh_path}::Block {i} [{el}] content differs from EN")
+                      errors += 1
+
+          if errors:
+              print(f"\n{errors} parity error(s) found")
+              sys.exit(1)
+          else:
+              print("✅ All ZH code blocks match EN")
+          PYEOF
 
   check-exercises:
     name: Verify exercises exist for patterns
