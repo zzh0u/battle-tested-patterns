@@ -204,6 +204,7 @@ Then exercises at 2 difficulty levels — all with tests you can run.
 | 9 system case studies | How React, Linux, Go, Git, Node.js, Rust, game engines, and distributed systems compose patterns |
 | 4 languages | TypeScript, Go, Python, Rust — idiomatic implementations |
 | Bilingual | Full English + Chinese documentation |
+| Learning guides | [Learning Paths](https://totoro-jam.github.io/battle-tested-patterns/guide/learning-paths) · [Complexity Cheat Sheet](https://totoro-jam.github.io/battle-tested-patterns/guide/complexity) · [Pattern Comparison](https://totoro-jam.github.io/battle-tested-patterns/guide/pattern-comparison) · [Study Plan](STUDY_PLAN.md) |
 
 ## Quick Start
 

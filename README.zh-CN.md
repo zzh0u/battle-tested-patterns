@@ -204,6 +204,7 @@ const perms = READ | WRITE;            perms = READ | WRITE
 | 9 个系统案例 | React、Linux、Go、Git、Node.js、Rust、游戏引擎、分布式系统如何组合模式 |
 | 4 种语言 | TypeScript、Go、Python、Rust 地道实现 |
 | 双语 | 完整中英文文档 |
+| 学习指南 | [学习路径](https://totoro-jam.github.io/battle-tested-patterns/zh/guide/learning-paths) · [复杂度速查表](https://totoro-jam.github.io/battle-tested-patterns/zh/guide/complexity) · [模式对比](https://totoro-jam.github.io/battle-tested-patterns/zh/guide/pattern-comparison) · [学习计划](STUDY_PLAN.md) |
 
 ## 快速开始
 
