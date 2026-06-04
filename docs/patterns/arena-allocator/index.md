@@ -179,7 +179,7 @@ Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...
 ## More Production Uses
 
 - [Go arena](https://github.com/golang/go/blob/master/src/arena/arena.go) — experimental arena API in Go standard library
-- [V8](https://github.com/nickel-org/nickel.rs) — TODO: find correct V8 Zone allocator source link
+- V8 Engine — `Zone` allocator in `src/zone/zone.h` provides arena-style bump allocation for compiler temporaries
 - [Zig](https://github.com/ziglang/zig) — `std.mem.ArenaAllocator` as a core allocator pattern
 - [ECS game engines](https://github.com/SanderMertens/flecs) — component storage with arena-style allocation
 

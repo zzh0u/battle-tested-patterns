@@ -207,7 +207,7 @@ Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...
 
 - [Rust dyn Trait](https://github.com/rust-lang/rust) — trait objects use a vtable pointer for dynamic dispatch
 - [Go interfaces](https://github.com/golang/go) — interface values contain an itable (interface table) pointer
-- [SQLite VFS](https://github.com/nicknisi/v8) — Virtual File System layer uses function pointer struct for OS abstraction
+- [SQLite VFS](https://github.com/sqlite/sqlite) — Virtual File System layer uses function pointer struct for OS abstraction
 - [QEMU](https://github.com/qemu/qemu) — device models provide ops structs for memory-mapped I/O handlers
 
 ## Related Patterns
