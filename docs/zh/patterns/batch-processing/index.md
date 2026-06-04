@@ -120,6 +120,47 @@ class BatchProcessor:
             future.set_result(result)
 ```
 
+```rust [Rust]
+use std::sync::{Arc, Mutex};
+
+struct BatchProcessor<T, R> {
+    queue: Mutex<Vec<T>>,
+    process: Box<dyn Fn(Vec<T>) -> Vec<R> + Send + Sync>,
+    max_size: usize,
+}
+
+impl<T, R> BatchProcessor<T, R> {
+    fn new(
+        process: impl Fn(Vec<T>) -> Vec<R> + Send + Sync + 'static,
+        max_size: usize,
+    ) -> Arc<Self> {
+        Arc::new(Self {
+            queue: Mutex::new(Vec::new()),
+            process: Box::new(process),
+            max_size,
+        })
+    }
+
+    fn add(&self, item: T) -> Option<Vec<R>> {
+        let mut queue = self.queue.lock().unwrap();
+        queue.push(item);
+        if queue.len() >= self.max_size {
+            let batch: Vec<T> = queue.drain(..).collect();
+            Some((self.process)(batch))
+        } else {
+            None
+        }
+    }
+
+    fn flush(&self) -> Vec<R> {
+        let mut queue = self.queue.lock().unwrap();
+        let batch: Vec<T> = queue.drain(..).collect();
+        if batch.is_empty() { return Vec::new(); }
+        (self.process)(batch)
+    }
+}
+```
+
 ```go [Go]
 type BatchProcessor[T any, R any] struct {
 	queue   []batchEntry[T, R]
