@@ -13,3 +13,6 @@ Follow the relevant SOP before starting work to ensure consistency and quality.
 | 06 | [Broken Link Fix](06-broken-link-fix.md) | Fixing dead source URLs |
 | 07 | [CI/CD Verification](07-ci-cd-verification.md) | Post-push CI checks, secrets config, security audit |
 | 08 | [Release](08-release.md) | Tagging a version release (includes AI agent pre-review) |
+| 09 | [Vue Build Pitfalls](09-vue-build-pitfalls.md) | Avoiding Vue component build failures |
+| 10 | [Viz Component Audit](10-viz-component-audit.md) | Auditing interactive visualization components |
+| 11 | [Difficulty Classification](11-difficulty-classification.md) | Classifying pattern difficulty (beginner/intermediate/advanced) |

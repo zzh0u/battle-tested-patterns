@@ -63,8 +63,14 @@ exercises/rust/src/main.rs            # Add `mod bloom_filter;`
 Create `docs/patterns/<pattern-name>/index.md` following the template:
 
 ```markdown
+---
+description: "≤ 1 sentence"
+difficulty: "beginner | intermediate | advanced"
+---
 # Pattern: [Name]
 ## One Liner          — ≤ 30 English words, capture WHY not just WHAT
+<DifficultyBadge /> <DemoBadge />
+## Real-World Analogy — one everyday metaphor (parking lot, fuse, dishwasher, etc.)
 ## Core Idea          — concept + diagram (Mermaid, ASCII, or table — whichever fits best)
 ## Production Proof   — table with ≥ 2 projects, precise GitHub URLs to line numbers
                         Description must be specific enough to learn WITHOUT clicking
@@ -76,6 +82,12 @@ Create `docs/patterns/<pattern-name>/index.md` following the template:
 ## Related Patterns   — table linking to ≥ 2 related patterns with relationship description
 ## Challenge Questions — 3-4 scenario-based Q&A using ::: details syntax
 ```
+
+#### Difficulty Classification
+
+- **beginner**: single core mechanism, minimal prerequisites (bitmask, ring-buffer, observer, semaphore)
+- **intermediate**: combines 2-3 concepts, requires some background (LRU cache, circuit-breaker, trie, bloom-filter)
+- **advanced**: complex multi-component systems, strong prerequisites (MVCC, LSM tree, B+ tree, work-stealing)
 
 ### 4. Write Multi-Language Implementations
 

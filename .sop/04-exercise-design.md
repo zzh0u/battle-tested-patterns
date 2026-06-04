@@ -84,6 +84,15 @@ Reference implementations live in `exercises/answers/<language>/`:
 - Extracted from `docs/patterns/<name>/index.md` Implementation section
 - 46 files per language × 4 languages = 184 files
 
+## Cross-Language Consistency
+
+When a pattern has exercises in multiple languages, ensure API consistency:
+
+- **Method names**: use idiomatic naming per language (camelCase in TS, snake_case in Python/Rust, PascalCase in Go) but expose equivalent operations
+- **API surface**: if TS has `subscribe` and `unsubscribe`, all other languages should too
+- **Test coverage**: if TS tests `can()` transitions, Go/Rust/Python should have equivalent tests
+- **TODO markers**: all languages use `// TODO: implement` (or `# TODO: implement` for Python) on method signatures
+
 ## Checklist
 
 - [ ] ≥ 1 exercise file per pattern per language
@@ -92,3 +101,5 @@ Reference implementations live in `exercises/answers/<language>/`:
 - [ ] TODO markers on method signatures, not body lines
 - [ ] Test descriptions clearly state expected behavior
 - [ ] Answer files exist in `exercises/answers/` for all 4 languages
+- [ ] Cross-language API consistency verified (subscribe/unsubscribe, can(), etc.)
+- [ ] Go files have `// TODO: implement` on all implementation function signatures
