@@ -258,6 +258,8 @@ impl SkipList {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/skip_list.rs` · Go `exercises/go/skip_list_test.go` · Python `exercises/python/test_skip_list.py`
+
 ## When to Use
 
 - **In-memory sorted storage** — when you need sorted iteration + fast point lookups (Redis sorted sets)

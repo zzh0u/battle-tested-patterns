@@ -182,6 +182,8 @@ assert patch(ops) == ["a", "c", "e", "d"]
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/diff_patch.rs` · Go `exercises/go/diff_patch_test.go` · Python `exercises/python/test_diff_patch.py`
+
 ## When to Use
 
 - **UI reconciliation** — minimize DOM mutations by diffing virtual trees

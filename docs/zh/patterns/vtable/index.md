@@ -189,6 +189,8 @@ fn create_rect(w: f64, h: f64) -> Shape {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/vtable.rs` · Go `exercises/go/vtable_test.go` · Python `exercises/python/test_vtable.py`
+
 ## 何时使用
 
 - **插件架构** — 插件提供一组回调的 vtable 供宿主调用

@@ -222,6 +222,8 @@ impl WorkStealingScheduler {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/work_stealing.rs` · Go `exercises/go/work_stealing_test.go` · Python `exercises/python/test_work_stealing.py`
+
 ## 何时使用
 
 - **并行运行时** — goroutine 调度器（Go）、任务调度器（Tokio、Java ForkJoinPool）

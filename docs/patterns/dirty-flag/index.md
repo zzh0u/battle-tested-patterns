@@ -226,6 +226,8 @@ impl<T, F: Fn() -> T> DirtyFlag<T, F> {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/dirty_flag.rs` · Go `exercises/go/dirty_flag_test.go` · Python `exercises/python/test_dirty_flag.py`
+
 ## When to Use
 
 - **UI layout engines** -- mark nodes dirty on style change, batch layout computation

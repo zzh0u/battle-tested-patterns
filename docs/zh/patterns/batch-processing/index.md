@@ -126,6 +126,8 @@ func (bp *BatchProcessor[T, R]) flush() {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/batch_processing.rs` · Go `exercises/go/batch_processing_test.go` · Python `exercises/python/test_batch_processing.py`
+
 ## 何时使用
 
 - **数据库写入** — 批量 INSERT 替代 N 次单条 INSERT

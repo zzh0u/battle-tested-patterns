@@ -142,6 +142,8 @@ func (e *EventEmitter) Emit(event string, data any) {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/observer.rs` · Go `exercises/go/observer_test.go` · Python `exercises/python/test_observer.py`
+
 ## 何时使用
 
 - **事件驱动系统** — UI 事件、网络事件、消息队列

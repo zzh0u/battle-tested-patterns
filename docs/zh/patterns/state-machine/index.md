@@ -163,6 +163,8 @@ func (sm *StateMachine) State() string { return sm.current }
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/state_machine.rs` · Go `exercises/go/state_machine_test.go` · Python `exercises/python/test_state_machine.py`
+
 ## 何时使用
 
 - **协议实现** — TCP、HTTP、WebSocket 状态转换

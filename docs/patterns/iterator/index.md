@@ -168,6 +168,8 @@ func Collect[T any](seq iter.Seq[T]) []T {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/iterator.rs` · Go `exercises/go/iterator_test.go` · Python `exercises/python/test_iterator.py`
+
 ## When to Use
 
 - **Large/infinite sequences** — process millions of rows without loading all into memory

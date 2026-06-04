@@ -183,6 +183,8 @@ impl LamportClock {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/logical_clock.rs` · Go `exercises/go/logical_clock_test.go` · Python `exercises/python/test_logical_clock.py`
+
 ## When to Use
 
 - **Database revision tracking** -- etcd, CockroachDB, and Spanner use monotonic revisions for consistent snapshots and watch APIs

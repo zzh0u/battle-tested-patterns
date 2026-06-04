@@ -165,6 +165,8 @@ impl<T> BoundedQueue<T> {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/backpressure.rs` · Go `exercises/go/backpressure_test.go` · Python `exercises/python/test_backpressure.py`
+
 ## When to Use
 
 - **Stream processing** — prevent fast data sources from overwhelming processors

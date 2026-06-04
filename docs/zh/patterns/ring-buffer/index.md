@@ -178,6 +178,8 @@ func (r *RingBuffer[T]) Len() int { return r.cnt }
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/ring_buffer.rs` · Go `exercises/go/ring_buffer_test.go` · Python `exercises/python/test_ring_buffer.py`
+
 ## 何时使用
 
 - **固定大小队列** — 有界生产者-消费者缓冲区

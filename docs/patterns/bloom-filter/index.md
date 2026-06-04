@@ -197,6 +197,8 @@ class BloomFilter:
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/bloom_filter.rs` · Go `exercises/go/bloom_filter_test.go` · Python `exercises/python/test_bloom_filter.py`
+
 ## When to Use
 
 - **Database key lookup** — skip disk reads for keys that definitely don't exist (LevelDB, Cassandra, HBase)

@@ -160,6 +160,8 @@ print(original["users"])        # ["alice", "bob"] — unchanged
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/copy_on_write.rs` · Go `exercises/go/copy_on_write_test.go` · Python `exercises/python/test_copy_on_write.py`
+
 ## When to Use
 
 - **Read-heavy data** — config objects, parsed ASTs, cached responses

@@ -220,6 +220,8 @@ remaining = work_loop(
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/cooperative_scheduling.rs` · Go `exercises/go/cooperative_scheduling_test.go` · Python `exercises/python/test_cooperative_scheduling.py`
+
 ## When to Use
 
 - **UI thread work** — keep animations and input responsive while processing large datasets

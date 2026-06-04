@@ -136,6 +136,8 @@ impl<T> ObjectPool<T> {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/object_pool.rs` · Go `exercises/go/object_pool_test.go` · Python `exercises/python/test_object_pool.py`
+
 ## 何时使用
 
 - **高频分配** — 游戏循环、请求处理、粒子系统

@@ -180,6 +180,8 @@ impl Pipeline {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/middleware_chain.rs` · Go `exercises/go/middleware_chain_test.go` · Python `exercises/python/test_middleware_chain.py`
+
 ## When to Use
 
 - **HTTP request processing** -- authentication, logging, CORS, compression, rate limiting as composable layers (Express, Koa, Gin, ASP.NET)

@@ -189,6 +189,8 @@ fn create_rect(w: f64, h: f64) -> Shape {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/vtable.rs` · Go `exercises/go/vtable_test.go` · Python `exercises/python/test_vtable.py`
+
 ## When to Use
 
 - **Plugin architectures** — plugins provide a vtable of callbacks the host calls

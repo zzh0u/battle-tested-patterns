@@ -390,6 +390,8 @@ impl CheckpointableStore {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/checkpointing.rs` · Go `exercises/go/checkpointing_test.go` · Python `exercises/python/test_checkpointing.py`
+
 ## When to Use
 
 - **Database crash recovery** -- bound WAL replay time (PostgreSQL, MySQL)

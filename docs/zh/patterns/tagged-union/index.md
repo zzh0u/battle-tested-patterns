@@ -183,6 +183,8 @@ impl Value {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/tagged_union.rs` · Go `exercises/go/tagged_union_test.go` · Python `exercises/python/test_tagged_union.py`
+
 ## 何时使用
 
 - **脚本语言值** — 单一 Value 类型持有数字、字符串、数组等（Godot Variant、Lua TValue）

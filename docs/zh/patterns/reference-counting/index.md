@@ -258,6 +258,8 @@ impl<T> Drop for Rc<T> {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/reference_counting.rs` · Go `exercises/go/reference_counting_test.go` · Python `exercises/python/test_reference_counting.py`
+
 ## 何时使用
 
 - **需要确定性清理的共享所有权** -- 代码的多个部分需要同一资源，且需要在最后一个用户完成时立即释放（文件句柄、GPU 缓冲区、数据库连接）

@@ -197,6 +197,8 @@ class BloomFilter:
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/bloom_filter.rs` · Go `exercises/go/bloom_filter_test.go` · Python `exercises/python/test_bloom_filter.py`
+
 ## 何时使用
 
 - **数据库键查找** — 跳过对一定不存在的键的磁盘读取（LevelDB、Cassandra、HBase）

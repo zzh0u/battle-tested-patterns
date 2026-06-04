@@ -199,6 +199,8 @@ assert not has_flag(editor, DELETE)  # True
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/bitmask.rs` · Go `exercises/go/bitmask_test.go` · Python `exercises/python/test_bitmask.py`
+
 ## When to Use
 
 - **Multiple boolean flags on a hot path** — one integer instead of N booleans saves memory and enables batch operations

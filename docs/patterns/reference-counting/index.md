@@ -258,6 +258,8 @@ impl<T> Drop for Rc<T> {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/reference_counting.rs` · Go `exercises/go/reference_counting_test.go` · Python `exercises/python/test_reference_counting.py`
+
 ## When to Use
 
 - **Shared ownership with deterministic cleanup** -- multiple parts of code need the same resource, and you need it freed the moment the last user is done (file handles, GPU buffers, database connections)

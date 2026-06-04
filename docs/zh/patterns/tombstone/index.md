@@ -319,6 +319,8 @@ impl TombstoneStore {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/tombstone.rs` · Go `exercises/go/tombstone_test.go` · Python `exercises/python/test_tombstone.py`
+
 ## 何时使用
 
 - **LSM 树存储引擎** -- LevelDB、RocksDB、Cassandra 追加墓碑；压缩负责清理

@@ -228,6 +228,8 @@ impl Trie {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/trie.rs` · Go `exercises/go/trie_test.go` · Python `exercises/python/test_trie.py`
+
 ## 何时使用
 
 - **自动补全 / 输入提示** — 查找某前缀的所有补全

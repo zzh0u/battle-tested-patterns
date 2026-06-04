@@ -165,6 +165,8 @@ impl<T> BoundedQueue<T> {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/backpressure.rs` · Go `exercises/go/backpressure_test.go` · Python `exercises/python/test_backpressure.py`
+
 ## 何时使用
 
 - **流处理** — 防止快速数据源压垮处理器

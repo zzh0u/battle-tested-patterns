@@ -158,6 +158,8 @@ func (in *Interner) Resolve(id int) string {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/flyweight.rs` · Go `exercises/go/flyweight_test.go` · Python `exercises/python/test_flyweight.py`
+
 ## When to Use
 
 - **Repeated identical values** — strings, colors, icons, type tags

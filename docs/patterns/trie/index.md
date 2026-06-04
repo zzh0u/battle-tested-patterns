@@ -228,6 +228,8 @@ impl Trie {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/trie.rs` · Go `exercises/go/trie_test.go` · Python `exercises/python/test_trie.py`
+
 ## When to Use
 
 - **Autocomplete / type-ahead** — find all completions for a prefix

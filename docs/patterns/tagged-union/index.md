@@ -183,6 +183,8 @@ impl Value {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/tagged_union.rs` · Go `exercises/go/tagged_union_test.go` · Python `exercises/python/test_tagged_union.py`
+
 ## When to Use
 
 - **Scripting language values** — a single Value type holds numbers, strings, arrays, etc. (Godot Variant, Lua TValue)

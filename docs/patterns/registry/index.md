@@ -232,6 +232,8 @@ impl<T> Registry<T> {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/registry.rs` · Go `exercises/go/registry_test.go` · Python `exercises/python/test_registry.py`
+
 ## When to Use
 
 - **Plugin systems** -- load and discover plugins by name without compile-time coupling

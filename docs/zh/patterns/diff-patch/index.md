@@ -141,6 +141,8 @@ assert patch(ops) == ["a", "c", "e", "d"]
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/diff_patch.rs` · Go `exercises/go/diff_patch_test.go` · Python `exercises/python/test_diff_patch.py`
+
 ## 何时使用
 
 - **UI 协调** — 通过 diff 虚拟树最小化 DOM 变更

@@ -265,6 +265,8 @@ pub fn merge_k_sorted(streams: &[Vec<i32>]) -> Vec<i32> {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/merge_iterator.rs` · Go `exercises/go/merge_iterator_test.go` · Python `exercises/python/test_merge_iterator.py`
+
 ## 何时使用
 
 - **LSM 树读取** -- 将 memtable + 多个 SSTable 层级合并为一个有序视图（LevelDB、RocksDB）

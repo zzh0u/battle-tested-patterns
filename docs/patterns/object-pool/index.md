@@ -157,6 +157,8 @@ class ObjectPool:
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/object_pool.rs` · Go `exercises/go/object_pool_test.go` · Python `exercises/python/test_object_pool.py`
+
 ## When to Use
 
 - **High-frequency allocation** — game loops, request handlers, particle systems

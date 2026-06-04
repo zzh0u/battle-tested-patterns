@@ -191,6 +191,8 @@ impl ExprVisitor for Evaluator {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/visitor.rs` · Go `exercises/go/visitor_test.go` · Python `exercises/python/test_visitor.py`
+
 ## When to Use
 
 - **Compilers and interpreters** — evaluation, type checking, optimization passes over ASTs

@@ -226,6 +226,8 @@ impl<T, F: Fn() -> T> DirtyFlag<T, F> {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/dirty_flag.rs` · Go `exercises/go/dirty_flag_test.go` · Python `exercises/python/test_dirty_flag.py`
+
 ## 何时使用
 
 - **UI 布局引擎** -- 样式变更时标记节点为脏，批量执行布局计算

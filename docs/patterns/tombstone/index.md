@@ -319,6 +319,8 @@ impl TombstoneStore {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/tombstone.rs` · Go `exercises/go/tombstone_test.go` · Python `exercises/python/test_tombstone.py`
+
 ## When to Use
 
 - **LSM-tree storage engines** -- LevelDB, RocksDB, Cassandra append tombstones; compaction cleans up

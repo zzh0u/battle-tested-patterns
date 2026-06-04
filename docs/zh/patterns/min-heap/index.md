@@ -216,6 +216,8 @@ class MinHeap:
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/min_heap.rs` · Go `exercises/go/min_heap_test.go` · Python `exercises/python/test_min_heap.py`
+
 ## 何时使用
 
 - **任务调度** — 始终处理最高优先级（最低截止时间）的任务

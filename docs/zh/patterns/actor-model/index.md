@@ -175,6 +175,8 @@ impl<S> Actor<S> {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/actor_model.rs` · Go `exercises/go/actor_model_test.go` · Python `exercises/python/test_actor_model.py`
+
 ## 何时使用
 
 - **分布式系统** — Actor 自然映射到网络节点（Erlang/OTP、Akka Cluster）

@@ -224,6 +224,8 @@ impl HashRing {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/consistent_hashing.rs` · Go `exercises/go/consistent_hashing_test.go` · Python `exercises/python/test_consistent_hashing.py`
+
 ## 何时使用
 
 - **分布式缓存** — 路由键到缓存服务器，扩缩容时最小化缓存失效

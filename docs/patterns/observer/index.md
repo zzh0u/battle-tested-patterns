@@ -166,6 +166,8 @@ print(messages)  # ["hello", "world"] — unchanged
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/observer.rs` · Go `exercises/go/observer_test.go` · Python `exercises/python/test_observer.py`
+
 ## When to Use
 
 - **Event-driven systems** — UI events, network events, message queues

@@ -222,6 +222,8 @@ impl CircuitBreaker {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/circuit_breaker.rs` · Go `exercises/go/circuit_breaker_test.go` · Python `exercises/python/test_circuit_breaker.py`
+
 ## When to Use
 
 - **Microservice calls** — prevent cascading failures when a downstream service goes down

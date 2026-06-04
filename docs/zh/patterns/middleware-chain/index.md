@@ -180,6 +180,8 @@ impl Pipeline {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/middleware_chain.rs` · Go `exercises/go/middleware_chain_test.go` · Python `exercises/python/test_middleware_chain.py`
+
 ## 何时使用
 
 - **HTTP 请求处理** -- 认证、日志、CORS、压缩、限流作为可组合层（Express、Koa、Gin、ASP.NET）

@@ -191,6 +191,8 @@ impl ExprVisitor for Evaluator {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/visitor.rs` · Go `exercises/go/visitor_test.go` · Python `exercises/python/test_visitor.py`
+
 ## 何时使用
 
 - **编译器和解释器** — 对 AST 进行求值、类型检查、优化遍历

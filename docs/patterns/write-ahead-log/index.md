@@ -241,6 +241,8 @@ impl WriteAheadLog {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/write_ahead_log.rs` · Go `exercises/go/write_ahead_log_test.go` · Python `exercises/python/test_write_ahead_log.py`
+
 ## When to Use
 
 - **Databases** — crash recovery for transactions (PostgreSQL, SQLite, MySQL InnoDB)

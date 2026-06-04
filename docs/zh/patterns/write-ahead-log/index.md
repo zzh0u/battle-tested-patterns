@@ -241,6 +241,8 @@ impl WriteAheadLog {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/write_ahead_log.rs` · Go `exercises/go/write_ahead_log_test.go` · Python `exercises/python/test_write_ahead_log.py`
+
 ## 何时使用
 
 - **数据库** — 事务崩溃恢复（PostgreSQL、SQLite、MySQL InnoDB）

@@ -183,6 +183,8 @@ impl LRUCache {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/lru_cache.rs` · Go `exercises/go/lru_cache_test.go` · Python `exercises/python/test_lru_cache.py`
+
 ## When to Use
 
 - **Database query caching** — cache hot queries, evict cold ones

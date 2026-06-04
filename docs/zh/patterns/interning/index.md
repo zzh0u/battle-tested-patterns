@@ -166,6 +166,8 @@ impl Interner {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/interning.rs` · Go `exercises/go/interning_test.go` · Python `exercises/python/test_interning.py`
+
 ## 何时使用
 
 - **编译器和解释器** — 驻留标识符、关键字和类型描述符以实现快速相等性检查

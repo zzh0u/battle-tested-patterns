@@ -183,6 +183,8 @@ impl LamportClock {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/logical_clock.rs` · Go `exercises/go/logical_clock_test.go` · Python `exercises/python/test_logical_clock.py`
+
 ## 何时使用
 
 - **数据库修订追踪** -- etcd、CockroachDB 和 Spanner 使用单调修订号实现一致性快照和 watch API

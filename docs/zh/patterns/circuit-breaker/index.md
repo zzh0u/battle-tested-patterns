@@ -222,6 +222,8 @@ impl CircuitBreaker {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/circuit_breaker.rs` · Go `exercises/go/circuit_breaker_test.go` · Python `exercises/python/test_circuit_breaker.py`
+
 ## 何时使用
 
 - **微服务调用** — 防止下游服务宕机时的级联故障

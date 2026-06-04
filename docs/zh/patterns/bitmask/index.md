@@ -190,6 +190,8 @@ assert not has_flag(editor, DELETE)  # True
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/bitmask.rs` · Go `exercises/go/bitmask_test.go` · Python `exercises/python/test_bitmask.py`
+
 ## 何时使用
 
 - **热路径上的多布尔标志** — 一个整数替代 N 个布尔值，节省内存并支持批量操作

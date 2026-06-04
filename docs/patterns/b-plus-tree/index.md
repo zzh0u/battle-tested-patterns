@@ -498,6 +498,8 @@ impl BPlusTree {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/b_plus_tree.rs` · Go `exercises/go/b_plus_tree_test.go` · Python `exercises/python/test_b_plus_tree.py`
+
 ## When to Use
 
 - **Database indexes** -- every RDBMS uses B+ trees for primary and secondary indexes

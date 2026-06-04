@@ -498,6 +498,8 @@ impl BPlusTree {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/b_plus_tree.rs` · Go `exercises/go/b_plus_tree_test.go` · Python `exercises/python/test_b_plus_tree.py`
+
 ## 何时使用
 
 - **数据库索引** -- 所有关系数据库都用 B+ 树实现主键和二级索引

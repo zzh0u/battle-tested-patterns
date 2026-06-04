@@ -124,6 +124,8 @@ impl Semaphore {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/semaphore.rs` · Go `exercises/go/semaphore_test.go` · Python `exercises/python/test_semaphore.py`
+
 ## 何时使用
 
 - **限流** — 限制并发 API 调用、数据库连接

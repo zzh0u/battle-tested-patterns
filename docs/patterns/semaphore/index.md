@@ -150,6 +150,8 @@ impl Semaphore {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/semaphore.rs` · Go `exercises/go/semaphore_test.go` · Python `exercises/python/test_semaphore.py`
+
 ## When to Use
 
 - **Rate limiting** — limit concurrent API calls, database connections

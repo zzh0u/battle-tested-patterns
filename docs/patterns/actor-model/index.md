@@ -175,6 +175,8 @@ impl<S> Actor<S> {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/actor_model.rs` · Go `exercises/go/actor_model_test.go` · Python `exercises/python/test_actor_model.py`
+
 ## When to Use
 
 - **Distributed systems** — actors map naturally to network nodes (Erlang/OTP, Akka Cluster)

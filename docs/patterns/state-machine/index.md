@@ -186,6 +186,8 @@ traffic_light.send("TIMER")  # "green"
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/state_machine.rs` · Go `exercises/go/state_machine_test.go` · Python `exercises/python/test_state_machine.py`
+
 ## When to Use
 
 - **Protocol implementation** — TCP, HTTP, WebSocket state transitions

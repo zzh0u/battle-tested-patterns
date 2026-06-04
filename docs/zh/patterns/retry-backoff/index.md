@@ -138,6 +138,8 @@ func Retry(fn func() error, cfg Config) error {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/retry_backoff.rs` · Go `exercises/go/retry_backoff_test.go` · Python `exercises/python/test_retry_backoff.py`
+
 ## 何时使用
 
 - **网络请求** — HTTP、数据库连接、RPC

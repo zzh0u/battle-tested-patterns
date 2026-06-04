@@ -194,6 +194,8 @@ impl FreeList {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/free_list.rs` · Go `exercises/go/free_list_test.go` · Python `exercises/python/test_free_list.py`
+
 ## When to Use
 
 - **Game engines** — entity/component pools with rapid alloc/free cycles

@@ -291,6 +291,8 @@ class MinHeap:
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/min_heap.rs` · Go `exercises/go/min_heap_test.go` · Python `exercises/python/test_min_heap.py`
+
 ## When to Use
 
 - **Task scheduling** — always process the highest-priority (lowest deadline) task first

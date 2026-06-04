@@ -162,6 +162,8 @@ class Arena:
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/arena_allocator.rs` · Go `exercises/go/arena_allocator_test.go` · Python `exercises/python/test_arena_allocator.py`
+
 ## 何时使用
 
 - **编译器/解析器** — 解析期间分配 AST 节点，编译后一次性释放

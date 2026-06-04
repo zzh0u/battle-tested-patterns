@@ -224,6 +224,8 @@ impl HashRing {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/consistent_hashing.rs` · Go `exercises/go/consistent_hashing_test.go` · Python `exercises/python/test_consistent_hashing.py`
+
 ## When to Use
 
 - **Distributed caches** — route keys to cache servers, minimize cache invalidation on scale events

@@ -232,6 +232,8 @@ impl<T> Registry<T> {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/registry.rs` · Go `exercises/go/registry_test.go` · Python `exercises/python/test_registry.py`
+
 ## 何时使用
 
 - **插件系统** -- 按名称加载和发现插件，无需编译时耦合

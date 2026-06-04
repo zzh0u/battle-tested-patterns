@@ -201,6 +201,8 @@ impl MVCCStore {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
+Exercise files: Rust `exercises/rust/src/mvcc.rs` · Go `exercises/go/mvcc_test.go` · Python `exercises/python/test_mvcc.py`
+
 ## When to Use
 
 - **Databases** — snapshot isolation for concurrent transactions (PostgreSQL, MySQL InnoDB)

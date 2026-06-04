@@ -371,6 +371,8 @@ impl MerkleTree {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/merkle_tree.rs` · Go `exercises/go/merkle_tree_test.go` · Python `exercises/python/test_merkle_tree.py`
+
 ## 何时使用
 
 - **版本控制** -- 内容寻址存储，任何更改都可检测（Git）

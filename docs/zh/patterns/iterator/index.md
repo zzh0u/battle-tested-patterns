@@ -137,6 +137,8 @@ func Collect[T any](seq iter.Seq[T]) []T {
 
 运行练习：`pnpm test`（TypeScript）· `cargo test`（Rust）· `go test ./...`（Go）· `pytest`（Python）
 
+Exercise files: Rust `exercises/rust/src/iterator.rs` · Go `exercises/go/iterator_test.go` · Python `exercises/python/test_iterator.py`
+
 ## 何时使用
 
 - **大/无限序列** — 处理百万行数据无需全部加载到内存
