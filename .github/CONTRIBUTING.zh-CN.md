@@ -62,6 +62,24 @@ pnpm verify-links     # 验证源码链接
 3. 确保 CI 全绿
 4. 等待 review（参见 [SOP 05](../.sop/05-pr-review.md)）
 
+## 容易上手的贡献
+
+还没准备好完成一个完整模式？以下是很好的入门方式：
+
+- **添加语言实现** — 选择一个缺少 Rust/Go/Python 实现的模式，添加地道的版本
+- **添加练习** — 为现有模式编写新的测试场景
+- **改进图表** — 让 ASCII 图表更清晰或修复对齐
+- **修复失效链接** — 上游仓库重构后，源码链接可能失效
+- **翻译** — 改进中文翻译或添加新内容
+
+请查看标记为 [`good first issue`](https://github.com/Totoro-jam/battle-tested-patterns/labels/good%20first%20issue) 的 Issue。
+
+## 报告问题
+
+- **失效链接**：使用 [broken-link 模板](ISSUE_TEMPLATE/broken-link.md)
+- **新模式建议**：使用 [new-pattern 模板](ISSUE_TEMPLATE/new-pattern.md)
+- **其他**：直接开一个 Issue，附上相关上下文
+
 ## 行为准则
 
-尊重他人、建设性交流、专注质量。我们重视准确性胜过速度。
+本项目遵循 [Contributor Covenant 行为准则](../CODE_OF_CONDUCT.md)。尊重他人、建设性交流、专注质量。我们重视准确性胜过速度。
