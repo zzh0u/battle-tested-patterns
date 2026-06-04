@@ -16,7 +16,45 @@ React's reconciler is a masterclass in combining low-level patterns. The first f
 | [Min Heap](/patterns/min-heap/) | [`SchedulerMinHeap.js`](https://github.com/facebook/react/blob/main/packages/scheduler/src/SchedulerMinHeap.js#L17-L90) | Priority queue for scheduled tasks |
 | [Diff / Patch](/patterns/diff-patch/) | [`ReactChildFiber.js`](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactChildFiber.js#L1169-L1340) | Reconcile old and new children lists |
 
-See [Pattern Connections](/guide/pattern-connections) for how these five compose in a single render cycle.
+### How They Compose: A Single Render Cycle
+
+When you call `setState`, all five patterns fire in sequence:
+
+```text
+setState()
+  │
+  ▼
+┌──────────────────────────────────────────────────┐
+│ 1. MIN HEAP — scheduler inserts an update task   │
+│    with priority (lanes). The heap ensures the   │
+│    highest-priority update runs first.            │
+├──────────────────────────────────────────────────┤
+│ 2. COOPERATIVE SCHEDULING — workLoopConcurrent   │
+│    processes one fiber at a time, checking        │
+│    shouldYield() every 5ms. If the browser needs  │
+│    the thread, React pauses and resumes later.    │
+├──────────────────────────────────────────────────┤
+│ 3. DIFF / PATCH — for each fiber, reconcileChild │
+│    compares old children vs new children. It      │
+│    finds the minimal set of DOM operations.       │
+├──────────────────────────────────────────────────┤
+│ 4. BITMASK — each diffed fiber gets side-effect  │
+│    flags set: Placement|Update|Deletion. Flags   │
+│    are OR'd together and bubble up the tree.      │
+├──────────────────────────────────────────────────┤
+│ 5. DOUBLE BUFFERING — the entire render builds   │
+│    on the `workInProgress` tree. On commit, React │
+│    swaps current ↔ workInProgress atomically.     │
+│    The old tree becomes the next workInProgress.  │
+└──────────────────────────────────────────────────┘
+  │
+  ▼
+ DOM updated (commit phase)
+```
+
+The key insight: **these patterns are not independent features — they form a pipeline.** The heap decides *what* to render, cooperative scheduling decides *when* to render, diff/patch decides *what changed*, bitmasks encode *how* it changed, and double buffering ensures the swap is atomic.
+
+See [Pattern Connections](/guide/pattern-connections) for the full interactive composition diagram.
 
 ## More Patterns in React
 
