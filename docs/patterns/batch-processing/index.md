@@ -183,7 +183,7 @@ Exercise files: Rust `exercises/rust/src/batch_processing.rs` · Go `exercises/g
 
 ## More Production Uses
 
-- React `unstable_batchedUpdates`
+- React automatic batching (React 18+ batches all state updates by default)
 - [DataLoader](https://github.com/graphql/dataloader) — GraphQL N+1
 - [Redis](https://github.com/redis/redis) — Pipeline
 - [Elasticsearch](https://github.com/elastic/elasticsearch) — Bulk API
@@ -219,5 +219,5 @@ The size trigger takes priority whenever the queue reaches maxSize. As items pou
 ::: details Q4: Why does Kafka batch per-partition rather than using a single global batch across all partitions?
 **Answer:** Because each partition is an independent append-only log on a specific broker. A single cross-partition batch would need to be split at send time anyway.
 
-Batching per-partition means each batch maps to exactly one network request to one broker, keeping the I/O path simple. It also preserves per-partition ordering guarantees. A global batch would require grouping by destination at flush time, adding complexity with no throughput benefit.
+Batching per-partition means each batch targets a specific broker (the partition leader). The Sender then groups multiple partition batches destined for the same broker into a single `ProduceRequest`, minimizing network round-trips. It also preserves per-partition ordering guarantees. A global batch would lose the natural partition→broker mapping, adding complexity with no throughput benefit.
 :::

@@ -265,7 +265,7 @@ Exercise files: Rust `exercises/rust/src/event_loop.rs` · Go `exercises/go/even
 Solutions: (1) offload CPU work to a `worker_threads` pool, (2) break computation into chunks with `setImmediate()` to yield back to the event loop between chunks, (3) use a separate microservice for heavy computation. This is the fundamental tradeoff of the event loop model -- cooperative multitasking means one bad actor blocks everyone.
 :::
 
-::: details Q2: Redis is single-threaded and uses an event loop, yet it handles 100K+ operations per second. How?
+::: details Q2: Redis uses a single-threaded event loop for command execution (with optional I/O threads since Redis 6.0), yet it handles 100K+ operations per second. How?
 **Answer:** Redis operations are extremely fast -- most are O(1) hash table lookups or O(log N) sorted set operations that take microseconds. The event loop overhead is negligible compared to network I/O time.
 
 The bottleneck is not CPU but network: reading/writing to sockets, parsing the protocol, and serializing responses. Since Redis uses non-blocking I/O via `aeProcessEvents`, it processes one command per event (read → parse → execute → write) and immediately moves to the next ready socket. There's no context switching, no lock contention, and the entire dataset fits in memory -- pure sequential throughput.

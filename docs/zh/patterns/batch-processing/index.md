@@ -180,7 +180,7 @@ Exercise files: Rust `exercises/rust/src/batch_processing.rs` · Go `exercises/g
 
 ## 更多生产案例
 
-- React `unstable_batchedUpdates`
+- React 自动批处理（React 18+ 默认批处理所有状态更新）
 - [DataLoader](https://github.com/graphql/dataloader) — GraphQL N+1
 - [Redis](https://github.com/redis/redis) — Pipeline
 - [Elasticsearch](https://github.com/elastic/elasticsearch) — Bulk API
@@ -216,5 +216,5 @@ Exercise files: Rust `exercises/rust/src/batch_processing.rs` · Go `exercises/g
 ::: details Q4: 为什么 Kafka 按分区批处理，而不是使用跨所有分区的单一全局批次？
 **答案：** 因为每个分区是特定 broker 上的独立追加日志。单一的跨分区批次在发送时无论如何都需要拆分。
 
-按分区批处理意味着每个批次精确映射到对一个 broker 的一次网络请求，保持 I/O 路径简洁。它还保留了每分区的顺序保证。全局批次在刷新时需要按目标分组，增加了复杂度但没有吞吐量收益。
+按分区批处理意味着每个批次指向特定的 broker（分区 leader）。Sender 随后将目标为同一 broker 的多个分区批次合并为一个 `ProduceRequest`，最大限度减少网络往返。它还保留了每分区的顺序保证。全局批次会失去天然的分区→broker 映射，增加了复杂度但没有吞吐量收益。
 :::

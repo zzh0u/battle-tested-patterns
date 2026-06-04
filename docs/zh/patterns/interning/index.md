@@ -215,7 +215,7 @@ Exercise files: Rust `exercises/rust/src/interning.rs` · Go `exercises/go/inter
 ::: details Q2: Ruby Symbol 被驻留且永不被垃圾回收。有什么安全风险？
 **答案：** 攻击者可以通过生成无限的唯一 Symbol（例如通过 `to_sym` 将用户输入转换为 Symbol）来耗尽服务器内存。由于 Symbol 永不被 GC，每个唯一输入都会永久占用内存。
 
-这是一个真实漏洞（CVE-2013-0156）。修复方法：永远不要驻留用户控制的输入。对外部数据使用字符串，仅对已知常量使用 Symbol。Ruby 2.2+ 引入了可被 GC 的"可回收 Symbol"，但 `Symbol#to_s.to_sym` 仍会创建不可回收的。
+Symbol 表耗尽是 Ruby 中已知的攻击向量（相关漏洞包括 JSON gem 中的 CVE-2013-0269）。修复方法：永远不要驻留用户控制的输入。对外部数据使用字符串，仅对已知常量使用 Symbol。Ruby 2.2+ 引入了"可回收 Symbol"——动态创建的 Symbol（包括通过 `to_sym`）现在可以被垃圾回收。只有源码中直接出现的字面量 Symbol 仍是不可回收的。
 :::
 
 ::: details Q3: 为什么 Rust 编译器使用 u32 而不是 u64 或 usize 作为 Symbol？

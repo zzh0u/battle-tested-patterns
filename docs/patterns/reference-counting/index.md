@@ -314,7 +314,7 @@ CPython's cycle collector (`gc` module) periodically walks objects that *could* 
 
 Drop is different: before freeing the resource, all previous writes by all threads must be visible. `Release` on the decrement ensures that the thread doing the final cleanup (which uses an `Acquire` fence) sees all data written by every thread that ever held a reference. Without this, the destructor might read stale data.
 
-This is a classic performance optimization -- `Relaxed` is essentially free on x86, while `Release` involves a store barrier.
+On x86 (Total Store Ordering), both `Relaxed` and `Release` RMW operations compile to the same `lock xadd` instruction — the distinction is free on x86. The ordering matters on weakly-ordered architectures like ARM, where `Release` requires a store barrier. Rust uses `Relaxed` for clone and `Release` for drop to ensure correctness across all architectures.
 :::
 
 ::: details Q4: You're building a resource pool. Should you use reference counting or a finalizer/destructor?

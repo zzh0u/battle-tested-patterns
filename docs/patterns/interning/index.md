@@ -215,7 +215,7 @@ If the average identifier is 12 characters with 5x duplication, raw storage cost
 ::: details Q2: Ruby Symbols are interned and never garbage-collected. What's the security risk?
 **Answer:** An attacker can exhaust server memory by generating unlimited unique symbols (e.g., converting user input to symbols via `to_sym`). Since symbols are never GC'd, each unique input permanently consumes memory.
 
-This was a real vulnerability (CVE-2013-0156). The fix: never intern user-controlled input. Use strings for external data, symbols only for known constants. Ruby 2.2+ introduced "mortal symbols" that can be GC'd, but `Symbol#to_s.to_sym` still creates immortal ones.
+Symbol table exhaustion was a known attack vector in Ruby (related vulnerabilities include CVE-2013-0269 in the JSON gem). The fix: never intern user-controlled input. Use strings for external data, symbols only for known constants. Ruby 2.2+ introduced "mortal symbols" — dynamically created symbols (including via `to_sym`) are now garbage-collectible. Only symbols that appear literally in source code remain immortal.
 :::
 
 ::: details Q3: Why does the Rust compiler use u32 for Symbol instead of u64 or usize?
