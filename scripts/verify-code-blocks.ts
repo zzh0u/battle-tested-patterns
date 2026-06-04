@@ -187,7 +187,7 @@ function verifyGo(block: CodeBlock): string | null {
   }
 
   // Write go.mod
-  writeFileSync(join(dir, 'go.mod'), 'module verify\n\ngo 1.22\n');
+  writeFileSync(join(dir, 'go.mod'), 'module verify\n\ngo 1.23\n');
   writeFileSync(join(dir, 'main.go'), code);
   try {
     execSync(`cd "${dir}" && go build ./... 2>&1`, { timeout: 15000 });
