@@ -14,10 +14,10 @@ An iterator is an object that produces values one at a time via a `next()` metho
 
 ```mermaid
 flowchart LR
-    S["Source\n[1,2,3,4,5]"] --> F["filter\n(x > 2)"] --> M["map\n(x × 10)"] --> C["collect\n[30,40,50]"]
+    S["Source\n[1,2,...,10]"] --> F["filter\n(isOdd)"] --> M["map\n(×10)"] --> T["take(3)"] --> C["collect\n[10,30,50]"]
 ```
 
-No intermediate arrays are created. Each element flows through the entire chain before the next one starts.
+No intermediate arrays are created. Each element flows through the entire chain before the next one starts. `take(3)` stops after 3 results — elements 6-10 are never touched.
 
 **Try it yourself** — step through array and tree iterators, watching elements get visited one at a time:
 

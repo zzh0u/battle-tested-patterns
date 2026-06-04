@@ -14,7 +14,7 @@ description: "逐个处理序列中的元素而不实例化整个集合，通过
 
 ```mermaid
 flowchart LR
-    S["源\n[1,2,3,4,5]"] --> F["filter\n(x > 2)"] --> M["map\n(x × 10)"] --> C["collect\n[30,40,50]"]
+    S["源\n[1,2,...,10]"] --> F["filter\n(isOdd)"] --> M["map\n(×10)"] --> T["take(3)"] --> C["collect\n[10,30,50]"]
 ```
 
 **动手试试** — 逐步遍历数组和树迭代器，观察元素被逐个访问：
