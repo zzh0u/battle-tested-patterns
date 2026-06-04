@@ -103,11 +103,12 @@ Copy-on-Write    → slice append 容量不足时才复制
 | [**Skip List**](/zh/patterns/skip-list/) | | ✅ | | | | |
 | [**LRU Cache**](/zh/patterns/lru-cache/) | | ✅ | ✅ | | ✅ | |
 | [**Trie**](/zh/patterns/trie/) | | ✅ | | ✅ | | |
-| [**Bloom Filter**](/zh/patterns/bloom-filter/) | | ✅ | | | ✅ | |
+| [**Bloom Filter**](/zh/patterns/bloom-filter/) | | | | | ✅ | |
 | [**Work Stealing**](/zh/patterns/work-stealing/) | | | ✅ | | | |
 | [**Free List**](/zh/patterns/free-list/) | | | ✅ | ✅ | | |
 | [**Semaphore**](/zh/patterns/semaphore/) | | | ✅ | ✅ | | |
 | [**Object Pool**](/zh/patterns/object-pool/) | | | ✅ | | | |
+| [**Flyweight**](/zh/patterns/flyweight/) | | | ✅ | | | |
 | [**Rate Limiter**](/zh/patterns/rate-limiter/) | | | ✅ | ✅ | | |
 | [**Arena Allocator**](/zh/patterns/arena-allocator/) | | | ✅ | | | |
 | [**State Machine**](/zh/patterns/state-machine/) | | | | ✅ | | |
@@ -116,11 +117,11 @@ Copy-on-Write    → slice append 容量不足时才复制
 | [**Vtable**](/zh/patterns/vtable/) | | | | ✅ | | |
 | [**Reference Counting**](/zh/patterns/reference-counting/) | | | | ✅ | | |
 | [**Copy-on-Write**](/zh/patterns/copy-on-write/) | | ✅ | ✅ | ✅ | | |
-| [**Tombstone**](/zh/patterns/tombstone/) | | ✅ | | | | ✅ |
+| [**Tombstone**](/zh/patterns/tombstone/) | | | | | | ✅ |
 | [**MVCC**](/zh/patterns/mvcc/) | | | | | ✅ | |
 | [**Write-Ahead Log**](/zh/patterns/write-ahead-log/) | | | | | ✅ | ✅ |
 | [**B+ Tree**](/zh/patterns/b-plus-tree/) | | | | ✅ | ✅ | |
-| [**Checkpointing**](/zh/patterns/checkpointing/) | | | | | ✅ | |
+| [**Checkpointing**](/zh/patterns/checkpointing/) | | ✅ | | | ✅ | |
 | [**Event Loop**](/zh/patterns/event-loop/) | | ✅ | ✅ | ✅ | | |
 | [**Iterator**](/zh/patterns/iterator/) | ✅ | | ✅ | | | |
 | [**Tagged Union**](/zh/patterns/tagged-union/) | ✅ | | ✅ | | | |

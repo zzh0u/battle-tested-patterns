@@ -55,7 +55,7 @@ const systems: SystemEntry[] = [
       { pattern: 'Skip List', patternZh: '跳表', link: '/patterns/skip-list/', where: 'Sorted sets (zset) — t_zset.c', whereZh: '有序集合（zset）— t_zset.c', why: 'O(log N) insert + range queries, simpler than balanced trees', whyZh: 'O(log N) 插入 + 范围查询，比平衡树简单' },
       { pattern: 'LRU Cache', patternZh: 'LRU 缓存', link: '/patterns/lru-cache/', where: 'maxmemory-policy — evict.c', whereZh: 'maxmemory-policy — evict.c', why: 'Approximate LRU via random sampling of 5 keys', whyZh: '通过随机采样 5 个键近似 LRU' },
       { pattern: 'Trie (RAX)', patternZh: 'Trie (RAX)', link: '/patterns/trie/', where: 'Cluster slot routing — rax.c', whereZh: '集群键槽路由 — rax.c', why: 'Memory-efficient prefix lookups for routing', whyZh: '内存高效的前缀查找用于路由' },
-      { pattern: 'Bloom Filter', patternZh: '布隆过滤器', link: '/patterns/bloom-filter/', where: 'RedisBloom module', whereZh: 'RedisBloom 模块', why: 'O(1) membership test to prevent cache penetration', whyZh: 'O(1) 成员检测防止缓存穿透' },
+      { pattern: 'Checkpointing', patternZh: '检查点', link: '/patterns/checkpointing/', where: 'rdb.c — fork + serialize dataset to RDB file', whereZh: 'rdb.c — fork 子进程序列化数据集到 RDB 文件', why: 'Point-in-time snapshot for crash recovery without blocking', whyZh: '无阻塞的时间点快照用于崩溃恢复' },
       { pattern: 'Batch Processing', patternZh: '批处理', link: '/patterns/batch-processing/', where: 'PIPELINE, MULTI/EXEC', whereZh: 'PIPELINE、MULTI/EXEC', why: 'Batch N commands into one network round-trip', whyZh: '将 N 条命令批量打包为一次网络往返' },
     ],
   },

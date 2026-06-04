@@ -103,11 +103,12 @@ That's what React's team built. That's what Redis, Go, Linux, PostgreSQL, and Ka
 | [**Skip List**](/patterns/skip-list/) | | ✅ | | | | |
 | [**LRU Cache**](/patterns/lru-cache/) | | ✅ | ✅ | | ✅ | |
 | [**Trie**](/patterns/trie/) | | ✅ | | ✅ | | |
-| [**Bloom Filter**](/patterns/bloom-filter/) | | ✅ | | | ✅ | |
+| [**Bloom Filter**](/patterns/bloom-filter/) | | | | | ✅ | |
 | [**Work Stealing**](/patterns/work-stealing/) | | | ✅ | | | |
 | [**Free List**](/patterns/free-list/) | | | ✅ | ✅ | | |
 | [**Semaphore**](/patterns/semaphore/) | | | ✅ | ✅ | | |
 | [**Object Pool**](/patterns/object-pool/) | | | ✅ | | | |
+| [**Flyweight**](/patterns/flyweight/) | | | ✅ | | | |
 | [**Rate Limiter**](/patterns/rate-limiter/) | | | ✅ | ✅ | | |
 | [**Arena Allocator**](/patterns/arena-allocator/) | | | ✅ | | | |
 | [**State Machine**](/patterns/state-machine/) | | | | ✅ | | |
@@ -116,11 +117,11 @@ That's what React's team built. That's what Redis, Go, Linux, PostgreSQL, and Ka
 | [**Vtable**](/patterns/vtable/) | | | | ✅ | | |
 | [**Reference Counting**](/patterns/reference-counting/) | | | | ✅ | | |
 | [**Copy-on-Write**](/patterns/copy-on-write/) | | ✅ | ✅ | ✅ | | |
-| [**Tombstone**](/patterns/tombstone/) | | ✅ | | | | ✅ |
+| [**Tombstone**](/patterns/tombstone/) | | | | | | ✅ |
 | [**MVCC**](/patterns/mvcc/) | | | | | ✅ | |
 | [**Write-Ahead Log**](/patterns/write-ahead-log/) | | | | | ✅ | ✅ |
 | [**B+ Tree**](/patterns/b-plus-tree/) | | | | ✅ | ✅ | |
-| [**Checkpointing**](/patterns/checkpointing/) | | | | | ✅ | |
+| [**Checkpointing**](/patterns/checkpointing/) | | ✅ | | | ✅ | |
 | [**Event Loop**](/patterns/event-loop/) | | ✅ | ✅ | ✅ | | |
 | [**Iterator**](/patterns/iterator/) | ✅ | | ✅ | | | |
 | [**Tagged Union**](/patterns/tagged-union/) | ✅ | | ✅ | | | |
