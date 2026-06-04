@@ -15,7 +15,7 @@ Share data by reference until someone modifies it — only then make a private c
 
 ## Real-World Analogy
 
-A shared Google Doc link set to 'view only.' Everyone reads the same document. The moment someone wants to edit, the system creates their own copy. Until that write happens, there's only one copy in memory.
+A shared Google Doc link set to 'view only.' Everyone reads the same document. The moment someone wants to edit, the system creates their own copy. Until that write happens, only one copy exists.
 
 ## Core Idea
 
