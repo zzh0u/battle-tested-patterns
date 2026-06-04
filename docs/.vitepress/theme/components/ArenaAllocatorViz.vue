@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, reactive } from 'vue';
 import { useI18n } from '../composables/useI18n';
 
 const { t } = useI18n();
@@ -10,9 +10,17 @@ interface Allocation {
   size: number;
   color: string;
   label: string;
+  arenaIndex: number;
 }
 
-const ARENA_SIZE = 64;
+interface Arena {
+  id: number;
+  capacity: number;
+  pointer: number;
+  allocations: Allocation[];
+}
+
+const ARENA_CAPACITY = 32;
 const COLORS = [
   'var(--viz-primary)',
   'var(--viz-success)',
@@ -21,61 +29,184 @@ const COLORS = [
   '#ec4899',
   '#14b8a6',
   '#f97316',
+  '#06b6d4',
+  '#84cc16',
+  '#e11d48',
 ];
 
-let nextId = 1;
-let colorIdx = 0;
+const SIZE_OPTIONS = [
+  { label: () => t('Small (1)', '小 (1)'), value: 1 },
+  { label: () => t('Medium (2)', '中 (2)'), value: 2 },
+  { label: () => t('Large (4)', '大 (4)'), value: 4 },
+];
 
-const pointer = ref(0);
-const allocations = ref<Allocation[]>([]);
-const message = ref(t('Arena is empty — click "Allocate" to bump the pointer forward', 'Arena 为空 — 点击"分配"将指针向前推进'));
+let globalAllocId = 1;
+let globalColorIdx = 0;
+let arenaIdCounter = 1;
 
-const usedBytes = computed(() => pointer.value);
-const freeBytes = computed(() => ARENA_SIZE - pointer.value);
-const allocCount = computed(() => allocations.value.length);
+const selectedSize = ref(2);
+const customLabel = ref('');
 
-function randomSize(): number {
-  const sizes = [2, 4, 4, 8, 8, 8, 12, 16];
-  return sizes[Math.floor(Math.random() * sizes.length)];
+const arenas = ref<Arena[]>([
+  { id: arenaIdCounter++, capacity: ARENA_CAPACITY, pointer: 0, allocations: [] },
+]);
+
+const activeArenaIndex = ref(0);
+
+interface HistoryEntry {
+  action: 'alloc' | 'reset' | 'new-arena';
+  arenaId: number;
+  label?: string;
+  offset?: number;
+  size?: number;
+  timestamp: number;
+}
+
+const history = reactive<HistoryEntry[]>([]);
+
+const message = ref(
+  t(
+    'Arena is empty -- choose a size and click "Allocate" to bump the pointer',
+    'Arena 为空 -- 选择大小并点击"分配"将指针向前推进'
+  )
+);
+
+const activeArena = computed(() => arenas.value[activeArenaIndex.value]);
+
+const totalCapacity = computed(() =>
+  arenas.value.reduce((sum, a) => sum + a.capacity, 0)
+);
+const totalUsed = computed(() =>
+  arenas.value.reduce((sum, a) => sum + a.pointer, 0)
+);
+const totalAllocations = computed(() =>
+  arenas.value.reduce((sum, a) => sum + a.allocations.length, 0)
+);
+
+function nextColor(): string {
+  const c = COLORS[globalColorIdx % COLORS.length];
+  globalColorIdx++;
+  return c;
+}
+
+function generateLabel(): string {
+  if (customLabel.value.trim()) {
+    const lbl = customLabel.value.trim();
+    customLabel.value = '';
+    return lbl;
+  }
+  return `obj${globalAllocId}`;
 }
 
 function allocate() {
-  const size = randomSize();
-  if (pointer.value + size > ARENA_SIZE) {
+  const size = selectedSize.value;
+  const arena = activeArena.value;
+
+  if (arena.pointer + size > arena.capacity) {
     message.value = t(
-      `Cannot allocate ${size} bytes — only ${freeBytes.value} bytes free. Reset the arena.`,
-      `无法分配 ${size} 字节 — 仅剩 ${freeBytes.value} 字节可用。请重置 Arena。`
+      `Cannot allocate ${size} unit(s) in Arena #${arena.id} -- only ${arena.capacity - arena.pointer} free. Add a new arena or reset.`,
+      `无法在 Arena #${arena.id} 中分配 ${size} 个单元 -- 仅剩 ${arena.capacity - arena.pointer} 可用。添加新 Arena 或重置。`
     );
     return;
   }
 
+  const label = generateLabel();
   const alloc: Allocation = {
-    id: nextId++,
-    offset: pointer.value,
+    id: globalAllocId++,
+    offset: arena.pointer,
     size,
-    color: COLORS[colorIdx % COLORS.length],
-    label: `#${nextId - 1} (${size}B)`,
+    color: nextColor(),
+    label,
+    arenaIndex: activeArenaIndex.value,
   };
-  colorIdx++;
 
-  allocations.value = [...allocations.value, alloc];
-  pointer.value += size;
+  arena.allocations = [...arena.allocations, alloc];
+  arena.pointer += size;
+
+  history.push({
+    action: 'alloc',
+    arenaId: arena.id,
+    label: alloc.label,
+    offset: alloc.offset,
+    size: alloc.size,
+    timestamp: Date.now(),
+  });
+
   message.value = t(
-    `Allocated ${size} bytes at offset ${alloc.offset} — pointer now at ${pointer.value}`,
-    `已分配 ${size} 字节在偏移量 ${alloc.offset} — 指针现在位于 ${pointer.value}`
+    `Allocated "${alloc.label}" (${size} unit(s)) at offset ${alloc.offset} in Arena #${arena.id} -- pointer now at ${arena.pointer}`,
+    `已分配 "${alloc.label}" (${size} 个单元) 在偏移量 ${alloc.offset} (Arena #${arena.id}) -- 指针现在位于 ${arena.pointer}`
   );
 }
 
-function resetArena() {
-  pointer.value = 0;
-  allocations.value = [];
-  nextId = 1;
-  colorIdx = 0;
-  message.value = t('Arena reset — all memory freed at once (O(1) deallocation)', 'Arena 已重置 — 所有内存一次性释放（O(1) 释放）');
+function resetArena(index: number) {
+  const arena = arenas.value[index];
+  arena.pointer = 0;
+  arena.allocations = [];
+
+  history.push({
+    action: 'reset',
+    arenaId: arena.id,
+    timestamp: Date.now(),
+  });
+
+  message.value = t(
+    `Arena #${arena.id} reset -- all memory freed at once (O(1) deallocation)`,
+    `Arena #${arena.id} 已重置 -- 所有内存一次性释放（O(1) 释放）`
+  );
 }
 
-function slotState(index: number): Allocation | null {
-  return allocations.value.find(a => index >= a.offset && index < a.offset + a.size) || null;
+function resetAll() {
+  arenas.value = [
+    { id: arenaIdCounter++, capacity: ARENA_CAPACITY, pointer: 0, allocations: [] },
+  ];
+  activeArenaIndex.value = 0;
+  globalAllocId = 1;
+  globalColorIdx = 0;
+  history.length = 0;
+
+  message.value = t(
+    'All arenas reset -- fresh start with a single empty arena',
+    '所有 Arena 已重置 -- 以单个空 Arena 重新开始'
+  );
+}
+
+function addArena() {
+  const newArena: Arena = {
+    id: arenaIdCounter++,
+    capacity: ARENA_CAPACITY,
+    pointer: 0,
+    allocations: [],
+  };
+  arenas.value = [...arenas.value, newArena];
+  activeArenaIndex.value = arenas.value.length - 1;
+
+  history.push({
+    action: 'new-arena',
+    arenaId: newArena.id,
+    timestamp: Date.now(),
+  });
+
+  message.value = t(
+    `New Arena #${newArena.id} created (chained) -- active arena switched`,
+    `新 Arena #${newArena.id} 已创建（链式） -- 已切换活跃 Arena`
+  );
+}
+
+function slotAllocation(arena: Arena, index: number): Allocation | null {
+  return arena.allocations.find(a => index >= a.offset && index < a.offset + a.size) || null;
+}
+
+function isFirstCellOfAlloc(arena: Arena, index: number): Allocation | null {
+  return arena.allocations.find(a => a.offset === index) || null;
+}
+
+function usagePercent(arena: Arena): number {
+  return Math.round((arena.pointer / arena.capacity) * 100);
+}
+
+function formatTime(ts: number): string {
+  const d = new Date(ts);
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
 </script>
 
@@ -83,75 +214,274 @@ function slotState(index: number): Allocation | null {
   <div class="viz-container">
     <div class="viz-title">{{ t('Interactive Arena Allocator', '交互式 Arena 分配器') }}</div>
 
-    <!-- Stats -->
+    <!-- Global Stats -->
     <div class="arena-stats">
       <div class="arena-stat">
-        <span class="arena-stat-value arena-stat--primary">{{ usedBytes }}</span>
+        <span class="arena-stat-value arena-stat--primary">{{ totalUsed }}</span>
         <span class="viz-label">{{ t('Used', '已使用') }}</span>
       </div>
       <div class="arena-stat">
-        <span class="arena-stat-value arena-stat--success">{{ freeBytes }}</span>
+        <span class="arena-stat-value arena-stat--success">{{ totalCapacity - totalUsed }}</span>
         <span class="viz-label">{{ t('Free', '空闲') }}</span>
       </div>
       <div class="arena-stat">
-        <span class="arena-stat-value">{{ ARENA_SIZE }}</span>
+        <span class="arena-stat-value">{{ totalCapacity }}</span>
         <span class="viz-label">{{ t('Total', '总计') }}</span>
       </div>
       <div class="arena-stat">
-        <span class="arena-stat-value">{{ allocCount }}</span>
+        <span class="arena-stat-value">{{ totalAllocations }}</span>
         <span class="viz-label">{{ t('Allocations', '分配次数') }}</span>
       </div>
+      <div class="arena-stat">
+        <span class="arena-stat-value">{{ arenas.length }}</span>
+        <span class="viz-label">{{ t('Arenas', 'Arena 数') }}</span>
+      </div>
     </div>
 
-    <!-- Arena bar -->
-    <div class="arena-bar-wrap">
-      <div class="arena-bar">
-        <div
-          v-for="i in ARENA_SIZE"
-          :key="i - 1"
-          class="arena-cell"
-          :class="{
-            'arena-cell--pointer': i - 1 === pointer,
-            'arena-cell--filled': slotState(i - 1) !== null,
-          }"
-          :style="slotState(i - 1) ? { background: slotState(i - 1)!.color } : {}"
-        ></div>
-      </div>
-
-      <!-- Pointer indicator -->
-      <div class="arena-pointer-track">
-        <div
-          class="arena-pointer-marker"
-          :style="{ left: (pointer / ARENA_SIZE) * 100 + '%' }"
+    <!-- Allocation Controls -->
+    <div class="arena-alloc-controls">
+      <div class="arena-size-row">
+        <span class="viz-label">{{ t('Size:', '大小:') }}</span>
+        <button
+          v-for="opt in SIZE_OPTIONS"
+          :key="opt.value"
+          class="arena-size-btn"
+          :class="{ 'arena-size-btn--active': selectedSize === opt.value }"
+          @click="selectedSize = opt.value"
         >
-          <div class="arena-pointer-arrow"></div>
-          <div class="arena-pointer-label">ptr={{ pointer }}</div>
-        </div>
+          {{ opt.label() }}
+        </button>
       </div>
-    </div>
-
-    <!-- Allocation legend -->
-    <div v-if="allocations.length > 0" class="arena-legend">
-      <div
-        v-for="alloc in allocations"
-        :key="alloc.id"
-        class="arena-legend-item"
-      >
-        <span class="arena-legend-swatch" :style="{ background: alloc.color }"></span>
-        <span class="arena-legend-text">{{ alloc.label }} @{{ alloc.offset }}</span>
+      <div class="arena-label-row">
+        <span class="viz-label">{{ t('Label:', '标签:') }}</span>
+        <input
+          v-model="customLabel"
+          class="arena-label-input"
+          :placeholder="t(`auto: obj${globalAllocId}`, `自动: obj${globalAllocId}`)"
+          maxlength="12"
+          @keyup.enter="allocate"
+        />
       </div>
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="allocate">{{ t('Allocate', '分配') }}</button>
-      <button class="viz-btn viz-btn--danger" @click="resetArena">{{ t('Reset Arena', '重置 Arena') }}</button>
+      <button class="viz-btn viz-btn--primary" @click="allocate">
+        {{ t('Allocate', '分配') }}
+      </button>
+      <button class="viz-btn" @click="addArena">
+        {{ t('+ New Arena', '+ 新 Arena') }}
+      </button>
+      <button class="viz-btn viz-btn--danger" @click="resetAll">
+        {{ t('Reset All', '全部重置') }}
+      </button>
     </div>
 
     <div class="viz-status">{{ message }}</div>
+
+    <!-- Arena Tabs -->
+    <div v-if="arenas.length > 1" class="arena-tabs">
+      <button
+        v-for="(arena, idx) in arenas"
+        :key="arena.id"
+        class="arena-tab"
+        :class="{ 'arena-tab--active': activeArenaIndex === idx }"
+        @click="activeArenaIndex = idx"
+      >
+        {{ t(`Arena #${arena.id}`, `Arena #${arena.id}`) }}
+        <span class="arena-tab-usage">{{ usagePercent(arena) }}%</span>
+      </button>
+    </div>
+
+    <!-- Arena Visualizations -->
+    <div
+      v-for="(arena, arenaIdx) in arenas"
+      :key="arena.id"
+      class="arena-block"
+      :class="{ 'arena-block--active': activeArenaIndex === arenaIdx }"
+    >
+      <div class="arena-block-header">
+        <span class="arena-block-title">
+          {{ t(`Arena #${arena.id}`, `Arena #${arena.id}`) }}
+          <span v-if="arenaIdx > 0" class="arena-chain-badge">
+            {{ t('chained', '链式') }}
+          </span>
+        </span>
+        <span class="arena-block-usage">
+          {{ arena.pointer }}/{{ arena.capacity }}
+          ({{ usagePercent(arena) }}%)
+        </span>
+        <button
+          class="arena-reset-btn"
+          @click="resetArena(arenaIdx)"
+          :title="t('Reset this arena', '重置此 Arena')"
+        >
+          {{ t('Reset', '重置') }}
+        </button>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="arena-progress">
+        <div
+          class="arena-progress-fill"
+          :style="{ width: usagePercent(arena) + '%' }"
+          :class="{
+            'arena-progress--warning': usagePercent(arena) >= 75 && usagePercent(arena) < 100,
+            'arena-progress--full': usagePercent(arena) >= 100,
+          }"
+        ></div>
+      </div>
+
+      <!-- Memory bar -->
+      <div class="arena-bar-wrap">
+        <div class="arena-bar">
+          <template v-for="i in arena.capacity" :key="i - 1">
+            <div
+              class="arena-cell"
+              :class="{
+                'arena-cell--pointer': i - 1 === arena.pointer && arena.pointer < arena.capacity,
+                'arena-cell--filled': slotAllocation(arena, i - 1) !== null,
+                'arena-cell--alloc-start': isFirstCellOfAlloc(arena, i - 1) !== null,
+              }"
+              :style="slotAllocation(arena, i - 1) ? { background: slotAllocation(arena, i - 1)!.color } : {}"
+              :title="slotAllocation(arena, i - 1)
+                ? `${slotAllocation(arena, i - 1)!.label} [${slotAllocation(arena, i - 1)!.offset}..${slotAllocation(arena, i - 1)!.offset + slotAllocation(arena, i - 1)!.size - 1}]`
+                : t(`Free (offset ${i - 1})`, `空闲 (偏移量 ${i - 1})`)"
+            >
+              <span
+                v-if="isFirstCellOfAlloc(arena, i - 1) && isFirstCellOfAlloc(arena, i - 1)!.size >= 2"
+                class="arena-cell-label"
+              >{{ isFirstCellOfAlloc(arena, i - 1)!.label }}</span>
+            </div>
+          </template>
+        </div>
+
+        <!-- Pointer indicator -->
+        <div class="arena-pointer-track">
+          <div
+            class="arena-pointer-marker"
+            :style="{ left: (arena.pointer / arena.capacity) * 100 + '%' }"
+          >
+            <div class="arena-pointer-arrow"></div>
+            <div class="arena-pointer-label">ptr={{ arena.pointer }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Allocation legend for this arena -->
+      <div v-if="arena.allocations.length > 0" class="arena-legend">
+        <div
+          v-for="alloc in arena.allocations"
+          :key="alloc.id"
+          class="arena-legend-item"
+        >
+          <span class="arena-legend-swatch" :style="{ background: alloc.color }"></span>
+          <span class="arena-legend-text">
+            {{ alloc.label }} ({{ alloc.size }}) @{{ alloc.offset }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Allocation History -->
+    <div v-if="history.length > 0" class="arena-history">
+      <div class="arena-history-title">
+        {{ t('Allocation History', '分配历史') }}
+      </div>
+      <div class="arena-history-list">
+        <div
+          v-for="(entry, idx) in [...history].reverse()"
+          :key="idx"
+          class="arena-history-entry"
+          :class="`arena-history--${entry.action}`"
+        >
+          <span class="arena-history-time">{{ formatTime(entry.timestamp) }}</span>
+          <span v-if="entry.action === 'alloc'" class="arena-history-desc">
+            <span class="arena-history-badge arena-history-badge--alloc">ALLOC</span>
+            "{{ entry.label }}" {{ t(`${entry.size} unit(s) at offset ${entry.offset}`, `${entry.size} 个单元在偏移量 ${entry.offset}`) }}
+            <span class="arena-history-arena">Arena #{{ entry.arenaId }}</span>
+          </span>
+          <span v-else-if="entry.action === 'reset'" class="arena-history-desc">
+            <span class="arena-history-badge arena-history-badge--reset">RESET</span>
+            {{ t(`Arena #${entry.arenaId} freed`, `Arena #${entry.arenaId} 已释放`) }}
+          </span>
+          <span v-else-if="entry.action === 'new-arena'" class="arena-history-desc">
+            <span class="arena-history-badge arena-history-badge--new">NEW</span>
+            {{ t(`Arena #${entry.arenaId} created`, `Arena #${entry.arenaId} 已创建`) }}
+          </span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
+/* --- Allocation Controls --- */
+.arena-alloc-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--viz-border);
+  border-radius: 8px;
+  background: var(--vp-c-bg-soft);
+}
+
+.arena-size-row,
+.arena-label-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.arena-size-btn {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--viz-border);
+  border-radius: 4px;
+  background: var(--vp-c-bg);
+  color: var(--viz-text);
+  font-family: var(--vp-font-family-base);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.arena-size-btn:hover {
+  border-color: var(--viz-primary);
+  color: var(--viz-primary);
+}
+
+.arena-size-btn--active {
+  background: var(--viz-primary);
+  color: #fff;
+  border-color: var(--viz-primary);
+}
+
+.arena-label-input {
+  flex: 1;
+  min-width: 100px;
+  max-width: 180px;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--viz-border);
+  border-radius: 4px;
+  background: var(--vp-c-bg);
+  color: var(--viz-text);
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.8rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.arena-label-input:focus {
+  border-color: var(--viz-primary);
+}
+
+.arena-label-input::placeholder {
+  color: var(--viz-muted);
+}
+
+/* --- Stats --- */
 .arena-stats {
   display: flex;
   gap: 1rem;
@@ -165,7 +495,7 @@ function slotState(index: number): Allocation | null {
   flex-direction: column;
   align-items: center;
   gap: 0.125rem;
-  min-width: 56px;
+  min-width: 48px;
 }
 
 .arena-stat-value {
@@ -178,9 +508,139 @@ function slotState(index: number): Allocation | null {
 .arena-stat--primary { color: var(--viz-primary); }
 .arena-stat--success { color: var(--viz-success); }
 
+/* --- Arena Tabs --- */
+.arena-tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.arena-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--viz-border);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  background: var(--vp-c-bg-soft);
+  color: var(--viz-muted);
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.arena-tab:hover {
+  color: var(--viz-text);
+}
+
+.arena-tab--active {
+  background: var(--vp-c-bg);
+  color: var(--viz-primary);
+  border-color: var(--viz-primary);
+  font-weight: 600;
+}
+
+.arena-tab-usage {
+  font-size: 0.625rem;
+  opacity: 0.7;
+}
+
+/* --- Arena Block --- */
+.arena-block {
+  border: 1px solid var(--viz-border);
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+  background: var(--vp-c-bg);
+  transition: border-color 0.2s;
+}
+
+.arena-block--active {
+  border-color: var(--viz-primary);
+  box-shadow: 0 0 0 1px var(--viz-primary);
+}
+
+.arena-block-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.375rem;
+  flex-wrap: wrap;
+}
+
+.arena-block-title {
+  font-family: var(--vp-font-family-mono);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--viz-text);
+}
+
+.arena-chain-badge {
+  display: inline-block;
+  padding: 0.0625rem 0.375rem;
+  font-size: 0.6rem;
+  font-weight: 500;
+  border-radius: 3px;
+  background: var(--viz-warning);
+  color: #fff;
+  vertical-align: middle;
+  margin-left: 0.25rem;
+}
+
+.arena-block-usage {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.75rem;
+  color: var(--viz-muted);
+  margin-left: auto;
+}
+
+.arena-reset-btn {
+  padding: 0.125rem 0.5rem;
+  border: 1px solid var(--viz-border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--viz-muted);
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.arena-reset-btn:hover {
+  border-color: var(--viz-danger);
+  color: var(--viz-danger);
+}
+
+/* --- Progress Bar --- */
+.arena-progress {
+  height: 4px;
+  background: var(--vp-c-bg-soft);
+  border-radius: 2px;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+}
+
+.arena-progress-fill {
+  height: 100%;
+  background: var(--viz-primary);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.arena-progress--warning {
+  background: var(--viz-warning);
+}
+
+.arena-progress--full {
+  background: var(--viz-danger);
+}
+
+/* --- Memory Bar --- */
 .arena-bar-wrap {
-  margin: 1rem 0 0.5rem;
   position: relative;
+  margin-bottom: 0.5rem;
 }
 
 .arena-bar {
@@ -188,7 +648,7 @@ function slotState(index: number): Allocation | null {
   border: 1px solid var(--viz-border);
   border-radius: 6px;
   overflow: hidden;
-  height: 32px;
+  height: 36px;
 }
 
 .arena-cell {
@@ -196,6 +656,11 @@ function slotState(index: number): Allocation | null {
   background: var(--viz-cell-empty);
   border-right: 1px solid var(--viz-border);
   transition: background 0.3s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .arena-cell:last-child {
@@ -204,6 +669,23 @@ function slotState(index: number): Allocation | null {
 
 .arena-cell--filled {
   animation: arena-fill 0.3s ease;
+}
+
+.arena-cell--alloc-start {
+  border-left: 2px solid rgba(255,255,255,0.4);
+}
+
+.arena-cell-label {
+  font-size: 0.5rem;
+  font-family: var(--vp-font-family-mono);
+  color: #fff;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  pointer-events: none;
+  max-width: 100%;
+  padding: 0 1px;
 }
 
 .arena-pointer-track {
@@ -237,12 +719,13 @@ function slotState(index: number): Allocation | null {
   white-space: nowrap;
 }
 
+/* --- Legend --- */
 .arena-legend {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   justify-content: center;
-  margin: 0.5rem 0;
+  margin-top: 0.25rem;
 }
 
 .arena-legend-item {
@@ -264,12 +747,129 @@ function slotState(index: number): Allocation | null {
   color: var(--viz-text);
 }
 
+/* --- Allocation History --- */
+.arena-history {
+  margin-top: 0.75rem;
+  border: 1px solid var(--viz-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.arena-history-title {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: var(--vp-c-bg-soft);
+  color: var(--viz-text);
+  border-bottom: 1px solid var(--viz-border);
+}
+
+.arena-history-list {
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.arena-history-entry {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.7rem;
+  border-bottom: 1px solid var(--viz-border);
+}
+
+.arena-history-entry:last-child {
+  border-bottom: none;
+}
+
+.arena-history-time {
+  font-family: var(--vp-font-family-mono);
+  color: var(--viz-muted);
+  flex-shrink: 0;
+  font-size: 0.65rem;
+}
+
+.arena-history-desc {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+  font-family: var(--vp-font-family-mono);
+  color: var(--viz-text);
+}
+
+.arena-history-badge {
+  display: inline-block;
+  padding: 0.0625rem 0.375rem;
+  font-size: 0.575rem;
+  font-weight: 700;
+  border-radius: 3px;
+  color: #fff;
+  letter-spacing: 0.025em;
+  flex-shrink: 0;
+}
+
+.arena-history-badge--alloc { background: var(--viz-primary); }
+.arena-history-badge--reset { background: var(--viz-danger); }
+.arena-history-badge--new { background: var(--viz-success); }
+
+.arena-history-arena {
+  font-size: 0.6rem;
+  color: var(--viz-muted);
+}
+
 @keyframes arena-fill {
   from { opacity: 0; transform: scaleY(0.5); }
   to { opacity: 1; transform: scaleY(1); }
 }
 
+/* --- Mobile --- */
 @media (max-width: 640px) {
-  .arena-bar { height: 24px; }
+  .arena-bar {
+    height: 28px;
+  }
+
+  .arena-cell-label {
+    display: none;
+  }
+
+  .arena-alloc-controls {
+    padding: 0.5rem;
+  }
+
+  .arena-size-btn {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  .arena-label-input {
+    max-width: 140px;
+    font-size: 0.7rem;
+  }
+
+  .arena-stats {
+    gap: 0.5rem;
+  }
+
+  .arena-stat-value {
+    font-size: 1rem;
+  }
+
+  .arena-history-entry {
+    font-size: 0.625rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .arena-history-time {
+    font-size: 0.575rem;
+  }
+
+  .arena-block {
+    padding: 0.5rem;
+  }
+
+  .arena-block-header {
+    gap: 0.25rem;
+  }
 }
 </style>

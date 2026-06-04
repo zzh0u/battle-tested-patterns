@@ -159,7 +159,7 @@ function handleKeydown(e: KeyboardEvent) {
         :role="block.allocated ? 'button' : undefined"
         :tabindex="block.allocated ? 0 : undefined"
         :title="block.allocated
-          ? t(`Click to free block ${block.id} ("${block.label}")`, `点击释放块 ${block.id}（"${block.label}"）`)
+          ? t('Click to free block ' + block.id + ' (' + block.label + ')', '点击释放块 ' + block.id + '（' + block.label + '）')
           : t('Free block', '空闲块')"
       >
         <div class="fl-block-id">#{{ block.id }}</div>

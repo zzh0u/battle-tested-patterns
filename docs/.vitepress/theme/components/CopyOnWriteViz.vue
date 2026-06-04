@@ -1,64 +1,229 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 const { t } = useI18n();
 
-interface DataBlock {
+interface DataVersion {
   id: number;
-  value: string;
-  refCount: number;
+  version: number;
+  items: string[];
+  status: 'current' | 'old' | 'draft';
+  modifiedIndex: number | null;
 }
 
 interface Reader {
   name: string;
-  dataId: number;
+  versionId: number;
   color: string;
 }
 
-let nextId = 0;
+interface HistoryEntry {
+  actor: string;
+  color: string;
+  type: 'cow' | 'swap' | 'refresh' | 'gc';
+  detail: string;
+}
 
-const blocks = ref<DataBlock[]>([{ id: nextId++, value: 'Hello', refCount: 3 }]);
-const readers = ref<Reader[]>([
-  { name: 'A', dataId: 0, color: 'var(--viz-primary)' },
-  { name: 'B', dataId: 0, color: 'var(--viz-success)' },
-  { name: 'C', dataId: 0, color: 'var(--viz-warning)' },
+type Phase = 'idle' | 'copied' | 'swapped';
+
+const INITIAL_ITEMS = ['A', 'B', 'C', 'D'];
+
+let nextId = 0;
+let nextVersion = 1;
+
+const versions = ref<DataVersion[]>([
+  { id: nextId++, version: nextVersion, items: [...INITIAL_ITEMS], status: 'current', modifiedIndex: null },
 ]);
 
-const message = ref(t('All readers share the same data. Click "Write" to trigger CoW.', '所有读取者共享同一数据。点击"写入"触发 Copy-on-Write。'));
-const lastAction = ref('');
+const readers = ref<Reader[]>([
+  { name: 'R1', versionId: 0, color: 'var(--viz-primary)' },
+  { name: 'R2', versionId: 0, color: 'var(--viz-success)' },
+  { name: 'R3', versionId: 0, color: 'var(--viz-warning)' },
+]);
 
-function writeFromReader(readerIdx: number) {
-  const reader = readers.value[readerIdx];
-  const block = blocks.value.find(b => b.id === reader.dataId)!;
+const phase = ref<Phase>('idle');
+const selectedIndex = ref(0);
+const newValue = ref('');
+const history = ref<HistoryEntry[]>([]);
+const message = ref(t(
+  'All readers share v1. Select an element, type a new value, and click "Write".',
+  '所有读取者共享 v1。选择一个元素，输入新值，然后点击"写入"。',
+));
 
-  if (block.refCount === 1) {
-    block.value = block.value + '!';
-    lastAction.value = `direct-${reader.name}`;
-    message.value = t(`${reader.name} has exclusive ownership — modified in place`, `${reader.name} 拥有独占所有权 — 直接原地修改`);
-  } else {
-    block.refCount--;
-    const newBlock: DataBlock = { id: nextId++, value: block.value + '*', refCount: 1 };
-    blocks.value.push(newBlock);
-    reader.dataId = newBlock.id;
-    lastAction.value = `cow-${reader.name}`;
-    message.value = t(`Copy-on-Write: ${reader.name} got a private copy "${newBlock.value}"`, `Copy-on-Write: ${reader.name} 获得了私有副本 "${newBlock.value}"`);
+const currentVersion = computed(() =>
+  versions.value.find(v => v.status === 'current'),
+);
+
+function getVersionForReader(r: Reader): DataVersion | undefined {
+  return versions.value.find(v => v.id === r.versionId);
+}
+
+function readersForVersion(vId: number): Reader[] {
+  return readers.value.filter(r => r.versionId === vId);
+}
+
+/** Versions grouped with their readers, sorted by version number */
+const versionGroups = computed(() => {
+  return [...versions.value]
+    .sort((a, b) => a.version - b.version)
+    .map(v => ({
+      version: v,
+      readers: readersForVersion(v.id),
+      readerCount: readersForVersion(v.id).length,
+    }));
+});
+
+const canWrite = computed(() => phase.value !== 'copied');
+const canSwap = computed(() => phase.value === 'copied');
+const canRefresh = computed(() => {
+  if (phase.value === 'copied') return false;
+  const cur = currentVersion.value;
+  if (!cur) return false;
+  return readers.value.some(r => r.versionId !== cur.id);
+});
+
+function addHistory(entry: HistoryEntry) {
+  history.value = [entry, ...history.value].slice(0, 12);
+}
+
+function doWrite() {
+  if (!canWrite.value) return;
+
+  const val = newValue.value.trim();
+  if (!val) {
+    message.value = t('Enter a new value first.', '请先输入新值。');
+    return;
   }
+
+  const current = currentVersion.value;
+  if (!current) return;
+
+  const oldVal = current.items[selectedIndex.value];
+  nextVersion++;
+  const copy: DataVersion = {
+    id: nextId++,
+    version: nextVersion,
+    items: [...current.items],
+    status: 'draft',
+    modifiedIndex: selectedIndex.value,
+  };
+  copy.items[selectedIndex.value] = val;
+  versions.value.push(copy);
+  phase.value = 'copied';
+
+  addHistory({
+    actor: 'W',
+    color: 'var(--viz-danger)',
+    type: 'cow',
+    detail: t(
+      `Copy v${current.version} -> v${copy.version}, [${selectedIndex.value}]: "${oldVal}" -> "${val}"`,
+      `复制 v${current.version} -> v${copy.version}，[${selectedIndex.value}]："${oldVal}" -> "${val}"`,
+    ),
+  });
+
+  message.value = t(
+    `Copied v${current.version} -> v${copy.version}, changed [${selectedIndex.value}] to "${val}". Click "Swap" for atomic reference update.`,
+    `已复制 v${current.version} -> v${copy.version}，将 [${selectedIndex.value}] 改为 "${val}"。点击"交换"进行原子引用更新。`,
+  );
+}
+
+function doSwap() {
+  if (!canSwap.value) return;
+
+  const draft = versions.value.find(v => v.status === 'draft');
+  const current = currentVersion.value;
+  if (!draft || !current) return;
+
+  current.status = 'old';
+  draft.status = 'current';
+  phase.value = 'swapped';
+  newValue.value = '';
+
+  addHistory({
+    actor: 'W',
+    color: 'var(--viz-danger)',
+    type: 'swap',
+    detail: t(
+      `Atomic swap: v${draft.version} is now current, v${current.version} is old`,
+      `原子交换：v${draft.version} 变为当前版本，v${current.version} 变为旧版`,
+    ),
+  });
+
+  message.value = t(
+    `Swapped! v${draft.version} is now current. Readers still see v${current.version} -- click "Refresh Readers" to update them.`,
+    `已交换！v${draft.version} 现在是当前版本。读取者仍然看到 v${current.version} — 点击"刷新读取者"来更新。`,
+  );
+}
+
+function refreshReaders() {
+  const current = currentVersion.value;
+  if (!current) return;
+
+  const staleReaders = readers.value.filter(r => r.versionId !== current.id);
+  const staleNames = staleReaders.map(r => r.name).join(', ');
+
+  for (const r of readers.value) {
+    r.versionId = current.id;
+  }
+
+  // GC: remove old versions with no readers (keep drafts)
+  const before = versions.value.length;
+  versions.value = versions.value.filter(v =>
+    v.status === 'current' || v.status === 'draft' || readersForVersion(v.id).length > 0,
+  );
+  const gcCount = before - versions.value.length;
+
+  phase.value = 'idle';
+
+  if (staleNames) {
+    addHistory({
+      actor: staleNames,
+      color: 'var(--viz-primary)',
+      type: 'refresh',
+      detail: t(
+        `${staleNames} updated to v${current.version}`,
+        `${staleNames} 已更新到 v${current.version}`,
+      ),
+    });
+  }
+
+  if (gcCount > 0) {
+    addHistory({
+      actor: 'GC',
+      color: 'var(--viz-muted)',
+      type: 'gc',
+      detail: t(
+        `${gcCount} unreferenced version(s) collected`,
+        `${gcCount} 个未引用版本已回收`,
+      ),
+    });
+  }
+
+  message.value = t(
+    `All readers now see v${current.version}. Unreferenced old versions garbage collected.`,
+    `所有读取者现在看到 v${current.version}。未被引用的旧版本已被垃圾回收。`,
+  );
 }
 
 function reset() {
   nextId = 0;
-  blocks.value = [{ id: nextId++, value: 'Hello', refCount: 3 }];
-  readers.value = [
-    { name: 'A', dataId: 0, color: 'var(--viz-primary)' },
-    { name: 'B', dataId: 0, color: 'var(--viz-success)' },
-    { name: 'C', dataId: 0, color: 'var(--viz-warning)' },
+  nextVersion = 1;
+  versions.value = [
+    { id: nextId++, version: nextVersion, items: [...INITIAL_ITEMS], status: 'current', modifiedIndex: null },
   ];
-  lastAction.value = '';
-  message.value = t('Reset — all readers share the same data again', '已重置 — 所有读取者再次共享同一数据');
-}
-
-function getBlock(id: number) {
-  return blocks.value.find(b => b.id === id);
+  readers.value = [
+    { name: 'R1', versionId: 0, color: 'var(--viz-primary)' },
+    { name: 'R2', versionId: 0, color: 'var(--viz-success)' },
+    { name: 'R3', versionId: 0, color: 'var(--viz-warning)' },
+  ];
+  phase.value = 'idle';
+  selectedIndex.value = 0;
+  newValue.value = '';
+  history.value = [];
+  message.value = t(
+    'Reset. All readers share v1 again.',
+    '已重置。所有读取者再次共享 v1。',
+  );
 }
 </script>
 
@@ -66,158 +231,654 @@ function getBlock(id: number) {
   <div class="viz-container">
     <div class="viz-title">{{ t('Interactive Copy-on-Write', '交互式 Copy-on-Write') }}</div>
 
-    <div class="cow-layout">
-      <!-- Readers -->
-      <div class="cow-readers">
-        <div
-          v-for="(r, i) in readers"
-          :key="r.name"
-          class="cow-reader"
-          :style="{ borderColor: r.color }"
-        >
-          <div class="cow-reader-name" :style="{ color: r.color }">{{ r.name }}</div>
-          <button class="viz-btn cow-write-btn" @click="writeFromReader(i)">{{ t('Write', '写入') }}</button>
-        </div>
+    <!-- Step progress -->
+    <div class="cow-steps">
+      <div
+        class="cow-step"
+        :class="{
+          'cow-step--active': phase === 'idle',
+          'cow-step--done': phase === 'copied' || phase === 'swapped',
+        }"
+      >
+        <span class="cow-step-num">1</span>
+        <span class="cow-step-text">{{ t('Write', '写入') }}</span>
       </div>
-
-      <!-- Connection lines (conceptual) -->
-      <div class="cow-arrows">
-        <div v-for="r in readers" :key="'arr-' + r.name" class="cow-arrow">→</div>
+      <div class="cow-step-arrow">&rarr;</div>
+      <div
+        class="cow-step"
+        :class="{
+          'cow-step--active': phase === 'copied',
+          'cow-step--done': phase === 'swapped',
+        }"
+      >
+        <span class="cow-step-num">2</span>
+        <span class="cow-step-text">{{ t('Swap', '交换') }}</span>
       </div>
+      <div class="cow-step-arrow">&rarr;</div>
+      <div
+        class="cow-step"
+        :class="{ 'cow-step--active': phase === 'swapped' }"
+      >
+        <span class="cow-step-num">3</span>
+        <span class="cow-step-text">{{ t('Refresh', '刷新') }}</span>
+      </div>
+    </div>
 
-      <!-- Data blocks -->
-      <div class="cow-blocks">
-        <div
-          v-for="block in blocks"
-          :key="block.id"
-          class="cow-block"
-          :class="{ 'cow-block-new': lastAction.startsWith('cow') && block.id === blocks[blocks.length - 1]?.id }"
-        >
-          <div class="cow-block-value">"{{ block.value }}"</div>
-          <div class="cow-block-refs">
+    <!-- Main visualization: version groups with clustered readers -->
+    <div class="cow-groups">
+      <div
+        v-for="group in versionGroups"
+        :key="group.version.id"
+        class="cow-group"
+        :class="{
+          'cow-group--current': group.version.status === 'current',
+          'cow-group--old': group.version.status === 'old',
+          'cow-group--draft': group.version.status === 'draft',
+        }"
+      >
+        <!-- Version block -->
+        <div class="cow-version">
+          <div class="cow-version-header">
+            <span class="cow-version-label">v{{ group.version.version }}</span>
             <span
-              v-for="r in readers.filter(rd => rd.dataId === block.id)"
-              :key="r.name"
-              class="cow-ref-dot"
-              :style="{ background: r.color }"
-            >{{ r.name }}</span>
+              class="cow-version-badge"
+              :class="{
+                'cow-badge--current': group.version.status === 'current',
+                'cow-badge--old': group.version.status === 'old',
+                'cow-badge--draft': group.version.status === 'draft',
+              }"
+            >
+              {{
+                group.version.status === 'current' ? t('current', '当前')
+                : group.version.status === 'old' ? t('old', '旧版')
+                : t('copy', '副本')
+              }}
+            </span>
+            <!-- Ref count badge -->
+            <span class="cow-rc-badge" :class="{
+              'cow-rc--shared': group.readerCount > 1,
+              'cow-rc--exclusive': group.readerCount === 1,
+              'cow-rc--zero': group.readerCount === 0,
+            }">
+              {{ t('refs', '引用') }}={{ group.readerCount }}
+            </span>
           </div>
-          <div class="cow-block-rc">rc={{ block.refCount }}</div>
+          <div class="cow-items">
+            <div
+              v-for="(item, i) in group.version.items"
+              :key="i"
+              class="cow-item"
+              :class="{ 'cow-item--modified': group.version.modifiedIndex === i }"
+            >
+              <div class="cow-item-idx">[{{ i }}]</div>
+              <div class="cow-item-val">{{ item }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Connection lines: colored bars linking block to readers -->
+        <div class="cow-connectors" v-if="group.readerCount > 0">
+          <div
+            v-for="r in group.readers"
+            :key="'line-' + r.name"
+            class="cow-connector"
+            :style="{ background: r.color }"
+          ></div>
+        </div>
+
+        <!-- Clustered readers beneath their version -->
+        <div class="cow-readers-cluster">
+          <div
+            v-for="r in group.readers"
+            :key="'r-' + r.name"
+            class="cow-reader"
+            :style="{ borderColor: r.color }"
+          >
+            <span class="cow-reader-dot" :style="{ background: r.color }">{{ r.name }}</span>
+            <span class="cow-reader-ref">&rarr; v{{ getVersionForReader(r)?.version ?? '?' }}</span>
+          </div>
+          <div v-if="group.readerCount === 0" class="cow-no-readers">
+            {{ t('no readers', '无读取者') }}
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- Edit controls -->
+    <div class="cow-edit-area">
+      <div class="cow-section-title">{{ t('Write Operation', '写入操作') }}</div>
+      <div class="cow-edit-row">
+        <label class="viz-label">{{ t('Element:', '元素：') }}</label>
+        <select v-model.number="selectedIndex" class="cow-select" :disabled="phase === 'copied'">
+          <option v-for="(item, i) in (currentVersion?.items ?? [])" :key="i" :value="i">
+            [{{ i }}] {{ item }}
+          </option>
+        </select>
+        <span class="cow-edit-arrow">&rarr;</span>
+        <input
+          v-model="newValue"
+          class="cow-input"
+          :placeholder="t('new value', '新值')"
+          :disabled="phase === 'copied'"
+          maxlength="12"
+          @keyup.enter="doWrite"
+        />
+      </div>
+    </div>
+
+    <!-- Action buttons -->
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
+      <button class="viz-btn viz-btn--primary" :disabled="!canWrite" @click="doWrite">
+        {{ t('Write (Copy+Modify)', '写入 (复制+修改)') }}
+      </button>
+      <button class="viz-btn viz-btn--primary" :disabled="!canSwap" @click="doSwap">
+        {{ t('Swap', '交换') }}
+      </button>
+      <button class="viz-btn" :disabled="!canRefresh" @click="refreshReaders">
+        {{ t('Refresh Readers', '刷新读取者') }}
+      </button>
+      <button class="viz-btn viz-btn--danger" @click="reset">
+        {{ t('Reset', '重置') }}
+      </button>
     </div>
 
     <div class="viz-status">{{ message }}</div>
+
+    <!-- Operation history -->
+    <div class="cow-history" v-if="history.length > 0">
+      <div class="cow-section-title">{{ t('Operation History', '操作历史') }}</div>
+      <div class="cow-history-list">
+        <div
+          v-for="(entry, i) in history"
+          :key="i"
+          class="cow-history-entry"
+          :class="{ 'cow-history-entry--latest': i === 0 }"
+        >
+          <span class="cow-history-who" :style="{ color: entry.color }">{{ entry.actor }}</span>
+          <span class="cow-history-type" :class="{
+            'cow-ht--cow': entry.type === 'cow',
+            'cow-ht--swap': entry.type === 'swap',
+            'cow-ht--refresh': entry.type === 'refresh',
+            'cow-ht--gc': entry.type === 'gc',
+          }">
+            {{
+              entry.type === 'cow' ? t('CoW', 'CoW')
+              : entry.type === 'swap' ? t('Swap', '交换')
+              : entry.type === 'refresh' ? t('Refresh', '刷新')
+              : t('GC', 'GC')
+            }}
+          </span>
+          <span class="cow-history-detail">{{ entry.detail }}</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.cow-layout {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: 1rem 0;
-}
-
-@media (max-width: 640px) {
-  .cow-layout { flex-direction: column; align-items: stretch; }
-}
-
-.cow-readers {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.cow-reader {
+/* Step progress indicator */
+.cow-steps {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0.4rem 0.6rem;
-  border: 2px solid;
-  border-radius: 6px;
-  background: var(--vp-c-bg);
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  flex-wrap: wrap;
 }
 
-.cow-reader-name {
-  font-size: 0.8rem;
-  font-weight: 700;
-  font-family: var(--vp-font-family-mono);
-  min-width: 20px;
-}
-
-.cow-write-btn {
-  padding: 0.2rem 0.5rem;
-  font-size: 0.7rem;
-}
-
-.cow-arrows {
+.cow-step {
   display: flex;
-  flex-direction: column;
-  gap: 14px;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  border: 2px solid var(--viz-border);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-family: var(--vp-font-family-mono);
   color: var(--viz-muted);
-  font-size: 1rem;
-  padding-top: 8px;
+  transition: all 0.3s ease;
 }
 
-.cow-blocks {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1;
+.cow-step--active {
+  border-color: var(--viz-primary);
+  color: var(--viz-primary);
+  background: color-mix(in srgb, var(--viz-primary) 8%, var(--vp-c-bg));
 }
 
-.cow-block {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--viz-border);
-  border-radius: 6px;
-  background: var(--vp-c-bg);
+.cow-step--done {
+  border-color: var(--viz-success);
+  color: var(--viz-success);
+  background: color-mix(in srgb, var(--viz-success) 8%, var(--vp-c-bg));
 }
 
-.cow-block-new {
-  animation: cow-appear 0.3s ease;
-}
-
-.cow-block-value {
-  font-size: 0.85rem;
-  font-weight: 700;
-  font-family: var(--vp-font-family-mono);
-  color: var(--viz-text);
-}
-
-.cow-block-refs {
-  display: flex;
-  gap: 3px;
-}
-
-.cow-ref-dot {
+.cow-step-num {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  font-size: 0.6rem;
+  background: var(--viz-border);
+  color: var(--vp-c-bg);
+  font-size: 0.625rem;
   font-weight: 700;
+}
+
+.cow-step--active .cow-step-num {
+  background: var(--viz-primary);
+}
+
+.cow-step--done .cow-step-num {
+  background: var(--viz-success);
+}
+
+.cow-step-text {
+  font-weight: 600;
+}
+
+.cow-step-arrow {
+  color: var(--viz-muted);
+  font-size: 0.75rem;
+}
+
+/* Section titles */
+.cow-section-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--viz-muted);
+  margin-bottom: 0.375rem;
+}
+
+/* --- Main grouped layout --- */
+.cow-groups {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.75rem 0;
+}
+
+.cow-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  min-width: 140px;
+  flex: 1;
+  max-width: 240px;
+}
+
+.cow-group--draft {
+  animation: cow-appear 0.4s ease;
+}
+
+.cow-group--old {
+  opacity: 0.55;
+}
+
+/* --- Version block --- */
+.cow-version {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--viz-border);
+  border-radius: 8px;
+  background: var(--vp-c-bg);
+  transition: all 0.3s ease;
+}
+
+.cow-group--current .cow-version {
+  border-color: var(--viz-primary);
+}
+
+.cow-group--draft .cow-version {
+  border-color: var(--viz-warning);
+  border-style: dashed;
+}
+
+.cow-version-header {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-bottom: 0.375rem;
+  flex-wrap: wrap;
+}
+
+.cow-version-label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-family: var(--vp-font-family-mono);
+  color: var(--viz-text);
+}
+
+.cow-version-badge {
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+}
+
+.cow-badge--current {
+  background: color-mix(in srgb, var(--viz-primary) 15%, var(--vp-c-bg));
+  color: var(--viz-primary);
+}
+
+.cow-badge--old {
+  background: color-mix(in srgb, var(--viz-muted) 15%, var(--vp-c-bg));
+  color: var(--viz-muted);
+}
+
+.cow-badge--draft {
+  background: color-mix(in srgb, var(--viz-warning) 15%, var(--vp-c-bg));
+  color: var(--viz-warning);
+}
+
+/* Ref count badge */
+.cow-rc-badge {
+  margin-left: auto;
+  font-size: 0.65rem;
+  font-weight: 700;
+  font-family: var(--vp-font-family-mono);
+  padding: 0.1rem 0.4rem;
+  border-radius: 10px;
+  line-height: 1.4;
+}
+
+.cow-rc--shared {
+  background: var(--viz-warning);
   color: #fff;
 }
 
-.cow-block-rc {
-  font-size: 0.7rem;
-  color: var(--viz-muted);
-  font-family: var(--vp-font-family-mono);
-  margin-left: auto;
+.cow-rc--exclusive {
+  background: var(--viz-success);
+  color: #fff;
 }
 
+.cow-rc--zero {
+  background: var(--viz-border);
+  color: var(--viz-muted);
+}
+
+/* Data items */
+.cow-items {
+  display: flex;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+}
+
+.cow-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 36px;
+  padding: 0.2rem 0.4rem;
+  border: 1px solid var(--viz-border);
+  border-radius: 4px;
+  background: var(--vp-c-bg);
+  transition: all 0.3s ease;
+}
+
+.cow-item--modified {
+  border-color: var(--viz-warning);
+  background: color-mix(in srgb, var(--viz-warning) 12%, var(--vp-c-bg));
+  animation: cow-highlight 0.5s ease;
+}
+
+.cow-item-idx {
+  font-size: 0.6rem;
+  font-family: var(--vp-font-family-mono);
+  color: var(--viz-muted);
+}
+
+.cow-item-val {
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-family: var(--vp-font-family-mono);
+  color: var(--viz-text);
+}
+
+/* --- Connection lines --- */
+.cow-connectors {
+  display: flex;
+  gap: 6px;
+  padding: 2px 0;
+}
+
+.cow-connector {
+  width: 3px;
+  height: 16px;
+  border-radius: 2px;
+  opacity: 0.7;
+}
+
+/* --- Clustered readers --- */
+.cow-readers-cluster {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.cow-reader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.3rem 0.5rem;
+  border: 2px solid;
+  border-radius: 6px;
+  background: var(--vp-c-bg);
+  transition: all 0.3s ease;
+}
+
+.cow-reader-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.cow-reader-ref {
+  font-size: 0.7rem;
+  font-family: var(--vp-font-family-mono);
+  color: var(--viz-muted);
+}
+
+.cow-no-readers {
+  font-size: 0.65rem;
+  color: var(--viz-muted);
+  font-style: italic;
+  text-align: center;
+  padding: 4px 0;
+}
+
+/* --- Edit area --- */
+.cow-edit-area {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--viz-border);
+  border-radius: 6px;
+  background: var(--vp-c-bg-soft);
+  margin-bottom: 0.5rem;
+}
+
+.cow-edit-row {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+}
+
+.cow-select {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--viz-border);
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-family: var(--vp-font-family-mono);
+  background: var(--vp-c-bg);
+  color: var(--viz-text);
+}
+
+.cow-input {
+  width: 90px;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--viz-border);
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-family: var(--vp-font-family-mono);
+  background: var(--vp-c-bg);
+  color: var(--viz-text);
+}
+
+.cow-select:focus,
+.cow-input:focus {
+  outline: none;
+  border-color: var(--viz-primary);
+}
+
+.cow-select:disabled,
+.cow-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cow-edit-arrow {
+  color: var(--viz-muted);
+  font-size: 0.875rem;
+}
+
+/* --- Operation history --- */
+.cow-history {
+  margin-top: 0.75rem;
+}
+
+.cow-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 130px;
+  overflow-y: auto;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--viz-border);
+  border-radius: 6px;
+  background: var(--vp-c-bg);
+}
+
+.cow-history-entry {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  font-family: var(--vp-font-family-mono);
+  color: var(--viz-muted);
+  padding: 2px 0;
+  opacity: 0.65;
+}
+
+.cow-history-entry--latest {
+  opacity: 1;
+  font-weight: 600;
+}
+
+.cow-history-who {
+  font-weight: 700;
+  min-width: 16px;
+  flex-shrink: 0;
+}
+
+.cow-history-type {
+  padding: 0 4px;
+  border-radius: 3px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cow-ht--cow {
+  background: var(--viz-warning);
+  color: #fff;
+}
+
+.cow-ht--swap {
+  background: var(--viz-primary);
+  color: #fff;
+}
+
+.cow-ht--refresh {
+  background: var(--viz-success);
+  color: #fff;
+}
+
+.cow-ht--gc {
+  background: var(--viz-border);
+  color: var(--viz-muted);
+}
+
+.cow-history-detail {
+  color: var(--viz-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Animations */
 @keyframes cow-appear {
-  from { opacity: 0; transform: translateX(10px); }
-  to { opacity: 1; transform: translateX(0); }
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cow-highlight {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .cow-steps { gap: 0.25rem; }
+
+  .cow-step {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.6875rem;
+  }
+
+  .cow-groups {
+    flex-direction: column;
+  }
+
+  .cow-group {
+    max-width: 100%;
+  }
+
+  .cow-items { gap: 0.25rem; }
+
+  .cow-item {
+    min-width: 30px;
+    padding: 0.15rem 0.3rem;
+  }
+
+  .cow-item-val { font-size: 0.75rem; }
+
+  .cow-edit-row {
+    gap: 0.25rem;
+  }
+
+  .cow-input {
+    width: 70px;
+  }
+
+  .cow-history-entry {
+    flex-wrap: wrap;
+    gap: 3px;
+  }
+
+  .cow-history-detail {
+    white-space: normal;
+  }
 }
 </style>
