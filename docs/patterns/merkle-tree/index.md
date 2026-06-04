@@ -1,5 +1,6 @@
 ---
 description: "Hash leaves, then hash pairs upward to a root — verify any leaf's integrity in O(log n) without re-hashing the entire dataset."
+difficulty: "advanced"
 ---
 
 # Pattern: Merkle Tree
@@ -8,7 +9,11 @@ description: "Hash leaves, then hash pairs upward to a root — verify any leaf'
 
 Hash leaves, then hash pairs upward to a root -- verify any leaf's integrity in O(log n) without re-hashing the entire dataset.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A tamper-evident shipping seal system. Each box has a hash seal. Boxes are grouped into crates with their own seal (hash of box hashes). Crates go into containers. If one item is tampered with, every seal above it changes — and you can find the tampered box by checking just log(n) seals.
 
 ## Core Idea
 

@@ -1,5 +1,6 @@
 ---
 description: 'Combine K sorted streams into one sorted output using a min-heap â€” the universal "unified view" over multiple data sources.'
+difficulty: "advanced"
 ---
 
 # Pattern: Merge Iterator (K-Way Merge)
@@ -8,7 +9,11 @@ description: 'Combine K sorted streams into one sorted output using a min-heap â
 
 Combine K sorted streams into one sorted output using a min-heap -- the universal "unified view" over multiple data sources.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+Merging sorted stacks of exam papers from different classrooms. You look at the top paper of each stack, pick the one with the lowest student number, place it in the merged pile, and repeat. You only ever compare the top papers.
 
 ## Core Idea
 

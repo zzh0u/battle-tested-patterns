@@ -1,5 +1,6 @@
 ---
 description: "A binary tree stored in an array where the smallest element is always at the root, enabling O(1) peek and O(log n) insert/remove."
+difficulty: "intermediate"
 ---
 
 # Pattern: Min Heap / Priority Queue
@@ -8,7 +9,11 @@ description: "A binary tree stored in an array where the smallest element is alw
 
 A binary tree stored in an array where the smallest element is always at the root, enabling O(1) peek and O(log n) insert/remove.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+An emergency room triage desk. Patients aren't seen in arrival order — the most critical case is always next. New patients are slotted into the queue by severity, and the system always knows who's most urgent without scanning everyone.
 
 ## Core Idea
 

@@ -1,5 +1,6 @@
 ---
 description: "Compare two sequences to compute the minimal set of operations (insert, delete, move) needed to transform one into the other."
+difficulty: "intermediate"
 ---
 
 # Pattern: Diff / Patch
@@ -8,7 +9,11 @@ description: "Compare two sequences to compute the minimal set of operations (in
 
 Compare two sequences to compute the minimal set of operations (insert, delete, move) needed to transform one into the other.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A track-changes document in Word. Instead of sending the whole document, you send just the red-lined changes: 'delete paragraph 3, insert this sentence after paragraph 5.' The recipient applies the patch to their copy.
 
 ## Core Idea
 

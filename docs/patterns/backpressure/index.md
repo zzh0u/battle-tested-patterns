@@ -1,5 +1,6 @@
 ---
 description: "Slow down producers when consumers can't keep up — use bounded buffers and demand signals to prevent resource exhaustion."
+difficulty: "intermediate"
 ---
 
 # Pattern: Backpressure / Flow Control
@@ -8,7 +9,11 @@ description: "Slow down producers when consumers can't keep up — use bounded b
 
 Slow down producers when consumers can't keep up — use bounded buffers and demand signals to prevent resource exhaustion.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A waiter telling the kitchen 'slow down, tables are full.' Instead of piling up plates that go cold, the waiter signals the kitchen to reduce output until diners finish. The consumer controls the producer's pace.
 
 ## Core Idea
 

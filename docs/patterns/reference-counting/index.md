@@ -1,5 +1,6 @@
 ---
 description: "Track owners via atomic counter, auto-cleanup at zero — deterministic resource lifetime without garbage collection."
+difficulty: "beginner"
 ---
 
 # Pattern: Reference Counting
@@ -8,7 +9,11 @@ description: "Track owners via atomic counter, auto-cleanup at zero — determin
 
 Track owners via atomic counter, auto-cleanup at zero -- deterministic resource lifetime without garbage collection.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A shared Netflix account. You keep track of how many people are actively using it. When the last person cancels, the subscription is terminated. No background check needed — the count reaching zero is the signal.
 
 ## Core Idea
 

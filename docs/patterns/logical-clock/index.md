@@ -1,5 +1,6 @@
 ---
 description: "A monotonically increasing counter that orders events without wall-clock time — enabling consistent snapshots and staleness detection."
+difficulty: "advanced"
 ---
 
 # Pattern: Logical Clock / Epoch
@@ -8,7 +9,11 @@ description: "A monotonically increasing counter that orders events without wall
 
 A monotonically increasing counter that orders events without wall-clock time -- enabling consistent snapshots and staleness detection.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+Numbering messages in a group chat where everyone is in different time zones. Instead of using wall-clock time (which differs), you stamp each message with a sequence number that respects 'I saw your message before sending mine' — causal order, not clock order.
 
 ## Core Idea
 

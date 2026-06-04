@@ -1,5 +1,6 @@
 ---
 description: "概率有序数据结构，O(log n) 搜索、插入和删除——比平衡树更简单，性能相当。"
+difficulty: "advanced"
 ---
 
 # 模式：跳表 (Skip List)
@@ -8,7 +9,11 @@ description: "概率有序数据结构，O(log n) 搜索、插入和删除——
 
 概率有序数据结构，O(log n) 搜索、插入和删除——比平衡树更简单，性能相当。
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## 现实类比
+
+快慢车线路系统。快线跳过大部分站点，让你快速前进。到了目的地附近，换乘慢线精确停靠。多层快线加速了长距离搜索。
 
 ## 核心思想
 

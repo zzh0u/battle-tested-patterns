@@ -1,5 +1,6 @@
 ---
 description: "Allocate objects by bumping a pointer in a pre-allocated region — free everything at once when the region is no longer needed."
+difficulty: "intermediate"
 ---
 
 # Pattern: Arena Allocator
@@ -8,7 +9,11 @@ description: "Allocate objects by bumping a pointer in a pre-allocated region �
 
 Allocate objects by bumping a pointer in a pre-allocated region — free everything at once when the region is no longer needed.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A whiteboard for a meeting. Everyone writes wherever there's space, moving the marker forward. When the meeting ends, you erase the entire board at once — no need to clean each note individually.
 
 ## Core Idea
 

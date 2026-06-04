@@ -1,5 +1,6 @@
 ---
 description: "Share identical immutable objects instead of creating duplicates, trading a lookup cost for massive memory savings when many instances have the same value."
+difficulty: "beginner"
 ---
 
 # Pattern: Flyweight / Interning
@@ -8,7 +9,11 @@ description: "Share identical immutable objects instead of creating duplicates, 
 
 Share identical immutable objects instead of creating duplicates, trading a lookup cost for massive memory savings when many instances have the same value.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A theater company's costume closet. There's only one pirate costume, one royal robe, and one peasant outfit. Every actor playing that role wears the same shared costume rather than having a personal copy made.
 
 ## Core Idea
 

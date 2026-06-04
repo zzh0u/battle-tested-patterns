@@ -1,5 +1,6 @@
 ---
 description: "Group function pointers into a struct to achieve runtime polymorphism — the manual foundation behind interfaces, traits, and virtual methods."
+difficulty: "advanced"
 ---
 
 # Pattern: Vtable / Ops Dispatch
@@ -8,7 +9,11 @@ description: "Group function pointers into a struct to achieve runtime polymorph
 
 Group function pointers into a struct to achieve runtime polymorphism — the manual foundation behind interfaces, traits, and virtual methods.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A restaurant menu where each dish links to its own recipe card in the kitchen. The waiter doesn't know how to cook — they just look up the recipe card for the ordered dish and hand it to the right chef. Different restaurants can have different recipe cards for the same dish name.
 
 ## Core Idea
 

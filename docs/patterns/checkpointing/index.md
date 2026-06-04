@@ -1,5 +1,6 @@
 ---
 description: "Periodically snapshot consistent state so recovery replays only from the checkpoint — not from the beginning of time."
+difficulty: "intermediate"
 ---
 
 # Pattern: Checkpointing
@@ -8,7 +9,11 @@ description: "Periodically snapshot consistent state so recovery replays only fr
 
 Periodically snapshot consistent state so recovery replays only from the checkpoint -- not from the beginning of time.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+Saving your game. You play for a while, hit 'save,' and if you die, you restart from the last save point instead of the beginning. The more often you save, the less progress you lose — but each save takes time.
 
 ## Core Idea
 

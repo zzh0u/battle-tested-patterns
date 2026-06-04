@@ -1,5 +1,6 @@
 ---
 description: "Buffer writes in memory, flush to sorted files on disk, merge files in background — trading read amplification for fast writes."
+difficulty: "advanced"
 ---
 
 # Pattern: LSM Tree (Log-Structured Merge Tree)
@@ -8,7 +9,11 @@ description: "Buffer writes in memory, flush to sorted files on disk, merge file
 
 Buffer writes in memory, flush to sorted files on disk, merge files in background -- trading read amplification for fast writes.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A filing system where you first write notes on a sticky pad (memtable), then periodically file them into sorted folders (SSTables). Over time, you merge small folders into bigger ones during quiet hours (compaction).
 
 ## Core Idea
 

@@ -1,5 +1,6 @@
 ---
 description: "通过规范化查找表去重不可变值——用 O(1) 的指针比较替代 O(n) 的内容比较。"
+difficulty: "intermediate"
 ---
 
 # 模式：驻留 / 符号表 (Interning / Symbol Table)
@@ -8,7 +9,11 @@ description: "通过规范化查找表去重不可变值——用 O(1) 的指针
 
 通过规范化查找表去重不可变值——用 O(1) 的指针比较替代 O(n) 的内容比较。
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## 现实类比
+
+邮局只存储一份每个邮编的副本，给所有人一个引用。不是每封信都带一份「94105」，它们都指向同一个共享条目。
 
 ## 核心思想
 

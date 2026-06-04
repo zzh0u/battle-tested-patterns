@@ -1,5 +1,6 @@
 ---
 description: "Limit the number of concurrent operations by maintaining a counter — acquire before work, release after, block when the limit is reached."
+difficulty: "beginner"
 ---
 
 # Pattern: Semaphore / Bounded Concurrency
@@ -8,7 +9,11 @@ description: "Limit the number of concurrent operations by maintaining a counter
 
 Limit the number of concurrent operations by maintaining a counter — acquire before work, release after, block when the limit is reached.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A parking garage with a capacity sign. The sign shows how many spots are left. Cars enter (decrementing the count) and leave (incrementing it). When it reads 0, incoming cars must wait at the gate.
 
 ## Core Idea
 

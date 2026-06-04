@@ -1,5 +1,6 @@
 ---
 description: "Distribute keys across nodes on a virtual ring so that adding or removing a node only remaps ~1/n of the keys."
+difficulty: "advanced"
 ---
 
 # Pattern: Consistent Hashing
@@ -8,7 +9,11 @@ description: "Distribute keys across nodes on a virtual ring so that adding or r
 
 Distribute keys across nodes on a virtual ring so that adding or removing a node only remaps ~1/n of the keys.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+Assigning delivery zones in a circular city map. Each courier covers a section of the circle. When a new courier joins, they take over only a small adjacent section — the other couriers barely notice. When one leaves, only the next courier picks up the slack.
 
 ## Core Idea
 

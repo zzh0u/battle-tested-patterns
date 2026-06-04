@@ -1,5 +1,6 @@
 ---
 description: "Components register themselves into a global lookup table by name — consumers discover implementations at runtime without hardcoded dependencies."
+difficulty: "beginner"
 ---
 
 # Pattern: Registry / Self-Registration
@@ -8,7 +9,11 @@ description: "Components register themselves into a global lookup table by name 
 
 Components register themselves into a global lookup table by name -- consumers discover implementations at runtime without hardcoded dependencies.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A hotel front desk. Guests check in with their name, and anyone can ask the desk 'which room is Alice in?' The desk doesn't care what happens in the rooms — it just maps names to locations.
 
 ## Core Idea
 

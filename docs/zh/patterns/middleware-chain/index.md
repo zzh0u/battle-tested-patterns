@@ -1,5 +1,6 @@
 ---
 description: "组合处理器，每个包裹下一个——前处理、调用 next、后处理——形成双向管道。"
+difficulty: "intermediate"
 ---
 
 # 模式：中间件 / 管道链 (Middleware / Pipeline Chain)
@@ -8,7 +9,11 @@ description: "组合处理器，每个包裹下一个——前处理、调用 ne
 
 组合处理器，每个包裹下一个——前处理、调用 next、后处理——形成双向管道。
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## 现实类比
+
+机场安检通道。你的包先过 X 光机（日志记录），然后过金属探测器（身份认证），再查验证件（参数校验）。每个关卡只做一件事，然后送你到下一个。任何一个关卡都可以拒绝你。
 
 ## 核心思想
 

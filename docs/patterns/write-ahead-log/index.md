@@ -1,5 +1,6 @@
 ---
 description: "Log every mutation to durable storage before applying it — replay the log to recover from crashes without data loss."
+difficulty: "intermediate"
 ---
 
 # Pattern: Write-Ahead Log (WAL)
@@ -8,7 +9,11 @@ description: "Log every mutation to durable storage before applying it — repla
 
 Log every mutation to durable storage before applying it — replay the log to recover from crashes without data loss.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A captain's logbook. Before changing course, the captain writes the intended change in the log. If the ship loses power mid-turn, the crew can read the log and complete or undo the maneuver. The log is the source of truth.
 
 ## Core Idea
 

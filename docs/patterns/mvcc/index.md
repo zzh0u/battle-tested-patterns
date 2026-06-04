@@ -1,5 +1,6 @@
 ---
 description: "Keep multiple timestamped versions of each value so readers never block writers — each transaction sees a consistent snapshot without locks."
+difficulty: "advanced"
 ---
 
 # Pattern: MVCC (Multi-Version Concurrency Control)
@@ -8,7 +9,11 @@ description: "Keep multiple timestamped versions of each value so readers never 
 
 Keep multiple timestamped versions of each value so readers never block writers — each transaction sees a consistent snapshot without locks.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A library that keeps old editions of books alongside new ones. Readers who checked out edition 3 can finish reading it even after edition 4 is published. Each reader sees a consistent snapshot — no one sees a half-written update.
 
 ## Core Idea
 

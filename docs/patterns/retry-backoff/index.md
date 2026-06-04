@@ -1,5 +1,6 @@
 ---
 description: "When an operation fails, retry it with progressively longer delays plus random jitter to avoid thundering herd."
+difficulty: "beginner"
 ---
 
 # Pattern: Retry with Exponential Backoff
@@ -8,7 +9,11 @@ description: "When an operation fails, retry it with progressively longer delays
 
 When an operation fails, retry it with progressively longer delays plus random jitter to avoid thundering herd.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+Calling a busy restaurant for a reservation. You try once, get a busy signal, wait a minute, try again. Still busy? Wait two minutes. Then four. You also vary the timing slightly so that everyone who got a busy signal isn't calling back at the exact same moment.
 
 ## Core Idea
 

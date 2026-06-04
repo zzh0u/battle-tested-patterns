@@ -1,5 +1,6 @@
 ---
 description: "A probabilistic sorted data structure with O(log n) search, insert, and delete — simpler to implement than balanced trees with comparable performance."
+difficulty: "advanced"
 ---
 
 # Pattern: Skip List
@@ -8,7 +9,11 @@ description: "A probabilistic sorted data structure with O(log n) search, insert
 
 A probabilistic sorted data structure with O(log n) search, insert, and delete — simpler to implement than balanced trees with comparable performance.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+An express train system with local and express stops. The express line skips most stations, letting you jump ahead quickly. Once you're close to your destination, you switch to the local line for precise stops. Multiple express levels speed up long searches.
 
 ## Core Idea
 

@@ -3,6 +3,7 @@ import type { Theme } from 'vitepress';
 import { defineAsyncComponent, defineComponent, h } from 'vue';
 import VizSkeleton from './components/VizSkeleton.vue';
 import DemoBadge from './components/DemoBadge.vue';
+import DifficultyBadge from './components/DifficultyBadge.vue';
 import './custom.css';
 
 const vizComponents: Record<string, () => Promise<any>> = {
@@ -74,6 +75,7 @@ export default {
   extends: DefaultTheme,
   enhanceApp({ app }) {
     app.component('DemoBadge', DemoBadge);
+    app.component('DifficultyBadge', DifficultyBadge);
     for (const [name, loader] of Object.entries(vizComponents)) {
       app.component(name, clientOnly(loader));
     }

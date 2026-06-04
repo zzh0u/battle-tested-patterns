@@ -1,5 +1,6 @@
 ---
 description: "Stop calling a failing service by tracking errors and tripping open — fail fast instead of piling up timeouts."
+difficulty: "intermediate"
 ---
 
 # Pattern: Circuit Breaker
@@ -8,7 +9,11 @@ description: "Stop calling a failing service by tracking errors and tripping ope
 
 Stop calling a failing service by tracking errors and tripping open — fail fast instead of piling up timeouts.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+An electrical fuse in your home. If too much current flows (repeated failures), the fuse blows and cuts the circuit immediately — protecting the wiring. After cooling down (timeout), you can reset it and try again.
 
 ## Core Idea
 

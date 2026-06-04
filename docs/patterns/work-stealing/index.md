@@ -1,5 +1,6 @@
 ---
 description: "Idle threads steal tasks from busy threads' queues — balancing load dynamically without central coordination."
+difficulty: "advanced"
 ---
 
 # Pattern: Work Stealing
@@ -8,7 +9,11 @@ description: "Idle threads steal tasks from busy threads' queues — balancing l
 
 Idle threads steal tasks from busy threads' queues — balancing load dynamically without central coordination.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A team of cashiers at a supermarket. When one cashier finishes their line, they walk to the busiest cashier and take customers from the back of that line. Work naturally flows from overloaded lanes to idle ones.
 
 ## Core Idea
 

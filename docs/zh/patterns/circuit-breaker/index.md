@@ -1,5 +1,6 @@
 ---
 description: "通过跟踪错误次数自动跳闸——快速失败，而不是堆积超时等待。"
+difficulty: "intermediate"
 ---
 
 # 模式：熔断器 (Circuit Breaker)
@@ -8,7 +9,11 @@ description: "通过跟踪错误次数自动跳闸——快速失败，而不是
 
 通过跟踪错误次数自动跳闸——快速失败，而不是堆积超时等待。
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## 现实类比
+
+家里的保险丝。电流过大（反复故障）时，保险丝熔断，立即切断电路——保护线路。冷却后（超时），你可以复位再试。
 
 ## 核心思想
 

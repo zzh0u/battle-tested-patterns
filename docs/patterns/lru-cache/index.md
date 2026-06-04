@@ -1,5 +1,6 @@
 ---
 description: "Evict the least recently used entry when the cache is full — O(1) get and put using a hash map plus a doubly linked list."
+difficulty: "intermediate"
 ---
 
 # Pattern: LRU Cache
@@ -8,7 +9,11 @@ description: "Evict the least recently used entry when the cache is full — O(1
 
 Evict the least recently used entry when the cache is full — O(1) get and put using a hash map plus a doubly linked list.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A small desk with limited space. You keep the books you've used most recently on the desk. When you need room for a new book, you move the one you haven't touched longest back to the bookshelf.
 
 ## Core Idea
 

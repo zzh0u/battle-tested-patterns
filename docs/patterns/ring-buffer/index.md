@@ -1,5 +1,6 @@
 ---
 description: "A fixed-size buffer that wraps around using modular arithmetic, enabling constant-time enqueue and dequeue without memory allocation."
+difficulty: "beginner"
 ---
 
 # Pattern: Ring Buffer (Circular Buffer)
@@ -8,7 +9,11 @@ description: "A fixed-size buffer that wraps around using modular arithmetic, en
 
 A fixed-size buffer that wraps around using modular arithmetic, enabling constant-time enqueue and dequeue without memory allocation.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A sushi conveyor belt in a restaurant. The belt has a fixed number of plates. The chef places new plates at one end, and diners take plates as they pass. When the belt is full, the chef must wait. When it's empty, diners must wait. The belt loops back around endlessly.
 
 ## Core Idea
 

@@ -1,5 +1,6 @@
 ---
 description: "Maintain two copies of state and atomically swap between them so readers always see a consistent snapshot."
+difficulty: "beginner"
 ---
 
 # Pattern: Double Buffering
@@ -8,7 +9,11 @@ description: "Maintain two copies of state and atomically swap between them so r
 
 Maintain two copies of state and atomically swap between them so readers always see a consistent snapshot.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A restaurant kitchen with two serving windows. The chef prepares the next order on one counter while the waiter picks up the current order from the other. When the new order is ready, they swap — the customer never sees half-prepared food.
 
 ## Core Idea
 

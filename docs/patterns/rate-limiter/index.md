@@ -1,5 +1,6 @@
 ---
 description: "Protect services from overload by draining tokens from a bucket that refills at a fixed rate — reject requests when empty."
+difficulty: "intermediate"
 ---
 
 # Pattern: Rate Limiter (Token Bucket)
@@ -8,7 +9,11 @@ description: "Protect services from overload by draining tokens from a bucket th
 
 Protect services from overload by draining tokens from a bucket that refills at a fixed rate — reject requests when empty.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A turnstile at a subway station. It lets one person through per swipe, at a controlled pace. If a crowd rushes, they form a queue. The turnstile doesn't speed up — it enforces a steady rate.
 
 ## Core Idea
 

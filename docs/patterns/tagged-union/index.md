@@ -1,5 +1,6 @@
 ---
 description: "Store a type tag alongside a value union so one variable safely holds different types, dispatching behavior via the tag."
+difficulty: "beginner"
 ---
 
 # Pattern: Tagged Union / Variant
@@ -8,7 +9,11 @@ description: "Store a type tag alongside a value union so one variable safely ho
 
 Store a type tag alongside a value union so one variable safely holds different types, dispatching behavior via the tag.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A shipping label on a package. The label says 'fragile', 'perishable', or 'standard', and the warehouse handles each type differently. The label (tag) determines the handling procedure (dispatch) — one system, multiple behaviors.
 
 ## Core Idea
 

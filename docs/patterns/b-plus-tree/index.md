@@ -1,5 +1,6 @@
 ---
 description: "Self-balancing tree with high branching factor — internal nodes guide, leaf nodes store, all leaves linked for efficient range scans."
+difficulty: "advanced"
 ---
 
 # Pattern: B+ Tree
@@ -8,7 +9,11 @@ description: "Self-balancing tree with high branching factor — internal nodes 
 
 Self-balancing tree with high branching factor -- internal nodes guide, leaf nodes store, all leaves linked for efficient range scans.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A library's card catalog with multiple levels. The top drawer says 'A-M' and 'N-Z.' Inside 'A-M,' you find 'A-D', 'E-H', etc. You keep narrowing until you reach the actual cards, which are linked together for easy browsing.
 
 ## Core Idea
 

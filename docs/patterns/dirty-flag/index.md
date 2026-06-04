@@ -1,5 +1,6 @@
 ---
 description: 'Mark objects as "dirty" on mutation, defer expensive recomputation until the value is actually needed, then clear the flag.'
+difficulty: "beginner"
 ---
 
 # Pattern: Dirty Flag
@@ -8,7 +9,11 @@ description: 'Mark objects as "dirty" on mutation, defer expensive recomputation
 
 Mark objects as "dirty" on mutation, defer expensive recomputation until the value is actually needed, then clear the flag.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A "needs cleaning" sign on a hotel room door. Housekeeping only enters rooms marked dirty. If a guest hasn't been in the room, the sign stays clean, and housekeeping skips it — no wasted effort.
 
 ## Core Idea
 

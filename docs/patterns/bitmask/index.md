@@ -1,5 +1,6 @@
 ---
 description: "Pack multiple boolean flags into a single integer and manipulate them with bitwise operators for constant-time set operations."
+difficulty: "beginner"
 ---
 
 # Pattern: Bitmask
@@ -8,7 +9,11 @@ description: "Pack multiple boolean flags into a single integer and manipulate t
 
 Pack multiple boolean flags into a single integer and manipulate them with bitwise operators for constant-time set operations.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A row of light switches on a wall panel. Each switch is either on or off. You can flip any switch independently, check which ones are on at a glance, and the panel takes the same amount of wall space whether you have 8 switches or 32.
 
 ## Core Idea
 

@@ -1,5 +1,6 @@
 ---
 description: "Pre-allocate a set of reusable objects to avoid the cost of repeated allocation and garbage collection on hot paths."
+difficulty: "beginner"
 ---
 
 # Pattern: Object Pool
@@ -8,7 +9,11 @@ description: "Pre-allocate a set of reusable objects to avoid the cost of repeat
 
 Pre-allocate a set of reusable objects to avoid the cost of repeated allocation and garbage collection on hot paths.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A bike-sharing station. Instead of buying a new bike every time you need one, you grab one from the dock, ride it, and return it. The bikes are pre-purchased and reused by many riders.
 
 ## Core Idea
 

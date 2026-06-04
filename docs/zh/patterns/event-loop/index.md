@@ -1,5 +1,6 @@
 ---
 description: "单线程循环通过 epoll/kqueue 多路复用 I/O，将就绪事件分发给回调——无需线程即可处理数千连接。"
+difficulty: "intermediate"
 ---
 
 # 模式：事件循环 / 反应器 (Event Loop / Reactor)
@@ -8,7 +9,11 @@ description: "单线程循环通过 epoll/kqueue 多路复用 I/O，将就绪事
 
 单线程循环通过 epoll/kqueue 多路复用 I/O，将就绪事件分发给回调——无需线程即可处理数千连接。
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## 现实类比
+
+一个人处理整个办公室电话的前台。她不能同时和两个人说话，但她把每个电话放在等待中，处理快速事务，然后轮流回拨。没有阻塞——如果某件事耗时，她记下来继续处理下一件。
 
 ## 核心思想
 

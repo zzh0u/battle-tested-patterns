@@ -1,5 +1,6 @@
 ---
 description: "缓存满时淘汰最近最少使用的条目——用哈希表加双向链表实现 O(1) 的 get 和 put。"
+difficulty: "intermediate"
 ---
 
 # 模式：LRU 缓存 (LRU Cache)
@@ -8,7 +9,11 @@ description: "缓存满时淘汰最近最少使用的条目——用哈希表加
 
 缓存满时淘汰最近最少使用的条目——用哈希表加双向链表实现 O(1) 的 get 和 put。
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## 现实类比
+
+一张空间有限的办公桌。你把最近用过的书放在桌上。需要腾地方放新书时，把最久没碰过的那本放回书架。
 
 ## 核心思想
 

@@ -1,5 +1,6 @@
 ---
 description: "在树中存储字符串，每条边代表一个字符——共享前缀共享节点，实现按键长度 O(k) 查找。"
+difficulty: "intermediate"
 ---
 
 # 模式：Trie 前缀树 (Trie / Prefix Tree)
@@ -8,7 +9,11 @@ description: "在树中存储字符串，每条边代表一个字符——共享
 
 在树中存储字符串，每条边代表一个字符——共享前缀共享节点，实现按键长度 O(k) 查找。
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## 现实类比
+
+老式电话簿边缘的字母标签——A、B、C。要找 'Smith'，先跳到 S，再到 SM，再到 SMI。每个字母缩小范围，共享前缀的名字（'Smith'、'Smithson'）走同一条路径。
 
 ## 核心思想
 

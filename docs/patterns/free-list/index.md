@@ -1,5 +1,6 @@
 ---
 description: "Maintain a linked list of freed slots so allocation and deallocation are O(1) — reuse memory without calling the system allocator."
+difficulty: "intermediate"
 ---
 
 # Pattern: Free List
@@ -8,7 +9,11 @@ description: "Maintain a linked list of freed slots so allocation and deallocati
 
 Maintain a linked list of freed slots so allocation and deallocation are O(1) — reuse memory without calling the system allocator.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A parking lot that keeps a linked list of empty spots. When a car arrives, you hand out the first empty spot instantly. When a car leaves, its spot goes back to the front of the list. No scanning needed.
 
 ## Core Idea
 

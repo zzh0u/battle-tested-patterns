@@ -1,5 +1,6 @@
 ---
 description: "Each actor has a mailbox and processes messages sequentially — no shared state, no locks, just message passing for safe concurrency."
+difficulty: "advanced"
 ---
 
 # Pattern: Actor Model
@@ -8,7 +9,11 @@ description: "Each actor has a mailbox and processes messages sequentially — n
 
 Each actor has a mailbox and processes messages sequentially — no shared state, no locks, just message passing for safe concurrency.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+Coworkers communicating only through sealed envelopes in mailboxes. No one walks into another's office — you write a message, drop it in their mailbox, and go back to your own work. Each person processes their mail one message at a time.
 
 ## Core Idea
 

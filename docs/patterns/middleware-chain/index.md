@@ -1,5 +1,6 @@
 ---
 description: "Compose handlers where each wraps the next — pre-process, call next, post-process — forming a bidirectional pipeline."
+difficulty: "intermediate"
 ---
 
 # Pattern: Middleware / Pipeline Chain
@@ -8,7 +9,11 @@ description: "Compose handlers where each wraps the next — pre-process, call n
 
 Compose handlers where each wraps the next -- pre-process, call next, post-process -- forming a bidirectional pipeline.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+An airport security checkpoint. Your bag goes through X-ray (logging), then a metal detector (auth), then document check (validation). Each station does one thing and passes you to the next. Any station can reject you.
 
 ## Core Idea
 

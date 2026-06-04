@@ -1,5 +1,6 @@
 ---
 description: "Model an entity's lifecycle as a set of states with explicit transitions, making impossible states unrepresentable and every state change auditable."
+difficulty: "beginner"
 ---
 
 # Pattern: State Machine
@@ -8,7 +9,11 @@ description: "Model an entity's lifecycle as a set of states with explicit trans
 
 Model an entity's lifecycle as a set of states with explicit transitions, making impossible states unrepresentable and every state change auditable.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A vending machine. It has clearly defined states: idle, coin-inserted, dispensing. You can't dispense without inserting a coin, and you can't insert a coin while it's already dispensing. Every button press is only valid in certain states.
 
 ## Core Idea
 

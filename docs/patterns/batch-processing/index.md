@@ -1,5 +1,6 @@
 ---
 description: "Accumulate individual operations and execute them together as a group, amortizing per-operation overhead across the batch."
+difficulty: "beginner"
 ---
 
 # Pattern: Batch Processing
@@ -8,7 +9,11 @@ description: "Accumulate individual operations and execute them together as a gr
 
 Accumulate individual operations and execute them together as a group, amortizing per-operation overhead across the batch.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+Loading a dishwasher. You don't run it after every plate — you accumulate dishes throughout the day and run one full cycle. The per-dish cost of water, heat, and time is amortized across the whole load.
 
 ## Core Idea
 

@@ -1,5 +1,6 @@
 ---
 description: "在预分配区域中通过移动指针分配对象——不再需要时一次性释放所有内存。"
+difficulty: "intermediate"
 ---
 
 # 模式：Arena 分配器 (Arena Allocator)
@@ -8,7 +9,11 @@ description: "在预分配区域中通过移动指针分配对象——不再需
 
 在预分配区域中通过移动指针分配对象——不再需要时一次性释放所有内存。
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## 现实类比
+
+会议用的白板。所有人在有空的地方随意写，笔触往前推进。会议结束时，整块白板一次性擦干净——不需要逐条清理笔记。
 
 ## 核心思想
 

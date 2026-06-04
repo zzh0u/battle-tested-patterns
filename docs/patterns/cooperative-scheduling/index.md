@@ -1,5 +1,6 @@
 ---
 description: "Break long-running work into small chunks, yielding control back to the host between each chunk to keep the system responsive."
+difficulty: "advanced"
 ---
 
 # Pattern: Cooperative Scheduling
@@ -8,7 +9,11 @@ description: "Break long-running work into small chunks, yielding control back t
 
 Break long-running work into small chunks, yielding control back to the host between each chunk to keep the system responsive.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A meeting facilitator who asks speakers to pause after 5 minutes so others can talk. No one is forcibly cut off — each speaker voluntarily yields. The facilitator keeps the meeting responsive by ensuring no one monopolizes the floor.
 
 ## Core Idea
 

@@ -1,5 +1,6 @@
 ---
 description: "Process sequences one element at a time without materializing the entire collection, enabling composable transformations with zero intermediate allocations."
+difficulty: "beginner"
 ---
 
 # Pattern: Iterator / Lazy Evaluation
@@ -8,7 +9,11 @@ description: "Process sequences one element at a time without materializing the 
 
 Process sequences one element at a time without materializing the entire collection, enabling composable transformations with zero intermediate allocations.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A deck of cards held face-down. You draw one card at a time without knowing what's underneath. You don't need to spread out the entire deck — you just keep drawing until you're done or decide to stop.
 
 ## Core Idea
 

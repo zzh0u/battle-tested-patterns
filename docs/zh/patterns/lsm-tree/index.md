@@ -1,5 +1,6 @@
 ---
 description: "将写入缓冲在内存中，刷写到磁盘的有序文件，后台合并文件——用读放大换取快速写入。"
+difficulty: "advanced"
 ---
 
 # 模式：LSM 树 (Log-Structured Merge Tree)
@@ -8,7 +9,11 @@ description: "将写入缓冲在内存中，刷写到磁盘的有序文件，后
 
 将写入缓冲在内存中，刷写到磁盘的有序文件，后台合并文件——用读放大换取快速写入。
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## 现实类比
+
+一套归档系统：先把笔记写在便签纸上（memtable），定期整理到排好序的文件夹里（SSTable）。隔一段时间，在空闲时把小文件夹合并成大的（compaction）。
 
 ## 核心思想
 

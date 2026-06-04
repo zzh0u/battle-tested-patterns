@@ -1,5 +1,6 @@
 ---
 description: "Test set membership in O(k) time with zero false negatives — at the cost of a tunable false positive rate."
+difficulty: "intermediate"
 ---
 
 # Pattern: Bloom Filter
@@ -8,7 +9,11 @@ description: "Test set membership in O(k) time with zero false negatives — at 
 
 Test set membership in O(k) time with zero false negatives — at the cost of a tunable false positive rate.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A bouncer with a guest list who sometimes lets in non-guests. If the bouncer says 'you're NOT on the list,' that's definitive. But if he says 'you might be on the list,' you still need to check with the actual registry inside.
 
 ## Core Idea
 

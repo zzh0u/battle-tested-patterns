@@ -1,5 +1,6 @@
 ---
 description: "Decouple tree traversal from operations by dispatching to type-specific callbacks — enabling new operations without modifying the tree."
+difficulty: "advanced"
 ---
 
 # Pattern: Visitor / Tree Walker
@@ -8,7 +9,11 @@ description: "Decouple tree traversal from operations by dispatching to type-spe
 
 Decouple tree traversal from operations by dispatching to type-specific callbacks — enabling new operations without modifying the tree.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A building inspector visiting different types of rooms. The inspector has a specific checklist for each room type — kitchen inspection differs from bathroom inspection. The rooms don't need to know how to inspect themselves; they just open the door and let the inspector do the right thing based on room type.
 
 ## Core Idea
 

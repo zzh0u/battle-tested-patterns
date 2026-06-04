@@ -1,5 +1,6 @@
 ---
 description: "A single-threaded loop that multiplexes I/O via epoll/kqueue, dispatching ready events to callbacks — thousands of connections without threads."
+difficulty: "intermediate"
 ---
 
 # Pattern: Event Loop / Reactor
@@ -8,7 +9,11 @@ description: "A single-threaded loop that multiplexes I/O via epoll/kqueue, disp
 
 A single-threaded loop that multiplexes I/O via epoll/kqueue, dispatching ready events to callbacks -- thousands of connections without threads.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A single receptionist handling a busy office. She can't talk to two callers simultaneously, but she puts each on hold, handles quick tasks, and cycles through callbacks. Nothing blocks — if a task takes time, she notes it and moves on.
 
 ## Core Idea
 

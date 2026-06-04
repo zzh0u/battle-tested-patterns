@@ -1,5 +1,6 @@
 ---
 description: "Deduplicate immutable values through a canonical lookup table — O(1) equality by pointer comparison instead of O(n) content comparison."
+difficulty: "intermediate"
 ---
 
 # Pattern: Interning / Symbol Table
@@ -8,7 +9,11 @@ description: "Deduplicate immutable values through a canonical lookup table — 
 
 Deduplicate immutable values through a canonical lookup table — O(1) equality by pointer comparison instead of O(n) content comparison.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A post office that stores one copy of each ZIP code and gives everyone a reference to it. Instead of every letter carrying its own copy of '94105', they all point to the same shared entry.
 
 ## Core Idea
 

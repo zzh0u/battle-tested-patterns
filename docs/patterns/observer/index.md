@@ -1,5 +1,6 @@
 ---
 description: "Decouple producers from consumers by letting objects subscribe to events and get notified when something happens, without the source knowing who's listening."
+difficulty: "beginner"
 ---
 
 # Pattern: Observer / Pub-Sub
@@ -8,7 +9,11 @@ description: "Decouple producers from consumers by letting objects subscribe to 
 
 Decouple producers from consumers by letting objects subscribe to events and get notified when something happens, without the source knowing who's listening.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A newspaper subscription. You sign up once, and every morning the paper arrives at your door. You don't have to check the newsstand — the publisher pushes updates to all subscribers. Cancel anytime.
 
 ## Core Idea
 

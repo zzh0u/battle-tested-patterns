@@ -1,5 +1,6 @@
 ---
 description: "Mark deleted entries with a tombstone marker instead of removing them — a background process reclaims space later."
+difficulty: "beginner"
 ---
 
 # Pattern: Tombstone / Deferred Deletion
@@ -8,7 +9,11 @@ description: "Mark deleted entries with a tombstone marker instead of removing t
 
 Mark deleted entries with a tombstone marker instead of removing them -- a background process reclaims space later.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A library book marked 'withdrawn' with a sticker but left on the shelf. Patrons see it's no longer available, and the librarian collects withdrawn books in batch during the monthly shelf cleanup.
 
 ## Core Idea
 

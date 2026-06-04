@@ -1,5 +1,6 @@
 ---
 description: "Share data by reference until someone modifies it — only then make a private copy, saving memory and allocation cost for read-heavy workloads."
+difficulty: "intermediate"
 ---
 
 # Pattern: Copy-on-Write (CoW)
@@ -8,7 +9,11 @@ description: "Share data by reference until someone modifies it — only then ma
 
 Share data by reference until someone modifies it — only then make a private copy, saving memory and allocation cost for read-heavy workloads.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+A shared Google Doc link set to 'view only.' Everyone reads the same document. The moment someone wants to edit, the system creates their own copy. Until that write happens, there's only one copy in memory.
 
 ## Core Idea
 

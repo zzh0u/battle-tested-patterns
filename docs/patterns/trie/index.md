@@ -1,5 +1,6 @@
 ---
 description: "Store strings in a tree where each edge represents a character — shared prefixes share nodes, enabling O(k) lookup by key length."
+difficulty: "intermediate"
 ---
 
 # Pattern: Trie (Prefix Tree)
@@ -8,7 +9,11 @@ description: "Store strings in a tree where each edge represents a character —
 
 Store strings in a tree where each edge represents a character — shared prefixes share nodes, enabling O(k) lookup by key length.
 
-<DemoBadge />
+<DifficultyBadge /> <DemoBadge />
+
+## Real-World Analogy
+
+An old phone book's thumb tabs — A, B, C along the edge. To find 'Smith', you jump to S, then SM, then SMI. Each letter narrows the search, and names sharing a prefix ('Smith', 'Smithson') share the same path.
 
 ## Core Idea
 
