@@ -199,7 +199,7 @@ const perms = READ | WRITE;            perms = READ | WRITE
 |------|------|
 | 46 个模式 | Bitmask、LRU Cache、MVCC、Work Stealing、Actor Model 等 |
 | 46 个交互式可视化 | 可点击、可拖拽的 SVG 可视化，动手操作建立直觉 |
-| 93 个练习 | 每个模式 basic + intermediate，共 553 个测试用例，真实场景 |
+| 93 个 TS 练习 + 每语言 46 个 | 4 种语言（TS/Rust/Go/Python），共 1,067+ 个测试用例 |
 | 184 个挑战题 | "你猜会怎样"场景问答，验证真正理解 |
 | 9 个系统案例 | React、Linux、Go、Git、Node.js、Rust、游戏引擎、分布式系统如何组合模式 |
 | 4 种语言 | TypeScript、Go、Python、Rust 地道实现 |
@@ -211,11 +211,16 @@ const perms = READ | WRITE;            perms = READ | WRITE
 git clone https://github.com/Totoro-jam/battle-tested-patterns.git
 cd battle-tested-patterns && pnpm install
 
-pnpm test                         # TypeScript 练习 (Vitest)
-cd exercises/rust && cargo test   # Rust 练习
-cd exercises/go && go test ./...  # Go 练习
+# 运行任意语言的练习
+pnpm test                         # TypeScript（491 个测试，Vitest）
+cd exercises/rust && cargo test   # Rust（173 个测试）
+cd exercises/go && go test ./...  # Go（约 170 个测试）
+cd exercises/python && pytest     # Python（233 个测试）
+
 pnpm dev                          # 本地文档站
 ```
+
+各语言详细设置请参考[练习指南](https://totoro-jam.github.io/battle-tested-patterns/zh/guide/exercises)。
 
 ## 参与贡献
 
