@@ -60,7 +60,7 @@ Instead of immediately removing data, write a special "tombstone" record that sh
 | Project | Source | Usage |
 |---------|--------|-------|
 | LevelDB | [dbformat.h#L39-L43](https://github.com/google/leveldb/blob/main/db/dbformat.h#L39-L43) | `kTypeDeletion` (value 0x0) marks a key as deleted in the write-ahead log and SSTables. During compaction (`DoCompactionWork` in db_impl.cc), tombstones are dropped once no older snapshot references the key. |
-| Apache Cassandra | [gc_grace_seconds](https://github.com/apache/cassandra/blob/trunk/src/java/org/apache/cassandra/db/Columns.java#L1-L30) | Tombstones propagate across replicas during `gc_grace_seconds` (default 10 days) before compaction removes them. This prevents a resurrected node from reintroducing deleted data. `Cell.isLive()` checks tombstone status on read. |
+| Apache Cassandra | [DeletionTime.java#L37-L99](https://github.com/apache/cassandra/blob/trunk/src/java/org/apache/cassandra/db/DeletionTime.java#L37-L99) | `DeletionTime` class represents tombstones with `markedForDeleteAt` timestamp. `isLive()` (L99) checks tombstone status on read. Tombstones propagate across replicas during `gc_grace_seconds` (default 10 days, referenced at L89) before compaction purges them. |
 
 ## Implementation
 

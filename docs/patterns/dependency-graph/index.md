@@ -49,7 +49,7 @@ A dependency graph represents items as nodes and ordering constraints as directe
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Cargo (Rust) | [dep_cache.rs#L1-L50](https://github.com/rust-lang/cargo/blob/master/src/cargo/core/resolver/dep_cache.rs#L1-L50) | `RegistryQueryer` manages the dependency resolution graph for Rust packages. Dependencies form a DAG resolved via backtracking, with the `resolve` function producing a topological ordering of crate versions for compilation. |
+| Cargo (Rust) | [dep_cache.rs#L143-L175](https://github.com/rust-lang/cargo/blob/master/src/cargo/core/resolver/dep_cache.rs#L143-L175) | `RegistryQueryer` manages the dependency resolution graph for Rust packages. Dependencies form a DAG resolved via backtracking, with `build_deps` (L207) producing the set of dependencies activated by each candidate. |
 | pnpm | [graph-sequencer#L22-L125](https://github.com/pnpm/pnpm/blob/main/deps/graph-sequencer/src/index.ts#L22-L125) | `graphSequencer` — topologically sorts workspace packages by their inter-dependencies with cycle detection. Used by `pnpm -r` recursive commands to respect dependency ordering across a monorepo. |
 
 ## Implementation

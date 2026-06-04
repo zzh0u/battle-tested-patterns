@@ -60,7 +60,7 @@ difficulty: "beginner"
 | 项目 | 源码 | 用途 |
 |------|------|------|
 | LevelDB | [dbformat.h#L39-L43](https://github.com/google/leveldb/blob/main/db/dbformat.h#L39-L43) | `kTypeDeletion`（值 0x0）在预写日志和 SSTable 中标记键已删除。压缩期间（db_impl.cc 中的 `DoCompactionWork`），当没有更早的快照引用该键时，墓碑被丢弃。 |
-| Apache Cassandra | [gc_grace_seconds](https://github.com/apache/cassandra/blob/trunk/src/java/org/apache/cassandra/db/Columns.java#L1-L30) | 墓碑在 `gc_grace_seconds`（默认 10 天）期间传播到各副本，之后压缩才移除它们。这防止恢复的节点重新引入已删除数据。`Cell.isLive()` 在读取时检查墓碑状态。 |
+| Apache Cassandra | [DeletionTime.java#L37-L99](https://github.com/apache/cassandra/blob/trunk/src/java/org/apache/cassandra/db/DeletionTime.java#L37-L99) | `DeletionTime` 类用 `markedForDeleteAt` 时间戳表示墓碑。`isLive()`（L99）在读取时检查墓碑状态。墓碑在 `gc_grace_seconds`（默认 10 天，L89 引用）期间传播到各副本，之后压缩才清除它们。 |
 
 ## 实现
 
