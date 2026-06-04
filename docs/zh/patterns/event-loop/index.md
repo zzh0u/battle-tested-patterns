@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # 模式：事件循环 / 反应器 (Event Loop / Reactor)
 
+<DifficultyBadge />
+
 ## 一句话
 
 单线程循环通过 epoll/kqueue 多路复用 I/O，将就绪事件分发给回调——无需线程即可处理数千连接。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

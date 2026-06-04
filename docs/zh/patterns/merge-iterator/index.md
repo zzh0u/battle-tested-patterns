@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # 模式：归并迭代器 (Merge Iterator / K-Way Merge)
 
+<DifficultyBadge />
+
 ## 一句话
 
 使用最小堆将 K 个有序流合并为一个有序输出——跨多个数据源创建"统一视图"的通用方法。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

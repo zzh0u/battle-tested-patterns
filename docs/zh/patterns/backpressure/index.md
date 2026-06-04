@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # 模式：背压 / 流控 (Backpressure)
 
+<DifficultyBadge />
+
 ## 一句话
 
 当消费者跟不上时减慢生产者——用有界缓冲区和需求信号防止资源耗尽。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

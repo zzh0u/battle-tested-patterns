@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # Pattern: Bloom Filter
 
+<DifficultyBadge />
+
 ## One Liner
 
 Test set membership in O(k) time with zero false negatives — at the cost of a tunable false positive rate.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

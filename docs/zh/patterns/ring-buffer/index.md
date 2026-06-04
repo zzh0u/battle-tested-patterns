@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # 模式：环形缓冲区 (Ring Buffer)
 
+<DifficultyBadge />
+
 ## 一句话
 
 固定大小的缓冲区通过模运算实现循环，提供常数时间的入队出队且无需内存分配。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

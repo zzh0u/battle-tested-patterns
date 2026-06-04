@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # Pattern: Logical Clock / Epoch
 
+<DifficultyBadge />
+
 ## One Liner
 
 A monotonically increasing counter that orders events without wall-clock time -- enabling consistent snapshots and staleness detection.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

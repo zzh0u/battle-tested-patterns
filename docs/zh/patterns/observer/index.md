@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # 模式：观察者 / 发布-订阅 (Observer / Pub-Sub)
 
+<DifficultyBadge />
+
 ## 一句话
 
 让对象订阅事件并在事件发生时收到通知，实现生产者与消费者的解耦——发送方不需要知道谁在监听。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

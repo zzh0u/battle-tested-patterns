@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # Pattern: Object Pool
 
+<DifficultyBadge />
+
 ## One Liner
 
 Pre-allocate a set of reusable objects to avoid the cost of repeated allocation and garbage collection on hot paths.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

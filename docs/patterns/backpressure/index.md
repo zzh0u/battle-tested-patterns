@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # Pattern: Backpressure / Flow Control
 
+<DifficultyBadge />
+
 ## One Liner
 
 Slow down producers when consumers can't keep up — use bounded buffers and demand signals to prevent resource exhaustion.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

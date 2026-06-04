@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # Pattern: Batch Processing
 
+<DifficultyBadge />
+
 ## One Liner
 
 Accumulate individual operations and execute them together as a group, amortizing per-operation overhead across the batch.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

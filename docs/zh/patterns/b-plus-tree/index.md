@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # 模式：B+ 树 (B+ Tree)
 
+<DifficultyBadge />
+
 ## 一句话
 
 自平衡多路树，高扇出——内部节点负责路由，叶节点存储数据，所有叶节点通过链表相连以支持高效范围扫描。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

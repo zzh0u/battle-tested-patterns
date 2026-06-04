@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # 模式：引用计数 (Reference Counting)
 
+<DifficultyBadge />
+
 ## 一句话
 
 通过原子计数器追踪所有者，归零时自动清理——无需垃圾回收的确定性资源生命周期管理。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

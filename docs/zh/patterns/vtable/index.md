@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # 模式：虚函数表 / 操作分发 (Vtable / Ops Dispatch)
 
+<DifficultyBadge />
+
 ## 一句话
 
 将函数指针组合到结构体中实现运行时多态——接口、trait 和虚方法背后的手动基础。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

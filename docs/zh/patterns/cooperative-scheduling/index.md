@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # 模式：协作调度 (Cooperative Scheduling)
 
+<DifficultyBadge />
+
 ## 一句话
 
 将长时间运行的任务拆分为小块，在每块之间让出控制权，以保持系统响应。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

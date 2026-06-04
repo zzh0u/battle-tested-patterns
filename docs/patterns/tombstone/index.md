@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # Pattern: Tombstone / Deferred Deletion
 
+<DifficultyBadge />
+
 ## One Liner
 
 Mark deleted entries with a tombstone marker instead of removing them -- a background process reclaims space later.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

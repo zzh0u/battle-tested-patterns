@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # 模式：写时复制 (Copy-on-Write)
 
+<DifficultyBadge />
+
 ## 一句话
 
 通过引用共享数据，直到有人修改时才创建私有副本——为读多写少的场景节省内存和分配开销。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

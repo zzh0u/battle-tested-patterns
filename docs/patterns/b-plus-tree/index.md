@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # Pattern: B+ Tree
 
+<DifficultyBadge />
+
 ## One Liner
 
 Self-balancing tree with high branching factor -- internal nodes guide, leaf nodes store, all leaves linked for efficient range scans.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

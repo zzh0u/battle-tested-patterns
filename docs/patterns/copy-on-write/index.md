@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # Pattern: Copy-on-Write (CoW)
 
+<DifficultyBadge />
+
 ## One Liner
 
 Share data by reference until someone modifies it — only then make a private copy, saving memory and allocation cost for read-heavy workloads.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

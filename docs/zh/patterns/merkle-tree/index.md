@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # 模式：Merkle 树 (Merkle Tree)
 
+<DifficultyBadge />
+
 ## 一句话
 
 对叶子节点做哈希，然后逐层向上哈希配对——以 O(log n) 的代价验证任意叶子的完整性，无需重新哈希整个数据集。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # 模式：墓碑 / 延迟删除 (Tombstone)
 
+<DifficultyBadge />
+
 ## 一句话
 
 用墓碑标记代替直接删除条目——后台进程稍后回收空间。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

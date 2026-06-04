@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # Pattern: Checkpointing
 
+<DifficultyBadge />
+
 ## One Liner
 
 Periodically snapshot consistent state so recovery replays only from the checkpoint -- not from the beginning of time.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

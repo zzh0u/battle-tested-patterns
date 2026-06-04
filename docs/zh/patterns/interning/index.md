@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # 模式：驻留 / 符号表 (Interning / Symbol Table)
 
+<DifficultyBadge />
+
 ## 一句话
 
 通过规范化查找表去重不可变值——用 O(1) 的指针比较替代 O(n) 的内容比较。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

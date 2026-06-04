@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # 模式：双缓冲 (Double Buffering)
 
+<DifficultyBadge />
+
 ## 一句话
 
 维护两份状态副本，在它们之间原子切换，让读取方始终看到一致的快照。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

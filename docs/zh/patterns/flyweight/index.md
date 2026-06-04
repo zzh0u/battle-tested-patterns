@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # 模式：享元 / 驻留 (Flyweight / Interning)
 
+<DifficultyBadge />
+
 ## 一句话
 
 共享相同的不可变对象而非创建重复实例，用查找开销换取大量内存节省。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

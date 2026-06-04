@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # Pattern: LSM Tree (Log-Structured Merge Tree)
 
+<DifficultyBadge />
+
 ## One Liner
 
 Buffer writes in memory, flush to sorted files on disk, merge files in background -- trading read amplification for fast writes.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

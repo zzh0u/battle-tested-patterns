@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # Pattern: Visitor / Tree Walker
 
+<DifficultyBadge />
+
 ## One Liner
 
 Decouple tree traversal from operations by dispatching to type-specific callbacks — enabling new operations without modifying the tree.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

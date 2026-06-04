@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # 模式：脏标记 (Dirty Flag)
 
+<DifficultyBadge />
+
 ## 一句话
 
 在变更时将对象标记为"脏"，延迟昂贵的重计算直到值真正被需要时再执行，然后清除标记。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

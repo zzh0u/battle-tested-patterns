@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # Pattern: Vtable / Ops Dispatch
 
+<DifficultyBadge />
+
 ## One Liner
 
 Group function pointers into a struct to achieve runtime polymorphism — the manual foundation behind interfaces, traits, and virtual methods.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

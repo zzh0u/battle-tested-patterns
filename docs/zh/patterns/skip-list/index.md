@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # 模式：跳表 (Skip List)
 
+<DifficultyBadge />
+
 ## 一句话
 
 概率有序数据结构，O(log n) 搜索、插入和删除——比平衡树更简单，性能相当。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

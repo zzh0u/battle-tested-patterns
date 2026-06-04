@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # Pattern: Dirty Flag
 
+<DifficultyBadge />
+
 ## One Liner
 
 Mark objects as "dirty" on mutation, defer expensive recomputation until the value is actually needed, then clear the flag.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # Pattern: Iterator / Lazy Evaluation
 
+<DifficultyBadge />
+
 ## One Liner
 
 Process sequences one element at a time without materializing the entire collection, enabling composable transformations with zero intermediate allocations.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

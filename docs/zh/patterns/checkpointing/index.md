@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # 模式：检查点 (Checkpointing)
 
+<DifficultyBadge />
+
 ## 一句话
 
 定期快照一致性状态，使恢复只需从检查点开始重放——而不是从时间的起点。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

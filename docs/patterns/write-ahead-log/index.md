@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # Pattern: Write-Ahead Log (WAL)
 
+<DifficultyBadge />
+
 ## One Liner
 
 Log every mutation to durable storage before applying it — replay the log to recover from crashes without data loss.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

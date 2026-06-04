@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # 模式：指数退避重试 (Retry with Backoff)
 
+<DifficultyBadge />
+
 ## 一句话
 
 操作失败时以指数增长的延迟重试，加随机抖动避免惊群效应。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

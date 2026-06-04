@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # 模式：标签联合体 (Tagged Union / Variant)
 
+<DifficultyBadge />
+
 ## 一句话
 
 将类型标签与值联合体配对存储，使一个变量安全地持有不同类型，通过标签分发行为。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

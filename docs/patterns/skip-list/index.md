@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # Pattern: Skip List
 
+<DifficultyBadge />
+
 ## One Liner
 
 A probabilistic sorted data structure with O(log n) search, insert, and delete — simpler to implement than balanced trees with comparable performance.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # 模式：Trie 前缀树 (Trie / Prefix Tree)
 
+<DifficultyBadge />
+
 ## 一句话
 
 在树中存储字符串，每条边代表一个字符——共享前缀共享节点，实现按键长度 O(k) 查找。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

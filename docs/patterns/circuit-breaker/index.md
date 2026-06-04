@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # Pattern: Circuit Breaker
 
+<DifficultyBadge />
+
 ## One Liner
 
 Stop calling a failing service by tracking errors and tripping open — fail fast instead of piling up timeouts.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

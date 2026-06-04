@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # Pattern: LRU Cache
 
+<DifficultyBadge />
+
 ## One Liner
 
 Evict the least recently used entry when the cache is full — O(1) get and put using a hash map plus a doubly linked list.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

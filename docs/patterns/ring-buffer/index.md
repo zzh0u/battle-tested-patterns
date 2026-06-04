@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # Pattern: Ring Buffer (Circular Buffer)
 
+<DifficultyBadge />
+
 ## One Liner
 
 A fixed-size buffer that wraps around using modular arithmetic, enabling constant-time enqueue and dequeue without memory allocation.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

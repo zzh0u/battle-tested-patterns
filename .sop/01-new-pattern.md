@@ -68,8 +68,13 @@ description: "≤ 1 sentence"
 difficulty: "beginner | intermediate | advanced"
 ---
 # Pattern: [Name]
+
+<DifficultyBadge />        ← badge line: directly below title (future: add more badges here)
+
 ## One Liner          — ≤ 30 English words, capture WHY not just WHAT
-<DifficultyBadge /> <DemoBadge />
+
+<DemoBadge />               ← interactive demo link: after One Liner text
+
 ## Real-World Analogy — one everyday metaphor (parking lot, fuse, dishwasher, etc.)
 ## Core Idea          — concept + diagram (Mermaid, ASCII, or table — whichever fits best)
 ## Production Proof   — table with ≥ 2 projects, precise GitHub URLs to line numbers

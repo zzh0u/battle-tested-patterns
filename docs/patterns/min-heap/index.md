@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # Pattern: Min Heap / Priority Queue
 
+<DifficultyBadge />
+
 ## One Liner
 
 A binary tree stored in an array where the smallest element is always at the root, enabling O(1) peek and O(log n) insert/remove.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

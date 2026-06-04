@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # Pattern: Trie (Prefix Tree)
 
+<DifficultyBadge />
+
 ## One Liner
 
 Store strings in a tree where each edge represents a character — shared prefixes share nodes, enabling O(k) lookup by key length.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

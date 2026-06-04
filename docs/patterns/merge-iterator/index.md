@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # Pattern: Merge Iterator (K-Way Merge)
 
+<DifficultyBadge />
+
 ## One Liner
 
 Combine K sorted streams into one sorted output using a min-heap -- the universal "unified view" over multiple data sources.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

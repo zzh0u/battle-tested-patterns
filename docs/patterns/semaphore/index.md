@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # Pattern: Semaphore / Bounded Concurrency
 
+<DifficultyBadge />
+
 ## One Liner
 
 Limit the number of concurrent operations by maintaining a counter — acquire before work, release after, block when the limit is reached.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

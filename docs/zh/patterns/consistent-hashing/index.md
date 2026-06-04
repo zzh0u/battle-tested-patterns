@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # 模式：一致性哈希 (Consistent Hashing)
 
+<DifficultyBadge />
+
 ## 一句话
 
 将键分布到虚拟环上的节点，添加或移除节点时只重映射约 1/n 的键。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

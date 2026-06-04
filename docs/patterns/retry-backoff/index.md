@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # Pattern: Retry with Exponential Backoff
 
+<DifficultyBadge />
+
 ## One Liner
 
 When an operation fails, retry it with progressively longer delays plus random jitter to avoid thundering herd.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

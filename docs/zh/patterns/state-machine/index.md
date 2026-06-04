@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # 模式：状态机 (State Machine)
 
+<DifficultyBadge />
+
 ## 一句话
 
 将实体的生命周期建模为一组状态和显式转换，让不可能的状态不可表达，每次状态变更可审计。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

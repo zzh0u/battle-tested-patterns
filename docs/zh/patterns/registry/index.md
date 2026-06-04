@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # 模式：注册表 / 自注册 (Registry)
 
+<DifficultyBadge />
+
 ## 一句话
 
 组件按名称将自身注册到全局查找表——消费者在运行时发现实现，无需硬编码依赖。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

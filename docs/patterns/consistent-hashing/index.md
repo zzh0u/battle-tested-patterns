@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # Pattern: Consistent Hashing
 
+<DifficultyBadge />
+
 ## One Liner
 
 Distribute keys across nodes on a virtual ring so that adding or removing a node only remaps ~1/n of the keys.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

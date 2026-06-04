@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # Pattern: Flyweight / Interning
 
+<DifficultyBadge />
+
 ## One Liner
 
 Share identical immutable objects instead of creating duplicates, trading a lookup cost for massive memory savings when many instances have the same value.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

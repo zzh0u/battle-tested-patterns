@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # Pattern: Bitmask
 
+<DifficultyBadge />
+
 ## One Liner
 
 Pack multiple boolean flags into a single integer and manipulate them with bitwise operators for constant-time set operations.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # 模式：熔断器 (Circuit Breaker)
 
+<DifficultyBadge />
+
 ## 一句话
 
 通过跟踪错误次数自动跳闸——快速失败，而不是堆积超时等待。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

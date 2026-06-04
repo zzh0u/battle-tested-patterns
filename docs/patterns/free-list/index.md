@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # Pattern: Free List
 
+<DifficultyBadge />
+
 ## One Liner
 
 Maintain a linked list of freed slots so allocation and deallocation are O(1) — reuse memory without calling the system allocator.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # Pattern: Observer / Pub-Sub
 
+<DifficultyBadge />
+
 ## One Liner
 
 Decouple producers from consumers by letting objects subscribe to events and get notified when something happens, without the source knowing who's listening.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

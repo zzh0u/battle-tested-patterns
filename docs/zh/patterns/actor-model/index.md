@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # 模式：Actor 模型
 
+<DifficultyBadge />
+
 ## 一句话
 
 每个 Actor 拥有一个信箱并按顺序处理消息——没有共享状态，没有锁，仅通过消息传递实现安全并发。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

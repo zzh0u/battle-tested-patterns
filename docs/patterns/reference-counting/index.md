@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # Pattern: Reference Counting
 
+<DifficultyBadge />
+
 ## One Liner
 
 Track owners via atomic counter, auto-cleanup at zero -- deterministic resource lifetime without garbage collection.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # Pattern: Arena Allocator
 
+<DifficultyBadge />
+
 ## One Liner
 
 Allocate objects by bumping a pointer in a pre-allocated region — free everything at once when the region is no longer needed.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

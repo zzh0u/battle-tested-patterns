@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # Pattern: Work Stealing
 
+<DifficultyBadge />
+
 ## One Liner
 
 Idle threads steal tasks from busy threads' queues — balancing load dynamically without central coordination.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

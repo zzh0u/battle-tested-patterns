@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # 模式：限流器 / 令牌桶 (Rate Limiter)
 
+<DifficultyBadge />
+
 ## 一句话
 
 通过维护一个按固定速率补充的令牌桶来控制吞吐量——每次操作消耗一个令牌，桶空时拒绝请求。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

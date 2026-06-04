@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # Pattern: Rate Limiter (Token Bucket)
 
+<DifficultyBadge />
+
 ## One Liner
 
 Protect services from overload by draining tokens from a bucket that refills at a fixed rate — reject requests when empty.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

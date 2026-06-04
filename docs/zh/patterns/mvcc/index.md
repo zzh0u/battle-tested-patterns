@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # 模式：MVCC 多版本并发控制
 
+<DifficultyBadge />
+
 ## 一句话
 
 为每个值保留多个带时间戳的版本，读者永远不阻塞写者——每个事务看到一致的快照，无需加锁。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

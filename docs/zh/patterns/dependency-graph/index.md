@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # 模式：依赖图 (Dependency Graph)
 
+<DifficultyBadge />
+
 ## 一句话
 
 将依赖关系建模为有向无环图，拓扑排序确定合法执行顺序——在死锁前检测循环。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

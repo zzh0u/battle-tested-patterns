@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # 模式：逻辑时钟 / Epoch (Logical Clock)
 
+<DifficultyBadge />
+
 ## 一句话
 
 单调递增的计数器，无需物理时钟即可排序事件——实现一致性快照和过期检测。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

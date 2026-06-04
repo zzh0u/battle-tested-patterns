@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # Pattern: Double Buffering
 
+<DifficultyBadge />
+
 ## One Liner
 
 Maintain two copies of state and atomically swap between them so readers always see a consistent snapshot.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

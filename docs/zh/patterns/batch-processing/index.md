@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # 模式：批处理 (Batch Processing)
 
+<DifficultyBadge />
+
 ## 一句话
 
 累积单个操作并作为一组执行，将每次操作的开销分摊到整个批次。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

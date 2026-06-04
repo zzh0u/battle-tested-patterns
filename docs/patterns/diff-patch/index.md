@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # Pattern: Diff / Patch
 
+<DifficultyBadge />
+
 ## One Liner
 
 Compare two sequences to compute the minimal set of operations (insert, delete, move) needed to transform one into the other.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

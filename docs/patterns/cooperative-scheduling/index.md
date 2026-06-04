@@ -5,11 +5,13 @@ difficulty: "advanced"
 
 # Pattern: Cooperative Scheduling
 
+<DifficultyBadge />
+
 ## One Liner
 
 Break long-running work into small chunks, yielding control back to the host between each chunk to keep the system responsive.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

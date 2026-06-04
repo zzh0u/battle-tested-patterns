@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # Pattern: Dependency Graph
 
+<DifficultyBadge />
+
 ## One Liner
 
 Model dependencies as a directed acyclic graph and topologically sort to determine a valid execution order — detecting cycles before they deadlock.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

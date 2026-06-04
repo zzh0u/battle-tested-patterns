@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # 模式：最小堆 / 优先队列 (Min Heap)
 
+<DifficultyBadge />
+
 ## 一句话
 
 存储在数组中的二叉树，最小元素始终在根节点，支持 O(1) 查看和 O(log n) 插入/删除。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # 模式：中间件 / 管道链 (Middleware / Pipeline Chain)
 
+<DifficultyBadge />
+
 ## 一句话
 
 组合处理器，每个包裹下一个——前处理、调用 next、后处理——形成双向管道。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # 模式：对象池 (Object Pool)
 
+<DifficultyBadge />
+
 ## 一句话
 
 预分配一组可复用对象，避免热路径上重复分配和垃圾回收的开销。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 

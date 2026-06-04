@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # Pattern: Middleware / Pipeline Chain
 
+<DifficultyBadge />
+
 ## One Liner
 
 Compose handlers where each wraps the next -- pre-process, call next, post-process -- forming a bidirectional pipeline.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

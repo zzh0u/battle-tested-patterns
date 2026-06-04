@@ -5,11 +5,13 @@ difficulty: "beginner"
 
 # Pattern: Tagged Union / Variant
 
+<DifficultyBadge />
+
 ## One Liner
 
 Store a type tag alongside a value union so one variable safely holds different types, dispatching behavior via the tag.
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## Real-World Analogy
 

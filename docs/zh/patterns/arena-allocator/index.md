@@ -5,11 +5,13 @@ difficulty: "intermediate"
 
 # 模式：Arena 分配器 (Arena Allocator)
 
+<DifficultyBadge />
+
 ## 一句话
 
 在预分配区域中通过移动指针分配对象——不再需要时一次性释放所有内存。
 
-<DifficultyBadge /> <DemoBadge />
+<DemoBadge />
 
 ## 现实类比
 
