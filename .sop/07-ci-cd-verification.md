@@ -47,3 +47,5 @@ All workflows declare their own `permissions` block — the repository default s
 | `Pages not enabled` | GitHub Pages not configured | Settings → Pages → "GitHub Actions" |
 | `Permission denied` pushing changelog | Workflow lacks write permission | Check `permissions: contents: write` in workflow |
 | Markdown lint errors in `node_modules` | Lint command missing `--ignore` | Use `--ignore docs/node_modules` |
+| `[vite:vue] Unterminated template` | Literal `"` inside backtick template in `:attr="..."` | See [SOP 09](09-vue-build-pitfalls.md) Rule 1 |
+| `[vue-tsc] declared but never read` | Unused variable in `v-for` destructuring | Drop unused binding: `[key]` not `[key, val]` |
