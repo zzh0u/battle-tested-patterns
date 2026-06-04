@@ -10,7 +10,7 @@
 
 | Workflow | Trigger | Purpose |
 |----------|---------|---------|
-| `ci.yml` | push + PR | Lint, typecheck, tests (TS + Rust + Go), docs build |
+| `ci.yml` | push + PR | Lint, typecheck, tests (TS + Rust + Go + Python), docs build |
 | `deploy.yml` | push to main | Build VitePress → deploy GitHub Pages |
 | `content-quality.yml` | push + PR (patterns/exercises changed) | Check template completeness, detect #L1 links |
 | `verify-links.yml` | push (patterns changed) + weekly cron | HTTP check all production proof links |

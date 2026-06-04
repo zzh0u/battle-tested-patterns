@@ -17,9 +17,13 @@ When creating runnable exercises for a pattern.
 exercises/typescript/<pattern-name>/
 ├── 01-basic.test.ts         # Required: core concept
 └── 02-<scenario>.test.ts    # Optional: realistic application
+
+exercises/rust/src/<pattern_name>.rs    # impl + #[cfg(test)] in same file
+exercises/go/<pattern_name>_test.go     # impl + Test functions in same file
+exercises/python/test_<pattern_name>.py # impl + pytest functions in same file
 ```
 
-Minimum: **≥ 1 exercise file** per pattern.
+Minimum: **≥ 1 exercise file** per pattern per language.
 
 ## Exercise File Format
 
@@ -53,10 +57,38 @@ Key rules:
 - Tests below the separator are immutable
 - Learners delete function bodies and implement from scratch
 
+## Python Exercise Format
+
+```python
+"""Pattern Name — short description."""
+
+class MyClass:
+    def my_method(self):  # TODO: implement
+        ...working implementation...
+
+# ─── Tests (do not modify below this line) ───
+
+def test_basic_behavior():
+    assert MyClass().my_method() == expected
+```
+
+Key rules (Python-specific):
+- `# TODO: implement` on method signature lines, not body lines
+- Use pytest assertions (no unittest classes)
+- Each file is self-contained — no cross-file imports
+
+## Answer Files
+
+Reference implementations live in `exercises/answers/<language>/`:
+- Pure implementation code, no tests
+- Extracted from `docs/patterns/<name>/index.md` Implementation section
+- 46 files per language × 4 languages = 184 files
+
 ## Checklist
 
-- [ ] ≥ 1 exercise file per pattern
-- [ ] Filename has difficulty label (01-, 02-, 03-)
-- [ ] All tests pass with `pnpm test`
+- [ ] ≥ 1 exercise file per pattern per language
+- [ ] All tests pass: `pnpm test` · `cargo test` · `go test ./...` · `pytest`
 - [ ] TODO-stub format with separator line
+- [ ] TODO markers on method signatures, not body lines
 - [ ] Test descriptions clearly state expected behavior
+- [ ] Answer files exist in `exercises/answers/` for all 4 languages
