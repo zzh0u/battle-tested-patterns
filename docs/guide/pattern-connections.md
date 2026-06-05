@@ -127,3 +127,21 @@ That's what React's team built. That's what Redis, Go, Linux, PostgreSQL, and Ka
 | [**Tagged Union**](/patterns/tagged-union/) | ✅ | | ✅ | | | |
 | [**Retry Backoff**](/patterns/retry-backoff/) | | | | | | ✅ |
 | [**Consistent Hashing**](/patterns/consistent-hashing/) | | | ✅ | | | ✅ |
+
+### Patterns Anchored in Other Systems
+
+The remaining 11 patterns live primarily in systems beyond the six above:
+
+| Pattern | Primary Systems |
+|---------|----------------|
+| [**LSM Tree**](/patterns/lsm-tree/) | LevelDB, RocksDB — the core write engine for modern KV stores |
+| [**Merge Iterator**](/patterns/merge-iterator/) | LevelDB, RocksDB — K-way merge during compaction |
+| [**Logical Clock**](/patterns/logical-clock/) | etcd (Raft term/index), LevelDB (sequence numbers) |
+| [**Merkle Tree**](/patterns/merkle-tree/) | Git (object integrity), ZFS (block checksums) |
+| [**Actor Model**](/patterns/actor-model/) | Erlang/OTP, Akka — message-passing concurrency |
+| [**Circuit Breaker**](/patterns/circuit-breaker/) | Netflix Hystrix, gobreaker — resilience in microservices |
+| [**Middleware Chain**](/patterns/middleware-chain/) | gRPC-Go interceptors, Koa.js onion model |
+| [**Registry**](/patterns/registry/) | TensorFlow (op registry), gRPC-Go (service registration) |
+| [**Dependency Graph**](/patterns/dependency-graph/) | Cargo (build resolution), pnpm (workspace scheduling) |
+| [**Visitor**](/patterns/visitor/) | LLVM (InstVisitor), Vue compiler (AST transforms) |
+| [**Interning**](/patterns/interning/) | rustc (symbol interning), CPython (string/int caching) |

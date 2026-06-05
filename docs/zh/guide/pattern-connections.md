@@ -127,3 +127,21 @@ Copy-on-Write    → slice append 容量不足时才复制
 | [**标签联合体**](/zh/patterns/tagged-union/) | ✅ | | ✅ | | | |
 | [**指数退避重试**](/zh/patterns/retry-backoff/) | | | | | | ✅ |
 | [**一致性哈希**](/zh/patterns/consistent-hashing/) | | | ✅ | | | ✅ |
+
+### 其他系统中的锚点模式
+
+剩余 11 个模式主要存在于上述六大系统之外：
+
+| 模式 | 主要系统 |
+|------|----------|
+| [**LSM 树**](/zh/patterns/lsm-tree/) | LevelDB、RocksDB — 现代 KV 存储的核心写入引擎 |
+| [**合并迭代器**](/zh/patterns/merge-iterator/) | LevelDB、RocksDB — 压缩时的 K 路归并 |
+| [**逻辑时钟**](/zh/patterns/logical-clock/) | etcd（Raft term/index）、LevelDB（序列号） |
+| [**Merkle 树**](/zh/patterns/merkle-tree/) | Git（对象完整性校验）、ZFS（块校验和） |
+| [**Actor 模型**](/zh/patterns/actor-model/) | Erlang/OTP、Akka — 消息传递并发 |
+| [**熔断器**](/zh/patterns/circuit-breaker/) | Netflix Hystrix、gobreaker — 微服务弹性 |
+| [**中间件链**](/zh/patterns/middleware-chain/) | gRPC-Go 拦截器、Koa.js 洋葱模型 |
+| [**注册表**](/zh/patterns/registry/) | TensorFlow（算子注册）、gRPC-Go（服务注册） |
+| [**依赖图**](/zh/patterns/dependency-graph/) | Cargo（构建解析）、pnpm（工作区调度） |
+| [**访问者**](/zh/patterns/visitor/) | LLVM（InstVisitor）、Vue 编译器（AST 转换） |
+| [**驻留**](/zh/patterns/interning/) | rustc（符号驻留）、CPython（字符串/整数缓存） |
