@@ -118,38 +118,12 @@ Patterns rarely appear alone. These are the most common production combos:
 
 ### "Which cache?"
 
-```text
-Need eviction?
-├── Yes → Need O(1) ops?
-│         ├── Yes → LRU Cache
-│         └── No  → B+ Tree with TTL
-└── No  → Need probabilistic filter?
-          ├── Yes → Bloom Filter (not a cache, but saves cache misses)
-          └── No  → Hash map is fine
-```
+<DecisionTree variant="which-cache" />
 
 ### "Which memory strategy?"
 
-```text
-All objects same size?
-├── Yes → Object Pool or Free List
-└── No  → Phase-based lifetime?
-          ├── Yes → Arena Allocator
-          └── No  → Shared immutable?
-                    ├── Yes → Flyweight / Interning
-                    └── No  → Copy-on-Write or Reference Counting
-```
+<DecisionTree variant="which-memory" />
 
 ### "Which concurrency model?"
 
-```text
-Shared state?
-├── No  → Actor Model (message passing)
-└── Yes → Read-heavy?
-          ├── Yes → MVCC (readers never block)
-          └── No  → Need limit on concurrency?
-                    ├── Yes → Semaphore
-                    └── No  → Need to split work?
-                              ├── Yes → Work Stealing
-                              └── No  → Event Loop (single-thread I/O)
-```
+<DecisionTree variant="which-concurrency" />

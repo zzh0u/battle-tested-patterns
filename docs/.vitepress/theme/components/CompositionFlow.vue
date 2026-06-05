@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { withBase } from 'vitepress';
 import { useI18n } from '../composables/useI18n';
 
 const { t, isZh } = useI18n();
@@ -17,6 +18,45 @@ interface Flow {
   header: { en: string; zh: string };
   footer?: { en: string; zh: string };
   steps: Step[];
+}
+
+const zhNames: Record<string, string> = {
+  'Min Heap': '最小堆',
+  'Cooperative Scheduling': '协作式调度',
+  'Diff / Patch': '差异/补丁',
+  'Bitmask': '位掩码',
+  'Double Buffering': '双缓冲',
+  'Event Loop': '事件循环',
+  'Object Pool + Free List': '对象池 + 空闲链表',
+  'Dirty Flag': '脏标记',
+  'State Machine': '状态机',
+  'Batch Processing': '批处理',
+  'Arena Allocator': 'Arena 分配器',
+  'Vtable': '虚函数表',
+  'Reference Counting': '引用计数',
+  'Ring Buffer': '环形缓冲区',
+  'Free List': '空闲链表',
+  'Object Pool': '对象池',
+  'Work Stealing': '工作窃取',
+  'Semaphore': '信号量',
+  'Rate Limiter': '限流器',
+  'Middleware Chain': '中间件链',
+  'Observer': '观察者',
+  'Backpressure': '背压',
+  'Dependency Graph': '依赖图',
+  'Interning': '驻留',
+  'Copy-on-Write': '写时复制',
+  'Merkle Tree': '默克尔树',
+  'Bloom Filter': '布隆过滤器',
+  'Consistent Hashing': '一致性哈希',
+  'Write-Ahead Log': '预写日志',
+  'Logical Clock': '逻辑时钟',
+  'MVCC': 'MVCC',
+  'Checkpointing': '检查点',
+};
+
+function patternName(en: string): string {
+  return isZh.value ? (zhNames[en] || en) : en;
 }
 
 const flows: Record<string, Flow> = {
@@ -124,7 +164,7 @@ const prefix = computed(() => isZh.value ? '/zh' : '');
       <div v-for="(step, i) in flow.steps" :key="i" class="comp-flow-step">
         <div class="comp-flow-dot">{{ i + 1 }}</div>
         <div class="comp-flow-body">
-          <a :href="prefix + step.path" class="comp-flow-pattern">{{ step.pattern }}</a>
+          <a :href="withBase(prefix + step.path)" class="comp-flow-pattern">{{ patternName(step.pattern) }}</a>
           <p class="comp-flow-desc">{{ isZh ? step.zh : step.en }}</p>
         </div>
         <div v-if="i < flow.steps.length - 1" class="comp-flow-connector">

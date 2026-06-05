@@ -20,9 +20,9 @@ description: "更多开源项目的模式：PostgreSQL、Redis、Kafka、LLVM、
 | [布隆过滤器](/zh/patterns/bloom-filter/) | LevelDB | [`bloom.cc`](https://github.com/google/leveldb/blob/main/util/bloom.cc#L17-L80) | 块级布隆过滤器跳过不必要的磁盘读取 |
 | [跳表](/zh/patterns/skip-list/) | LevelDB | [`skiplist.h`](https://github.com/google/leveldb/blob/main/db/skiplist.h#L40-L90) | 无锁 memtable，原子 next 指针 |
 | [Arena 分配器](/zh/patterns/arena-allocator/) | LevelDB | [`arena.cc`](https://github.com/google/leveldb/blob/main/util/arena.cc) | 基于块的 arena 分配器用于 memtable |
-| [归并迭代器](/zh/patterns/merge-iterator/) | LevelDB | [`merger.cc`](https://github.com/google/leveldb/blob/main/table/merger.cc#L17-L100) | `MergingIterator` 合并有序迭代器（memtable + SSTable 各层）为单一有序视图 |
+| [合并迭代器](/zh/patterns/merge-iterator/) | LevelDB | [`merger.cc`](https://github.com/google/leveldb/blob/main/table/merger.cc#L17-L100) | `MergingIterator` 合并有序迭代器（memtable + SSTable 各层）为单一有序视图 |
 | [LSM 树](/zh/patterns/lsm-tree/) | LevelDB | [`db_impl.cc`](https://github.com/google/leveldb/blob/main/db/db_impl.cc#L1241-L1368) | `DBImpl::Write`——批量写入 WAL，插入 memtable，阈值时刷入 SST |
-| [归并迭代器](/zh/patterns/merge-iterator/) | RocksDB | [`merge_helper.cc`](https://github.com/facebook/rocksdb/blob/main/db/merge_helper.cc#L87-L156) | `TimedFullMerge` 在 compaction 期间合并同键的多个版本 |
+| [合并迭代器](/zh/patterns/merge-iterator/) | RocksDB | [`merge_helper.cc`](https://github.com/facebook/rocksdb/blob/main/db/merge_helper.cc#L87-L156) | `TimedFullMerge` 在 compaction 期间合并同键的多个版本 |
 | [LSM 树](/zh/patterns/lsm-tree/) | RocksDB | [`memtable.cc`](https://github.com/facebook/rocksdb/blob/main/db/memtable.cc#L458-L534) | `MemTable::Add`——跳表支撑的 memtable，写满后刷入 L0 SST |
 | [默克尔树](/zh/patterns/merkle-tree/) | ZFS (OpenZFS) | [`blkptr.c`](https://github.com/openzfs/zfs/blob/master/module/zfs/blkptr.c#L30-L77) | 块指针校验和形成 Merkle 树，从数据块到 uberblock，检测静默数据损坏 |
 | [检查点](/zh/patterns/checkpointing/) | PostgreSQL | [`checkpointer.c`](https://github.com/postgres/postgres/blob/master/src/backend/postmaster/checkpointer.c#L218-L360) | `CheckpointerMain`——刷新脏缓冲区，写检查点 WAL 记录，更新 `pg_control` |
@@ -61,8 +61,8 @@ description: "更多开源项目的模式：PostgreSQL、Redis、Kafka、LLVM、
 
 | 模式 | 项目 | 位置 | 作用 |
 |------|------|------|------|
-| [重试退避](/zh/patterns/retry-backoff/) | Kubernetes | [`backoff.go`](https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/util/wait/backoff.go#L30-L50) | Pod 重启退避、API 服务器重试 |
-| [重试退避](/zh/patterns/retry-backoff/) | gRPC-Go | [`internal/backoff/backoff.go`](https://github.com/grpc/grpc-go/blob/master/internal/backoff/backoff.go#L56-L75) | 带抖动的指数连接退避 |
+| [指数退避重试](/zh/patterns/retry-backoff/) | Kubernetes | [`backoff.go`](https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/util/wait/backoff.go#L30-L50) | Pod 重启退避、API 服务器重试 |
+| [指数退避重试](/zh/patterns/retry-backoff/) | gRPC-Go | [`internal/backoff/backoff.go`](https://github.com/grpc/grpc-go/blob/master/internal/backoff/backoff.go#L56-L75) | 带抖动的指数连接退避 |
 | [依赖图](/zh/patterns/dependency-graph/) | Terraform | [资源图](https://github.com/hashicorp/terraform) | DAG 顺序的并行资源 apply |
 | [依赖图](/zh/patterns/dependency-graph/) | Bazel | [Action 图](https://github.com/bazelbuild/bazel) | 构建目标的拓扑执行 |
 | [一致性哈希](/zh/patterns/consistent-hashing/) | Nginx | [`ngx_http_upstream_hash`](https://github.com/nginx/nginx/blob/master/src/http/modules/ngx_http_upstream_hash_module.c) | 基于 ketama 哈希的上游负载均衡 |
@@ -76,8 +76,8 @@ description: "更多开源项目的模式：PostgreSQL、Redis、Kafka、LLVM、
 | [虚函数表](/zh/patterns/vtable/) | CPython | [`object.h`](https://github.com/python/cpython/blob/main/Include/cpython/object.h#L250-L340) | `PyTypeObject` 虚表——`tp_repr`、`tp_hash`、`tp_call`、协议套件 |
 | [驻留](/zh/patterns/interning/) | CPython | [`unicodeobject.c`](https://github.com/python/cpython/blob/main/Objects/unicodeobject.c#L15575-L15631) | `PyUnicode_InternInPlace`——驻留标识符字符串实现 O(1) 字典查找 |
 | [驻留](/zh/patterns/interning/) | Rust (rustc) | [`symbol.rs`](https://github.com/rust-lang/rust/blob/master/compiler/rustc_span/src/symbol.rs#L24-L79) | `Symbol` 是全局驻留表的 `u32` 索引——所有标识符均驻留 |
-| [标签联合](/zh/patterns/tagged-union/) | Godot Engine | [`variant.h`](https://github.com/godotengine/godot/blob/master/core/variant/variant.h#L78-L120) | `Variant::Type` 枚举 + 联合体——每个 GDScript 值都是 `Variant` |
-| [标签联合](/zh/patterns/tagged-union/) | PyTorch | [`ivalue.h`](https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/core/ivalue.h#L51-L96) | `IValue` 持有 `Tag` 枚举 + `Payload` 联合体，用于 TorchScript 解释器 |
+| [标签联合体](/zh/patterns/tagged-union/) | Godot Engine | [`variant.h`](https://github.com/godotengine/godot/blob/master/core/variant/variant.h#L78-L120) | `Variant::Type` 枚举 + 联合体——每个 GDScript 值都是 `Variant` |
+| [标签联合体](/zh/patterns/tagged-union/) | PyTorch | [`ivalue.h`](https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/core/ivalue.h#L51-L96) | `IValue` 持有 `Tag` 枚举 + `Payload` 联合体，用于 TorchScript 解释器 |
 
 ## 延伸阅读
 

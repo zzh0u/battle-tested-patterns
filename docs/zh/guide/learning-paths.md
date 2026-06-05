@@ -22,9 +22,9 @@ description: "四条精选学习路径，引导你系统掌握 46 个模式 — 
 |---|------|-----|---------|
 | 1 | [Bitmask（位掩码）](/zh/patterns/bitmask/) | 入门 | 用一个整数装 N 个标志位 |
 | 2 | [Ring Buffer（环形缓冲区）](/zh/patterns/ring-buffer/) | 入门 | 零分配的固定大小 FIFO |
-| 3 | [Tagged Union（标签联合）](/zh/patterns/tagged-union/) | 入门 | 类型标签实现安全分发 |
+| 3 | [Tagged Union（标签联合体）](/zh/patterns/tagged-union/) | 入门 | 类型标签实现安全分发 |
 | 4 | [Min Heap（最小堆）](/zh/patterns/min-heap/) | 进阶 | O(1) 取最高优先级元素 |
-| 5 | [Trie（字典树）](/zh/patterns/trie/) | 进阶 | O(k) 按键长查找 |
+| 5 | [Trie（前缀树）](/zh/patterns/trie/) | 进阶 | O(k) 按键长查找 |
 | 6 | [Bloom Filter（布隆过滤器）](/zh/patterns/bloom-filter/) | 进阶 | 概率性成员检测 |
 | 7 | [LRU Cache（最近最少使用缓存）](/zh/patterns/lru-cache/) | 进阶 | 哈希表 + 链表组合 |
 | 8 | [Skip List（跳表）](/zh/patterns/skip-list/) | 高级 | 概率性有序结构 |
@@ -59,7 +59,7 @@ description: "四条精选学习路径，引导你系统掌握 46 个模式 — 
 
 | # | 模式 | 难度 | 核心收获 |
 |---|------|-----|---------|
-| 1 | [Retry with Backoff（退避重试）](/zh/patterns/retry-backoff/) | 入门 | 指数延迟 + 抖动 |
+| 1 | [Retry with Backoff（指数退避重试）](/zh/patterns/retry-backoff/) | 入门 | 指数延迟 + 抖动 |
 | 2 | [Batch Processing（批处理）](/zh/patterns/batch-processing/) | 入门 | 摊销单次操作开销 |
 | 3 | [State Machine（状态机）](/zh/patterns/state-machine/) | 入门 | 显式状态，不可能的转换被阻止 |
 | 4 | [Circuit Breaker（熔断器）](/zh/patterns/circuit-breaker/) | 进阶 | 服务故障时快速失败 |
@@ -100,7 +100,7 @@ description: "四条精选学习路径，引导你系统掌握 46 个模式 — 
 | 3 | [Flyweight（享元）](/zh/patterns/flyweight/) | 入门 | 共享相同实例 |
 | 4 | [Interning（驻留）](/zh/patterns/interning/) | 进阶 | 基于哈希的去重 |
 | 5 | [Free List（空闲链表）](/zh/patterns/free-list/) | 进阶 | 从释放槽位 O(1) 分配 |
-| 6 | [Arena Allocator（竞技场分配器）](/zh/patterns/arena-allocator/) | 进阶 | 连续分配，批量释放 |
+| 6 | [Arena Allocator（Arena 分配器）](/zh/patterns/arena-allocator/) | 进阶 | 连续分配，批量释放 |
 | 7 | [Vtable（虚函数表）](/zh/patterns/vtable/) | 高级 | 函数指针实现运行时多态 |
 
 **学完本路径后**，你将理解 Go 的 `sync.Pool`、Rust 的 `bumpalo` 和 CPython 的小对象分配器的工作原理。

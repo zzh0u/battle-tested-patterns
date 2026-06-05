@@ -22,13 +22,13 @@ description: "46 个模式的 Big-O 复杂度速查表 — 核心操作、时间
 | [环形缓冲区 (Ring Buffer)](/zh/patterns/ring-buffer/) | O(1) | O(1) | O(1) | O(n) | 固定容量；满时覆盖最旧元素 |
 | [标签联合体 (Tagged Union)](/zh/patterns/tagged-union/) | — | O(1) | — | O(最大变体) | 按标签分发；无动态分配 |
 | [最小堆 (Min Heap)](/zh/patterns/min-heap/) | O(log n) | O(1) peek | O(log n) | O(n) | O(1) 获取最小值；用于优先队列 |
-| [字典树 (Trie)](/zh/patterns/trie/) | O(k) | O(k) | O(k) | O(n × k) | 与总条目数无关；前缀查询 O(k + 结果数) |
+| [Trie 前缀树](/zh/patterns/trie/) | O(k) | O(k) | O(k) | O(n × k) | 与总条目数无关；前缀查询 O(k + 结果数) |
 | [布隆过滤器 (Bloom Filter)](/zh/patterns/bloom-filter/) | O(m) | O(m) | ✗ | O(n) | 概率性；可能有假阳性，无假阴性 |
 | [LRU 缓存](/zh/patterns/lru-cache/) | O(1) | O(1) | O(1) | O(n) | 哈希表 + 双向链表 |
 | [跳表 (Skip List)](/zh/patterns/skip-list/) | O(log n) avg | O(log n) avg | O(log n) avg | O(n) | 概率性平衡；支持范围查询 |
 | [B+ 树](/zh/patterns/b-plus-tree/) | O(log n) | O(log n) | O(log n) | O(n) | 磁盘优化；高扇出减少 I/O |
-| [Merkle 树](/zh/patterns/merkle-tree/) | O(log n) | O(log n) | O(log n) | O(n) | O(log n) 验证证明 |
-| [归并迭代器 (Merge Iterator)](/zh/patterns/merge-iterator/) | — | O(log k) next | — | O(k) | k = 流数量；基于堆的合并 |
+| [默克尔树](/zh/patterns/merkle-tree/) | O(log n) | O(log n) | O(log n) | O(n) | O(log n) 验证证明 |
+| [合并迭代器](/zh/patterns/merge-iterator/) | — | O(log k) next | — | O(k) | k = 流数量；基于堆的合并 |
 
 ## 并发
 
@@ -52,7 +52,7 @@ description: "46 个模式的 Big-O 复杂度速查表 — 核心操作、时间
 | [状态机 (State Machine)](/zh/patterns/state-machine/) | transition | O(1) | O(状态数) | 常数时间分发；显式状态 |
 | [熔断器 (Circuit Breaker)](/zh/patterns/circuit-breaker/) | call / check | O(1) | O(1) | 计数器 + 定时器；3 个状态 |
 | [限流器 (Rate Limiter)](/zh/patterns/rate-limiter/) | allow? | O(1) | O(1)/限流器 | 令牌桶或滑动窗口 |
-| [退避重试 (Retry)](/zh/patterns/retry-backoff/) | retry | O(重试次数) | O(1) | 指数延迟 + 抖动 |
+| [指数退避重试](/zh/patterns/retry-backoff/) | retry | O(重试次数) | O(1) | 指数延迟 + 抖动 |
 | [批处理 (Batch Processing)](/zh/patterns/batch-processing/) | flush | O(批大小) | O(批大小) | 均摊单次操作开销 |
 | [中间件链 (Middleware)](/zh/patterns/middleware-chain/) | execute | O(中间件数) | O(中间件数) | 线性管道；每个处理器 O(1) |
 | [注册表 (Registry)](/zh/patterns/registry/) | register / lookup | O(1) hash | O(n) | 字符串键服务定位器 |
@@ -69,7 +69,7 @@ description: "46 个模式的 Big-O 复杂度速查表 — 核心操作、时间
 |------|------|------|------|------|------|
 | [对象池 (Object Pool)](/zh/patterns/object-pool/) | O(1) | O(1) | — | O(池大小) | 预分配；避免 GC 压力 |
 | [享元 (Flyweight)](/zh/patterns/flyweight/) | — | — | O(1) | O(唯一实例数) | 共享相同实例 |
-| [竞技场分配器 (Arena)](/zh/patterns/arena-allocator/) | O(1) bump | O(1) 批量 | — | O(竞技场大小) | 指针碰撞；一次性释放 |
+| [Arena 分配器](/zh/patterns/arena-allocator/) | O(1) bump | O(1) 批量 | — | O(竞技场大小) | 指针碰撞；一次性释放 |
 | [空闲链表 (Free List)](/zh/patterns/free-list/) | O(1) | O(1) | — | O(n) | 释放槽位的链表 |
 | [写时复制 (Copy-on-Write)](/zh/patterns/copy-on-write/) | O(1) share | O(n) on write | O(1) | O(n)/快照 | 延迟拷贝 |
 | [引用计数 (Ref Count)](/zh/patterns/reference-counting/) | O(1) clone | O(1) drop | — | O(1)/引用 | 确定性释放；不处理循环 |

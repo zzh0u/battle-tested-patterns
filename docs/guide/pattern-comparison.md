@@ -120,32 +120,4 @@ Some patterns look alike but serve different purposes. This guide compares commo
 
 ## Choosing the Right Pattern: Decision Flowchart
 
-```text
-Need to store/retrieve data?
-├── Fixed set of flags? → Bitmask
-├── Ordered access needed?
-│   ├── In memory? → Skip List
-│   └── On disk? → B+ Tree
-├── Approximate membership? → Bloom Filter
-├── Key-value with eviction? → LRU Cache
-└── FIFO with fixed capacity? → Ring Buffer
-
-Need to manage concurrency?
-├── Limit concurrent access? → Semaphore
-├── Producer faster than consumer? → Backpressure
-├── Shared data, rare writes? → Copy-on-Write
-├── Multiple writers, no blocking? → MVCC
-└── Independent actors? → Actor Model
-
-Need resilience?
-├── Downstream failing? → Circuit Breaker
-├── Too many requests? → Rate Limiter
-├── Transient errors? → Retry with Backoff
-└── Need crash recovery? → WAL + Checkpointing
-
-Need memory efficiency?
-├── Many identical objects? → Flyweight / Interning
-├── Reuse expensive objects? → Object Pool
-├── Phase-based allocation? → Arena Allocator
-└── Recycle fixed-size slots? → Free List
-```
+<DecisionTree variant="pattern-selector" />

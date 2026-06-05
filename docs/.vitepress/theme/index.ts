@@ -5,6 +5,7 @@ import VizSkeleton from './components/VizSkeleton.vue';
 import DemoBadge from './components/DemoBadge.vue';
 import DifficultyBadge from './components/DifficultyBadge.vue';
 import CompositionFlow from './components/CompositionFlow.vue';
+import DecisionTree from './components/DecisionTree.vue';
 import './custom.css';
 
 const vizComponents: Record<string, () => Promise<any>> = {
@@ -78,6 +79,7 @@ export default {
     app.component('DemoBadge', DemoBadge);
     app.component('DifficultyBadge', DifficultyBadge);
     app.component('CompositionFlow', CompositionFlow);
+    app.component('DecisionTree', DecisionTree);
     for (const [name, loader] of Object.entries(vizComponents)) {
       app.component(name, clientOnly(loader));
     }

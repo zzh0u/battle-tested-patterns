@@ -183,6 +183,75 @@ for f in docs/.vitepress/theme/components/*.vue; do
 done
 ```
 
+## Rule 6: Always Use `withBase()` for Internal Links in Vue Components
+
+### The Problem
+
+VitePress is configured with `base: '/battle-tested-patterns/'`. Markdown links like `[text](/path/)` get the base path prepended automatically by VitePress's markdown processor. However, raw `<a :href="...">` in Vue components do **not** get this treatment — they render as-is in the HTML.
+
+This causes 404 errors in production because `/zh/patterns/xxx/` resolves to `https://host/zh/patterns/xxx/` instead of `https://host/battle-tested-patterns/zh/patterns/xxx/`.
+
+### Bad (404 in production)
+
+```html
+<a :href="prefix + step.path">{{ step.pattern }}</a>
+```
+
+### Good
+
+```ts
+import { withBase } from 'vitepress';
+```
+
+```html
+<a :href="withBase(prefix + step.path)">{{ step.pattern }}</a>
+```
+
+### How to Scan
+
+```bash
+# Find :href bindings that don't use withBase()
+grep -rn ':href="' docs/.vitepress/theme/components/*.vue | grep -v 'withBase\|http\|#\|mailto'
+```
+
+## Rule 7: All Display Text Must Be i18n-Aware
+
+### The Problem
+
+When a Vue component displays text that is visible to users (pattern names, descriptions, labels), the text must be translated for the current locale. A common mistake is to use English-only strings for display text while only applying i18n to descriptions or links.
+
+### Bad (shows English on Chinese pages)
+
+```ts
+interface Step {
+  pattern: string;  // Always English like "Dependency Graph"
+}
+```
+
+```html
+<span>{{ step.pattern }}</span>  <!-- Always shows English -->
+```
+
+### Good (i18n mapping)
+
+```ts
+const zhNames: Record<string, string> = {
+  'Dependency Graph': '依赖图',
+  'Bloom Filter': '布隆过滤器',
+};
+function patternName(en: string): string {
+  return isZh.value ? (zhNames[en] || en) : en;
+}
+```
+
+```html
+<span>{{ patternName(step.pattern) }}</span>
+```
+
+### Reference: Pattern Name Translations
+
+Authoritative Chinese names are in `docs/zh/by-project/*.md` table headers. When adding a new component with pattern names, cross-reference those files for consistent translations.
+
 ## Checklist Before Pushing Vue Changes
 
 - [ ] No literal `"` inside backtick templates within `:attr="..."` bindings
@@ -190,4 +259,6 @@ done
 - [ ] No Mermaid diagrams with CJK subgraph IDs
 - [ ] No Mermaid `timeline` chart types
 - [ ] All `setTimeout`/`setInterval` cleaned up with `onUnmounted`
+- [ ] All `<a :href>` internal links use `withBase()` from vitepress
+- [ ] All user-visible text has i18n support (not just descriptions, but names/labels too)
 - [ ] `pnpm typecheck` passes (or verify via CI if local Node version differs)

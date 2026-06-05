@@ -92,38 +92,38 @@ Copy-on-Write    → slice append 容量不足时才复制
 
 | 模式 | React | Redis | Go Runtime | Linux | PostgreSQL | Kafka |
 |------|:-----:|:-----:|:----------:|:-----:|:----------:|:-----:|
-| [**Bitmask**](/zh/patterns/bitmask/) | ✅ | | ✅ | ✅ | | |
-| [**Min Heap**](/zh/patterns/min-heap/) | ✅ | | ✅ | ✅ | | |
-| [**Cooperative Scheduling**](/zh/patterns/cooperative-scheduling/) | ✅ | | ✅ | | | |
-| [**Diff / Patch**](/zh/patterns/diff-patch/) | ✅ | | | | | |
-| [**Double Buffering**](/zh/patterns/double-buffering/) | ✅ | | | | | |
-| [**Batch Processing**](/zh/patterns/batch-processing/) | ✅ | ✅ | | ✅ | | ✅ |
-| [**Dirty Flag**](/zh/patterns/dirty-flag/) | ✅ | | | | | |
-| [**Observer**](/zh/patterns/observer/) | ✅ | | | | | |
-| [**Skip List**](/zh/patterns/skip-list/) | | ✅ | | | | |
-| [**LRU Cache**](/zh/patterns/lru-cache/) | | ✅ | ✅ | | ✅ | |
-| [**Trie**](/zh/patterns/trie/) | | ✅ | | ✅ | | |
-| [**Bloom Filter**](/zh/patterns/bloom-filter/) | | | | | ✅ | |
-| [**Work Stealing**](/zh/patterns/work-stealing/) | | | ✅ | | | |
-| [**Free List**](/zh/patterns/free-list/) | | | ✅ | ✅ | | |
-| [**Semaphore**](/zh/patterns/semaphore/) | | | ✅ | ✅ | | |
-| [**Object Pool**](/zh/patterns/object-pool/) | | | ✅ | | | |
-| [**Flyweight**](/zh/patterns/flyweight/) | | | ✅ | | | |
-| [**Rate Limiter**](/zh/patterns/rate-limiter/) | | | ✅ | ✅ | | |
-| [**Arena Allocator**](/zh/patterns/arena-allocator/) | | | ✅ | | | |
-| [**State Machine**](/zh/patterns/state-machine/) | | | | ✅ | | |
-| [**Ring Buffer**](/zh/patterns/ring-buffer/) | | | | ✅ | | ✅ |
-| [**Backpressure**](/zh/patterns/backpressure/) | | | | ✅ | | ✅ |
-| [**Vtable**](/zh/patterns/vtable/) | | | | ✅ | | |
-| [**Reference Counting**](/zh/patterns/reference-counting/) | | | | ✅ | | |
-| [**Copy-on-Write**](/zh/patterns/copy-on-write/) | | ✅ | ✅ | ✅ | | |
-| [**Tombstone**](/zh/patterns/tombstone/) | | | | | | ✅ |
+| [**位掩码**](/zh/patterns/bitmask/) | ✅ | | ✅ | ✅ | | |
+| [**最小堆**](/zh/patterns/min-heap/) | ✅ | | ✅ | ✅ | | |
+| [**协作调度**](/zh/patterns/cooperative-scheduling/) | ✅ | | ✅ | | | |
+| [**差异/补丁**](/zh/patterns/diff-patch/) | ✅ | | | | | |
+| [**双缓冲**](/zh/patterns/double-buffering/) | ✅ | | | | | |
+| [**批处理**](/zh/patterns/batch-processing/) | ✅ | ✅ | | ✅ | | ✅ |
+| [**脏标记**](/zh/patterns/dirty-flag/) | ✅ | | | | | |
+| [**观察者**](/zh/patterns/observer/) | ✅ | | | | | |
+| [**跳表**](/zh/patterns/skip-list/) | | ✅ | | | | |
+| [**LRU 缓存**](/zh/patterns/lru-cache/) | | ✅ | ✅ | | ✅ | |
+| [**Trie 前缀树**](/zh/patterns/trie/) | | ✅ | | ✅ | | |
+| [**布隆过滤器**](/zh/patterns/bloom-filter/) | | | | | ✅ | |
+| [**工作窃取**](/zh/patterns/work-stealing/) | | | ✅ | | | |
+| [**空闲链表**](/zh/patterns/free-list/) | | | ✅ | ✅ | | |
+| [**信号量**](/zh/patterns/semaphore/) | | | ✅ | ✅ | | |
+| [**对象池**](/zh/patterns/object-pool/) | | | ✅ | | | |
+| [**享元**](/zh/patterns/flyweight/) | | | ✅ | | | |
+| [**限流器**](/zh/patterns/rate-limiter/) | | | ✅ | ✅ | | |
+| [**Arena 分配器**](/zh/patterns/arena-allocator/) | | | ✅ | | | |
+| [**状态机**](/zh/patterns/state-machine/) | | | | ✅ | | |
+| [**环形缓冲区**](/zh/patterns/ring-buffer/) | | | | ✅ | | ✅ |
+| [**背压**](/zh/patterns/backpressure/) | | | | ✅ | | ✅ |
+| [**虚函数表**](/zh/patterns/vtable/) | | | | ✅ | | |
+| [**引用计数**](/zh/patterns/reference-counting/) | | | | ✅ | | |
+| [**写时复制**](/zh/patterns/copy-on-write/) | | ✅ | ✅ | ✅ | | |
+| [**墓碑**](/zh/patterns/tombstone/) | | | | | | ✅ |
 | [**MVCC**](/zh/patterns/mvcc/) | | | | | ✅ | |
-| [**Write-Ahead Log**](/zh/patterns/write-ahead-log/) | | | | | ✅ | ✅ |
-| [**B+ Tree**](/zh/patterns/b-plus-tree/) | | | | ✅ | ✅ | |
-| [**Checkpointing**](/zh/patterns/checkpointing/) | | ✅ | | | ✅ | |
-| [**Event Loop**](/zh/patterns/event-loop/) | | ✅ | ✅ | ✅ | | |
-| [**Iterator**](/zh/patterns/iterator/) | ✅ | | ✅ | | | |
-| [**Tagged Union**](/zh/patterns/tagged-union/) | ✅ | | ✅ | | | |
-| [**Retry Backoff**](/zh/patterns/retry-backoff/) | | | | | | ✅ |
-| [**Consistent Hashing**](/zh/patterns/consistent-hashing/) | | | ✅ | | | ✅ |
+| [**预写日志**](/zh/patterns/write-ahead-log/) | | | | | ✅ | ✅ |
+| [**B+ 树**](/zh/patterns/b-plus-tree/) | | | | ✅ | ✅ | |
+| [**检查点**](/zh/patterns/checkpointing/) | | ✅ | | | ✅ | |
+| [**事件循环**](/zh/patterns/event-loop/) | | ✅ | ✅ | ✅ | | |
+| [**迭代器**](/zh/patterns/iterator/) | ✅ | | ✅ | | | |
+| [**标签联合体**](/zh/patterns/tagged-union/) | ✅ | | ✅ | | | |
+| [**指数退避重试**](/zh/patterns/retry-backoff/) | | | | | | ✅ |
+| [**一致性哈希**](/zh/patterns/consistent-hashing/) | | | ✅ | | | ✅ |

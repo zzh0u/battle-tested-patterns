@@ -72,9 +72,9 @@ features:
 | [布隆过滤器 (Bloom Filter)](/zh/patterns/bloom-filter/) | 概率成员测试——零漏判 | LevelDB, Chromium |
 | [LRU 缓存](/zh/patterns/lru-cache/) | 淘汰最少使用，O(1) get/put | Go groupcache, Linux |
 | [B+ 树](/zh/patterns/b-plus-tree/) | 叶链平衡树，支持范围扫描 | PostgreSQL, SQLite |
-| [标签联合 (Tagged Union)](/zh/patterns/tagged-union/) | 类型标签 + 联合体安全分发 | Godot, PyTorch |
+| [标签联合体 (Tagged Union)](/zh/patterns/tagged-union/) | 类型标签 + 联合体安全分发 | Godot, PyTorch |
 | [默克尔树 (Merkle Tree)](/zh/patterns/merkle-tree/) | 哈希逐层上推，O(log n) 完整性证明 | Git, ZFS |
-| [归并迭代器 (Merge Iterator)](/zh/patterns/merge-iterator/) | 最小堆实现 K 路有序流合并 | LevelDB, RocksDB |
+| [合并迭代器 (Merge Iterator)](/zh/patterns/merge-iterator/) | 最小堆实现 K 路有序流合并 | LevelDB, RocksDB |
 
 ### 并发
 
