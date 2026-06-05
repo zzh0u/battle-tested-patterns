@@ -152,6 +152,69 @@ pub fn patch<T: Clone>(ops: &[Op<T>]) -> Vec<T> {
 }
 ```
 
+```go [Go]
+type OpType int
+
+const (
+	Keep OpType = iota
+	Insert
+	Delete
+)
+
+type Op struct {
+	Type  OpType
+	Value string
+}
+
+func contains(slice []string, val string) bool {
+	for _, s := range slice {
+		if s == val {
+			return true
+		}
+	}
+	return false
+}
+
+func Diff(old, new []string) []Op {
+	var ops []Op
+	oi, ni := 0, 0
+
+	for oi < len(old) && ni < len(new) {
+		if old[oi] == new[ni] {
+			ops = append(ops, Op{Keep, old[oi]})
+			oi++
+			ni++
+		} else if !contains(new[ni:], old[oi]) {
+			ops = append(ops, Op{Delete, old[oi]})
+			oi++
+		} else {
+			ops = append(ops, Op{Insert, new[ni]})
+			ni++
+		}
+	}
+
+	for oi < len(old) {
+		ops = append(ops, Op{Delete, old[oi]})
+		oi++
+	}
+	for ni < len(new) {
+		ops = append(ops, Op{Insert, new[ni]})
+		ni++
+	}
+	return ops
+}
+
+func Patch(ops []Op) []string {
+	var result []string
+	for _, op := range ops {
+		if op.Type != Delete {
+			result = append(result, op.Value)
+		}
+	}
+	return result
+}
+```
+
 ```python [Python]
 from typing import TypeVar, List, Tuple, Literal
 
