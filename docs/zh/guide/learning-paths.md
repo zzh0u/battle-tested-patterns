@@ -30,6 +30,7 @@ description: "四条精选学习路径，引导你系统掌握 46 个模式 — 
 | 8 | [Skip List（跳表）](/zh/patterns/skip-list/) | 高级 | 概率性有序结构 |
 | 9 | [B+ Tree（B+ 树）](/zh/patterns/b-plus-tree/) | 高级 | 磁盘优化的平衡树 |
 | 10 | [Merkle Tree（默克尔树）](/zh/patterns/merkle-tree/) | 高级 | 哈希链完整性证明 |
+| 11 | [Visitor（访问者）](/zh/patterns/visitor/) | 高级 | 将遍历与操作解耦 |
 
 **学完本路径后**，你将理解数据库（B+ Tree）、缓存（LRU）和区块链（Merkle Tree）背后的核心数据结构。
 
@@ -65,8 +66,9 @@ description: "四条精选学习路径，引导你系统掌握 46 个模式 — 
 | 5 | [Rate Limiter（限流器）](/zh/patterns/rate-limiter/) | 进阶 | 令牌桶控制吞吐量 |
 | 6 | [Middleware Chain（中间件链）](/zh/patterns/middleware-chain/) | 进阶 | 可组合的请求处理器 |
 | 7 | [Dependency Graph（依赖图）](/zh/patterns/dependency-graph/) | 进阶 | DAG + 拓扑排序 |
-| 8 | [Consistent Hashing（一致性哈希）](/zh/patterns/consistent-hashing/) | 高级 | 节点变更时最小重映射 |
-| 9 | [Logical Clock（逻辑时钟）](/zh/patterns/logical-clock/) | 高级 | 无需物理时钟的因果排序 |
+| 8 | [Registry（注册表）](/zh/patterns/registry/) | 入门 | 插件发现的自注册机制 |
+| 9 | [Consistent Hashing（一致性哈希）](/zh/patterns/consistent-hashing/) | 高级 | 节点变更时最小重映射 |
+| 10 | [Logical Clock（逻辑时钟）](/zh/patterns/logical-clock/) | 高级 | 无需物理时钟的因果排序 |
 
 **学完本路径后**，你将能够设计弹性 API 网关、服务网格和分布式任务调度器。
 
@@ -99,6 +101,7 @@ description: "四条精选学习路径，引导你系统掌握 46 个模式 — 
 | 4 | [Interning（驻留）](/zh/patterns/interning/) | 进阶 | 基于哈希的去重 |
 | 5 | [Free List（空闲链表）](/zh/patterns/free-list/) | 进阶 | 从释放槽位 O(1) 分配 |
 | 6 | [Arena Allocator（竞技场分配器）](/zh/patterns/arena-allocator/) | 进阶 | 连续分配，批量释放 |
+| 7 | [Vtable（虚函数表）](/zh/patterns/vtable/) | 高级 | 函数指针实现运行时多态 |
 
 **学完本路径后**，你将理解 Go 的 `sync.Pool`、Rust 的 `bumpalo` 和 CPython 的小对象分配器的工作原理。
 

@@ -30,6 +30,7 @@ Build your way up from simple fixed-size containers to self-balancing trees.
 | 8 | [Skip List](/patterns/skip-list/) | Advanced | Probabilistic sorted structure |
 | 9 | [B+ Tree](/patterns/b-plus-tree/) | Advanced | Disk-optimized balanced tree |
 | 10 | [Merkle Tree](/patterns/merkle-tree/) | Advanced | Hash chain for integrity proofs |
+| 11 | [Visitor](/patterns/visitor/) | Advanced | Decouple traversal from operations |
 
 **After this track** you'll understand the core data structures behind databases (B+ Tree), caches (LRU), and blockchains (Merkle Tree).
 
@@ -65,8 +66,9 @@ Build resilient services that handle failures gracefully.
 | 5 | [Rate Limiter](/patterns/rate-limiter/) | Intermediate | Token bucket controls throughput |
 | 6 | [Middleware Chain](/patterns/middleware-chain/) | Intermediate | Composable request handlers |
 | 7 | [Dependency Graph](/patterns/dependency-graph/) | Intermediate | DAG + topological sort |
-| 8 | [Consistent Hashing](/patterns/consistent-hashing/) | Advanced | Minimal remapping on node change |
-| 9 | [Logical Clock](/patterns/logical-clock/) | Advanced | Causal ordering without wall clocks |
+| 8 | [Registry](/patterns/registry/) | Beginner | Self-registration for plugin discovery |
+| 9 | [Consistent Hashing](/patterns/consistent-hashing/) | Advanced | Minimal remapping on node change |
+| 10 | [Logical Clock](/patterns/logical-clock/) | Advanced | Causal ordering without wall clocks |
 
 **After this track** you'll be able to design resilient API gateways, service meshes, and distributed task schedulers.
 
@@ -99,6 +101,7 @@ For systems programmers who want to understand allocators and GC alternatives.
 | 4 | [Interning](/patterns/interning/) | Intermediate | Hash-based deduplication |
 | 5 | [Free List](/patterns/free-list/) | Intermediate | O(1) alloc from freed slots |
 | 6 | [Arena Allocator](/patterns/arena-allocator/) | Intermediate | Bump-allocate, bulk-free |
+| 7 | [Vtable](/patterns/vtable/) | Advanced | Function pointers for runtime polymorphism |
 
 **After this track** you'll understand how Go's `sync.Pool`, Rust's `bumpalo`, and CPython's small object allocator work.
 
