@@ -122,6 +122,7 @@ async function presetAutoRun() {
     next();
     await delay(350);
   }
+  log(t('k-way merge: O(n log k) via min-heap — the core of LSM compaction', 'k 路归并：通过最小堆实现 O(n log k) — LSM 压缩的核心'), 'highlight');
   presetRunning = false;
 }
 
@@ -147,6 +148,7 @@ async function presetUnbalanced() {
     next();
     await delay(350);
   }
+  log(t('Graceful exhaustion: short iterators finish early, merge continues seamlessly', '优雅耗尽：短迭代器先结束，归并无缝继续'), 'highlight');
   presetRunning = false;
 }
 
@@ -172,6 +174,7 @@ async function presetDuplicates() {
     next();
     await delay(350);
   }
+  log(t('Duplicates preserved in merge — LSM resolves by keeping newest version', '归并保留重复 — LSM 通过保留最新版本解决'), 'highlight');
   presetRunning = false;
 }
 </script>

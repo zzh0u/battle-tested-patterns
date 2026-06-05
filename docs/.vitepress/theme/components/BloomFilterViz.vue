@@ -124,6 +124,7 @@ async function presetUrlDedup() {
     await delay(800);
     if (!presetRunning || isAborted()) return;
   }
+  log(t('Bloom filters: O(k) lookup, zero false negatives, tunable false positives', 'Bloom Filter：O(k) 查找，零假阴性，可调假阳性'), 'highlight');
   presetRunning = false;
 }
 
@@ -154,6 +155,7 @@ async function presetFalsePositive() {
     'Notice: some items show false positives because their hash bits overlap with added items. The formula: P(fp) ≈ (1 - e^(-kn/m))^k.',
     '注意：某些元素显示假阳性，因为它们的哈希位与已添加元素重叠。公式：P(fp) ≈ (1 - e^(-kn/m))^k。'
   );
+  log(t('False positives are the cost of space efficiency — no false negatives ever', '假阳性是空间效率的代价 — 永远没有假阴性'), 'highlight');
   presetRunning = false;
 }
 
@@ -181,6 +183,7 @@ async function presetCapacityLimit() {
     await delay(900);
     if (!presetRunning || isAborted()) return;
   }
+  log(t('Size matters: undersized Bloom filter ≈ always "yes" — useless', '大小很重要：过小的 Bloom Filter ≈ 永远"是" — 无用'), 'highlight');
   presetRunning = false;
 }
 

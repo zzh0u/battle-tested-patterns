@@ -186,6 +186,7 @@ async function presetGuaranteedFail() {
   await delay(600);
   if (!presetRunning || isAborted()) return;
   await startRequest();
+  log(t('Exponential backoff: 1s → 2s → 4s → 8s — always cap the max delay', '指数退避：1s → 2s → 4s → 8s — 始终设置最大延迟上限'), 'highlight');
   presetRunning = false;
 }
 
@@ -203,6 +204,7 @@ async function presetFlaky() {
   await delay(600);
   if (!presetRunning || isAborted()) return;
   await startRequest();
+  log(t('Jitter prevents thundering herd — clients retry at random times', '抖动防止惊群效应 — 客户端在随机时间重试'), 'highlight');
   presetRunning = false;
 }
 
@@ -220,6 +222,7 @@ async function presetNoBackoff() {
   await delay(600);
   if (!presetRunning || isAborted()) return;
   await startRequest();
+  log(t('Without backoff, retries hammer the server at full rate — recovery impossible', '没有退避，重试以全速冲击服务器 — 恢复不可能'), 'highlight');
   presetRunning = false;
 }
 </script>

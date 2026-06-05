@@ -95,6 +95,7 @@ function startProcessing() {
         `所有任务已完成！发生了 ${totalStolen} 次窃取。没有窃取的话，W1 会先完成而其他线程空闲 — 浪费 CPU。`
       );
       log(t(`done: ${totalStolen} steals`, `完成：${totalStolen} 次窃取`), 'success');
+      log(t('Steal from tail, process from head — deque minimizes contention', '从尾部窃取，从头部处理 — 双端队列最小化争用'), 'highlight');
     }
   }, 300);
 }

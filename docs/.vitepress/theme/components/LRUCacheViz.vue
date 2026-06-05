@@ -120,8 +120,8 @@ async function runPreset(steps: Array<{ op: 'put' | 'get'; key: string; val?: st
   presetRunning = false;
 }
 
-function presetWebCache() {
-  runPreset([
+async function presetWebCache() {
+  await runPreset([
     { op: 'put', key: 'A', val: 'page1' },
     { op: 'put', key: 'B', val: 'page2' },
     { op: 'put', key: 'C', val: 'page3' },
@@ -131,10 +131,11 @@ function presetWebCache() {
     { op: 'put', key: 'E', val: 'page5' },
     { op: 'get', key: 'C' },
   ]);
+  log(t('LRU evicts the least-recently-used entry — O(1) via hash map + doubly linked list', 'LRU 淘汰最近最少使用的条目 — 通过哈希表 + 双向链表实现 O(1)'), 'highlight');
 }
 
-function presetThrashing() {
-  runPreset([
+async function presetThrashing() {
+  await runPreset([
     { op: 'put', key: 'A', val: '1' },
     { op: 'put', key: 'B', val: '2' },
     { op: 'put', key: 'C', val: '3' },
@@ -144,10 +145,11 @@ function presetThrashing() {
     { op: 'put', key: 'F', val: '6' },
     { op: 'get', key: 'B' },
   ]);
+  log(t('Thrashing: working set > cache size — every access evicts, hit rate collapses', '抖动：工作集 > 缓存大小 — 每次访问都淘汰，命中率崩塌'), 'highlight');
 }
 
-function presetZipf() {
-  runPreset([
+async function presetZipf() {
+  await runPreset([
     { op: 'put', key: 'A', val: 'hot' },
     { op: 'put', key: 'B', val: 'warm' },
     { op: 'put', key: 'C', val: 'cool' },
@@ -159,6 +161,7 @@ function presetZipf() {
     { op: 'put', key: 'E', val: 'new' },
     { op: 'get', key: 'A' },
   ]);
+  log(t('Zipf distribution: hot keys stay cached, cold keys get evicted — real-world access patterns', 'Zipf 分布：热键留在缓存，冷键被淘汰 — 真实世界的访问模式'), 'highlight');
 }
 
 const emptySlots = computed(() => Math.max(0, CAPACITY - entries.value.length));

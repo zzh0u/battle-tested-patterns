@@ -267,6 +267,7 @@ async function presetFullCycle() {
     '完整周期完成。核心洞察：读取者从未被阻塞。这就是 CoW 实现无锁读取的原因 — 数据库 MVCC 的基础（PostgreSQL、CockroachDB）。'
   );
   vizLog(message.value, 'success');
+  vizLog(t('CoW: readers never block — the foundation of lock-free reads', 'CoW：读者永不阻塞 — 无锁读取的基础'), 'highlight');
   presetRunning = false;
 }
 
@@ -303,6 +304,7 @@ async function presetMultipleWrites() {
     `${versions.value.length} 个版本存在 — 读取者仍在 v1 上阻止 GC。点击"刷新读取者"释放旧版本。这就是 PostgreSQL 中长时间查询阻止 VACUUM 的原因。`
   );
   vizLog(message.value, 'warning');
+  vizLog(t('Version accumulation: long-lived readers block GC (PostgreSQL VACUUM)', '版本积累：长生命周期读者阻止 GC（PostgreSQL VACUUM）'), 'highlight');
   presetRunning = false;
 }
 
@@ -335,6 +337,7 @@ async function presetConcurrentRead() {
     'v2 is now current. New readers would see v2, but existing R1/R2/R3 still have v1. In Java CopyOnWriteArrayList, iterators hold a snapshot of the array at creation time.',
     'v2 现在是当前版本。新读取者看到 v2，但现有 R1/R2/R3 仍持有 v1。在 Java CopyOnWriteArrayList 中，迭代器持有创建时数组的快照。'
   );
+  vizLog(t('Snapshot isolation: writers and readers never contend', '快照隔离：写者与读者永不争用'), 'highlight');
   presetRunning = false;
 }
 </script>
