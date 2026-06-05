@@ -160,6 +160,10 @@ function presetBurst() {
       'Consumer started! Watch the queue drain. With rate 3/s vs 5/s producer, the consumer can\'t keep up — backpressure will eventually kick in.',
       '消费者已启动！观察队列排空。消费速率 3/s vs 生产 5/s，消费者跟不上 — 背压最终会触发。'
     );
+    log(t(
+      'The queue absorbs burst traffic as a shock absorber — but sustained rate mismatch will eventually cause drops.',
+      '队列作为减震器吸收突发流量 — 但持续的速率不匹配最终会导致丢弃。'
+    ), 'highlight');
   }, 2000);
 }
 

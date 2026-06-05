@@ -172,6 +172,10 @@ async function presetCascadingFailure() {
     if (!presetRunning || isAborted()) return;
     step();
   }
+  log(t(
+    'Circuit breaker prevents cascading failures by failing fast when a downstream service is unhealthy.',
+    '断路器通过在下游服务不健康时快速失败来防止级联故障。'
+  ), 'highlight');
   presetRunning = false;
 }
 
@@ -194,6 +198,10 @@ async function presetRecovery() {
     if (!presetRunning || isAborted()) return;
     step();
   }
+  log(t(
+    'Half-open state uses probe requests to safely test recovery before restoring full traffic.',
+    '半开状态使用探测请求在恢复全部流量前安全地测试恢复。'
+  ), 'highlight');
   presetRunning = false;
 }
 
@@ -215,6 +223,10 @@ async function presetHealthy() {
     if (!presetRunning || isAborted()) return;
     step();
   }
+  log(t(
+    'Under normal load, the circuit stays closed and failure counter resets — zero overhead on the happy path.',
+    '正常负载下，断路器保持关闭且故障计数器重置 — 正常路径零开销。'
+  ), 'highlight');
   presetRunning = false;
 }
 

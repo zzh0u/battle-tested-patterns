@@ -135,6 +135,10 @@ async function presetAutoFill() {
     '缓冲区达到阈值并自动刷新。在 Kafka 中，linger.ms 和 batch.size 控制延迟与吞吐量之间的权衡。'
   );
   log(message.value, 'success');
+  log(t(
+    'Threshold-based auto-flush amortizes per-item overhead into one batched operation.',
+    '基于阈值的自动刷新将逐项开销分摊到一次批处理操作中。'
+  ), 'highlight');
   presetRunning = false;
 }
 
@@ -160,6 +164,10 @@ async function presetPartialFlush() {
   await delay(800);
   if (!presetRunning || isAborted()) return;
   flushBatch();
+  log(t(
+    'Timeout-based partial flush prevents unbounded latency when the buffer never fills.',
+    '基于超时的部分刷新防止缓冲区永不满时的无限延迟。'
+  ), 'highlight');
   presetRunning = false;
 }
 

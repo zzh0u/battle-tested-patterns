@@ -208,6 +208,10 @@ async function presetPingPong() {
     '所有 3 个 Actor 各处理了一条消息 — 不需要锁！每个 Actor 内部是单线程的。Akka (JVM) 和 Orleans (.NET) 在分布式系统中使用完全相同的模式。'
   );
   log(message.value, 'success');
+  log(t(
+    'Actor model eliminates shared state — each actor processes messages sequentially without locks.',
+    'Actor 模型消除共享状态 — 每个 Actor 按顺序处理消息，无需锁。'
+  ), 'highlight');
   presetRunning = false;
 }
 
@@ -278,6 +282,10 @@ async function presetFanOut() {
     'Fan-out 完成 — B 和 C 收到相同消息但独立处理。位置透明性：发送者不关心接收者是本地还是远程。'
   );
   log(message.value, 'success');
+  log(t(
+    'Fan-out decouples sender from receivers — location transparency enables distributed scaling.',
+    'Fan-out 将发送者与接收者解耦 — 位置透明性支持分布式扩展。'
+  ), 'highlight');
   presetRunning = false;
 }
 </script>

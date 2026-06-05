@@ -208,6 +208,10 @@ async function presetCycleDetection() {
   await delay(1000);
   if (!presetRunning || isAborted()) return;
   await topoSort();
+  log(t(
+    'Kahn\'s algorithm detects cycles by checking if all nodes reach in-degree zero.',
+    'Kahn 算法通过检查所有节点是否达到入度零来检测环。'
+  ), 'highlight');
   presetRunning = false;
 }
 
@@ -236,6 +240,10 @@ async function presetLinearChain() {
   await delay(800);
   if (!presetRunning || isAborted()) return;
   await topoSort();
+  log(t(
+    'Linear dependency chains are the worst case — zero parallelism, critical path equals total time.',
+    '线性依赖链是最坏情况 — 零并行性，关键路径等于总时间。'
+  ), 'highlight');
   presetRunning = false;
 }
 

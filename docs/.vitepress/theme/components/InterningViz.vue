@@ -369,6 +369,10 @@ async function presetComparisonDemo() {
     'Setup complete. Click == on any variable to start comparison. Try comparing same strings (O(1)) vs different strings (O(n) fallback).',
     '设置完成。点击任意变量上的 == 开始比较。试试比较相同字符串（O(1)）和不同字符串（O(n) 回退）。'
   );
+  log(t(
+    'Interning trades insertion cost for O(1) equality checks via pointer comparison instead of O(n) string comparison.',
+    'Interning 以插入成本换取 O(1) 等值检查 — 通过指针比较而非 O(n) 字符串比较。'
+  ), 'highlight');
   presetRunning = false;
 }
 </script>

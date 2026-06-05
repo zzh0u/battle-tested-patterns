@@ -180,6 +180,10 @@ async function presetFullRun() {
     await pullNext();
     await delay(300);
   }
+  log(t(
+    'Lazy evaluation skips even-number map() calls entirely — work is only done for elements that pass the filter.',
+    '惰性求值完全跳过偶数的 map() 调用 — 仅对通过过滤器的元素执行工作。'
+  ), 'highlight');
   presetRunning = false;
 }
 
@@ -225,6 +229,10 @@ async function presetStepByStep() {
     `First result collected. Notice: source processed ${state.elementsProcessed} element(s) to get 1 output (even numbers were filtered). Click "Pull Next" to continue manually.`,
     `第一个结果已收集。注意：源处理了 ${state.elementsProcessed} 个元素才得到 1 个输出（偶数被过滤了）。点击"拉取下一个"手动继续。`
   );
+  log(t(
+    'Pull-based iteration processes one element at a time through the full pipeline before pulling the next.',
+    '基于拉取的迭代每次将一个元素通过完整管道处理后再拉取下一个。'
+  ), 'highlight');
   presetRunning = false;
 }
 </script>

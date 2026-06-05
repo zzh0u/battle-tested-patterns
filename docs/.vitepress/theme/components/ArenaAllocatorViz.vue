@@ -257,6 +257,10 @@ async function presetFillAndChain() {
     '链式 arena 正常工作。当两个阶段完成时，每个 arena O(1) 重置 — 无需逐对象清理。'
   );
   log(message.value, 'success');
+  log(t(
+    'Arena chaining enables unlimited allocation while preserving O(1) per-arena reset.',
+    'Arena 链式分配支持无限制分配，同时保持每个 arena O(1) 重置。'
+  ), 'highlight');
   presetRunning = false;
 }
 
@@ -287,6 +291,10 @@ async function presetCompilerPhase() {
   await delay(1200);
   if (!presetRunning || isAborted()) return;
   resetArena(0);
+  log(t(
+    'Arena-per-phase frees hundreds of thousands of objects in a single pointer reset.',
+    '每阶段 Arena 通过一次指针重置释放数十万个对象。'
+  ), 'highlight');
   presetRunning = false;
 }
 

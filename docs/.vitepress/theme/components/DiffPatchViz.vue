@@ -174,6 +174,10 @@ async function presetMinimalDiff() {
   await delay(600);
   if (!presetRunning || isAborted()) return;
   computeDiff();
+  log(t(
+    'LCS-based diff finds the minimum edit distance — precisely what changed, nothing more.',
+    '基于 LCS 的 diff 找到最小编辑距离 — 精确显示变更，不多不少。'
+  ), 'highlight');
   presetRunning = false;
 }
 
@@ -229,6 +233,10 @@ async function presetFullRewrite() {
   await delay(600);
   if (!presetRunning || isAborted()) return;
   computeDiff();
+  log(t(
+    'When every line changes, diff equals full file size — git switches to storing the whole blob.',
+    '当每行都变更时，diff 等于完整文件大小 — git 转为存储整个 blob。'
+  ), 'highlight');
   presetRunning = false;
 }
 

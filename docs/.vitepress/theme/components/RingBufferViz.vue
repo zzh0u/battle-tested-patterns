@@ -155,6 +155,10 @@ async function presetProducerConsumer() {
     '生产者-消费者模式：生产者入队速度快于消费者出队。LMAX Disruptor 就是这样实现百万级 ops/sec。'
   );
   log(message.value, 'success');
+  log(t(
+    'Interleaved produce/consume keeps the buffer from filling up — balanced rates are key to avoiding backpressure.',
+    '交替生产/消费防止缓冲区填满 — 平衡的速率是避免背压的关键。'
+  ), 'highlight');
   presetRunning = false;
 }
 

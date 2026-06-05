@@ -144,6 +144,10 @@ async function presetBatchVsNaive() {
   await delay(800);
   if (!presetRunning || isAborted()) return;
   recompute();
+  log(t(
+    'When all entities are dirty, dirty flags add no benefit — the optimization shines when only a subset changes.',
+    '当所有实体都是脏的时，脏标记无优势 — 该优化在只有子集变更时才发挥作用。'
+  ), 'highlight');
   presetRunning = false;
 }
 
@@ -174,6 +178,10 @@ async function presetCascadingDirty() {
     'Two rounds: 1 + 2 = 3 recomputed, 2 + 1 = 3 skipped. Each cycle only processes what changed since last recompute.',
     '两轮：1 + 2 = 3 个重算，2 + 1 = 3 个跳过。每轮只处理自上次重算以来变更的内容。'
   );
+  log(t(
+    'Each recompute cycle only processes changes since the last cycle — incremental updates compound savings.',
+    '每个重算周期只处理自上次周期以来的变更 — 增量更新的节省效果不断累积。'
+  ), 'highlight');
   presetRunning = false;
 }
 </script>

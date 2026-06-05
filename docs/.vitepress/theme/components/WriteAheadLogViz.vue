@@ -177,6 +177,10 @@ async function presetCrashRecovery() {
   await delay(1500);
   if (!presetRunning || isAborted()) return;
   recover();
+  vizLog(t(
+    'WAL replay restores unflushed data after crash — sequential append + replay is the foundation of database durability.',
+    'WAL 重放在崩溃后恢复未刷写数据 — 顺序追加 + 重放是数据库持久性的基础。'
+  ), 'highlight');
   presetRunning = false;
 }
 
@@ -231,6 +235,10 @@ async function presetBatchFlush() {
   await delay(1000);
   if (!presetRunning || isAborted()) return;
   flush();
+  vizLog(t(
+    'Batching WAL entries into one flush amortizes random I/O cost — 1 disk seek instead of N.',
+    '将 WAL 条目批量刷写分摊随机 I/O 成本 — 1 次磁盘寻道而非 N 次。'
+  ), 'highlight');
   presetRunning = false;
 }
 </script>

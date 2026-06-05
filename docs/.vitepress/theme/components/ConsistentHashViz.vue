@@ -148,6 +148,10 @@ async function presetScaleOut() {
     '扩容完成。Amazon DynamoDB 和 Cassandra 使用此方法添加节点而无需重新分布整个集群。'
   );
   log(message.value, 'success');
+  log(t(
+    'Adding nodes redistributes only O(K/N) keys — the rest stay on their current nodes.',
+    '添加节点只重新分配 O(K/N) 个键 — 其余保持在当前节点。'
+  ), 'highlight');
   presetRunning = false;
 }
 
@@ -178,6 +182,10 @@ async function presetNodeFailure() {
     '节点故障被优雅处理。只有故障节点的键移动到其顺时针邻居 — 集群其余部分不受影响。'
   );
   log(message.value, 'success');
+  log(t(
+    'Node failure only affects keys owned by the failed node — the rest of the cluster is unaffected.',
+    '节点故障只影响故障节点拥有的键 — 集群其余部分不受影响。'
+  ), 'highlight');
   presetRunning = false;
 }
 

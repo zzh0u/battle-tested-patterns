@@ -139,6 +139,10 @@ async function presetPrefixSharing() {
     "前缀共享节省了 50% 存储（7 个节点 vs 14 个字符）。Linux 使用 LC-trie（fib_trie.c）进行 IPv4 路由 — 数百万条路由通过共享前缀压缩。自动补全系统（Google 搜索、IDE IntelliSense）使用 Trie 实现 O(k) 前缀查找，其中 k = 查询长度。"
   );
   log(message.value, 'success');
+  log(t(
+    'Shared prefixes compress storage by 50% — the more words share common beginnings, the greater the savings.',
+    '共享前缀压缩了 50% 的存储 — 共享相同开头的单词越多，节省越大。'
+  ), 'highlight');
   presetRunning = false;
 }
 

@@ -2,9 +2,12 @@
 import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
+import { useVizLog } from '../composables/useVizLog';
+import VizLog from './VizLog.vue';
 
 const { t } = useI18n();
 const { safeTimeout, clearAll, delay, speed, isAborted } = useVizTimers();
+const { entries: logEntries, log: vizLog, clear: clearLog } = useVizLog();
 
 interface LogEntry {
   id: number;
@@ -177,6 +180,7 @@ function reset() {
   nextCpId = 1;
   presetRunning = false;
   message.value = t('Reset. Perform operations to build a WAL', '已重置。执行操作以构建 WAL');
+  clearLog();
 }
 
 function isCheckpointAfter(entryId: number): number | null {
@@ -215,6 +219,10 @@ async function presetCrashRecovery() {
   await delay(1500);
   if (!presetRunning || isAborted()) return;
   recover();
+  vizLog(t(
+    'Checkpoint + WAL replay restores full state after crash — this is the ARIES recovery protocol used by all major databases.',
+    '检查点 + WAL 重放在崩溃后恢复完整状态 — 这是所有主流数据库使用的 ARIES 恢复协议。'
+  ), 'highlight');
   presetRunning = false;
 }
 
@@ -247,6 +255,10 @@ async function presetNoCheckpoint() {
   await delay(1500);
   if (!presetRunning || isAborted()) return;
   recover();
+  vizLog(t(
+    'Without checkpoints, crash recovery has no restore point — all WAL data is lost because there is no base state to replay from.',
+    '没有检查点时，崩溃恢复没有还原点 — 所有 WAL 数据丢失，因为没有可重放的基础状态。'
+  ), 'highlight');
   presetRunning = false;
 }
 
@@ -278,6 +290,10 @@ async function presetFrequentCheckpoints() {
     'Only 1 entry after last checkpoint. If we crash now, recovery replays just 1 op instead of 5. Tradeoff: more checkpoint I/O vs. faster recovery.',
     '最后检查点后只有 1 条记录。如果现在崩溃，恢复只重放 1 个操作而非 5 个。权衡：更多检查点 I/O vs 更快恢复。'
   );
+  vizLog(t(
+    'Frequent checkpoints trade I/O cost for faster crash recovery — PostgreSQL tunes this with checkpoint_timeout and max_wal_size.',
+    '频繁检查点以 I/O 成本换取更快的崩溃恢复 — PostgreSQL 通过 checkpoint_timeout 和 max_wal_size 来调整。'
+  ), 'highlight');
   presetRunning = false;
 }
 </script>
@@ -384,6 +400,7 @@ async function presetFrequentCheckpoints() {
     </div>
 
     <div class="viz-status" :class="{ 'cp-status--crash': crashed }">{{ message }}</div>
+    <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>
 

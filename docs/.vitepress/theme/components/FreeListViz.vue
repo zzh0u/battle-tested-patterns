@@ -170,6 +170,10 @@ async function presetExhaustion() {
   if (!presetRunning || isAborted()) return;
   await delay(400);
   allocate();
+  log(t(
+    'Fixed-size pools trade flexibility for predictability — capacity must be planned upfront to avoid exhaustion.',
+    '固定大小池以灵活性换取可预测性 — 必须预先规划容量以避免耗尽。'
+  ), 'highlight');
   presetRunning = false;
 }
 
