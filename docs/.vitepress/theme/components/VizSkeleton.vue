@@ -32,8 +32,8 @@
     var(--viz-cell-empty) 75%
   );
   background-size: 200% 100%;
-  animation: viz-shimmer 1.5s ease-in-out infinite;
-  border-radius: 4px;
+  animation: viz-shimmer 1.8s ease infinite;
+  border-radius: var(--viz-radius-md, 8px);
 }
 
 .viz-skel-title {

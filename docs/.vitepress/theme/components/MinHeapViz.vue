@@ -2,9 +2,12 @@
 import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
+import { useVizLog } from '../composables/useVizLog';
+import VizLog from './VizLog.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
+const { entries: logEntries, log, clear: clearLog } = useVizLog();
 
 const heap = ref<number[]>([]);
 const message = ref(t(
@@ -58,6 +61,7 @@ async function insert(val?: number) {
     `Inserted ${v} at bottom (index ${i}). Now bubble up: compare with parent to restore heap property.`,
     `在底部插入 ${v}（索引 ${i}）。现在上浮：与父节点比较以恢复堆性质。`
   );
+  log(message.value, 'info');
 
   await delay(300);
   if (isAborted()) return;
@@ -70,6 +74,7 @@ async function insert(val?: number) {
         `${heap.value[i]} < ${heap.value[parent]} → swap! Heap invariant: every parent ≤ its children.`,
         `${heap.value[i]} < ${heap.value[parent]} → 交换！堆不变量：每个父节点 ≤ 其子节点。`
       );
+      log(message.value, 'warning');
       await delay(400);
       if (isAborted()) return;
       [heap.value[i], heap.value[parent]] = [heap.value[parent], heap.value[i]];
@@ -89,6 +94,7 @@ async function insert(val?: number) {
       `${v} is now the root (minimum). In React Scheduler, this would be the highest-priority task.`,
       `${v} 现在是根节点（最小值）。在 React Scheduler 中，这将是最高优先级任务。`
     );
+    log(message.value, 'success');
   }
   await delay(300);
   if (isAborted()) return;
@@ -109,6 +115,7 @@ async function extractMin() {
     `Extracting min = ${min}. O(1) to find it (always at root). Now must restore heap property.`,
     `提取最小值 = ${min}。O(1) 找到它（总在根节点）。现在需要恢复堆性质。`
   );
+  log(message.value, 'highlight');
   await delay(300);
   if (isAborted()) return;
 
@@ -156,6 +163,7 @@ async function extractMin() {
     `Extracted min = ${min}. Heap property restored in O(log n). This is why schedulers use heaps.`,
     `已提取最小值 = ${min}。O(log n) 恢复堆性质。这就是调度器使用堆的原因。`
   );
+  log(message.value, 'success');
 }
 
 function reset() {
@@ -165,6 +173,7 @@ function reset() {
   animType.value = '';
   presetRunning = false;
   message.value = t('Heap cleared!', '堆已清空！');
+  clearLog();
 }
 
 async function presetScheduler() {
@@ -296,6 +305,7 @@ async function presetHeapSort() {
     </div>
 
     <div class="viz-status">{{ message }}</div>
+    <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>
 

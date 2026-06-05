@@ -2,9 +2,12 @@
 import { ref, reactive, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
+import { useVizLog } from '../composables/useVizLog';
+import VizLog from './VizLog.vue';
 
 const { t } = useI18n();
 const { delay, safeTimeout, clearAll, speed, isAborted } = useVizTimers();
+const { entries: logEntries, log, clear: clearLog } = useVizLog();
 
 const BIT_COUNT = 16;
 const HASH_COUNT = 3;
@@ -49,6 +52,7 @@ function add(item?: string) {
     `Added "${val}" → bits [${hashes.join(', ')}] set to 1. Fill rate: ${fill}% — higher fill = more false positives.`,
     `已添加 "${val}" → 位 [${hashes.join(', ')}] 置 1。填充率：${fill}% — 填充率越高，假阳性越多。`
   );
+  log(message.value, 'info');
   inputText.value = '';
   safeTimeout(() => { highlightBits.value = []; highlightType.value = ''; }, 600);
 }
@@ -69,12 +73,14 @@ function test(item?: string) {
       `"${val}" → TRUE POSITIVE. All bits [${hashes.join(', ')}] are 1 and "${val}" was added. This is the "probably yes" answer.`,
       `"${val}" → 真阳性。位 [${hashes.join(', ')}] 均为 1 且 "${val}" 已添加。这是"可能存在"的回答。`
     );
+    log(message.value, 'success');
   } else if (allSet && !actuallyExists) {
     highlightType.value = 'false-positive';
     message.value = t(
       `"${val}" → FALSE POSITIVE! Bits [${hashes.join(', ')}] are all 1, but "${val}" was never added! Other items' bits overlap — this is the fundamental trade-off of Bloom filters.`,
       `"${val}" → 假阳性！位 [${hashes.join(', ')}] 均为 1，但 "${val}" 从未被添加！其他元素的位重叠 — 这是 Bloom Filter 的根本权衡。`
     );
+    log(message.value, 'warning');
   } else {
     const zeroBits = hashes.filter(h => !bits[h]);
     highlightType.value = 'miss';
@@ -82,6 +88,7 @@ function test(item?: string) {
       `"${val}" → DEFINITELY NOT in set. Bit${zeroBits.length > 1 ? 's' : ''} [${zeroBits.join(', ')}] ${zeroBits.length > 1 ? 'are' : 'is'} 0. Bloom filters never have false negatives — if any bit is 0, the item was never added.`,
       `"${val}" → 确定不在集合中。位 [${zeroBits.join(', ')}] 为 0。Bloom Filter 永远不会有假阴性 — 只要有一位为 0，该元素就一定未被添加。`
     );
+    log(message.value, 'error');
   }
   inputText.value = '';
   safeTimeout(() => { highlightBits.value = []; highlightType.value = ''; }, 800);
@@ -95,6 +102,7 @@ function reset() {
   highlightType.value = '';
   presetRunning = false;
   message.value = t('Filter cleared!', '过滤器已清空！');
+  clearLog();
 }
 
 async function presetUrlDedup() {
@@ -245,6 +253,7 @@ const presetTests = ['cat', 'rat', 'fox', 'ant'];
       'viz-status--fp': highlightType === 'false-positive',
       'viz-status--add': highlightType === 'add',
     }">{{ message }}</div>
+    <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>
 

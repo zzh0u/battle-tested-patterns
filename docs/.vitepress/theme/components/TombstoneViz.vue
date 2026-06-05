@@ -2,9 +2,12 @@
 import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
+import { useVizLog } from '../composables/useVizLog';
+import VizLog from './VizLog.vue';
 
 const { t } = useI18n();
 const { safeTimeout, delay, clearAll, speed, isAborted } = useVizTimers();
+const { entries: logEntries, log, clear: clearLog } = useVizLog();
 
 let presetRunning = false;
 
@@ -88,6 +91,7 @@ function doWrite() {
     existing.value = value;
     flashId.value = existing.id;
     message.value = t(`Updated "${key}" = "${value}" (overwrite).`, `已更新 "${key}" = "${value}"（覆写）。`);
+    log(message.value, 'info');
     writeKey.value = '';
     writeValue.value = '';
     safeTimeout(() => { flashId.value = -1; }, 600);
@@ -106,6 +110,7 @@ function doWrite() {
   freeSlot.status = 'active';
   flashId.value = freeSlot.id;
   message.value = t(`Wrote "${key}" = "${value}". ${stats.value.free - 1} free slot(s) remaining.`, `已写入 "${key}" = "${value}"。剩余 ${stats.value.free - 1} 个空闲槽位。`);
+  log(message.value, 'success');
   writeKey.value = '';
   writeValue.value = '';
   safeTimeout(() => { flashId.value = -1; }, 600);
@@ -116,6 +121,7 @@ function doDelete(entry: Entry) {
   entry.status = 'tombstoned';
   flashId.value = entry.id;
   message.value = t(`Tombstoned "${entry.key}". Data remains but is marked deleted. Compact to reclaim.`, `已标记删除 "${entry.key}"。数据仍在但已标记为删除。压缩以回收。`);
+  log(message.value, 'warning');
   if (readResult.value) {
     readResult.value = null;
   }
@@ -133,15 +139,18 @@ function doRead() {
   if (!entry) {
     readResult.value = { found: false };
     message.value = t(`Read "${key}": NOT FOUND (key does not exist).`, `读取 "${key}"：未找到（键不存在）。`);
+    log(message.value, 'error');
   } else if (entry.status === 'tombstoned') {
     readResult.value = { found: false, tombstoned: true };
     flashId.value = entry.id;
     message.value = t(`Read "${key}": NOT FOUND (tombstoned). Data exists but is logically deleted.`, `读取 "${key}"：未找到（已标记删除）。数据存在但已逻辑删除。`);
+    log(message.value, 'warning');
     safeTimeout(() => { flashId.value = -1; }, 600);
   } else {
     readResult.value = { found: true, value: entry.value };
     flashId.value = entry.id;
     message.value = t(`Read "${key}": FOUND -> "${entry.value}"`, `读取 "${key}"：找到 -> "${entry.value}"`);
+    log(message.value, 'success');
     safeTimeout(() => { flashId.value = -1; }, 600);
   }
   readKey.value = '';
@@ -182,6 +191,7 @@ async function doCompact() {
   flashId.value = -1;
   compacting.value = false;
   message.value = t(`Compaction done. Reclaimed ${tombstoned.length} slot(s). Active entries shifted left.`, `压缩完成。回收了 ${tombstoned.length} 个槽位。活跃条目已左移。`);
+  log(message.value, 'highlight');
 }
 
 function reset() {
@@ -196,6 +206,7 @@ function reset() {
   flashId.value = -1;
   compacting.value = false;
   message.value = t('Store reset. Write, delete, read, and compact to explore tombstone deletion.', '存储已重置。写入、删除、读取和压缩以探索墓碑删除。');
+  clearLog();
 }
 
 /* ---------- Preset scenarios ---------- */
@@ -249,6 +260,7 @@ async function presetWriteDeleteCompact() {
     'Write-delete-compact cycle: the core lifecycle of tombstone-based storage. Cassandra writes tombstones on DELETE, then removes them during compaction after gc_grace_seconds (default 10 days).',
     '写-删-压缩循环：基于墓碑存储的核心生命周期。Cassandra 在 DELETE 时写入墓碑，然后在 gc_grace_seconds（默认 10 天）后的压缩中移除它们。'
   );
+  log(message.value, 'highlight');
 
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -256,32 +268,38 @@ async function presetWriteDeleteCompact() {
   // Write 3 entries
   programmaticWrite('order:1', 'pending');
   message.value = t('Writing order:1 = "pending"...', '写入 order:1 = "pending"...');
+  log(message.value, 'info');
   await delay(600);
   if (!presetRunning || isAborted()) return;
 
   programmaticWrite('order:2', 'shipped');
   message.value = t('Writing order:2 = "shipped"...', '写入 order:2 = "shipped"...');
+  log(message.value, 'info');
   await delay(600);
   if (!presetRunning || isAborted()) return;
 
   programmaticWrite('order:3', 'delivered');
   message.value = t('Writing order:3 = "delivered"...', '写入 order:3 = "delivered"...');
+  log(message.value, 'info');
   await delay(800);
   if (!presetRunning || isAborted()) return;
 
   // Delete 2
   programmaticDelete('order:1');
   message.value = t('Deleting order:1 — tombstone placed. Data still occupies the slot.', '删除 order:1 — 放置墓碑。数据仍占用槽位。');
+  log(message.value, 'warning');
   await delay(700);
   if (!presetRunning || isAborted()) return;
 
   programmaticDelete('order:2');
   message.value = t('Deleting order:2 — another tombstone. 2 slots wasted until compaction.', '删除 order:2 — 又一个墓碑。在压缩之前浪费 2 个槽位。');
+  log(message.value, 'warning');
   await delay(800);
   if (!presetRunning || isAborted()) return;
 
   // Compact
   message.value = t('Starting compaction to reclaim tombstoned slots...', '开始压缩以回收墓碑槽位...');
+  log(message.value, 'highlight');
   await delay(400);
   if (!presetRunning || isAborted()) return;
   await doCompact();
@@ -549,6 +567,7 @@ async function presetReadThroughTombstone() {
     </div>
 
     <div class="viz-status">{{ message }}</div>
+    <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>
 

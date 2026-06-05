@@ -2,9 +2,12 @@
 import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
+import { useVizLog } from '../composables/useVizLog';
+import VizLog from './VizLog.vue';
 
 const { t } = useI18n();
 const { safeTimeout, clearAll, speed } = useVizTimers();
+const { entries: logEntries, log, clear: clearLog } = useVizLog();
 
 const CAPACITY = 4;
 
@@ -39,6 +42,7 @@ function put(key?: string, value?: string) {
       `put("${k}") → already exists — moved to MRU end. LRU assumes recent access predicts future access.`,
       `put("${k}") → 已存在 — 移至 MRU 端。LRU 假设最近访问的数据未来更可能再次被访问。`
     );
+    log(message.value, 'success');
   } else {
     if (entries.value.length >= CAPACITY) {
       const evicted = entries.value.pop()!;
@@ -48,11 +52,13 @@ function put(key?: string, value?: string) {
         `put("${k}") → cache full! Evicted "${evicted.key}" (least recently used). This is O(1) with a hash map + doubly-linked list.`,
         `put("${k}") → 缓存已满！淘汰 "${evicted.key}"（最近最少使用）。通过哈希表 + 双向链表实现 O(1)。`
       );
+      log(message.value, 'warning');
     } else {
       message.value = t(
         `put("${k}", "${val}") → inserted at MRU position (front of list).`,
         `put("${k}", "${val}") → 插入到 MRU 位置（链表头部）。`
       );
+      log(message.value, 'info');
     }
     entries.value.unshift({ key: k, value: val, id: ++idCounter });
     safeTimeout(() => { animKey.value = k; animAction.value = 'insert'; }, 50);
@@ -76,6 +82,7 @@ function get(key?: string) {
       `get("${k}") → HIT! Moved to front — recently used items stay in cache longer.`,
       `get("${k}") → 命中！移至头部 — 最近使用的项在缓存中保留更久。`
     );
+    log(message.value, 'success');
   } else {
     animKey.value = k;
     animAction.value = 'miss';
@@ -83,6 +90,7 @@ function get(key?: string) {
       `get("${k}") → MISS! Not in cache. In production, this triggers a slower fetch from the backing store.`,
       `get("${k}") → 未命中！不在缓存中。在生产中，这会触发一次较慢的后端存储查询。`
     );
+    log(message.value, 'error');
   }
   inputKey.value = '';
   safeTimeout(() => { animKey.value = ''; animAction.value = ''; }, 500);
@@ -95,6 +103,7 @@ function reset() {
   animKey.value = '';
   animAction.value = '';
   presetRunning = false;
+  clearLog();
 }
 
 async function runPreset(steps: Array<{ op: 'put' | 'get'; key: string; val?: string }>) {
@@ -218,6 +227,7 @@ const emptySlots = computed(() => Math.max(0, CAPACITY - entries.value.length));
       'viz-status--miss': animAction === 'miss',
       'viz-status--evict': animAction === 'evict',
     }">{{ message }}</div>
+    <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>
 
