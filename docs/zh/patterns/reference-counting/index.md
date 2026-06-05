@@ -54,8 +54,8 @@ difficulty: "beginner"
 
 | 属性 | 值 |
 |------|------|
-| Clone | O(1) -- 计数器加一 |
-| Drop | O(1) -- 计数器减一，条件性清理 |
+| Clone | O(1) — 计数器加一 |
+| Drop | O(1) — 计数器减一，条件性清理 |
 | 清理触发 | 确定性——最后一个所有者 drop 时立即触发 |
 | 线程安全 | 多线程使用需要原子操作（或互斥锁） |
 
@@ -269,23 +269,23 @@ impl<T> Drop for Rc<T> {
 
 ## 何时使用
 
-- **需要确定性清理的共享所有权** -- 代码的多个部分需要同一资源，且需要在最后一个用户完成时立即释放（文件句柄、GPU 缓冲区、数据库连接）
-- **避免 GC 停顿** -- 实时系统（游戏、音频）中无法接受 stop-the-world GC
-- **跨语言互操作** -- CPython 的引用计数让 C 扩展自然管理 Python 对象；COM 在 DLL 边界使用 `AddRef`/`Release`
-- **短期共享状态** -- 对象主要由一处拥有但偶尔短暂共享（Rust 的 `Rc`/`Arc` 模式）
+- **需要确定性清理的共享所有权** — 代码的多个部分需要同一资源，且需要在最后一个用户完成时立即释放（文件句柄、GPU 缓冲区、数据库连接）
+- **避免 GC 停顿** — 实时系统（游戏、音频）中无法接受 stop-the-world GC
+- **跨语言互操作** — CPython 的引用计数让 C 扩展自然管理 Python 对象；COM 在 DLL 边界使用 `AddRef`/`Release`
+- **短期共享状态** — 对象主要由一处拥有但偶尔短暂共享（Rust 的 `Rc`/`Arc` 模式）
 
 ## 何时不用
 
-- **循环数据结构** -- 父子循环（如双向链表、图节点）会泄漏，因为计数永远不会归零。使用弱引用或追踪式 GC。
-- **高竞争共享** -- 如果多个线程频繁 clone/drop 同一对象，原子计数器会成为缓存行瓶颈。考虑基于 epoch 的回收或风险指针。
-- **批量分配模式** -- 如果分配/释放数千个小对象，每个对象的计数器增加额外开销。使用 arena 分配替代。
+- **循环数据结构** — 父子循环（如双向链表、图节点）会泄漏，因为计数永远不会归零。使用弱引用或追踪式 GC。
+- **高竞争共享** — 如果多个线程频繁 clone/drop 同一对象，原子计数器会成为缓存行瓶颈。考虑基于 epoch 的回收或风险指针。
+- **批量分配模式** — 如果分配/释放数千个小对象，每个对象的计数器增加额外开销。使用 arena 分配替代。
 
 ## 更多生产案例
 
-- [Swift ARC](https://github.com/apple/swift) -- Swift 的整个内存模型基于自动引用计数（编译器插入的 retain/release）
-- [COM IUnknown](https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown) -- Windows 中每个 COM 对象的 `AddRef`/`Release`
-- [Linux kernel kobject](https://github.com/torvalds/linux/blob/master/lib/kobject.c) -- `kref` 为内核对象提供引用计数
-- [Objective-C ARC](https://clang.llvm.org/docs/AutomaticReferenceCounting.html) -- 编译器管理的 `retain`/`release` 调用
+- [Swift ARC](https://github.com/apple/swift) — Swift 的整个内存模型基于自动引用计数（编译器插入的 retain/release）
+- [COM IUnknown](https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown) — Windows 中每个 COM 对象的 `AddRef`/`Release`
+- [Linux kernel kobject](https://github.com/torvalds/linux/blob/master/lib/kobject.c) — `kref` 为内核对象提供引用计数
+- [Objective-C ARC](https://clang.llvm.org/docs/AutomaticReferenceCounting.html) — 编译器管理的 `retain`/`release` 调用
 
 ## 相关模式
 

@@ -191,23 +191,23 @@ impl Pipeline {
 
 ## 何时使用
 
-- **HTTP 请求处理** -- 认证、日志、CORS、压缩、限流作为可组合层（Express、Koa、Gin、ASP.NET）
-- **RPC 拦截器** -- gRPC 拦截器用于追踪、认证、重试和指标，包裹每次调用而不修改业务逻辑
-- **构建/编译管道** -- Webpack loader、Babel 转换、PostCSS 插件各自处理后传递给下一个
-- **CLI 命令处理** -- 参数解析、验证、帮助生成作为实际命令处理器之前的中间件
+- **HTTP 请求处理** — 认证、日志、CORS、压缩、限流作为可组合层（Express、Koa、Gin、ASP.NET）
+- **RPC 拦截器** — gRPC 拦截器用于追踪、认证、重试和指标，包裹每次调用而不修改业务逻辑
+- **构建/编译管道** — Webpack loader、Babel 转换、PostCSS 插件各自处理后传递给下一个
+- **CLI 命令处理** — 参数解析、验证、帮助生成作为实际命令处理器之前的中间件
 
 ## 何时不用
 
-- **事件扇出（一对多）** -- 如果需要多个独立处理器响应同一事件，使用观察者模式。中间件是链（一条路径），不是广播。
-- **无状态转换** -- 如果每步只是转换数据而不需要包裹下一步（无前/后处理），使用简单的 `array.map().filter().reduce()` 管道。中间件的力量在于双向包裹；没有它，你付出了复杂性却没有收益。
-- **性能关键热路径** -- 每个中间件增加一次函数调用和闭包分配。在处理数百万项的紧密循环中，这些开销很重要。使用直接函数调用。
+- **事件扇出（一对多）** — 如果需要多个独立处理器响应同一事件，使用观察者模式。中间件是链（一条路径），不是广播。
+- **无状态转换** — 如果每步只是转换数据而不需要包裹下一步（无前/后处理），使用简单的 `array.map().filter().reduce()` 管道。中间件的力量在于双向包裹；没有它，你付出了复杂性却没有收益。
+- **性能关键热路径** — 每个中间件增加一次函数调用和闭包分配。在处理数百万项的紧密循环中，这些开销很重要。使用直接函数调用。
 
 ## 更多生产案例
 
-- [Express.js](https://github.com/expressjs/express) -- `app.use()` 链接中间件用于 HTTP 请求处理
-- [Redux](https://github.com/reduxjs/redux) -- `applyMiddleware` 包裹 `dispatch` 用于日志、thunks、sagas
-- [ASP.NET Core](https://github.com/dotnet/aspnetcore) -- `IApplicationBuilder.Use()` 中间件管道
-- [Gin](https://github.com/gin-gonic/gin) -- Go HTTP 框架，带 `Use()` 中间件和 `c.Next()`/`c.Abort()`
+- [Express.js](https://github.com/expressjs/express) — `app.use()` 链接中间件用于 HTTP 请求处理
+- [Redux](https://github.com/reduxjs/redux) — `applyMiddleware` 包裹 `dispatch` 用于日志、thunks、sagas
+- [ASP.NET Core](https://github.com/dotnet/aspnetcore) — `IApplicationBuilder.Use()` 中间件管道
+- [Gin](https://github.com/gin-gonic/gin) — Go HTTP 框架，带 `Use()` 中间件和 `c.Next()`/`c.Abort()`
 
 ## 相关模式
 

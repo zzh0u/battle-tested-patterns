@@ -43,8 +43,8 @@ difficulty: "beginner"
 
 | 属性 | 值 |
 |------|------|
-| 注册 | O(1) -- 哈希表插入 |
-| 查找 | O(1) -- 哈希表查找 |
+| 注册 | O(1) — 哈希表插入 |
+| 查找 | O(1) — 哈希表查找 |
 | 耦合度 | 生产者和消费者之间零编译时依赖 |
 | 可扩展性 | 无需修改现有代码即可添加新实现 |
 
@@ -243,24 +243,24 @@ impl<T> Registry<T> {
 
 ## 何时使用
 
-- **插件系统** -- 按名称加载和发现插件，无需编译时耦合
-- **序列化编解码器** -- 注册 JSON、XML、Protobuf 编解码器；按内容类型查找
-- **命令/处理器分派** -- CLI 命令、RPC 方法、事件处理器自注册
-- **测试夹具** -- 按名称注册测试工厂，用于参数化测试
-- **ML 框架操作** -- TensorFlow、PyTorch 注册可组合到图中的算子
+- **插件系统** — 按名称加载和发现插件，无需编译时耦合
+- **序列化编解码器** — 注册 JSON、XML、Protobuf 编解码器；按内容类型查找
+- **命令/处理器分派** — CLI 命令、RPC 方法、事件处理器自注册
+- **测试夹具** — 按名称注册测试工厂，用于参数化测试
+- **ML 框架操作** — TensorFlow、PyTorch 注册可组合到图中的算子
 
 ## 何时不用
 
-- **实现数量少且固定** -- 只有 2-3 个已知实现时，switch/match 更简单
-- **类型安全至关重要** -- 基于字符串的查找失去编译时类型检查；改用依赖注入或泛型
-- **顺序重要** -- 注册表通常是无序的；如果初始化顺序重要，使用显式排序
+- **实现数量少且固定** — 只有 2-3 个已知实现时，switch/match 更简单
+- **类型安全至关重要** — 基于字符串的查找失去编译时类型检查；改用依赖注入或泛型
+- **顺序重要** — 注册表通常是无序的；如果初始化顺序重要，使用显式排序
 
 ## 更多生产案例
 
-- [Terraform](https://github.com/hashicorp/terraform) -- 提供者注册表：每个云提供商注册资源类型和数据源
-- [Babel](https://github.com/babel/babel) -- 插件注册表：转换器按访问者模式名称自注册
-- [pytest](https://github.com/pytest-dev/pytest) -- 夹具注册表：`@pytest.fixture` 注册可通过参数名发现的函数
-- [Docker](https://github.com/moby/moby) -- 驱动注册表：存储、网络和日志驱动在守护进程启动时注册
+- [Terraform](https://github.com/hashicorp/terraform) — 提供者注册表：每个云提供商注册资源类型和数据源
+- [Babel](https://github.com/babel/babel) — 插件注册表：转换器按访问者模式名称自注册
+- [pytest](https://github.com/pytest-dev/pytest) — 夹具注册表：`@pytest.fixture` 注册可通过参数名发现的函数
+- [Docker](https://github.com/moby/moby) — 驱动注册表：存储、网络和日志驱动在守护进程启动时注册
 
 ## 相关模式
 

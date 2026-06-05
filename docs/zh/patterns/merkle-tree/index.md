@@ -382,25 +382,25 @@ impl MerkleTree {
 
 ## 何时使用
 
-- **版本控制** -- 内容寻址存储，任何更改都可检测（Git）
-- **区块链** -- 无需下载完整链即可验证交易（Bitcoin SPV）
-- **文件系统** -- 静默数据损坏检测（ZFS、Btrfs）
-- **点对点网络** -- 从不可信对等方验证下载的数据块（BitTorrent、IPFS）
-- **证书透明度** -- TLS 证书的仅追加 Merkle 日志
+- **版本控制** — 内容寻址存储，任何更改都可检测（Git）
+- **区块链** — 无需下载完整链即可验证交易（Bitcoin SPV）
+- **文件系统** — 静默数据损坏检测（ZFS、Btrfs）
+- **点对点网络** — 从不可信对等方验证下载的数据块（BitTorrent、IPFS）
+- **证书透明度** — TLS 证书的仅追加 Merkle 日志
 
 ## 何时不用
 
-- **小数据集** -- 如果可以一次性哈希所有内容，Merkle 树增加了不必要的复杂性
-- **频繁变化的数据** -- 每次变更都需要 O(log n) 次重新哈希直到根
-- **不需要验证的场景** -- 如果完全信任数据源，完整性证明是浪费的工作
-- **有序访问模式** -- Merkle 树不是搜索树；范围查询请用 B+ 树
+- **小数据集** — 如果可以一次性哈希所有内容，Merkle 树增加了不必要的复杂性
+- **频繁变化的数据** — 每次变更都需要 O(log n) 次重新哈希直到根
+- **不需要验证的场景** — 如果完全信任数据源，完整性证明是浪费的工作
+- **有序访问模式** — Merkle 树不是搜索树；范围查询请用 B+ 树
 
 ## 更多生产案例
 
-- [Bitcoin](https://github.com/bitcoin/bitcoin) -- 区块头包含所有交易的 Merkle 根
-- [Ethereum](https://github.com/ethereum/go-ethereum) -- Patricia Merkle Trie 用于状态、交易和收据
-- [IPFS](https://github.com/ipfs/kubo) -- 内容寻址的 Merkle DAG 用于分布式文件存储
-- [Certificate Transparency](https://certificate.transparency.dev/) -- 用于审计 TLS 证书的 Merkle 树日志
+- [Bitcoin](https://github.com/bitcoin/bitcoin) — 区块头包含所有交易的 Merkle 根
+- [Ethereum](https://github.com/ethereum/go-ethereum) — Patricia Merkle Trie 用于状态、交易和收据
+- [IPFS](https://github.com/ipfs/kubo) — 内容寻址的 Merkle DAG 用于分布式文件存储
+- [Certificate Transparency](https://certificate.transparency.dev/) — 用于审计 TLS 证书的 Merkle 树日志
 
 ## 相关模式
 

@@ -276,25 +276,25 @@ pub fn merge_k_sorted(streams: &[Vec<i32>]) -> Vec<i32> {
 
 ## 何时使用
 
-- **LSM 树读取** -- 将 memtable + 多个 SSTable 层级合并为一个有序视图（LevelDB、RocksDB）
-- **外部排序** -- 合并无法放入内存的有序段
-- **日志聚合** -- 合并来自多个服务的按时间排序的日志
-- **数据库连接** -- 预排序表的归并连接
-- **搜索引擎** -- 合并来自多个索引段的倒排列表
+- **LSM 树读取** — 将 memtable + 多个 SSTable 层级合并为一个有序视图（LevelDB、RocksDB）
+- **外部排序** — 合并无法放入内存的有序段
+- **日志聚合** — 合并来自多个服务的按时间排序的日志
+- **数据库连接** — 预排序表的归并连接
+- **搜索引擎** — 合并来自多个索引段的倒排列表
 
 ## 何时不用
 
-- **无序输入** -- K 路归并需要预排序的流；先排序或使用其他方法
-- **K = 2** -- 简单的双指针归并更简单，避免堆的开销
-- **随机访问模式** -- 合并迭代器用于顺序扫描，不适合点查询
-- **K 很大但流很短** -- 当流很短时堆的开销占主导
+- **无序输入** — K 路归并需要预排序的流；先排序或使用其他方法
+- **K = 2** — 简单的双指针归并更简单，避免堆的开销
+- **随机访问模式** — 合并迭代器用于顺序扫描，不适合点查询
+- **K 很大但流很短** — 当流很短时堆的开销占主导
 
 ## 更多生产案例
 
-- [TiKV](https://github.com/tikv/tikv) -- 跨多个 RocksDB column family 的合并迭代器
-- [Apache Lucene](https://github.com/apache/lucene) -- 索引优化期间合并段
-- [ClickHouse](https://github.com/ClickHouse/ClickHouse) -- MergingSortedTransform 用于合并有序数据部分
-- [CockroachDB](https://github.com/cockroachdb/cockroach) -- 归并连接和跨多个 range 的范围扫描
+- [TiKV](https://github.com/tikv/tikv) — 跨多个 RocksDB column family 的合并迭代器
+- [Apache Lucene](https://github.com/apache/lucene) — 索引优化期间合并段
+- [ClickHouse](https://github.com/ClickHouse/ClickHouse) — MergingSortedTransform 用于合并有序数据部分
+- [CockroachDB](https://github.com/cockroachdb/cockroach) — 归并连接和跨多个 range 的范围扫描
 
 ## 相关模式
 

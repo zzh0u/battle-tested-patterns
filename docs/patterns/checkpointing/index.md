@@ -19,7 +19,7 @@ Saving your game. You play for a while, hit 'save,' and if you die, you restart 
 
 ## Core Idea
 
-Checkpointing captures a consistent snapshot of the current system state at a known point. On crash, recovery loads the last checkpoint and replays only the operations logged after it. Without checkpointing, a WAL-based system must replay its entire history on every restart -- which grows unbounded. Checkpointing bounds recovery time to the interval since the last checkpoint.
+Checkpointing captures a consistent snapshot of the current system state at a known point. On crash, recovery loads the last checkpoint and replays only the operations logged after it. Without checkpointing, a WAL-based system must replay its entire history on every restart — which grows unbounded. Checkpointing bounds recovery time to the interval since the last checkpoint.
 
 ```text
   Time ──────────────────────────────────────────────►
@@ -401,25 +401,25 @@ Exercise files: Rust `exercises/rust/src/checkpointing.rs` · Go `exercises/go/c
 
 ## When to Use
 
-- **Database crash recovery** -- bound WAL replay time (PostgreSQL, MySQL)
-- **In-memory caches** -- persist state to survive restarts (Redis RDB)
-- **Stream processing** -- save processing position for exactly-once guarantees (Flink, Kafka)
-- **Long-running computations** -- save progress to resume after failure (ML training)
-- **Game saves** -- snapshot game state at safe points
+- **Database crash recovery** — bound WAL replay time (PostgreSQL, MySQL)
+- **In-memory caches** — persist state to survive restarts (Redis RDB)
+- **Stream processing** — save processing position for exactly-once guarantees (Flink, Kafka)
+- **Long-running computations** — save progress to resume after failure (ML training)
+- **Game saves** — snapshot game state at safe points
 
 ## When NOT to Use
 
-- **Stateless services** -- no state to checkpoint
-- **Very small state** -- if WAL replay takes < 1 second, checkpointing adds complexity for little benefit
-- **Rapidly changing state** -- if the entire state changes between checkpoints, snapshots are as expensive as replaying the WAL
-- **Distributed state** -- coordinating consistent checkpoints across nodes requires distributed snapshot protocols (Chandy-Lamport)
+- **Stateless services** — no state to checkpoint
+- **Very small state** — if WAL replay takes < 1 second, checkpointing adds complexity for little benefit
+- **Rapidly changing state** — if the entire state changes between checkpoints, snapshots are as expensive as replaying the WAL
+- **Distributed state** — coordinating consistent checkpoints across nodes requires distributed snapshot protocols (Chandy-Lamport)
 
 ## More Production Uses
 
-- [Apache Flink](https://github.com/apache/flink) -- distributed snapshots for exactly-once stream processing
-- [etcd](https://github.com/etcd-io/etcd) -- periodic snapshots to compact the Raft log
-- [SQLite WAL mode](https://www.sqlite.org/wal.html) -- WAL checkpointing transfers pages back to the database file
-- [PyTorch](https://github.com/pytorch/pytorch) -- model checkpointing to resume training after interruption
+- [Apache Flink](https://github.com/apache/flink) — distributed snapshots for exactly-once stream processing
+- [etcd](https://github.com/etcd-io/etcd) — periodic snapshots to compact the Raft log
+- [SQLite WAL mode](https://www.sqlite.org/wal.html) — WAL checkpointing transfers pages back to the database file
+- [PyTorch](https://github.com/pytorch/pytorch) — model checkpointing to resume training after interruption
 
 ## Related Patterns
 
@@ -447,7 +447,7 @@ The OS kernel uses COW for forked process pages. The child reads the frozen stat
 ::: details Q3: You're implementing checkpointing for a stream processing system. Each checkpoint takes 5 seconds to write, but the system processes 100K events/second. What happens to the 500K events that arrive during checkpoint creation?
 **Answer:** The system must continue processing events during checkpoint creation. The checkpoint captures a consistent snapshot of the state at the moment it starts, not when it finishes. Incoming events are processed normally and logged to the WAL.
 
-This is the "consistent snapshot" problem. Solutions: (1) use a copy-on-write snapshot (like Redis fork) -- the checkpoint captures state at fork time while new writes go to COW pages; (2) use a fuzzy checkpoint with a "redo log" -- start the snapshot, track which pages changed during the snapshot, and include those changes in the checkpoint metadata; (3) use barriers -- pause processing briefly to take a consistent cut, then resume. Apache Flink uses asynchronous barrier snapshots inspired by the Chandy-Lamport algorithm.
+This is the "consistent snapshot" problem. Solutions: (1) use a copy-on-write snapshot (like Redis fork) — the checkpoint captures state at fork time while new writes go to COW pages; (2) use a fuzzy checkpoint with a "redo log" — start the snapshot, track which pages changed during the snapshot, and include those changes in the checkpoint metadata; (3) use barriers — pause processing briefly to take a consistent cut, then resume. Apache Flink uses asynchronous barrier snapshots inspired by the Chandy-Lamport algorithm.
 :::
 
 ::: details Q4: Your system takes a checkpoint every hour, but the checkpoint file is 50GB. The disk write speed is 200MB/s, so writing takes ~4 minutes. During those 4 minutes, can you safely truncate the WAL?

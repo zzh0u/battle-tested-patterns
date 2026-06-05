@@ -401,25 +401,25 @@ impl CheckpointableStore {
 
 ## 何时使用
 
-- **数据库崩溃恢复** -- 限制 WAL 重放时间（PostgreSQL、MySQL）
-- **内存缓存** -- 持久化状态以在重启后存活（Redis RDB）
-- **流处理** -- 保存处理位置以实现精确一次保证（Flink、Kafka）
-- **长时间运行的计算** -- 保存进度以在故障后恢复（ML 训练）
-- **游戏存档** -- 在安全点快照游戏状态
+- **数据库崩溃恢复** — 限制 WAL 重放时间（PostgreSQL、MySQL）
+- **内存缓存** — 持久化状态以在重启后存活（Redis RDB）
+- **流处理** — 保存处理位置以实现精确一次保证（Flink、Kafka）
+- **长时间运行的计算** — 保存进度以在故障后恢复（ML 训练）
+- **游戏存档** — 在安全点快照游戏状态
 
 ## 何时不用
 
-- **无状态服务** -- 没有需要检查点的状态
-- **非常小的状态** -- 如果 WAL 重放时间 < 1 秒，检查点增加复杂性但收益很小
-- **快速变化的状态** -- 如果整个状态在检查点之间都变了，快照和重放 WAL 一样昂贵
-- **分布式状态** -- 跨节点协调一致性检查点需要分布式快照协议（Chandy-Lamport）
+- **无状态服务** — 没有需要检查点的状态
+- **非常小的状态** — 如果 WAL 重放时间 < 1 秒，检查点增加复杂性但收益很小
+- **快速变化的状态** — 如果整个状态在检查点之间都变了，快照和重放 WAL 一样昂贵
+- **分布式状态** — 跨节点协调一致性检查点需要分布式快照协议（Chandy-Lamport）
 
 ## 更多生产案例
 
-- [Apache Flink](https://github.com/apache/flink) -- 分布式快照实现精确一次的流处理
-- [etcd](https://github.com/etcd-io/etcd) -- 定期快照以压缩 Raft 日志
-- [SQLite WAL 模式](https://www.sqlite.org/wal.html) -- WAL 检查点将页面传回数据库文件
-- [PyTorch](https://github.com/pytorch/pytorch) -- 模型检查点以在中断后恢复训练
+- [Apache Flink](https://github.com/apache/flink) — 分布式快照实现精确一次的流处理
+- [etcd](https://github.com/etcd-io/etcd) — 定期快照以压缩 Raft 日志
+- [SQLite WAL 模式](https://www.sqlite.org/wal.html) — WAL 检查点将页面传回数据库文件
+- [PyTorch](https://github.com/pytorch/pytorch) — 模型检查点以在中断后恢复训练
 
 ## 相关模式
 

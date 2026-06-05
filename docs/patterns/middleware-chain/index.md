@@ -48,7 +48,7 @@ Each middleware receives a context and a `next()` function. Calling `next()` pas
 | Composition | O(n) middleware executed per request |
 | Short-circuit | Any middleware can skip the rest by not calling `next()` |
 | Context sharing | All middleware share the same mutable context object |
-| Direction | Bidirectional -- pre-process on the way in, post-process on the way out |
+| Direction | Bidirectional — pre-process on the way in, post-process on the way out |
 
 **Try it yourself** — send a request through the middleware chain and watch it flow forward then backward:
 
@@ -58,8 +58,8 @@ Each middleware receives a context and a `next()` function. Calling `next()` pas
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| gRPC-Go | [server.go#L1224-L1260](https://github.com/grpc/grpc-go/blob/master/server.go#L1224-L1260) | `chainUnaryServerInterceptors` (L1224) chains interceptors into a single handler. `getChainUnaryHandler` (L1252) recursively builds the chain -- each interceptor receives the request and a `handler` function (equivalent to `next`). Used for authentication, logging, tracing, and rate limiting in production gRPC services. |
-| Koa.js | [application.js#L152-L204](https://github.com/koajs/koa/blob/master/lib/application.js#L152-L204) | `use()` (L152-L157) pushes middleware into an array. `callback()` (L168) composes them via `koa-compose` into a single function. `handleRequest` (L198-L205) executes the composed chain. Koa pioneered the async onion model -- each `await next()` creates a stack frame, enabling clean try/catch/finally around downstream middleware. |
+| gRPC-Go | [server.go#L1224-L1260](https://github.com/grpc/grpc-go/blob/master/server.go#L1224-L1260) | `chainUnaryServerInterceptors` (L1224) chains interceptors into a single handler. `getChainUnaryHandler` (L1252) recursively builds the chain — each interceptor receives the request and a `handler` function (equivalent to `next`). Used for authentication, logging, tracing, and rate limiting in production gRPC services. |
+| Koa.js | [application.js#L152-L204](https://github.com/koajs/koa/blob/master/lib/application.js#L152-L204) | `use()` (L152-L157) pushes middleware into an array. `callback()` (L168) composes them via `koa-compose` into a single function. `handleRequest` (L198-L205) executes the composed chain. Koa pioneered the async onion model — each `await next()` creates a stack frame, enabling clean try/catch/finally around downstream middleware. |
 
 ## Implementation
 
@@ -191,23 +191,23 @@ Exercise files: Rust `exercises/rust/src/middleware_chain.rs` · Go `exercises/g
 
 ## When to Use
 
-- **HTTP request processing** -- authentication, logging, CORS, compression, rate limiting as composable layers (Express, Koa, Gin, ASP.NET)
-- **RPC interceptors** -- gRPC interceptors for tracing, auth, retry, and metrics that wrap every call without modifying business logic
-- **Build/compile pipelines** -- Webpack loaders, Babel transforms, PostCSS plugins each process and pass to the next
-- **CLI command processing** -- argument parsing, validation, help generation as middleware before the actual command handler
+- **HTTP request processing** — authentication, logging, CORS, compression, rate limiting as composable layers (Express, Koa, Gin, ASP.NET)
+- **RPC interceptors** — gRPC interceptors for tracing, auth, retry, and metrics that wrap every call without modifying business logic
+- **Build/compile pipelines** — Webpack loaders, Babel transforms, PostCSS plugins each process and pass to the next
+- **CLI command processing** — argument parsing, validation, help generation as middleware before the actual command handler
 
 ## When NOT to Use
 
-- **Event fan-out (one-to-many)** -- if you need multiple independent handlers for the same event, use the Observer pattern. Middleware is a chain (one path), not a broadcast.
-- **Stateless transformations** -- if each step just transforms data without needing to wrap the next step (no pre/post), use a simple `array.map().filter().reduce()` pipeline. Middleware's power is the bidirectional wrapping; without it, you pay complexity for nothing.
-- **Performance-critical hot paths** -- each middleware adds a function call and closure allocation. In a tight loop processing millions of items, the overhead matters. Use direct function calls.
+- **Event fan-out (one-to-many)** — if you need multiple independent handlers for the same event, use the Observer pattern. Middleware is a chain (one path), not a broadcast.
+- **Stateless transformations** — if each step just transforms data without needing to wrap the next step (no pre/post), use a simple `array.map().filter().reduce()` pipeline. Middleware's power is the bidirectional wrapping; without it, you pay complexity for nothing.
+- **Performance-critical hot paths** — each middleware adds a function call and closure allocation. In a tight loop processing millions of items, the overhead matters. Use direct function calls.
 
 ## More Production Uses
 
-- [Express.js](https://github.com/expressjs/express) -- `app.use()` chains middleware for HTTP request processing
-- [Redux](https://github.com/reduxjs/redux) -- `applyMiddleware` wraps `dispatch` for logging, thunks, sagas
-- [ASP.NET Core](https://github.com/dotnet/aspnetcore) -- `IApplicationBuilder.Use()` middleware pipeline
-- [Gin](https://github.com/gin-gonic/gin) -- Go HTTP framework with `Use()` middleware and `c.Next()`/`c.Abort()`
+- [Express.js](https://github.com/expressjs/express) — `app.use()` chains middleware for HTTP request processing
+- [Redux](https://github.com/reduxjs/redux) — `applyMiddleware` wraps `dispatch` for logging, thunks, sagas
+- [ASP.NET Core](https://github.com/dotnet/aspnetcore) — `IApplicationBuilder.Use()` middleware pipeline
+- [Gin](https://github.com/gin-gonic/gin) — Go HTTP framework with `Use()` middleware and `c.Next()`/`c.Abort()`
 
 ## Related Patterns
 
@@ -223,7 +223,7 @@ Exercise files: Rust `exercises/rust/src/middleware_chain.rs` · Go `exercises/g
 ::: details Q1: You have middleware A (logging), B (auth), C (handler). A user sends a request with an invalid token. B rejects it by NOT calling next(). What does A's post-processing see?
 **Answer:** A's post-processing still runs. When B doesn't call `next()`, C never executes. But B's function returns normally to A (since A called `next()` which invoked B). A's code after its `next()` call executes as usual.
 
-This is the onion model in action: A wraps B wraps C. Even if B short-circuits, A's wrapping is still intact. This is why logging middleware works correctly even for rejected requests -- it records the duration and status regardless of whether downstream middleware ran.
+This is the onion model in action: A wraps B wraps C. Even if B short-circuits, A's wrapping is still intact. This is why logging middleware works correctly even for rejected requests — it records the duration and status regardless of whether downstream middleware ran.
 :::
 
 ::: details Q2: You swap the order of auth middleware and rate-limiter middleware. What security issue can this create?
@@ -244,11 +244,11 @@ app.use(async (ctx, next) => {
 
 In Express, errors must be explicitly passed via `next(err)`, and a special 4-argument error handler `(err, req, res, next)` must be registered. If a middleware throws synchronously or an async callback rejects without calling `next(err)`, the error is lost and the request hangs.
 
-The async/await model makes the onion pattern natural -- try/catch/finally maps directly to setup/handle/cleanup.
+The async/await model makes the onion pattern natural — try/catch/finally maps directly to setup/handle/cleanup.
 :::
 
 ::: details Q4: Can you implement middleware ordering that runs some middleware only for specific routes (like Express's `app.get('/api', authMiddleware, handler)`)?
-**Answer:** Yes -- add a predicate to each middleware that checks the context before executing. The pipeline wraps each middleware in a conditional:
+**Answer:** Yes — add a predicate to each middleware that checks the context before executing. The pipeline wraps each middleware in a conditional:
 
 ```javascript
 function routeMiddleware(path, mw) {

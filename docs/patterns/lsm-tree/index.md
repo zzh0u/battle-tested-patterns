@@ -564,25 +564,25 @@ Exercise files: Rust `exercises/rust/src/lsm_tree.rs` · Go `exercises/go/lsm_tr
 
 ## When to Use
 
-- **Write-heavy workloads** -- logging, time-series data, event streams
-- **Key-value stores** -- LevelDB, RocksDB, Cassandra, HBase
-- **Embedded databases** -- space-efficient, simple to implement
-- **Append-mostly data** -- IoT sensor data, analytics events
-- **SSD-optimized storage** -- sequential writes maximize SSD lifespan
+- **Write-heavy workloads** — logging, time-series data, event streams
+- **Key-value stores** — LevelDB, RocksDB, Cassandra, HBase
+- **Embedded databases** — space-efficient, simple to implement
+- **Append-mostly data** — IoT sensor data, analytics events
+- **SSD-optimized storage** — sequential writes maximize SSD lifespan
 
 ## When NOT to Use
 
-- **Read-heavy workloads** -- reads may check multiple levels; use B+ trees for fast reads
-- **Small datasets** -- LSM overhead (compaction, multiple files) isn't worth it for data that fits in a B+ tree
-- **Range scans with strict latency** -- compaction can cause latency spikes
-- **Update-heavy with point reads** -- repeated updates to the same key create write amplification during compaction
+- **Read-heavy workloads** — reads may check multiple levels; use B+ trees for fast reads
+- **Small datasets** — LSM overhead (compaction, multiple files) isn't worth it for data that fits in a B+ tree
+- **Range scans with strict latency** — compaction can cause latency spikes
+- **Update-heavy with point reads** — repeated updates to the same key create write amplification during compaction
 
 ## More Production Uses
 
-- [Apache Cassandra](https://github.com/apache/cassandra) -- LSM-based distributed NoSQL database
-- [ScyllaDB](https://github.com/scylladb/scylladb) -- high-performance Cassandra-compatible LSM store
-- [BadgerDB](https://github.com/dgraph-io/badger) -- Go-native LSM key-value store with value separation
-- [SQLite LSM extension](https://www.sqlite.org/lsm.html) -- LSM-based storage backend for SQLite
+- [Apache Cassandra](https://github.com/apache/cassandra) — LSM-based distributed NoSQL database
+- [ScyllaDB](https://github.com/scylladb/scylladb) — high-performance Cassandra-compatible LSM store
+- [BadgerDB](https://github.com/dgraph-io/badger) — Go-native LSM key-value store with value separation
+- [SQLite LSM extension](https://www.sqlite.org/lsm.html) — LSM-based storage backend for SQLite
 
 ## Related Patterns
 
@@ -600,7 +600,7 @@ Exercise files: Rust `exercises/rust/src/lsm_tree.rs` · Go `exercises/go/lsm_tr
 ::: details Q1: Your LSM tree has 5 levels (L0-L4). A read for key "user:999" finds nothing. How many files did it potentially have to check?
 **Answer:** In the worst case, all files across all levels. L0 files can overlap, so you check all L0 files. L1-L4 files are non-overlapping within a level, so you check at most one file per level. Total: all L0 files + 4 (one per remaining level).
 
-This is "read amplification" -- the fundamental trade-off of LSM trees. Solutions: (1) Bloom filters on each SSTable to skip files that definitely don't contain the key (LevelDB/RocksDB do this); (2) minimize L0 files by compacting aggressively; (3) use a prefix-based index to skip entire levels. RocksDB's Bloom filter typically reduces reads to 1-2 file reads even with many levels.
+This is "read amplification" — the fundamental trade-off of LSM trees. Solutions: (1) Bloom filters on each SSTable to skip files that definitely don't contain the key (LevelDB/RocksDB do this); (2) minimize L0 files by compacting aggressively; (3) use a prefix-based index to skip entire levels. RocksDB's Bloom filter typically reduces reads to 1-2 file reads even with many levels.
 :::
 
 ::: details Q2: You delete a key from the LSM tree. The key still exists in an older SSTable on disk. Is the space freed immediately?
@@ -609,14 +609,14 @@ This is "read amplification" -- the fundamental trade-off of LSM trees. Solution
 This is why LSM trees have "space amplification." Deleted data occupies disk space until compaction reaches it. In extreme cases (delete-heavy workloads), the disk usage can temporarily exceed the logical data size significantly. RocksDB addresses this with periodic compaction filters and manual compaction triggers. The tombstone itself also occupies space and must be kept long enough to shadow all older copies of the key across all levels.
 :::
 
-::: details Q3: Your LSM tree is receiving 100K writes/second. Compaction can't keep up -- L0 is accumulating files faster than they're merged. What happens and how do you fix it?
+::: details Q3: Your LSM tree is receiving 100K writes/second. Compaction can't keep up — L0 is accumulating files faster than they're merged. What happens and how do you fix it?
 **Answer:** Write stalls. When L0 exceeds its file limit, the system must throttle or pause incoming writes until compaction catches up. This causes latency spikes.
 
 LevelDB's `MakeRoomForWrite` explicitly checks L0 file count and sleeps if it exceeds `kL0_SlowdownWritesTrigger` (8 files) or stops writes entirely at `kL0_StopWritesTrigger` (12 files). Solutions: (1) increase compaction parallelism (RocksDB supports concurrent compaction threads); (2) use leveled compaction instead of size-tiered to bound L0 growth; (3) increase memtable size to flush less often; (4) use write rate limiting to smooth out bursts rather than hitting hard stops.
 :::
 
 ::: details Q4: LevelDB uses a single-threaded compaction model. RocksDB switched to multi-threaded compaction. What problem does this solve, and what new problem does it create?
-**Answer:** Multi-threaded compaction solves the throughput bottleneck -- compaction can keep up with higher write rates by running multiple merge operations in parallel. The new problem: concurrent compaction of overlapping key ranges can cause write conflicts and requires careful coordination.
+**Answer:** Multi-threaded compaction solves the throughput bottleneck — compaction can keep up with higher write rates by running multiple merge operations in parallel. The new problem: concurrent compaction of overlapping key ranges can cause write conflicts and requires careful coordination.
 
-With single-threaded compaction, one slow merge blocks all others -- write stalls become common under high load. Multi-threaded compaction allows L0→L1 and L2→L3 merges to happen simultaneously. However, two compaction jobs touching the same key range would produce conflicting outputs. RocksDB solves this by tracking which key ranges are "locked" by active compactions and only scheduling non-overlapping compaction jobs. This coordination adds complexity but dramatically improves sustained write throughput.
+With single-threaded compaction, one slow merge blocks all others — write stalls become common under high load. Multi-threaded compaction allows L0→L1 and L2→L3 merges to happen simultaneously. However, two compaction jobs touching the same key range would produce conflicting outputs. RocksDB solves this by tracking which key ranges are "locked" by active compactions and only scheduling non-overlapping compaction jobs. This coordination adds complexity but dramatically improves sustained write throughput.
 :::

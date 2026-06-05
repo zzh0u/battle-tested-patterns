@@ -46,8 +46,8 @@ Instead of immediately removing data, write a special "tombstone" record that sh
 
 | Property | Value |
 |----------|-------|
-| Delete | O(1) -- just append a tombstone marker |
-| Space reclaim | Deferred -- background compaction |
+| Delete | O(1) — just append a tombstone marker |
+| Space reclaim | Deferred — background compaction |
 | Read overhead | Must check for tombstones |
 | Consistency | Tombstone must propagate to all replicas before removal |
 
@@ -330,24 +330,24 @@ Exercise files: Rust `exercises/rust/src/tombstone.rs` · Go `exercises/go/tombs
 
 ## When to Use
 
-- **LSM-tree storage engines** -- LevelDB, RocksDB, Cassandra append tombstones; compaction cleans up
-- **Distributed databases** -- tombstones propagate deletion intent across replicas before physical removal
-- **Soft delete in applications** -- mark records as deleted but keep audit trail; purge after retention period
-- **Immutable/append-only logs** -- cannot modify existing entries, so deletion requires a shadow record
-- **Concurrent data structures** -- mark nodes deleted to avoid unsafe pointer manipulation during concurrent reads
+- **LSM-tree storage engines** — LevelDB, RocksDB, Cassandra append tombstones; compaction cleans up
+- **Distributed databases** — tombstones propagate deletion intent across replicas before physical removal
+- **Soft delete in applications** — mark records as deleted but keep audit trail; purge after retention period
+- **Immutable/append-only logs** — cannot modify existing entries, so deletion requires a shadow record
+- **Concurrent data structures** — mark nodes deleted to avoid unsafe pointer manipulation during concurrent reads
 
 ## When NOT to Use
 
-- **Mutable in-place storage** -- if you can directly remove the entry (hash table, mutable array), just remove it
-- **Memory-constrained systems** -- tombstones consume space until compaction; if space is tight, immediate deletion is better
-- **No background processing** -- compaction requires a background thread/process; if unavailable, tombstones accumulate forever
+- **Mutable in-place storage** — if you can directly remove the entry (hash table, mutable array), just remove it
+- **Memory-constrained systems** — tombstones consume space until compaction; if space is tight, immediate deletion is better
+- **No background processing** — compaction requires a background thread/process; if unavailable, tombstones accumulate forever
 
 ## More Production Uses
 
-- [RocksDB](https://github.com/facebook/rocksdb) -- `kTypeDeletion` and `kTypeSingleDeletion` tombstones with configurable compaction triggers
-- [Apache HBase](https://github.com/apache/hbase) -- delete markers propagate to all store files during major compaction
-- [CockroachDB](https://github.com/cockroachdb/cockroach) -- MVCC tombstones for range deletions, GC-ed by background job
-- [Elasticsearch](https://github.com/elastic/elasticsearch) -- soft-deleted docs marked with `_deleted` flag, purged on segment merge
+- [RocksDB](https://github.com/facebook/rocksdb) — `kTypeDeletion` and `kTypeSingleDeletion` tombstones with configurable compaction triggers
+- [Apache HBase](https://github.com/apache/hbase) — delete markers propagate to all store files during major compaction
+- [CockroachDB](https://github.com/cockroachdb/cockroach) — MVCC tombstones for range deletions, GC-ed by background job
+- [Elasticsearch](https://github.com/elastic/elasticsearch) — soft-deleted docs marked with `_deleted` flag, purged on segment merge
 
 ## Related Patterns
 
@@ -372,7 +372,7 @@ Fix: Run `nodetool repair` before gc_grace_seconds expires, or increase gc_grace
 ::: details Q2: Your LSM-tree database has a "tombstone accumulation" problem — reads are getting slower. Why?
 **Answer:** Tombstones must be checked during reads.
 
-When you read a key, the database must scan from the newest SSTable to the oldest. If it finds a tombstone, it knows the key is deleted -- but it still had to read through all the levels to find it. Worse, range scans must check every tombstone in the range to filter deleted keys.
+When you read a key, the database must scan from the newest SSTable to the oldest. If it finds a tombstone, it knows the key is deleted — but it still had to read through all the levels to find it. Worse, range scans must check every tombstone in the range to filter deleted keys.
 
 If compaction falls behind or the delete rate is high, tombstones pile up across levels. Solutions: trigger compaction more aggressively on tombstone-heavy SSTables, or use "single delete" (RocksDB) which cancels exactly one put, avoiding tombstone persistence.
 :::
@@ -382,11 +382,11 @@ If compaction falls behind or the delete rate is high, tombstones pile up across
 
 Even if all currently-live replicas acknowledge the deletion, a temporarily-offline replica might still hold the original data. When it comes back, it would re-introduce the data. The tombstone must persist long enough to "win" conflict resolution against stale data from any replica that was down.
 
-This is why Cassandra uses `gc_grace_seconds` -- it's the maximum expected time for a node to be offline. The tombstone lives at least that long to guarantee it outlives any stale replica.
+This is why Cassandra uses `gc_grace_seconds` — it's the maximum expected time for a node to be offline. The tombstone lives at least that long to guarantee it outlives any stale replica.
 :::
 
 ::: details Q4: Your application performs a bulk delete of 10 million rows using tombstones. Immediately after, a range scan over the deleted range takes 30 seconds instead of the expected 0 seconds. Explain why the range scan isn't instant, even though all rows are "deleted."
 **Answer:** The tombstones themselves are data that must be read and evaluated during the scan.
 
-A range scan doesn't know which keys are deleted until it reads each entry and checks for the tombstone marker. With 10 million tombstones, the scan reads 10 million entries, evaluates each one, and returns zero results. This is the "tombstone scan" problem -- the work is proportional to the number of tombstones, not the number of live results. Solutions include: range tombstones (RocksDB's `DeleteRange` marks an entire key range deleted with a single marker instead of per-key tombstones), immediate compaction of the affected range, or using a separate index that tracks only live keys.
+A range scan doesn't know which keys are deleted until it reads each entry and checks for the tombstone marker. With 10 million tombstones, the scan reads 10 million entries, evaluates each one, and returns zero results. This is the "tombstone scan" problem — the work is proportional to the number of tombstones, not the number of live results. Solutions include: range tombstones (RocksDB's `DeleteRange` marks an entire key range deleted with a single marker instead of per-key tombstones), immediate compaction of the affected range, or using a separate index that tracks only live keys.
 :::

@@ -19,7 +19,7 @@ A library's card catalog with multiple levels. The top drawer says 'A-M' and 'N-
 
 ## Core Idea
 
-A B+ tree separates routing from storage. Internal nodes hold only keys and child pointers to guide searches down the tree. Leaf nodes hold actual key-value pairs and are linked together, enabling efficient sequential scans. The high branching factor (hundreds of keys per node) keeps the tree shallow -- typically 3-4 levels for billions of records -- minimizing disk I/O.
+A B+ tree separates routing from storage. Internal nodes hold only keys and child pointers to guide searches down the tree. Leaf nodes hold actual key-value pairs and are linked together, enabling efficient sequential scans. The high branching factor (hundreds of keys per node) keeps the tree shallow — typically 3-4 levels for billions of records — minimizing disk I/O.
 
 ```text
                     ┌──────────────┐
@@ -42,9 +42,9 @@ A B+ tree separates routing from storage. Internal nodes hold only keys and chil
 
 | Property | Value |
 |----------|-------|
-| Search | O(log_B n) -- B = branching factor |
-| Insert | O(log_B n) -- may split nodes |
-| Range scan | O(log_B n + k) -- k = result count |
+| Search | O(log_B n) — B = branching factor |
+| Insert | O(log_B n) — may split nodes |
+| Range scan | O(log_B n + k) — k = result count |
 | Space | O(n) |
 | Fan-out | Typically 100-1000 keys per node |
 
@@ -509,25 +509,25 @@ Exercise files: Rust `exercises/rust/src/b_plus_tree.rs` · Go `exercises/go/b_p
 
 ## When to Use
 
-- **Database indexes** -- every RDBMS uses B+ trees for primary and secondary indexes
-- **File systems** -- NTFS, ext4, Btrfs store directory entries and metadata in B+ trees
-- **Range queries needed** -- linked leaves enable efficient `WHERE x BETWEEN a AND b`
-- **Disk-backed storage** -- high fan-out minimizes disk seeks (3-4 levels for billions of rows)
-- **Ordered iteration** -- leaf chain provides sorted traversal without tree walk
+- **Database indexes** — every RDBMS uses B+ trees for primary and secondary indexes
+- **File systems** — NTFS, ext4, Btrfs store directory entries and metadata in B+ trees
+- **Range queries needed** — linked leaves enable efficient `WHERE x BETWEEN a AND b`
+- **Disk-backed storage** — high fan-out minimizes disk seeks (3-4 levels for billions of rows)
+- **Ordered iteration** — leaf chain provides sorted traversal without tree walk
 
 ## When NOT to Use
 
-- **In-memory only with small data** -- a hash map or balanced BST is simpler and faster
-- **Write-heavy with no reads** -- LSM trees (LevelDB, RocksDB) batch writes more efficiently
-- **Point lookups only** -- hash indexes are O(1) vs O(log n); skip the tree overhead
-- **Append-only workloads** -- random inserts cause page splits; log-structured storage avoids this
+- **In-memory only with small data** — a hash map or balanced BST is simpler and faster
+- **Write-heavy with no reads** — LSM trees (LevelDB, RocksDB) batch writes more efficiently
+- **Point lookups only** — hash indexes are O(1) vs O(log n); skip the tree overhead
+- **Append-only workloads** — random inserts cause page splits; log-structured storage avoids this
 
 ## More Production Uses
 
-- [InnoDB (MySQL)](https://github.com/mysql/mysql-server) -- clustered index is a B+ tree; secondary indexes point back to it
-- [MongoDB WiredTiger](https://github.com/mongodb/mongo) -- WiredTiger storage engine uses B+ trees for indexes
-- [LMDB](https://github.com/LMDB/lmdb) -- copy-on-write B+ tree for crash-safe memory-mapped storage
-- [Btrfs](https://github.com/torvalds/linux) -- Linux filesystem built entirely on B-trees / B+ trees
+- [InnoDB (MySQL)](https://github.com/mysql/mysql-server) — clustered index is a B+ tree; secondary indexes point back to it
+- [MongoDB WiredTiger](https://github.com/mongodb/mongo) — WiredTiger storage engine uses B+ trees for indexes
+- [LMDB](https://github.com/LMDB/lmdb) — copy-on-write B+ tree for crash-safe memory-mapped storage
+- [Btrfs](https://github.com/torvalds/linux) — Linux filesystem built entirely on B-trees / B+ trees
 
 ## Related Patterns
 
@@ -561,7 +561,7 @@ The tradeoff: exact-match lookups always go to leaf level in a B+ tree (never sh
 ::: details Q3: PostgreSQL uses a "B-link tree" instead of a standard B+ tree. What problem does the right-link solve?
 **Answer:** Concurrent access without global locks.
 
-In a standard B+ tree, a split requires locking the parent to insert the new child pointer. This can cascade up to the root, creating a bottleneck. Lehman and Yao's B-link tree adds a right-link pointer between siblings at every level. A reader that lands on a node mid-split can follow the right-link to find the new sibling. Writers only need to lock the node being split and its right neighbor -- no parent lock needed at split time.
+In a standard B+ tree, a split requires locking the parent to insert the new child pointer. This can cascade up to the root, creating a bottleneck. Lehman and Yao's B-link tree adds a right-link pointer between siblings at every level. A reader that lands on a node mid-split can follow the right-link to find the new sibling. Writers only need to lock the node being split and its right neighbor — no parent lock needed at split time.
 
 This is why PostgreSQL can handle concurrent index insertions without locking the entire tree.
 :::
@@ -569,5 +569,5 @@ This is why PostgreSQL can handle concurrent index insertions without locking th
 ::: details Q4: Your B+ tree index works well for `SELECT * FROM orders WHERE price BETWEEN 10 AND 50`, but `SELECT * FROM orders WHERE status = 'pending' AND region = 'US'` is slow despite having a composite index on (status, region). What happened?
 **Answer:** The query likely isn't using the index's leftmost prefix, or the column order in the composite index doesn't match the query pattern.
 
-A B+ tree composite index on (status, region) stores entries sorted first by status, then by region within each status. This index handles `WHERE status = 'pending'` and `WHERE status = 'pending' AND region = 'US'` efficiently. But if the query filters on `region` alone without `status`, the B+ tree can't skip to the right leaf -- it must scan the entire index. This is the "leftmost prefix" rule: a composite B+ tree index is only useful for queries that filter on a prefix of the indexed columns in order. For multi-column filtering on arbitrary combinations, consider separate indexes or a different indexing strategy.
+A B+ tree composite index on (status, region) stores entries sorted first by status, then by region within each status. This index handles `WHERE status = 'pending'` and `WHERE status = 'pending' AND region = 'US'` efficiently. But if the query filters on `region` alone without `status`, the B+ tree can't skip to the right leaf — it must scan the entire index. This is the "leftmost prefix" rule: a composite B+ tree index is only useful for queries that filter on a prefix of the indexed columns in order. For multi-column filtering on arbitrary combinations, consider separate indexes or a different indexing strategy.
 :::

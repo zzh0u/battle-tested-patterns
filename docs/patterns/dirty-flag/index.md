@@ -47,10 +47,10 @@ The dirty flag pattern avoids redundant computation by tracking whether derived 
 
 | Property | Value |
 |----------|-------|
-| Mutation cost | O(1) -- just set a boolean flag |
-| Read cost (clean) | O(1) -- return cached value |
-| Read cost (dirty) | O(recompute) -- compute + cache + clear flag |
-| Space | O(1) per tracked value -- one boolean flag |
+| Mutation cost | O(1) — just set a boolean flag |
+| Read cost (clean) | O(1) — return cached value |
+| Read cost (dirty) | O(recompute) — compute + cache + clear flag |
+| Space | O(1) per tracked value — one boolean flag |
 
 **Try it yourself** — move entities to mark them dirty, then recompute to see optimization savings:
 
@@ -60,7 +60,7 @@ The dirty flag pattern avoids redundant computation by tracking whether derived 
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Chromium/Blink | [layout_object.h#L1425-L1430](https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/core/layout/layout_object.h#L1425-L1430) | `NeedsLayout()` returns whether the layout object's geometry is dirty. When CSS properties change, `SetNeedsLayout()` marks the node and ancestors dirty. Layout computation only happens during the next layout pass -- not on every style change. This batches hundreds of DOM mutations into a single layout computation. |
+| Chromium/Blink | [layout_object.h#L1425-L1430](https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/core/layout/layout_object.h#L1425-L1430) | `NeedsLayout()` returns whether the layout object's geometry is dirty. When CSS properties change, `SetNeedsLayout()` marks the node and ancestors dirty. Layout computation only happens during the next layout pass — not on every style change. This batches hundreds of DOM mutations into a single layout computation. |
 | React | [ReactFiberFlags.js#L18-L22](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactFiberFlags.js#L18-L22) | Fiber flags like `Placement`, `Update`, `Deletion` are dirty flags on fiber nodes. When state changes, fibers are marked with flags. The commit phase only processes fibers with non-zero flags, skipping unchanged subtrees entirely. |
 
 ## Implementation
@@ -237,24 +237,24 @@ Exercise files: Rust `exercises/rust/src/dirty_flag.rs` · Go `exercises/go/dirt
 
 ## When to Use
 
-- **UI layout engines** -- mark nodes dirty on style change, batch layout computation
-- **Game scene graphs** -- dirty world transforms cascade from parent to children; recompute only when rendered
-- **Spreadsheet cells** -- mark dependent cells dirty on input change, recompute on display
-- **Build systems** -- mark targets dirty when source files change, rebuild only what's needed
-- **Derived state caching** -- any computed property that's expensive and read less often than its inputs change
+- **UI layout engines** — mark nodes dirty on style change, batch layout computation
+- **Game scene graphs** — dirty world transforms cascade from parent to children; recompute only when rendered
+- **Spreadsheet cells** — mark dependent cells dirty on input change, recompute on display
+- **Build systems** — mark targets dirty when source files change, rebuild only what's needed
+- **Derived state caching** — any computed property that's expensive and read less often than its inputs change
 
 ## When NOT to Use
 
-- **Recomputation is cheap** -- if the computation takes nanoseconds, the flag check adds overhead for no benefit
-- **Every mutation requires the result** -- if you always read after every write, you're just adding a flag check to every operation
-- **Concurrency without synchronization** -- dirty flags are inherently mutable shared state; concurrent reads and writes need locks or atomics
+- **Recomputation is cheap** — if the computation takes nanoseconds, the flag check adds overhead for no benefit
+- **Every mutation requires the result** — if you always read after every write, you're just adding a flag check to every operation
+- **Concurrency without synchronization** — dirty flags are inherently mutable shared state; concurrent reads and writes need locks or atomics
 
 ## More Production Uses
 
-- [Unity Engine](https://github.com/Unity-Technologies/UnityCsReference) -- `Transform.hasChanged` flag defers world matrix recomputation
+- [Unity Engine](https://github.com/Unity-Technologies/UnityCsReference) — `Transform.hasChanged` flag defers world matrix recomputation
 - [Qt Framework](https://github.com/qt/qtbase/blob/dev/src/widgets/kernel/qwidget.cpp) — `QWidget::update()` marks regions dirty; painting happens in the next event loop iteration
-- [Make](https://www.gnu.org/software/make/) -- file modification times as dirty flags; only rebuild targets newer than sources
-- [Excel/Google Sheets](https://support.google.com) -- cell dependency graph with dirty propagation; only recalculates changed subgraph
+- [Make](https://www.gnu.org/software/make/) — file modification times as dirty flags; only rebuild targets newer than sources
+- [Excel/Google Sheets](https://support.google.com) — cell dependency graph with dirty propagation; only recalculates changed subgraph
 
 ## Related Patterns
 
@@ -270,7 +270,7 @@ Exercise files: Rust `exercises/rust/src/dirty_flag.rs` · Go `exercises/go/dirt
 ::: details Q1: A scene graph has 1000 nodes. The root moves, making all descendants dirty. But only 3 nodes are actually rendered this frame. How many recomputations happen?
 **Answer:** 3 recomputations (plus ancestors of each rendered node).
 
-Setting 1000 nodes dirty costs O(1000) -- just flipping booleans. But recomputation only happens when `getWorldPosition()` is called on a node. Only the 3 rendered nodes trigger recomputation, and each walks up to the root to compute its chain. If the 3 nodes share ancestors, those ancestors are recomputed once and cached (flag cleared).
+Setting 1000 nodes dirty costs O(1000) — just flipping booleans. But recomputation only happens when `getWorldPosition()` is called on a node. Only the 3 rendered nodes trigger recomputation, and each walks up to the root to compute its chain. If the 3 nodes share ancestors, those ancestors are recomputed once and cached (flag cleared).
 
 This is the key insight: dirty-flag cost is proportional to nodes **read**, not nodes **dirtied**.
 :::
@@ -278,9 +278,9 @@ This is the key insight: dirty-flag cost is proportional to nodes **read**, not 
 ::: details Q2: React marks fiber nodes with flags like Placement|Update. Why use bitmask flags instead of a simple boolean dirty flag?
 **Answer:** Multiple orthogonal kinds of "dirty."
 
-A fiber node can need a placement (new DOM node), an update (changed props), a deletion, a ref update, or a layout effect -- all independently. A single boolean can only say "something changed." Bitmask flags encode **what** changed, so the commit phase can process each kind of work separately without re-examining the fiber.
+A fiber node can need a placement (new DOM node), an update (changed props), a deletion, a ref update, or a layout effect — all independently. A single boolean can only say "something changed." Bitmask flags encode **what** changed, so the commit phase can process each kind of work separately without re-examining the fiber.
 
-This is a combination of the Dirty Flag pattern and the Bitmask pattern -- each bit is an independent dirty flag for a specific concern.
+This is a combination of the Dirty Flag pattern and the Bitmask pattern — each bit is an independent dirty flag for a specific concern.
 :::
 
 ::: details Q3: Your dirty-flag cache has a bug: `get()` returns stale data. The flag is set correctly. What's wrong?
@@ -292,11 +292,11 @@ Common causes:
 2. The compute function reads from a cached/memoized source that is itself stale.
 3. The dirty flag is cleared before the computation finishes (async compute).
 
-Fix: ensure the compute function reads current values at call time, not captured values from registration time. In React, this is why `useMemo` takes a dependency array -- it creates a new compute function when dependencies change.
+Fix: ensure the compute function reads current values at call time, not captured values from registration time. In React, this is why `useMemo` takes a dependency array — it creates a new compute function when dependencies change.
 :::
 
 ::: details Q4: Your build system uses file modification timestamps as dirty flags. A developer checks out an old branch, which resets file timestamps to "now." The build system sees all files as "dirty" and triggers a full rebuild. How would you fix this?
 **Answer:** Use content hashes instead of (or in addition to) timestamps as the dirty flag.
 
-Timestamps are cheap to check but semantically fragile -- they track *when* a file changed, not *whether* it actually changed. Git checkout, file copy, CI artifact extraction, and clock skew all produce misleading timestamps. Content-based dirty flags (e.g., SHA-256 of the file) are immune to these problems: if the hash matches, the file hasn't changed, regardless of its timestamp. This is why Bazel and Buck use content hashing over timestamps. The tradeoff is that computing a hash is more expensive than `stat()`, but for build systems the cost of unnecessary recompilation far exceeds the cost of hashing.
+Timestamps are cheap to check but semantically fragile — they track *when* a file changed, not *whether* it actually changed. Git checkout, file copy, CI artifact extraction, and clock skew all produce misleading timestamps. Content-based dirty flags (e.g., SHA-256 of the file) are immune to these problems: if the hash matches, the file hasn't changed, regardless of its timestamp. This is why Bazel and Buck use content hashing over timestamps. The tradeoff is that computing a hash is more expensive than `stat()`, but for build systems the cost of unnecessary recompilation far exceeds the cost of hashing.
 :::

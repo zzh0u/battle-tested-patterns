@@ -38,8 +38,8 @@ difficulty: "advanced"
 
 | 属性 | 值 |
 |------|------|
-| 递增 | O(1) -- counter++ |
-| 接收 | O(1) -- max + 1 |
+| 递增 | O(1) — counter++ |
+| 接收 | O(1) — max + 1 |
 | 保证 | 若 A → B（因果），则 clock(A) < clock(B) |
 | 局限 | 反之不成立：clock(A) < clock(B) 不意味着 A → B |
 
@@ -194,24 +194,24 @@ impl LamportClock {
 
 ## 何时使用
 
-- **数据库修订追踪** -- etcd、CockroachDB 和 Spanner 使用单调修订号实现一致性快照和 watch API
-- **缓存失效** -- 基于 epoch 的失效："如果你缓存的 epoch < 当前 epoch，你的数据已过期"
-- **分布式事件排序** -- 在没有同步时钟的节点间排序消息（消息队列、事件溯源）
-- **MVCC（多版本并发控制）** -- 每个事务获得一个序列号；读者看到某个时间点的一致快照
-- **乐观并发** -- "仅当版本匹配时更新这行"（使用逻辑时间戳的 compare-and-swap）
+- **数据库修订追踪** — etcd、CockroachDB 和 Spanner 使用单调修订号实现一致性快照和 watch API
+- **缓存失效** — 基于 epoch 的失效："如果你缓存的 epoch < 当前 epoch，你的数据已过期"
+- **分布式事件排序** — 在没有同步时钟的节点间排序消息（消息队列、事件溯源）
+- **MVCC（多版本并发控制）** — 每个事务获得一个序列号；读者看到某个时间点的一致快照
+- **乐观并发** — "仅当版本匹配时更新这行"（使用逻辑时间戳的 compare-and-swap）
 
 ## 何时不用
 
-- **需要物理时间** -- 如果需要"这发生在下午 2:30"这样面向用户的时间戳，逻辑时钟只给你排序而非真实时间。使用混合逻辑时钟（HLC）或 TrueTime。
-- **检测并发事件** -- Lamport 时钟在 `clock(A) < clock(B)` 时无法判断两个事件是并发的还是因果相关的。你需要向量时钟。
-- **单进程顺序代码** -- 如果一切在单线程无分布的环境运行，简单的计数器或数组索引就够了。Lamport 机制只增加无意义的复杂性。
+- **需要物理时间** — 如果需要"这发生在下午 2:30"这样面向用户的时间戳，逻辑时钟只给你排序而非真实时间。使用混合逻辑时钟（HLC）或 TrueTime。
+- **检测并发事件** — Lamport 时钟在 `clock(A) < clock(B)` 时无法判断两个事件是并发的还是因果相关的。你需要向量时钟。
+- **单进程顺序代码** — 如果一切在单线程无分布的环境运行，简单的计数器或数组索引就够了。Lamport 机制只增加无意义的复杂性。
 
 ## 更多生产案例
 
-- [CockroachDB](https://github.com/cockroachdb/cockroach) -- 混合逻辑时钟（HLC），结合物理时钟 + 逻辑计数器实现可序列化事务
-- [Amazon DynamoDB](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf) -- 向量时钟用于跨副本冲突检测
-- [Kafka](https://github.com/apache/kafka) -- 偏移量作为分区日志中的单调逻辑位置
-- [Raft 共识](https://github.com/etcd-io/raft) -- `term` 是逻辑 epoch；更高的 term 赢得选举
+- [CockroachDB](https://github.com/cockroachdb/cockroach) — 混合逻辑时钟（HLC），结合物理时钟 + 逻辑计数器实现可序列化事务
+- [Amazon DynamoDB](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf) — 向量时钟用于跨副本冲突检测
+- [Kafka](https://github.com/apache/kafka) — 偏移量作为分区日志中的单调逻辑位置
+- [Raft 共识](https://github.com/etcd-io/raft) — `term` 是逻辑 epoch；更高的 term 赢得选举
 
 ## 相关模式
 

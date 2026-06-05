@@ -19,7 +19,7 @@ Numbering messages in a group chat where everyone is in different time zones. In
 
 ## Core Idea
 
-Wall clocks are unreliable in distributed systems -- they drift, jump on NTP sync, and differ across machines. A logical clock is a simple integer that only goes up. Lamport's rule: increment on local event, take `max(local, remote) + 1` on message receive. This guarantees: if event A causally precedes event B, then `clock(A) < clock(B)`.
+Wall clocks are unreliable in distributed systems — they drift, jump on NTP sync, and differ across machines. A logical clock is a simple integer that only goes up. Lamport's rule: increment on local event, take `max(local, remote) + 1` on message receive. This guarantees: if event A causally precedes event B, then `clock(A) < clock(B)`.
 
 ```text
   Process P1          Process P2
@@ -38,8 +38,8 @@ Wall clocks are unreliable in distributed systems -- they drift, jump on NTP syn
 
 | Property | Value |
 |----------|-------|
-| Increment | O(1) -- counter++ |
-| Receive | O(1) -- max + 1 |
+| Increment | O(1) — counter++ |
+| Receive | O(1) — max + 1 |
 | Guarantees | If A → B (causally), then clock(A) < clock(B) |
 | Limitation | Converse is NOT true: clock(A) < clock(B) does not imply A → B |
 
@@ -51,7 +51,7 @@ Wall clocks are unreliable in distributed systems -- they drift, jump on NTP syn
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| etcd | [kvstore.go#L53-L72](https://github.com/etcd-io/etcd/blob/main/server/storage/mvcc/kvstore.go#L53-L72) | `store` struct (L53) with `currentRev int64` (L72) -- a monotonic revision counter. Incremented in [kvstore_txn.go#L214](https://github.com/etcd-io/etcd/blob/main/server/storage/mvcc/kvstore_txn.go#L214) (`tw.s.currentRev++`) on every write transaction. Watches and snapshots use this revision for consistent reads -- "give me everything after revision 42." |
+| etcd | [kvstore.go#L53-L72](https://github.com/etcd-io/etcd/blob/main/server/storage/mvcc/kvstore.go#L53-L72) | `store` struct (L53) with `currentRev int64` (L72) — a monotonic revision counter. Incremented in [kvstore_txn.go#L214](https://github.com/etcd-io/etcd/blob/main/server/storage/mvcc/kvstore_txn.go#L214) (`tw.s.currentRev++`) on every write transaction. Watches and snapshots use this revision for consistent reads — "give me everything after revision 42." |
 | LevelDB | [dbformat.h#L62-L66](https://github.com/google/leveldb/blob/main/db/dbformat.h#L62-L66) | `SequenceNumber` (L62) is a `uint64_t` incremented on every write operation. `kMaxSequenceNumber` (L66) reserves 8 bits for packing type info alongside the sequence. Used to order writes in the WAL, determine snapshot visibility, and resolve key conflicts during compaction. |
 
 ## Implementation
@@ -194,24 +194,24 @@ Exercise files: Rust `exercises/rust/src/logical_clock.rs` · Go `exercises/go/l
 
 ## When to Use
 
-- **Database revision tracking** -- etcd, CockroachDB, and Spanner use monotonic revisions for consistent snapshots and watch APIs
-- **Cache invalidation** -- epoch-based invalidation: "if your cached epoch < current epoch, your data is stale"
-- **Distributed event ordering** -- ordering messages across nodes without synchronized clocks (message queues, event sourcing)
-- **MVCC (multi-version concurrency control)** -- each transaction gets a sequence number; readers see a consistent snapshot at a point-in-time
-- **Optimistic concurrency** -- "update this row only if the version matches" (compare-and-swap with logical timestamps)
+- **Database revision tracking** — etcd, CockroachDB, and Spanner use monotonic revisions for consistent snapshots and watch APIs
+- **Cache invalidation** — epoch-based invalidation: "if your cached epoch < current epoch, your data is stale"
+- **Distributed event ordering** — ordering messages across nodes without synchronized clocks (message queues, event sourcing)
+- **MVCC (multi-version concurrency control)** — each transaction gets a sequence number; readers see a consistent snapshot at a point-in-time
+- **Optimistic concurrency** — "update this row only if the version matches" (compare-and-swap with logical timestamps)
 
 ## When NOT to Use
 
-- **Wall-clock time is needed** -- if you need "this happened at 2:30 PM" for user-facing timestamps, a logical clock gives you ordering but not real time. Use Hybrid Logical Clocks (HLC) or TrueTime.
-- **Detecting concurrent events** -- a Lamport clock cannot determine if two events are concurrent or causally related when `clock(A) < clock(B)`. You need vector clocks for that.
-- **Single-process sequential code** -- if everything runs in one thread with no distribution, a simple counter or array index suffices. The Lamport machinery adds nothing.
+- **Wall-clock time is needed** — if you need "this happened at 2:30 PM" for user-facing timestamps, a logical clock gives you ordering but not real time. Use Hybrid Logical Clocks (HLC) or TrueTime.
+- **Detecting concurrent events** — a Lamport clock cannot determine if two events are concurrent or causally related when `clock(A) < clock(B)`. You need vector clocks for that.
+- **Single-process sequential code** — if everything runs in one thread with no distribution, a simple counter or array index suffices. The Lamport machinery adds nothing.
 
 ## More Production Uses
 
-- [CockroachDB](https://github.com/cockroachdb/cockroach) -- Hybrid Logical Clock (HLC) combining wall clock + logical counter for serializable transactions
-- [Amazon DynamoDB](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf) -- vector clocks for conflict detection across replicas
-- [Kafka](https://github.com/apache/kafka) -- offsets as monotonic logical positions in a partition log
-- [Raft consensus](https://github.com/etcd-io/raft) -- `term` is a logical epoch; higher term wins leader election
+- [CockroachDB](https://github.com/cockroachdb/cockroach) — Hybrid Logical Clock (HLC) combining wall clock + logical counter for serializable transactions
+- [Amazon DynamoDB](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf) — vector clocks for conflict detection across replicas
+- [Kafka](https://github.com/apache/kafka) — offsets as monotonic logical positions in a partition log
+- [Raft consensus](https://github.com/etcd-io/raft) — `term` is a logical epoch; higher term wins leader election
 
 ## Related Patterns
 
@@ -226,11 +226,11 @@ Exercise files: Rust `exercises/rust/src/logical_clock.rs` · Go `exercises/go/l
 ::: details Q1: Process A has Lamport clock 5, Process B has clock 3. Can you determine which event happened first?
 **Answer:** No. Lamport clocks only guarantee: if A causally precedes B, then `clock(A) < clock(B)`. The converse is NOT guaranteed.
 
-`clock(A) = 5 > clock(B) = 3` does NOT mean A happened after B. They could be concurrent events on different machines that never communicated. To detect concurrency, you need a **vector clock** -- one counter per node, with component-wise comparison.
+`clock(A) = 5 > clock(B) = 3` does NOT mean A happened after B. They could be concurrent events on different machines that never communicated. To detect concurrency, you need a **vector clock** — one counter per node, with component-wise comparison.
 :::
 
 ::: details Q2: How does a Hybrid Logical Clock (HLC) improve on a pure Lamport clock?
-**Answer:** An HLC combines a physical timestamp (wall clock) with a logical counter. The physical part gives you real-time proximity -- "this happened around 2:30 PM." The logical part breaks ties and maintains the Lamport guarantee.
+**Answer:** An HLC combines a physical timestamp (wall clock) with a logical counter. The physical part gives you real-time proximity — "this happened around 2:30 PM." The logical part breaks ties and maintains the Lamport guarantee.
 
 Rule: `hlc = max(local_wall_clock, local_hlc, remote_hlc)`. If the wall clock advances, the logical part resets. If the wall clock is behind (NTP hasn't caught up), the logical part increments.
 
@@ -244,7 +244,7 @@ Solutions: (1) persist the epoch to disk and restore on restart, (2) use a combi
 :::
 
 ::: details Q4: You're building an event sourcing system. Should you use Lamport clocks or sequence numbers as event IDs?
-**Answer:** Sequence numbers are better for a single-writer event store. A Lamport clock adds unnecessary complexity when there's only one source of events -- a simple auto-incrementing integer is a perfectly valid logical clock.
+**Answer:** Sequence numbers are better for a single-writer event store. A Lamport clock adds unnecessary complexity when there's only one source of events — a simple auto-incrementing integer is a perfectly valid logical clock.
 
 Lamport clocks shine when multiple independent writers exist (distributed systems). For single-writer: use a sequence number. For multi-writer with one coordinating node: use a centralized sequence (like Kafka partition offsets). For truly distributed multi-writer: use Lamport or vector clocks. Match the tool to the distribution model.
 :::

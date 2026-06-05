@@ -230,23 +230,23 @@ Exercise files: Rust `exercises/rust/src/event_loop.rs` · Go `exercises/go/even
 
 ## When to Use
 
-- **High-connection servers** -- web servers, chat servers, API gateways where thousands of connections are mostly idle (waiting for I/O)
-- **I/O-bound workloads** -- network proxies, load balancers, database connection pools where CPU work per request is minimal
-- **Real-time communication** -- WebSocket servers, game servers, notification systems where low latency per-message matters more than throughput
-- **Embedded/resource-constrained** -- when you can't afford the memory overhead of one thread per connection (each thread = 1-8 MB stack)
+- **High-connection servers** — web servers, chat servers, API gateways where thousands of connections are mostly idle (waiting for I/O)
+- **I/O-bound workloads** — network proxies, load balancers, database connection pools where CPU work per request is minimal
+- **Real-time communication** — WebSocket servers, game servers, notification systems where low latency per-message matters more than throughput
+- **Embedded/resource-constrained** — when you can't afford the memory overhead of one thread per connection (each thread = 1-8 MB stack)
 
 ## When NOT to Use
 
-- **CPU-bound work** -- a single-threaded event loop blocks on computation. If you need to hash passwords, resize images, or run ML inference, use thread pools or worker processes alongside the event loop.
-- **Simple request-response** -- if you have < 100 concurrent connections and each request is straightforward, threads-per-request is simpler and debuggable. The event loop adds complexity (callback management, state machines) without benefit.
-- **Strict ordering requirements** -- when events must be processed in exact arrival order with no interleaving, a simple sequential loop or queue consumer is clearer.
+- **CPU-bound work** — a single-threaded event loop blocks on computation. If you need to hash passwords, resize images, or run ML inference, use thread pools or worker processes alongside the event loop.
+- **Simple request-response** — if you have < 100 concurrent connections and each request is straightforward, threads-per-request is simpler and debuggable. The event loop adds complexity (callback management, state machines) without benefit.
+- **Strict ordering requirements** — when events must be processed in exact arrival order with no interleaving, a simple sequential loop or queue consumer is clearer.
 
 ## More Production Uses
 
-- [Node.js](https://github.com/nodejs/node) -- libuv-based event loop powering the entire Node.js runtime
-- [Nginx](https://github.com/nginx/nginx) -- worker processes each run an event loop with epoll/kqueue
-- [Tokio](https://github.com/tokio-rs/tokio) -- Rust async runtime built on mio (cross-platform reactor)
-- [Netty](https://github.com/netty/netty) -- Java NIO event loop for high-performance networking
+- [Node.js](https://github.com/nodejs/node) — libuv-based event loop powering the entire Node.js runtime
+- [Nginx](https://github.com/nginx/nginx) — worker processes each run an event loop with epoll/kqueue
+- [Tokio](https://github.com/tokio-rs/tokio) — Rust async runtime built on mio (cross-platform reactor)
+- [Netty](https://github.com/netty/netty) — Java NIO event loop for high-performance networking
 
 ## Related Patterns
 
@@ -263,19 +263,19 @@ Exercise files: Rust `exercises/rust/src/event_loop.rs` · Go `exercises/go/even
 ::: details Q1: Your Node.js server handles 5,000 WebSocket connections fine, but adding a single endpoint that computes a Fibonacci number blocks ALL connections. Why?
 **Answer:** The event loop is single-threaded. While computing Fibonacci (CPU-bound, synchronous), the event loop cannot process any I/O events. All 5,000 WebSocket connections are frozen until the computation completes.
 
-Solutions: (1) offload CPU work to a `worker_threads` pool, (2) break computation into chunks with `setImmediate()` to yield back to the event loop between chunks, (3) use a separate microservice for heavy computation. This is the fundamental tradeoff of the event loop model -- cooperative multitasking means one bad actor blocks everyone.
+Solutions: (1) offload CPU work to a `worker_threads` pool, (2) break computation into chunks with `setImmediate()` to yield back to the event loop between chunks, (3) use a separate microservice for heavy computation. This is the fundamental tradeoff of the event loop model — cooperative multitasking means one bad actor blocks everyone.
 :::
 
 ::: details Q2: Redis uses a single-threaded event loop for command execution (with optional I/O threads since Redis 6.0), yet it handles 100K+ operations per second. How?
-**Answer:** Redis operations are extremely fast -- most are O(1) hash table lookups or O(log N) sorted set operations that take microseconds. The event loop overhead is negligible compared to network I/O time.
+**Answer:** Redis operations are extremely fast — most are O(1) hash table lookups or O(log N) sorted set operations that take microseconds. The event loop overhead is negligible compared to network I/O time.
 
-The bottleneck is not CPU but network: reading/writing to sockets, parsing the protocol, and serializing responses. Since Redis uses non-blocking I/O via `aeProcessEvents`, it processes one command per event (read → parse → execute → write) and immediately moves to the next ready socket. There's no context switching, no lock contention, and the entire dataset fits in memory -- pure sequential throughput.
+The bottleneck is not CPU but network: reading/writing to sockets, parsing the protocol, and serializing responses. Since Redis uses non-blocking I/O via `aeProcessEvents`, it processes one command per event (read → parse → execute → write) and immediately moves to the next ready socket. There's no context switching, no lock contention, and the entire dataset fits in memory — pure sequential throughput.
 :::
 
 ::: details Q3: libuv's `uv_run` has three modes: DEFAULT, ONCE, NOWAIT. When would you use each?
 **Answer:**
 
-- **DEFAULT**: Normal operation -- run until all handles/requests are done. This is what `node app.js` uses. The process stays alive until there are no more timers, servers, or pending callbacks.
+- **DEFAULT**: Normal operation — run until all handles/requests are done. This is what `node app.js` uses. The process stays alive until there are no more timers, servers, or pending callbacks.
 - **ONCE**: Process one round of events, then return. Useful for embedding libuv in another event loop (e.g., a game engine's main loop that also needs to handle Node.js events).
 - **NOWAIT**: Like ONCE but never blocks on I/O poll. Only processes already-ready events. Useful for polling in a tight loop where blocking would cause missed frames or deadlines.
 
@@ -285,5 +285,5 @@ The key difference: DEFAULT blocks indefinitely, ONCE blocks for one iteration, 
 ::: details Q4: Why does Nginx use multiple worker processes each with its own event loop, rather than one single event loop?
 **Answer:** One event loop on one CPU core wastes the other cores. Nginx spawns N worker processes (typically one per CPU core), each running its own independent event loop.
 
-This gives you: (1) multi-core utilization without shared-state threading bugs, (2) process isolation -- one crashed worker doesn't take down others, (3) zero-downtime reload -- new workers start with new config while old workers drain. The `SO_REUSEPORT` socket option lets all workers accept connections on the same port, with the kernel load-balancing across them.
+This gives you: (1) multi-core utilization without shared-state threading bugs, (2) process isolation — one crashed worker doesn't take down others, (3) zero-downtime reload — new workers start with new config while old workers drain. The `SO_REUSEPORT` socket option lets all workers accept connections on the same port, with the kernel load-balancing across them.
 :::

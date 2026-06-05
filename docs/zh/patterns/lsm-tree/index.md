@@ -564,25 +564,25 @@ impl LSMTree {
 
 ## 何时使用
 
-- **写密集工作负载** -- 日志记录、时序数据、事件流
-- **键值存储** -- LevelDB、RocksDB、Cassandra、HBase
-- **嵌入式数据库** -- 空间高效、实现简单
-- **追加为主的数据** -- IoT 传感器数据、分析事件
-- **SSD 优化存储** -- 顺序写入最大化 SSD 寿命
+- **写密集工作负载** — 日志记录、时序数据、事件流
+- **键值存储** — LevelDB、RocksDB、Cassandra、HBase
+- **嵌入式数据库** — 空间高效、实现简单
+- **追加为主的数据** — IoT 传感器数据、分析事件
+- **SSD 优化存储** — 顺序写入最大化 SSD 寿命
 
 ## 何时不用
 
-- **读密集工作负载** -- 读取可能需要检查多个层级；快速读取请用 B+ 树
-- **小数据集** -- LSM 的开销（compaction、多文件）对于能放入 B+ 树的数据不值得
-- **有严格延迟要求的范围扫描** -- compaction 可能导致延迟尖峰
-- **频繁更新 + 点读** -- 对同一键的重复更新在 compaction 期间产生写放大
+- **读密集工作负载** — 读取可能需要检查多个层级；快速读取请用 B+ 树
+- **小数据集** — LSM 的开销（compaction、多文件）对于能放入 B+ 树的数据不值得
+- **有严格延迟要求的范围扫描** — compaction 可能导致延迟尖峰
+- **频繁更新 + 点读** — 对同一键的重复更新在 compaction 期间产生写放大
 
 ## 更多生产案例
 
-- [Apache Cassandra](https://github.com/apache/cassandra) -- 基于 LSM 的分布式 NoSQL 数据库
-- [ScyllaDB](https://github.com/scylladb/scylladb) -- 高性能 Cassandra 兼容的 LSM 存储
-- [BadgerDB](https://github.com/dgraph-io/badger) -- Go 原生的 LSM 键值存储，支持值分离
-- [SQLite LSM 扩展](https://www.sqlite.org/lsm.html) -- SQLite 的基于 LSM 的存储后端
+- [Apache Cassandra](https://github.com/apache/cassandra) — 基于 LSM 的分布式 NoSQL 数据库
+- [ScyllaDB](https://github.com/scylladb/scylladb) — 高性能 Cassandra 兼容的 LSM 存储
+- [BadgerDB](https://github.com/dgraph-io/badger) — Go 原生的 LSM 键值存储，支持值分离
+- [SQLite LSM 扩展](https://www.sqlite.org/lsm.html) — SQLite 的基于 LSM 的存储后端
 
 ## 相关模式
 

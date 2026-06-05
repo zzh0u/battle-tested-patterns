@@ -19,7 +19,7 @@ A hotel front desk. Guests check in with their name, and anyone can ask the desk
 
 ## Core Idea
 
-A registry is a central map from names (strings) to implementations (functions, classes, factories). Producers register themselves at startup -- often via decorators, macros, or init functions. Consumers look up implementations by name at runtime, eliminating compile-time coupling. This enables plugin architectures where new functionality can be added without modifying existing code.
+A registry is a central map from names (strings) to implementations (functions, classes, factories). Producers register themselves at startup — often via decorators, macros, or init functions. Consumers look up implementations by name at runtime, eliminating compile-time coupling. This enables plugin architectures where new functionality can be added without modifying existing code.
 
 ```text
   Registration (startup):
@@ -43,8 +43,8 @@ A registry is a central map from names (strings) to implementations (functions, 
 
 | Property | Value |
 |----------|-------|
-| Register | O(1) -- hash map insert |
-| Lookup | O(1) -- hash map get |
+| Register | O(1) — hash map insert |
+| Lookup | O(1) — hash map get |
 | Coupling | Zero compile-time dependency between producer and consumer |
 | Extensibility | Add new implementations without modifying existing code |
 
@@ -243,24 +243,24 @@ Exercise files: Rust `exercises/rust/src/registry.rs` · Go `exercises/go/regist
 
 ## When to Use
 
-- **Plugin systems** -- load and discover plugins by name without compile-time coupling
-- **Serialization codecs** -- register JSON, XML, Protobuf codecs; look up by content-type
-- **Command/handler dispatch** -- CLI commands, RPC methods, event handlers register themselves
-- **Test fixtures** -- register test factories by name for parameterized tests
-- **ML framework ops** -- TensorFlow, PyTorch register operators that can be composed into graphs
+- **Plugin systems** — load and discover plugins by name without compile-time coupling
+- **Serialization codecs** — register JSON, XML, Protobuf codecs; look up by content-type
+- **Command/handler dispatch** — CLI commands, RPC methods, event handlers register themselves
+- **Test fixtures** — register test factories by name for parameterized tests
+- **ML framework ops** — TensorFlow, PyTorch register operators that can be composed into graphs
 
 ## When NOT to Use
 
-- **Few fixed implementations** -- if there are only 2-3 known implementations, a switch/match is simpler
-- **Type safety is critical** -- string-based lookup loses compile-time type checking; use dependency injection or generics instead
-- **Order matters** -- registries are typically unordered; if initialization order is important, use explicit sequencing
+- **Few fixed implementations** — if there are only 2-3 known implementations, a switch/match is simpler
+- **Type safety is critical** — string-based lookup loses compile-time type checking; use dependency injection or generics instead
+- **Order matters** — registries are typically unordered; if initialization order is important, use explicit sequencing
 
 ## More Production Uses
 
-- [Terraform](https://github.com/hashicorp/terraform) -- provider registry: each cloud provider registers resource types and data sources
-- [Babel](https://github.com/babel/babel) -- plugin registry: transforms register themselves by visitor pattern name
-- [pytest](https://github.com/pytest-dev/pytest) -- fixture registry: `@pytest.fixture` registers functions discoverable by parameter name
-- [Docker](https://github.com/moby/moby) -- driver registry: storage, network, and logging drivers register at daemon startup
+- [Terraform](https://github.com/hashicorp/terraform) — provider registry: each cloud provider registers resource types and data sources
+- [Babel](https://github.com/babel/babel) — plugin registry: transforms register themselves by visitor pattern name
+- [pytest](https://github.com/pytest-dev/pytest) — fixture registry: `@pytest.fixture` registers functions discoverable by parameter name
+- [Docker](https://github.com/moby/moby) — driver registry: storage, network, and logging drivers register at daemon startup
 
 ## Related Patterns
 
@@ -276,7 +276,7 @@ Exercise files: Rust `exercises/rust/src/registry.rs` · Go `exercises/go/regist
 ::: details Q1: Two plugins both try to register the name "json". What should happen?
 **Answer:** Fail fast with an error at registration time.
 
-Silent overwrite hides bugs -- the first plugin's handler disappears without warning, causing subtle runtime failures. "Last writer wins" policies work for configuration but are dangerous for code dispatch.
+Silent overwrite hides bugs — the first plugin's handler disappears without warning, causing subtle runtime failures. "Last writer wins" policies work for configuration but are dangerous for code dispatch.
 
 The correct approach: throw/return an error on duplicate registration. If intentional replacement is needed, provide an explicit `override()` or `replace()` method that signals intent.
 :::
@@ -285,7 +285,7 @@ The correct approach: throw/return an error on duplicate registration. If intent
 **Answer:** Multiple strategies:
 
 1. **Constants**: Define keys as exported constants (`const JSON = "json"`) so the compiler catches typos.
-2. **Enums**: Use an enum type instead of raw strings -- limits the key space at compile time.
+2. **Enums**: Use an enum type instead of raw strings — limits the key space at compile time.
 3. **Registration validation**: At startup, verify all expected keys are registered before accepting traffic.
 4. **Fuzzy matching**: On lookup failure, suggest similar registered names (Levenshtein distance).
 
@@ -297,7 +297,7 @@ The best approach depends on whether the registry is open (plugins add keys) or 
 
 In C++, the order of static initialization across translation units is undefined. If op A's registration depends on op B being registered first, and they're in different .cc files, the program may crash or silently fail.
 
-TensorFlow mitigates this by making registration order-independent -- each op registers itself with no dependencies on other ops. The `OpRegistry` singleton is created on first use (Meyers' singleton), avoiding the "static initialization order fiasco" for the registry itself.
+TensorFlow mitigates this by making registration order-independent — each op registers itself with no dependencies on other ops. The `OpRegistry` singleton is created on first use (Meyers' singleton), avoiding the "static initialization order fiasco" for the registry itself.
 :::
 
 ::: details Q4: How does a registry differ from dependency injection (DI)?

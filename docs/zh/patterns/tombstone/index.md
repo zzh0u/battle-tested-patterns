@@ -46,8 +46,8 @@ difficulty: "beginner"
 
 | 属性 | 值 |
 |------|------|
-| 删除 | O(1) -- 仅追加墓碑标记 |
-| 空间回收 | 延迟 -- 后台压缩 |
+| 删除 | O(1) — 仅追加墓碑标记 |
+| 空间回收 | 延迟 — 后台压缩 |
 | 读开销 | 需要检查墓碑标记 |
 | 一致性 | 墓碑必须传播到所有副本后才能移除 |
 
@@ -330,24 +330,24 @@ impl TombstoneStore {
 
 ## 何时使用
 
-- **LSM 树存储引擎** -- LevelDB、RocksDB、Cassandra 追加墓碑；压缩负责清理
-- **分布式数据库** -- 墓碑在物理删除前将删除意图传播到所有副本
-- **应用层软删除** -- 标记记录为已删除但保留审计记录；保留期后清除
-- **不可变/仅追加日志** -- 无法修改现有条目，删除需要影子记录
-- **并发数据结构** -- 标记节点已删除以避免并发读取期间不安全的指针操作
+- **LSM 树存储引擎** — LevelDB、RocksDB、Cassandra 追加墓碑；压缩负责清理
+- **分布式数据库** — 墓碑在物理删除前将删除意图传播到所有副本
+- **应用层软删除** — 标记记录为已删除但保留审计记录；保留期后清除
+- **不可变/仅追加日志** — 无法修改现有条目，删除需要影子记录
+- **并发数据结构** — 标记节点已删除以避免并发读取期间不安全的指针操作
 
 ## 何时不用
 
-- **可原地修改的存储** -- 如果可以直接删除条目（哈希表、可变数组），直接删除即可
-- **内存受限系统** -- 墓碑在压缩前占用空间；空间紧张时立即删除更好
-- **无后台处理** -- 压缩需要后台线程/进程；如不可用，墓碑会无限积累
+- **可原地修改的存储** — 如果可以直接删除条目（哈希表、可变数组），直接删除即可
+- **内存受限系统** — 墓碑在压缩前占用空间；空间紧张时立即删除更好
+- **无后台处理** — 压缩需要后台线程/进程；如不可用，墓碑会无限积累
 
 ## 更多生产案例
 
-- [RocksDB](https://github.com/facebook/rocksdb) -- `kTypeDeletion` 和 `kTypeSingleDeletion` 墓碑，可配置压缩触发器
-- [Apache HBase](https://github.com/apache/hbase) -- 删除标记在主压缩期间传播到所有存储文件
-- [CockroachDB](https://github.com/cockroachdb/cockroach) -- 用于范围删除的 MVCC 墓碑，由后台任务 GC
-- [Elasticsearch](https://github.com/elastic/elasticsearch) -- 软删除文档用 `_deleted` 标记，段合并时清除
+- [RocksDB](https://github.com/facebook/rocksdb) — `kTypeDeletion` 和 `kTypeSingleDeletion` 墓碑，可配置压缩触发器
+- [Apache HBase](https://github.com/apache/hbase) — 删除标记在主压缩期间传播到所有存储文件
+- [CockroachDB](https://github.com/cockroachdb/cockroach) — 用于范围删除的 MVCC 墓碑，由后台任务 GC
+- [Elasticsearch](https://github.com/elastic/elasticsearch) — 软删除文档用 `_deleted` 标记，段合并时清除
 
 ## 相关模式
 

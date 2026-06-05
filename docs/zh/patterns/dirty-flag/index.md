@@ -47,10 +47,10 @@ difficulty: "beginner"
 
 | 属性 | 值 |
 |------|------|
-| 变更代价 | O(1) -- 仅设置布尔标记 |
-| 读取代价（干净） | O(1) -- 返回缓存值 |
-| 读取代价（脏） | O(recompute) -- 计算 + 缓存 + 清除标记 |
-| 空间 | 每个追踪值 O(1) -- 一个布尔标记 |
+| 变更代价 | O(1) — 仅设置布尔标记 |
+| 读取代价（干净） | O(1) — 返回缓存值 |
+| 读取代价（脏） | O(recompute) — 计算 + 缓存 + 清除标记 |
+| 空间 | 每个追踪值 O(1) — 一个布尔标记 |
 
 **动手试试** — 移动实体将其标记为脏，然后重新计算观察优化节省：
 
@@ -237,24 +237,24 @@ impl<T, F: Fn() -> T> DirtyFlag<T, F> {
 
 ## 何时使用
 
-- **UI 布局引擎** -- 样式变更时标记节点为脏，批量执行布局计算
-- **游戏场景图** -- 脏世界变换从父节点级联到子节点；仅在渲染时重计算
-- **电子表格单元格** -- 输入变化时标记依赖单元格为脏，显示时重计算
-- **构建系统** -- 源文件变化时标记目标为脏，仅重建需要的部分
-- **派生状态缓存** -- 任何计算昂贵且读取频率低于输入变化频率的计算属性
+- **UI 布局引擎** — 样式变更时标记节点为脏，批量执行布局计算
+- **游戏场景图** — 脏世界变换从父节点级联到子节点；仅在渲染时重计算
+- **电子表格单元格** — 输入变化时标记依赖单元格为脏，显示时重计算
+- **构建系统** — 源文件变化时标记目标为脏，仅重建需要的部分
+- **派生状态缓存** — 任何计算昂贵且读取频率低于输入变化频率的计算属性
 
 ## 何时不用
 
-- **重计算成本低** -- 如果计算只需纳秒级，标记检查反而增加了无益的开销
-- **每次变更都需要结果** -- 如果每次写入后都要读取，你只是在每个操作上增加了标记检查
-- **无同步的并发** -- 脏标记本质上是可变共享状态；并发读写需要锁或原子操作
+- **重计算成本低** — 如果计算只需纳秒级，标记检查反而增加了无益的开销
+- **每次变更都需要结果** — 如果每次写入后都要读取，你只是在每个操作上增加了标记检查
+- **无同步的并发** — 脏标记本质上是可变共享状态；并发读写需要锁或原子操作
 
 ## 更多生产案例
 
-- [Unity Engine](https://github.com/Unity-Technologies/UnityCsReference) -- `Transform.hasChanged` 标记延迟世界矩阵重计算
-- [Qt Framework](https://github.com/qt/qtbase/blob/dev/src/widgets/kernel/qwidget.cpp) -- `QWidget::update()` 标记区域为脏；绘制在下一次事件循环迭代中发生
-- [Make](https://www.gnu.org/software/make/) -- 文件修改时间作为脏标记；仅重建源文件更新的目标
-- [Excel/Google Sheets](https://support.google.com) -- 带脏传播的单元格依赖图；仅重计算变化的子图
+- [Unity Engine](https://github.com/Unity-Technologies/UnityCsReference) — `Transform.hasChanged` 标记延迟世界矩阵重计算
+- [Qt Framework](https://github.com/qt/qtbase/blob/dev/src/widgets/kernel/qwidget.cpp) — `QWidget::update()` 标记区域为脏；绘制在下一次事件循环迭代中发生
+- [Make](https://www.gnu.org/software/make/) — 文件修改时间作为脏标记；仅重建源文件更新的目标
+- [Excel/Google Sheets](https://support.google.com) — 带脏传播的单元格依赖图；仅重计算变化的子图
 
 ## 相关模式
 

@@ -19,7 +19,7 @@ A shared Netflix account. You keep track of how many people are actively using i
 
 ## Core Idea
 
-Reference counting assigns each shared resource a counter. Every new owner (clone) increments it; every release (drop) decrements it. When the counter reaches zero, the resource is immediately cleaned up -- no GC pause, no finalizer queue, fully deterministic.
+Reference counting assigns each shared resource a counter. Every new owner (clone) increments it; every release (drop) decrements it. When the counter reaches zero, the resource is immediately cleaned up — no GC pause, no finalizer queue, fully deterministic.
 
 ```text
   ┌────────────┐
@@ -54,9 +54,9 @@ Reference counting assigns each shared resource a counter. Every new owner (clon
 
 | Property | Value |
 |----------|-------|
-| Clone | O(1) -- increment counter |
-| Drop | O(1) -- decrement counter, conditionally cleanup |
-| Cleanup trigger | Deterministic -- exactly when last owner drops |
+| Clone | O(1) — increment counter |
+| Drop | O(1) — decrement counter, conditionally cleanup |
+| Cleanup trigger | Deterministic — exactly when last owner drops |
 | Thread safety | Requires atomic operations (or mutex) for multi-threaded use |
 
 **Try it yourself** — drop references to decrement ref counts and watch objects get freed at rc=0:
@@ -67,7 +67,7 @@ Reference counting assigns each shared resource a counter. Every new owner (clon
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| CPython | [refcount.h#L255-L310](https://github.com/python/cpython/blob/main/Include/refcount.h#L255-L310) | `Py_INCREF` (L255-L310) is the inline function that increments `ob_refcnt`. `Py_DECREF` (L417-L430) decrements and calls `_Py_Dealloc` at zero. Every Python object carries `ob_refcnt` in `PyObject` ([object.h#L127-L150](https://github.com/python/cpython/blob/main/Include/object.h#L127-L150)). This is the primary memory management mechanism -- GC only exists to break reference cycles. |
+| CPython | [refcount.h#L255-L310](https://github.com/python/cpython/blob/main/Include/refcount.h#L255-L310) | `Py_INCREF` (L255-L310) is the inline function that increments `ob_refcnt`. `Py_DECREF` (L417-L430) decrements and calls `_Py_Dealloc` at zero. Every Python object carries `ob_refcnt` in `PyObject` ([object.h#L127-L150](https://github.com/python/cpython/blob/main/Include/object.h#L127-L150)). This is the primary memory management mechanism — GC only exists to break reference cycles. |
 | Rust std | [sync.rs#L269-L276](https://github.com/rust-lang/rust/blob/master/library/alloc/src/sync.rs#L269-L276) | `Arc<T>` (Atomic Reference Counted) struct at L269. `Drop` impl (L2799-L2875) calls `fetch_sub(1, Release)` on strong count, Acquire fence, then `drop_slow()` at zero. Used pervasively across Tokio, Actix, and OS-level Rust code. |
 
 ## Implementation
@@ -269,23 +269,23 @@ Exercise files: Rust `exercises/rust/src/reference_counting.rs` · Go `exercises
 
 ## When to Use
 
-- **Shared ownership with deterministic cleanup** -- multiple parts of code need the same resource, and you need it freed the moment the last user is done (file handles, GPU buffers, database connections)
-- **Avoiding GC pauses** -- real-time systems (games, audio) where stop-the-world GC is unacceptable
-- **Interop between languages** -- CPython's refcount lets C extensions manage Python objects naturally; COM uses `AddRef`/`Release` across DLL boundaries
-- **Short-lived shared state** -- when objects are mostly owned by one place but occasionally shared briefly (Rust's `Rc`/`Arc` pattern)
+- **Shared ownership with deterministic cleanup** — multiple parts of code need the same resource, and you need it freed the moment the last user is done (file handles, GPU buffers, database connections)
+- **Avoiding GC pauses** — real-time systems (games, audio) where stop-the-world GC is unacceptable
+- **Interop between languages** — CPython's refcount lets C extensions manage Python objects naturally; COM uses `AddRef`/`Release` across DLL boundaries
+- **Short-lived shared state** — when objects are mostly owned by one place but occasionally shared briefly (Rust's `Rc`/`Arc` pattern)
 
 ## When NOT to Use
 
-- **Cyclic data structures** -- parent-child cycles (e.g., doubly linked lists, graph nodes) leak because the count never reaches zero. Use weak references or a tracing GC.
-- **High-contention sharing** -- if many threads constantly clone/drop the same object, the atomic counter becomes a cache-line bottleneck. Consider epoch-based reclamation or hazard pointers.
-- **Bulk allocation patterns** -- if you allocate/free thousands of small objects, per-object counters add overhead. Use arena allocation instead.
+- **Cyclic data structures** — parent-child cycles (e.g., doubly linked lists, graph nodes) leak because the count never reaches zero. Use weak references or a tracing GC.
+- **High-contention sharing** — if many threads constantly clone/drop the same object, the atomic counter becomes a cache-line bottleneck. Consider epoch-based reclamation or hazard pointers.
+- **Bulk allocation patterns** — if you allocate/free thousands of small objects, per-object counters add overhead. Use arena allocation instead.
 
 ## More Production Uses
 
-- [Swift ARC](https://github.com/apple/swift) -- Swift's entire memory model is built on automatic reference counting (compiler-inserted retain/release)
-- [COM IUnknown](https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown) -- `AddRef`/`Release` across every COM object in Windows
-- [Linux kernel kobject](https://github.com/torvalds/linux/blob/master/lib/kobject.c) -- `kref` provides reference counting for kernel objects
-- [Objective-C ARC](https://clang.llvm.org/docs/AutomaticReferenceCounting.html) -- compiler-managed `retain`/`release` calls
+- [Swift ARC](https://github.com/apple/swift) — Swift's entire memory model is built on automatic reference counting (compiler-inserted retain/release)
+- [COM IUnknown](https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown) — `AddRef`/`Release` across every COM object in Windows
+- [Linux kernel kobject](https://github.com/torvalds/linux/blob/master/lib/kobject.c) — `kref` provides reference counting for kernel objects
+- [Objective-C ARC](https://clang.llvm.org/docs/AutomaticReferenceCounting.html) — compiler-managed `retain`/`release` calls
 
 ## Related Patterns
 
@@ -301,7 +301,7 @@ Exercise files: Rust `exercises/rust/src/reference_counting.rs` · Go `exercises
 ::: details Q1: Object A references B, and B references A. Both have refcount 2. You drop your handle to A. What happens?
 **Answer:** Memory leak. Dropping your handle to A decrements A's refcount to 1 (B still references A). A's refcount never reaches 0, so A is never freed. Since A is never freed, it never drops its reference to B, so B's refcount stays at 1 forever.
 
-This is the **reference cycle problem** -- the fundamental weakness of reference counting. Solutions: (1) use weak references for back-pointers (Rust's `Weak<T>`, Python's `weakref`), (2) add a cycle-detecting GC on top (CPython does this), (3) redesign to avoid cycles entirely.
+This is the **reference cycle problem** — the fundamental weakness of reference counting. Solutions: (1) use weak references for back-pointers (Rust's `Weak<T>`, Python's `weakref`), (2) add a cycle-detecting GC on top (CPython does this), (3) redesign to avoid cycles entirely.
 :::
 
 ::: details Q2: CPython uses refcounting as its primary GC strategy, yet it still has a cycle collector. Why not just use refcounting alone?
@@ -311,7 +311,7 @@ CPython's cycle collector (`gc` module) periodically walks objects that *could* 
 :::
 
 ::: details Q3: Rust's `Arc` uses `fetch_add(1, Relaxed)` for Clone but `fetch_sub(1, Release)` for Drop. Why different memory orderings?
-**Answer:** Clone only needs to ensure the counter is incremented -- no data is accessed or freed, so `Relaxed` (cheapest ordering) suffices. The counter just needs to go up atomically.
+**Answer:** Clone only needs to ensure the counter is incremented — no data is accessed or freed, so `Relaxed` (cheapest ordering) suffices. The counter just needs to go up atomically.
 
 Drop is different: before freeing the resource, all previous writes by all threads must be visible. `Release` on the decrement ensures that the thread doing the final cleanup (which uses an `Acquire` fence) sees all data written by every thread that ever held a reference. Without this, the destructor might read stale data.
 
@@ -321,5 +321,5 @@ On x86 (Total Store Ordering), both `Relaxed` and `Release` RMW operations compi
 ::: details Q4: You're building a resource pool. Should you use reference counting or a finalizer/destructor?
 **Answer:** Neither alone is ideal for pools. Reference counting triggers cleanup at zero, but "cleanup" for a pooled resource should mean "return to pool," not "destroy."
 
-The correct pattern is: wrap the pool item in a ref-counted handle where the "cleanup" callback returns the item to the pool instead of freeing it. This is exactly how database connection pools work -- `Drop` on the handle returns the connection rather than closing it. The pool itself manages actual destruction (e.g., on shutdown or when connections are stale).
+The correct pattern is: wrap the pool item in a ref-counted handle where the "cleanup" callback returns the item to the pool instead of freeing it. This is exactly how database connection pools work — `Drop` on the handle returns the connection rather than closing it. The pool itself manages actual destruction (e.g., on shutdown or when connections are stale).
 :::

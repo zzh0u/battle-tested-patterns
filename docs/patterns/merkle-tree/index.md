@@ -19,7 +19,7 @@ A tamper-evident shipping seal system. Each box gets a unique wax seal. Boxes ar
 
 ## Core Idea
 
-A Merkle tree is a binary tree of hashes. Each leaf node contains the hash of a data block. Each internal node contains the hash of its two children concatenated. The root hash is a fingerprint of the entire dataset. To verify a single leaf, you only need the "proof path" -- the sibling hashes along the path from the leaf to the root -- giving O(log n) verification.
+A Merkle tree is a binary tree of hashes. Each leaf node contains the hash of a data block. Each internal node contains the hash of its two children concatenated. The root hash is a fingerprint of the entire dataset. To verify a single leaf, you only need the "proof path" — the sibling hashes along the path from the leaf to the root — giving O(log n) verification.
 
 ```text
                     Root Hash
@@ -57,8 +57,8 @@ A Merkle tree is a binary tree of hashes. Each leaf node contains the hash of a 
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Git | [tree.c#L136-L171](https://github.com/git/git/blob/master/tree.c#L136-L171) | `parse_tree_gently` parses tree objects, each storing hashes of child blobs/trees. Git's object model is a Merkle DAG -- every commit, tree, and blob is content-addressed by SHA-1. Changing a single byte in any file changes all hashes up to the root commit. This enables efficient diff, fetch (only transfer missing objects), and integrity verification with `git fsck`. |
-| ZFS | [blkptr.c (OpenZFS)](https://github.com/openzfs/zfs/blob/master/module/zfs/blkptr.c#L30-L77) | `blkptr_verify` validates block pointer checksums. Every block in ZFS stores a checksum of its contents in the parent block's pointer -- forming a Merkle tree from data blocks up to the uberblock. This self-validating structure detects silent data corruption (bit rot) without a separate integrity database. The `zpool scrub` command walks this tree to verify every block. |
+| Git | [tree.c#L136-L171](https://github.com/git/git/blob/master/tree.c#L136-L171) | `parse_tree_gently` parses tree objects, each storing hashes of child blobs/trees. Git's object model is a Merkle DAG — every commit, tree, and blob is content-addressed by SHA-1. Changing a single byte in any file changes all hashes up to the root commit. This enables efficient diff, fetch (only transfer missing objects), and integrity verification with `git fsck`. |
+| ZFS | [blkptr.c (OpenZFS)](https://github.com/openzfs/zfs/blob/master/module/zfs/blkptr.c#L30-L77) | `blkptr_verify` validates block pointer checksums. Every block in ZFS stores a checksum of its contents in the parent block's pointer — forming a Merkle tree from data blocks up to the uberblock. This self-validating structure detects silent data corruption (bit rot) without a separate integrity database. The `zpool scrub` command walks this tree to verify every block. |
 
 ## Implementation
 
@@ -382,25 +382,25 @@ Exercise files: Rust `exercises/rust/src/merkle_tree.rs` · Go `exercises/go/mer
 
 ## When to Use
 
-- **Version control** -- content-addressed storage where any change is detectable (Git)
-- **Blockchain** -- transaction verification without downloading the full chain (Bitcoin SPV)
-- **File systems** -- silent data corruption detection (ZFS, Btrfs)
-- **Peer-to-peer** -- verify downloaded chunks from untrusted peers (BitTorrent, IPFS)
-- **Certificate transparency** -- append-only Merkle log of TLS certificates
+- **Version control** — content-addressed storage where any change is detectable (Git)
+- **Blockchain** — transaction verification without downloading the full chain (Bitcoin SPV)
+- **File systems** — silent data corruption detection (ZFS, Btrfs)
+- **Peer-to-peer** — verify downloaded chunks from untrusted peers (BitTorrent, IPFS)
+- **Certificate transparency** — append-only Merkle log of TLS certificates
 
 ## When NOT to Use
 
-- **Small datasets** -- if you can hash everything at once, a Merkle tree adds needless complexity
-- **Frequently changing data** -- every mutation requires O(log n) rehashes up to the root
-- **Non-verifiable context** -- if you trust the data source entirely, integrity proofs are wasted work
-- **Ordered access patterns** -- Merkle trees are not search trees; use B+ trees for range queries
+- **Small datasets** — if you can hash everything at once, a Merkle tree adds needless complexity
+- **Frequently changing data** — every mutation requires O(log n) rehashes up to the root
+- **Non-verifiable context** — if you trust the data source entirely, integrity proofs are wasted work
+- **Ordered access patterns** — Merkle trees are not search trees; use B+ trees for range queries
 
 ## More Production Uses
 
-- [Bitcoin](https://github.com/bitcoin/bitcoin) -- block header contains Merkle root of all transactions
-- [Ethereum](https://github.com/ethereum/go-ethereum) -- Patricia Merkle Trie for state, transactions, and receipts
-- [IPFS](https://github.com/ipfs/kubo) -- content-addressed Merkle DAG for distributed file storage
-- [Certificate Transparency](https://certificate.transparency.dev/) -- Merkle tree log for auditing TLS certificates
+- [Bitcoin](https://github.com/bitcoin/bitcoin) — block header contains Merkle root of all transactions
+- [Ethereum](https://github.com/ethereum/go-ethereum) — Patricia Merkle Trie for state, transactions, and receipts
+- [IPFS](https://github.com/ipfs/kubo) — content-addressed Merkle DAG for distributed file storage
+- [Certificate Transparency](https://certificate.transparency.dev/) — Merkle tree log for auditing TLS certificates
 
 ## Related Patterns
 
@@ -417,13 +417,13 @@ Exercise files: Rust `exercises/rust/src/merkle_tree.rs` · Go `exercises/go/mer
 ::: details Q1: Your Merkle tree has 1 million leaves. A client wants to verify that leaf #500,000 is authentic. How many hashes does the client need to receive and compute?
 **Answer:** About 20 hashes (log2(1,000,000) ~ 20). The client receives ~20 sibling hashes (the proof path) and computes ~20 hash operations to walk from the leaf to the root.
 
-This is the core value proposition of Merkle trees: verification cost is logarithmic in the dataset size. The client needs the leaf data, the proof path (one sibling hash per tree level), and the known root hash. For 1 million leaves, that's roughly 20 × 32 bytes = 640 bytes of proof data -- trivial compared to re-downloading and hashing all 1 million leaves.
+This is the core value proposition of Merkle trees: verification cost is logarithmic in the dataset size. The client needs the leaf data, the proof path (one sibling hash per tree level), and the known root hash. For 1 million leaves, that's roughly 20 × 32 bytes = 640 bytes of proof data — trivial compared to re-downloading and hashing all 1 million leaves.
 :::
 
 ::: details Q2: Git uses SHA-1 for its Merkle DAG. If you change a single character in a file deep in the repository, what exactly changes in the object database?
 **Answer:** The blob hash changes, which changes the tree hash of its parent directory, which changes every tree hash up to the root tree, which changes the commit hash. All ancestor objects get new hashes.
 
-This is the "tamper-evident" property: a single-bit change at any leaf cascades all the way to the root. In Git, this means every commit hash is a fingerprint of the entire repository state at that point. It's also why Git can efficiently determine what changed between two commits -- if two tree hashes match, the entire subtree is identical, so Git can skip it entirely during diff/fetch operations.
+This is the "tamper-evident" property: a single-bit change at any leaf cascades all the way to the root. In Git, this means every commit hash is a fingerprint of the entire repository state at that point. It's also why Git can efficiently determine what changed between two commits — if two tree hashes match, the entire subtree is identical, so Git can skip it entirely during diff/fetch operations.
 :::
 
 ::: details Q3: You're building a Merkle tree with an odd number of leaves (e.g., 5). How do you handle the unpaired leaf at each level?
@@ -435,5 +435,5 @@ There are two common strategies: (1) duplicate the unpaired node and hash it wit
 ::: details Q4: Your Merkle tree is used in a peer-to-peer file sharing system. A malicious peer sends you a valid proof for a leaf, but the leaf data itself is garbage. Does the proof verify?
 **Answer:** No. The proof won't verify because hash(garbage_data) will produce a different leaf hash than the original, and the computed root won't match the known root.
 
-The proof verification recomputes the root starting from hash(received_data). If the data is different, hash(received_data) != hash(original_data), and the mismatch propagates up through every level. This is exactly why Merkle proofs work for untrusted data sources -- you don't need to trust the peer, only the root hash (which comes from a trusted source like the blockchain or a signed manifest).
+The proof verification recomputes the root starting from hash(received_data). If the data is different, hash(received_data) != hash(original_data), and the mismatch propagates up through every level. This is exactly why Merkle proofs work for untrusted data sources — you don't need to trust the peer, only the root hash (which comes from a trusted source like the blockchain or a signed manifest).
 :::

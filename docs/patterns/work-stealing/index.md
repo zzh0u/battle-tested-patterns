@@ -263,7 +263,7 @@ Exercise files: Rust `exercises/rust/src/work_stealing.rs` · Go `exercises/go/w
 ## Challenge Questions
 
 ::: details Q1: Workers pop from their own deque using LIFO (top), but steal from others using FIFO (bottom). Why not use FIFO for both?
-**Answer:** LIFO on your own deque gives cache locality -- the most recently pushed task is likely still in CPU cache. FIFO stealing takes the oldest (largest) task from the victim, giving the thief more work to do before needing to steal again.
+**Answer:** LIFO on your own deque gives cache locality — the most recently pushed task is likely still in CPU cache. FIFO stealing takes the oldest (largest) task from the victim, giving the thief more work to do before needing to steal again.
 
 In divide-and-conquer workloads, the bottom of the deque holds the earliest-spawned (coarsest-grained) tasks. Stealing one large task is better than stealing many small ones because it amortizes the steal overhead and gives the thief a chunk of work it can subdivide locally. LIFO for local pops also naturally implements depth-first execution, which uses less stack space.
 :::
@@ -275,7 +275,7 @@ Each steal operation requires atomic CAS on the victim's deque, which is expensi
 :::
 
 ::: details Q3: What is the ABA problem in the context of a lock-free work-stealing deque, and why does it matter?
-**Answer:** The ABA problem occurs when a CAS succeeds because the value matches, but the underlying state has changed between the read and the CAS -- another thread modified and restored the original value.
+**Answer:** The ABA problem occurs when a CAS succeeds because the value matches, but the underlying state has changed between the read and the CAS — another thread modified and restored the original value.
 
 In a lock-free deque, a thief reads the bottom index as value A, gets preempted, the owner pops and pushes (bottom goes A -> B -> A), and the thief's CAS on the bottom index succeeds even though the deque content is different. This can cause a task to be executed twice or skipped. The fix is to use a tagged pointer or generation counter so CAS detects the intermediate changes. This is why Tokio and Go use epoch/version counters alongside deque indices.
 :::
@@ -283,5 +283,5 @@ In a lock-free deque, a thief reads the bottom index as value A, gets preempted,
 ::: details Q4: You have 8 workers and 8 identical long-running tasks, one per worker. Is work stealing helping here?
 **Answer:** No. If every worker has exactly one task of equal duration, no worker finishes early, so no stealing ever occurs. Work stealing adds zero benefit and a small overhead from the idle-check logic.
 
-Work stealing shines when workloads are irregular -- some tasks finish quickly and the worker can help others. With perfectly balanced, uniform tasks, static partitioning (assign one task per worker) is simpler and equally effective. Work stealing's overhead (deque management, random victim selection, CAS operations) is wasted when there's nothing to steal.
+Work stealing shines when workloads are irregular — some tasks finish quickly and the worker can help others. With perfectly balanced, uniform tasks, static partitioning (assign one task per worker) is simpler and equally effective. Work stealing's overhead (deque management, random victim selection, CAS operations) is wasted when there's nothing to steal.
 :::
