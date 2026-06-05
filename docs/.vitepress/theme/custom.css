@@ -23,9 +23,14 @@
 .dark .viz-container {
   --viz-bg: #1e293b;
   --viz-border: #334155;
+  --viz-primary: #60a5fa;
+  --viz-success: #34d399;
+  --viz-warning: #fbbf24;
+  --viz-danger: #f87171;
   --viz-text: #e2e8f0;
   --viz-muted: #64748b;
   --viz-cell-empty: #334155;
+  --viz-cell-filled: #60a5fa;
 }
 
 .viz-title {
@@ -64,6 +69,11 @@
 
 .viz-btn:active {
   transform: scale(0.97);
+}
+
+.viz-btn:focus-visible {
+  outline: 2px solid var(--viz-primary);
+  outline-offset: 2px;
 }
 
 .viz-btn--primary {
