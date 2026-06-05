@@ -1,5 +1,10 @@
+<script setup lang="ts">
+import { useI18n } from '../composables/useI18n';
+const { t } = useI18n();
+</script>
+
 <template>
-  <div class="viz-container viz-skeleton" role="status" aria-label="Loading visualization">
+  <div class="viz-container viz-skeleton" role="status" :aria-label="t('Loading visualization', '加载可视化中')">
     <div class="viz-skel-title"></div>
     <div class="viz-skel-content"></div>
     <div class="viz-skel-controls">

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, watch, nextTick, onMounted } from 'vue';
 import type { LogEntry } from '../composables/useVizLog';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 const props = withDefaults(defineProps<{
   entries: LogEntry[];
@@ -47,7 +50,7 @@ function toggle() {
 </script>
 
 <template>
-  <div class="viz-log" :class="{ 'viz-log--collapsed': collapsed }" role="region" aria-label="Log">
+  <div class="viz-log" :class="{ 'viz-log--collapsed': collapsed }" role="region" :aria-label="t('Log', '日志')">
     <div
       class="viz-log-header"
       role="button"
@@ -59,16 +62,16 @@ function toggle() {
     >
       <span class="viz-log-title">
         <span v-if="collapsible" class="viz-log-arrow" aria-hidden="true">{{ collapsed ? '▶' : '▼' }}</span>
-        Log
+        {{ t('Log', '日志') }}
         <span class="viz-log-count">({{ entries.length }})</span>
       </span>
       <button
         v-if="!collapsed && entries.length > 0"
         class="viz-log-clear"
         @click.stop="emit('clear')"
-        aria-label="Clear log"
+        :aria-label="t('Clear log', '清除日志')"
       >
-        Clear
+        {{ t('Clear', '清除') }}
       </button>
     </div>
     <div
@@ -89,7 +92,7 @@ function toggle() {
         <span class="viz-log-index">#{{ entry.index }}</span>
         <span class="viz-log-text">{{ entry.text }}</span>
       </div>
-      <div v-if="entries.length === 0" class="viz-log-empty">No log entries yet</div>
+      <div v-if="entries.length === 0" class="viz-log-empty">{{ t('No log entries yet', '暂无日志记录') }}</div>
     </div>
   </div>
 </template>
