@@ -273,6 +273,7 @@ async function presetCompilerPhase() {
     '编译器阶段模拟：为解析分配 AST 节点，完成后重置整个 arena。Zig、Rust (rustc) 和 Go 编译器就是这样管理内存的。'
   );
   await delay(600);
+  if (!presetRunning || isAborted()) return;
 
   const nodeNames = ['FnDecl', 'Param', 'Block', 'Return', 'Expr', 'Ident', 'Literal'];
   const sizes = [4, 1, 2, 2, 1, 1, 1];
@@ -307,6 +308,7 @@ async function presetMixedSizes() {
     '混合分配大小：与 malloc 不同，arena 分配零内部碎片 — 每个对象连续放置在上一个之后。'
   );
   await delay(600);
+  if (!presetRunning || isAborted()) return;
 
   const pattern = [1, 4, 2, 1, 4, 2, 1, 1, 2, 4];
   for (const size of pattern) {

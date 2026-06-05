@@ -280,6 +280,7 @@ async function presetMultipleWrites() {
     '多次写入不刷新 — 旧版本积累。这是 MVCC 中的内存压力问题：PostgreSQL 需要 VACUUM 来清理旧的元组版本。'
   );
   await delay(800);
+  if (isAborted()) return;
 
   const writes = [
     { idx: 0, val: 'X' },

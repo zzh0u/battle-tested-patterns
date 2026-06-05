@@ -169,6 +169,7 @@ async function presetExhaustion() {
   }
   if (!presetRunning || isAborted()) return;
   await delay(400);
+  if (!presetRunning || isAborted()) return;
   allocate();
   log(t(
     'Fixed-size pools trade flexibility for predictability — capacity must be planned upfront to avoid exhaustion.',
