@@ -144,6 +144,7 @@ async function presetFalsePositive() {
     '现在测试从未添加的元素 — 注意观察假阳性...'
   );
   await delay(900);
+  if (!presetRunning || isAborted()) return;
   const testItems = ['rat', 'fox', 'ant', 'cow'];
   for (const item of testItems) {
     if (!presetRunning || isAborted()) return;

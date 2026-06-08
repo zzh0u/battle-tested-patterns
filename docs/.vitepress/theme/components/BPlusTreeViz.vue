@@ -184,6 +184,7 @@ async function presetSplitDemo() {
     '逐个插入键以展示节点分裂。当节点超过阶（3 个键）时，它分裂为两个并提升中间键。'
   );
   await delay(800);
+  if (!presetRunning || isAborted()) return;
   const keys = [10, 20, 30, 40];
   for (const k of keys) {
     if (!presetRunning || isAborted()) return;

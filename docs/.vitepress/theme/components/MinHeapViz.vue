@@ -219,6 +219,7 @@ async function presetHeapSort() {
     '全部插入完毕。现在按顺序提取 — 这就是堆排序！总计 O(n log n)。'
   );
   await delay(800);
+  if (!presetRunning || isAborted()) return;
   const sorted: number[] = [];
   while (heap.value.length > 0) {
     if (!presetRunning || isAborted()) return;

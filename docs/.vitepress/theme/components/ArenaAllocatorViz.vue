@@ -231,6 +231,7 @@ async function presetFillAndChain() {
     '将 arena 填满，然后链接新的。LLVM 对 AST 节点这样做 — 每个编译阶段有自己的 arena，完成后原子释放。'
   );
   await delay(600);
+  if (!presetRunning || isAborted()) return;
   selectedSize.value = 4;
   for (let i = 0; i < 8; i++) {
     if (!presetRunning || isAborted()) return;
