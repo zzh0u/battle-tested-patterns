@@ -55,8 +55,9 @@ and stale references. Rate each dimension 1-10.
 ```bash
 # Update CHANGELOG.md: change "## Unreleased" → "## vX.Y.Z"
 # Update compare link: v(prev)...main → v(prev)...vX.Y.Z
+# Update package.json version field to match
 
-git add CHANGELOG.md
+git add CHANGELOG.md package.json
 git commit -m "chore: prepare release vX.Y.Z"
 
 git tag vX.Y.Z

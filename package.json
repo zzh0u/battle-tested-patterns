@@ -1,6 +1,6 @@
 {
   "name": "battle-tested-patterns",
-  "version": "1.5.0",
+  "version": "1.9.0",
   "private": true,
   "description": "Battle-tested programming patterns from production codebases. Multi-language examples, precise source links, interactive visualizations.",
   "license": "MIT",
@@ -18,13 +18,11 @@
     "lint": "markdownlint 'docs/**/*.md' --ignore 'docs/node_modules' --config .markdownlint.json",
     "typecheck": "pnpm --filter exercises typecheck",
     "verify-links": "tsx scripts/verify-source-links.ts",
-    "verify-code": "tsx scripts/verify-code-blocks.ts",
-    "changelog": "changelogen --output CHANGELOG.md"
+    "verify-code": "tsx scripts/verify-code-blocks.ts"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.0.0",
     "@commitlint/config-conventional": "^21.0.0",
-    "changelogen": "^0.6.1",
     "markdownlint-cli": "^0.48.0",
     "tsx": "^4.19.4",
     "typescript": "^5.7.3"
