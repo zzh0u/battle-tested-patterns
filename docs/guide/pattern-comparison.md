@@ -140,6 +140,39 @@ Some patterns look alike but serve different purposes. This guide compares commo
 | **Example** | Cassandra tombstones, LevelDB delete markers | Chromium layout invalidation, game transform |
 | **When confused** | If marking something as "gone" → tombstone | If marking "needs update" → dirty flag |
 
+## Interning vs Flyweight
+
+| Dimension | [Interning](/patterns/interning/) | [Flyweight](/patterns/flyweight/) |
+|-----------|-----------|-----------|
+| **Sharing** | Identical values share one instance | Intrinsic state shared, extrinsic differs |
+| **Lookup** | Global table (hash map) | Factory with cache |
+| **Identity** | Pointer equality replaces value equality | Objects still compared by value |
+| **Mutability** | Immutable (must be) | Intrinsic immutable, extrinsic mutable |
+| **Example** | Python `sys.intern()`, Rust `Symbol`, Java string pool | Font glyphs, game tile sprites, CSS rule objects |
+| **When confused** | If all instances are identical → interning | If instances share *partial* state → flyweight |
+
+## Event Loop vs Work Stealing
+
+| Dimension | [Event Loop](/patterns/event-loop/) | [Work Stealing](/patterns/work-stealing/) |
+|-----------|------------|---------------|
+| **Threads** | Single thread + I/O multiplexing | Multiple threads, one deque each |
+| **Best for** | I/O-bound, high-connection workloads | CPU-bound, recursive/parallel workloads |
+| **Scheduling** | Cooperative (callbacks/promises) | Preemptive steal from other deques |
+| **Latency** | One slow callback blocks all | Idle threads steal work, stays balanced |
+| **Example** | Node.js, Nginx, Redis | Go scheduler, Java ForkJoinPool, Tokio |
+| **When confused** | If mostly I/O + few CPUs → event loop | If CPU-heavy + many cores → work stealing |
+
+## Visitor vs Middleware Chain
+
+| Dimension | [Visitor](/patterns/visitor/) | [Middleware Chain](/patterns/middleware-chain/) |
+|-----------|---------|------------------|
+| **Traversal** | Walk a tree/graph of typed nodes | Walk a linear pipeline |
+| **Dispatch** | By node type (double dispatch) | By registration order |
+| **Adding ops** | New visitor = new operation | New middleware = new layer |
+| **Data flow** | Visitor accumulates result | Request/response flows through |
+| **Example** | LLVM IR passes, AST transforms | Express.js, Django, gRPC interceptors |
+| **When confused** | If processing a heterogeneous tree → visitor | If processing a request/response pipeline → middleware |
+
 ## Choosing the Right Pattern: Decision Flowchart
 
 <DecisionTree variant="pattern-selector" />
