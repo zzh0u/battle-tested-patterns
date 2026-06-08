@@ -8,6 +8,15 @@ See [commit history](https://github.com/Totoro-jam/battle-tested-patterns/commit
 
 [compare changes](https://github.com/Totoro-jam/battle-tested-patterns/compare/v1.9.1...main)
 
+### Fixes
+
+- Correct stale test counts in ZH README (1,073→1,074, 491→492)
+
+### Documentation
+
+- Add clickable documentation links to all 46 patterns in STUDY_PLAN.md
+- Add property tables to 4 remaining patterns: Bitmask, Backpressure, Circuit Breaker, Rate Limiter (EN+ZH) — 46/46 coverage
+
 ## v1.9.1
 
 [compare changes](https://github.com/Totoro-jam/battle-tested-patterns/compare/v1.9.0...v1.9.1)
