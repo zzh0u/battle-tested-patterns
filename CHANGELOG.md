@@ -87,6 +87,12 @@ See [commit history](https://github.com/Totoro-jam/battle-tested-patterns/commit
 ### CI
 
 - Add EN-ZH code parity check to content-quality workflow
+- Expand exercise file check from TypeScript-only to all 4 languages (Rust/Go/Python)
+- Use requirements.txt for pytest version in Python CI test step
+- Increase Rust verify-code timeout to 30s for CI runner stability
+- Upgrade GitHub Actions: setup-node v6, setup-python v6, deploy-pages v5, github-script v9
+- Add cargo, gomod, pip ecosystems to dependabot config
+- Bump pytest requirement to >=9.0.3
 
 ## v1.8.0
 
