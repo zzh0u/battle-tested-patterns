@@ -14,6 +14,13 @@ See [commit history](https://github.com/Totoro-jam/battle-tested-patterns/commit
 - Add Rust implementation for batch-processing pattern
 - Add complexity cheat sheet and pattern comparison pages (EN+ZH)
 - Add difficulty labels, learning paths, study plan, and real-world analogies
+- Replace ASCII composition diagrams with interactive CompositionFlow Vue component
+- Add DecisionTree interactive component for guide pages
+- Add VizLog universal log panel with visual design upgrade to all 48 Viz components
+- Add 3rd preset scenario + highlight logs to BPlusTree, MinHeap, SkipList
+- Revamp homepage with value-focused tagline, live Viz demo, and PatternTimelineViz
+- Add JSON-LD structured data for search engine rich results (WebSite, BreadcrumbList, TechArticle)
+- Add dedicated skeleton loading for homepage MinHeap and Timeline components
 
 ### Fixes
 
@@ -32,6 +39,31 @@ See [commit history](https://github.com/Totoro-jam/battle-tested-patterns/commit
 - Comprehensive quality audit: sync ZH code, fix implementations, improve SEO
 - Address multi-role exercise audit findings
 - Align Rust/Go exercises with TS/Python API coverage
+- Add focus-visible styles and dark mode color overrides to viz CSS
+- Replace `*` with `×` for multiplication in challenge answers and state-machine
+- Normalize `--` to em dash (—) in prose text across EN+ZH patterns
+- Add 11 missing patterns to pattern-connections page (EN+ZH)
+- Add ARIA attributes to all 49 Viz components
+- Add keyboard support to interactive non-button elements
+- Add missing `isAborted()` checks after delay in preset scenarios
+- Translate hardcoded English strings in VizLog and VizSkeleton
+
+### Internationalization
+
+- Translate "Exercise files:" to "练习文件：" across all 46 ZH pattern pages
+- Translate "Production Proof" to "生产验证" in ZH interview guide
+- Sync ZH code block text with EN in interning and visitor patterns
+- Sync ZH/EN sidebar titles with page titles across 10 patterns
+- Replace "Interview Guide" hero button with "Learning Paths" (EN+ZH)
+- Add Chinese translations for VitePress UI elements
+- Add 404 page and footer translations for both locales
+- Rename 归并迭代器 → 合并迭代器 in merge-iterator pattern page
+- Translate all English pattern names to Chinese in use-cases.md
+
+### SEO
+
+- Add x-default hreflang for international search engines
+- Add theme-color meta tag for mobile browser chrome
 
 ### Documentation
 
@@ -44,6 +76,7 @@ See [commit history](https://github.com/Totoro-jam/battle-tested-patterns/commit
 - Add Rust/Go/Python exercise file paths to all 92 pattern docs
 - Update READMEs with 4-language exercise stats and guide links
 - Add learning guides row to README pattern tables (EN+ZH)
+- Reorganize guide sidebar into 4 logical groups (EN+ZH)
 
 ### CI
 
