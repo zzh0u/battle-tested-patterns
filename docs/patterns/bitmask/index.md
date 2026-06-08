@@ -49,6 +49,13 @@ Instead of using an array of booleans or an object with multiple fields, a bitma
 
 Key insight: a single `&` operation can check any combination of flags simultaneously — no loops, no branching.
 
+| Property | Value |
+|----------|-------|
+| Set / check / clear | O(1) — single bitwise operation, no branching |
+| Combine multiple flags | O(1) — one `\|` or `&` regardless of flag count |
+| Max flags | Word width — 32 or 64 on most platforms |
+| Space | O(1) — one integer stores all flags |
+
 **Try it yourself** — toggle permission bits and see the mask value update in binary, decimal, and hex:
 
 <BitmaskViz />

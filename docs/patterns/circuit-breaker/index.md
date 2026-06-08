@@ -37,6 +37,13 @@ stateDiagram-v2
 | OPEN | Calls fail immediately (`CircuitOpenError`). Timer running. |
 | HALF_OPEN | Allow one probe call. Success → CLOSED. Failure → OPEN. |
 
+| Property | Value |
+|----------|-------|
+| Call check | O(1) — compare state + failure counter |
+| State transitions | O(1) — atomic state change |
+| States | 3 — Closed, Open, Half-Open |
+| Space | O(1) — counter + timer + state enum |
+
 **Try it yourself** — send successes and failures to see the state machine transitions:
 
 <CircuitBreakerViz />

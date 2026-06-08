@@ -41,6 +41,13 @@ A token bucket starts full with `capacity` tokens and refills at `rate` tokens p
 | **Sliding Window** | Counts requests in a time window; no burst control |
 | **Fixed Window** | Counts requests per time interval; boundary burst problem |
 
+| Property | Value |
+|----------|-------|
+| allow() check | O(1) — compute elapsed tokens, compare against request |
+| Burst tolerance | Up to `capacity` requests instantly |
+| Sustained rate | `refillRate` requests per second |
+| Space | O(1) — token count + timestamp per limiter |
+
 **Try it yourself** — send requests and watch tokens drain from the bucket, then start auto-refill:
 
 <RateLimiterViz />

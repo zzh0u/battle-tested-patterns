@@ -38,6 +38,13 @@ Backpressure is a flow control mechanism where the consumer signals the producer
 | **Signal** | Consumer sends `request(n)` to pull exactly n items (Reactive Streams) |
 | **Throttle** | Rate-limit the producer (token bucket / leaky bucket) |
 
+| Property | Value |
+|----------|-------|
+| Signal overhead | O(1) — boolean flag or counter check |
+| Buffer bound | Fixed capacity — prevents unbounded memory growth |
+| Throughput | Adapts dynamically to consumer speed |
+| Latency trade-off | Increases under load — producer waits instead of dropping |
+
 **Try it yourself** — start the producer and consumer to see what happens when production outpaces consumption:
 
 <BackpressureViz />
