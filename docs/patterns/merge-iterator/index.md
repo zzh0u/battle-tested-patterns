@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Merge Iterator (K-Way Merge)"
 description: 'Combine K sorted streams into one sorted output using a min-heap — the universal "unified view" over multiple data sources.'
 difficulty: "advanced"
 ---

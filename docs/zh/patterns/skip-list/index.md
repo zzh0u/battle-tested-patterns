@@ -1,4 +1,5 @@
 ---
+title: "模式：跳表 (Skip List)"
 description: "概率有序数据结构，O(log n) 搜索、插入和删除——比平衡树更简单，性能相当。"
 difficulty: "advanced"
 ---

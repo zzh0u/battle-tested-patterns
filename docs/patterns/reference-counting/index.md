@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Reference Counting"
 description: "Track owners via atomic counter, auto-cleanup at zero — deterministic resource lifetime without garbage collection."
 difficulty: "beginner"
 ---

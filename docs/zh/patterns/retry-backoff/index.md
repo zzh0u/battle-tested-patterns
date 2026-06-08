@@ -1,4 +1,5 @@
 ---
+title: "模式：指数退避重试 (Retry with Backoff)"
 description: "操作失败时以指数增长的延迟重试，加随机抖动避免惊群效应。"
 difficulty: "beginner"
 ---

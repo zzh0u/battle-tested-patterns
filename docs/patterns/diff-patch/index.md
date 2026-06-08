@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Diff / Patch"
 description: "Compare two sequences to compute the minimal set of operations (insert, delete, move) needed to transform one into the other."
 difficulty: "intermediate"
 ---

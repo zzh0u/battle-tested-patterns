@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Double Buffering"
 description: "Maintain two copies of state and atomically swap between them so readers always see a consistent snapshot."
 difficulty: "beginner"
 ---

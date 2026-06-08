@@ -1,4 +1,5 @@
 ---
+title: "模式：预写日志 (Write-Ahead Log)"
 description: "在应用变更前先将每个变更记录到持久存储——重放日志即可从崩溃中恢复，零数据丢失。"
 difficulty: "intermediate"
 ---

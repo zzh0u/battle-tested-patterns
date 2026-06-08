@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Tombstone / Deferred Deletion"
 description: "Mark deleted entries with a tombstone marker instead of removing them — a background process reclaims space later."
 difficulty: "beginner"
 ---

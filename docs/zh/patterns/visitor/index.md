@@ -1,4 +1,5 @@
 ---
+title: "模式：访问者 / 树遍历器 (Visitor / Tree Walker)"
 description: "将树遍历与操作解耦，通过分发到类型特定的回调——使新操作无需修改树结构。"
 difficulty: "advanced"
 ---

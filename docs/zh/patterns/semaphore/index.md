@@ -1,4 +1,5 @@
 ---
+title: "模式：信号量 / 有界并发 (Semaphore)"
 description: "通过维护计数器限制并发操作数量——工作前获取，完成后释放，达到上限时阻塞。"
 difficulty: "beginner"
 ---

@@ -1,4 +1,5 @@
 ---
+title: "模式：Merkle 树 (Merkle Tree)"
 description: "对叶子节点做哈希，然后逐层向上哈希配对——以 O(log n) 的代价验证任意叶子的完整性，无需重新哈希整个数据集。"
 difficulty: "advanced"
 ---

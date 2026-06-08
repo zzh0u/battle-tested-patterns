@@ -1,4 +1,5 @@
 ---
+title: "模式：空闲链表 (Free List)"
 description: "维护一个已释放槽位的链表，使分配和释放都是 O(1)——复用内存而无需调用系统分配器。"
 difficulty: "intermediate"
 ---

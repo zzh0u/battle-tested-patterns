@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Rate Limiter (Token Bucket)"
 description: "Protect services from overload by draining tokens from a bucket that refills at a fixed rate — reject requests when empty."
 difficulty: "intermediate"
 ---

@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Backpressure / Flow Control"
 description: "Slow down producers when consumers can't keep up — use bounded buffers and demand signals to prevent resource exhaustion."
 difficulty: "intermediate"
 ---

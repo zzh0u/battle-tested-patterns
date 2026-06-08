@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Trie (Prefix Tree)"
 description: "Store strings in a tree where each edge represents a character — shared prefixes share nodes, enabling O(k) lookup by key length."
 difficulty: "intermediate"
 ---

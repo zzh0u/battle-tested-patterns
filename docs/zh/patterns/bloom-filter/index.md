@@ -1,4 +1,5 @@
 ---
+title: "模式：布隆过滤器 (Bloom Filter)"
 description: "以 O(k) 时间测试集合成员资格，零漏判——代价是可调的误判率。"
 difficulty: "intermediate"
 ---

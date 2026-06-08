@@ -1,4 +1,5 @@
 ---
+title: "模式：注册表 / 自注册 (Registry)"
 description: "组件按名称将自身注册到全局查找表——消费者在运行时发现实现，无需硬编码依赖。"
 difficulty: "beginner"
 ---

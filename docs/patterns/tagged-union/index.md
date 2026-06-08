@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Tagged Union / Variant"
 description: "Store a type tag alongside a value union so one variable safely holds different types, dispatching behavior via the tag."
 difficulty: "beginner"
 ---

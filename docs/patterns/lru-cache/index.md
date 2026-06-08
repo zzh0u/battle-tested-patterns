@@ -1,4 +1,5 @@
 ---
+title: "Pattern: LRU Cache"
 description: "Evict the least recently used entry when the cache is full — O(1) get and put using a hash map plus a doubly linked list."
 difficulty: "intermediate"
 ---

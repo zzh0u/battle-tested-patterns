@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Dirty Flag"
 description: 'Mark objects as "dirty" on mutation, defer expensive recomputation until the value is actually needed, then clear the flag.'
 difficulty: "beginner"
 ---

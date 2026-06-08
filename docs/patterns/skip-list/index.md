@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Skip List"
 description: "A probabilistic sorted data structure with O(log n) search, insert, and delete — simpler to implement than balanced trees with comparable performance."
 difficulty: "advanced"
 ---

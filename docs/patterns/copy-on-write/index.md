@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Copy-on-Write (CoW)"
 description: "Share data by reference until someone modifies it — only then make a private copy, saving memory and allocation cost for read-heavy workloads."
 difficulty: "intermediate"
 ---

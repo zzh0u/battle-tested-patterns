@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Semaphore / Bounded Concurrency"
 description: "Limit the number of concurrent operations by maintaining a counter — acquire before work, release after, block when the limit is reached."
 difficulty: "beginner"
 ---

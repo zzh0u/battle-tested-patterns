@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Visitor / Tree Walker"
 description: "Decouple tree traversal from operations by dispatching to type-specific callbacks — enabling new operations without modifying the tree."
 difficulty: "advanced"
 ---

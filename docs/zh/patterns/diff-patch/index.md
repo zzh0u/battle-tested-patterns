@@ -1,4 +1,5 @@
 ---
+title: "模式：差异/补丁 (Diff / Patch)"
 description: "比较两个序列，计算将一个转换为另一个所需的最小操作集（插入、删除、移动）。"
 difficulty: "intermediate"
 ---

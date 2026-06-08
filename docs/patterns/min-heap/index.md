@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Min Heap / Priority Queue"
 description: "A binary tree stored in an array where the smallest element is always at the root, enabling O(1) peek and O(log n) insert/remove."
 difficulty: "intermediate"
 ---

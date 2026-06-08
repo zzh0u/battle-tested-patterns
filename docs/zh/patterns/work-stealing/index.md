@@ -1,4 +1,5 @@
 ---
+title: "模式：工作窃取 (Work Stealing)"
 description: "空闲线程从繁忙线程的队列中窃取任务——无需中央协调即可动态均衡负载。"
 difficulty: "advanced"
 ---

@@ -1,4 +1,5 @@
 ---
+title: "模式：享元 / 驻留 (Flyweight / Interning)"
 description: "共享相同的不可变对象而非创建重复实例，用查找开销换取大量内存节省。"
 difficulty: "beginner"
 ---

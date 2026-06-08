@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Middleware / Pipeline Chain"
 description: "Compose handlers where each wraps the next — pre-process, call next, post-process — forming a bidirectional pipeline."
 difficulty: "intermediate"
 ---

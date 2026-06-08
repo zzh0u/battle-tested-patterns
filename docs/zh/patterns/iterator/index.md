@@ -1,4 +1,5 @@
 ---
+title: "模式：迭代器 / 惰性求值 (Iterator)"
 description: "逐个处理序列中的元素而不实例化整个集合，通过可组合的转换实现零中间分配。"
 difficulty: "beginner"
 ---

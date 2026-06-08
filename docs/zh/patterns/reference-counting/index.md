@@ -1,4 +1,5 @@
 ---
+title: "模式：引用计数 (Reference Counting)"
 description: "通过原子计数器追踪所有者，归零时自动清理——无需垃圾回收的确定性资源生命周期管理。"
 difficulty: "beginner"
 ---

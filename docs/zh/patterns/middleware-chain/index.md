@@ -1,4 +1,5 @@
 ---
+title: "模式：中间件 / 管道链 (Middleware / Pipeline Chain)"
 description: "组合处理器，每个包裹下一个——前处理、调用 next、后处理——形成双向管道。"
 difficulty: "intermediate"
 ---

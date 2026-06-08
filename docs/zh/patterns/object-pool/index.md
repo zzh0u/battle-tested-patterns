@@ -1,4 +1,5 @@
 ---
+title: "模式：对象池 (Object Pool)"
 description: "预分配一组可复用对象，避免热路径上重复分配和垃圾回收的开销。"
 difficulty: "beginner"
 ---

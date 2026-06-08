@@ -1,4 +1,5 @@
 ---
+title: "模式：墓碑 / 延迟删除 (Tombstone)"
 description: "用墓碑标记代替直接删除条目——后台进程稍后回收空间。"
 difficulty: "beginner"
 ---

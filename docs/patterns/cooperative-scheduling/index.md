@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Cooperative Scheduling"
 description: "Break long-running work into small chunks, yielding control back to the host between each chunk to keep the system responsive."
 difficulty: "advanced"
 ---

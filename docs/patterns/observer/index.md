@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Observer / Pub-Sub"
 description: "Decouple producers from consumers by letting objects subscribe to events and get notified when something happens, without the source knowing who's listening."
 difficulty: "beginner"
 ---

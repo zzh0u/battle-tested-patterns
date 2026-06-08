@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Interning / Symbol Table"
 description: "Deduplicate immutable values through a canonical lookup table — O(1) equality by pointer comparison instead of O(n) content comparison."
 difficulty: "intermediate"
 ---

@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Object Pool"
 description: "Pre-allocate a set of reusable objects to avoid the cost of repeated allocation and garbage collection on hot paths."
 difficulty: "beginner"
 ---

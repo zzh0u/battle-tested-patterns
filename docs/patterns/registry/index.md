@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Registry / Self-Registration"
 description: "Components register themselves into a global lookup table by name — consumers discover implementations at runtime without hardcoded dependencies."
 difficulty: "beginner"
 ---

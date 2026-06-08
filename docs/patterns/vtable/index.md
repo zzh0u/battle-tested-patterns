@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Vtable / Ops Dispatch"
 description: "Group function pointers into a struct to achieve runtime polymorphism — the manual foundation behind interfaces, traits, and virtual methods."
 difficulty: "advanced"
 ---

@@ -1,4 +1,5 @@
 ---
+title: "模式：MVCC 多版本并发控制"
 description: "为每个值保留多个带时间戳的版本，读者永远不阻塞写者——每个事务看到一致的快照，无需加锁。"
 difficulty: "advanced"
 ---

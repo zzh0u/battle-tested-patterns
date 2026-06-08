@@ -1,4 +1,5 @@
 ---
+title: "模式：合并迭代器 (Merge Iterator / K-Way Merge)"
 description: '使用最小堆将 K 个有序流合并为一个有序输出——跨多个数据源创建"统一视图"的通用方法。'
 difficulty: "advanced"
 ---

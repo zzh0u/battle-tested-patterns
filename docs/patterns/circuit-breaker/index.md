@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Circuit Breaker"
 description: "Stop calling a failing service by tracking errors and tripping open — fail fast instead of piling up timeouts."
 difficulty: "intermediate"
 ---

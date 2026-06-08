@@ -1,4 +1,5 @@
 ---
+title: "模式：LRU 缓存 (LRU Cache)"
 description: "缓存满时淘汰最近最少使用的条目——用哈希表加双向链表实现 O(1) 的 get 和 put。"
 difficulty: "intermediate"
 ---

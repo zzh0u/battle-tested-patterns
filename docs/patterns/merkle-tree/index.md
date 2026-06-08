@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Merkle Tree"
 description: "Hash leaves, then hash pairs upward to a root — verify any leaf's integrity in O(log n) without re-hashing the entire dataset."
 difficulty: "advanced"
 ---

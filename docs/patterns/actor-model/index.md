@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Actor Model"
 description: "Each actor has a mailbox and processes messages sequentially — no shared state, no locks, just message passing for safe concurrency."
 difficulty: "advanced"
 ---

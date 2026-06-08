@@ -1,4 +1,5 @@
 ---
+title: "模式：写时复制 (Copy-on-Write)"
 description: "通过引用共享数据，直到有人修改时才创建私有副本——为读多写少的场景节省内存和分配开销。"
 difficulty: "intermediate"
 ---

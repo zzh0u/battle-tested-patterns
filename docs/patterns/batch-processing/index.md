@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Batch Processing"
 description: "Accumulate individual operations and execute them together as a group, amortizing per-operation overhead across the batch."
 difficulty: "beginner"
 ---

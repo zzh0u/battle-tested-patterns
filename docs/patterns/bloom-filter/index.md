@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Bloom Filter"
 description: "Test set membership in O(k) time with zero false negatives — at the cost of a tunable false positive rate."
 difficulty: "intermediate"
 ---

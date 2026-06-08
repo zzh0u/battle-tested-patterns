@@ -1,4 +1,5 @@
 ---
+title: "模式：Arena 分配器 (Arena Allocator)"
 description: "在预分配区域中通过移动指针分配对象——不再需要时一次性释放所有内存。"
 difficulty: "intermediate"
 ---

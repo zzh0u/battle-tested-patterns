@@ -1,4 +1,5 @@
 ---
+title: "模式：位掩码 (Bitmask)"
 description: "将多个布尔标志打包到一个整数中，通过位运算实现常数时间的集合操作。"
 difficulty: "beginner"
 ---

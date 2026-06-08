@@ -1,4 +1,5 @@
 ---
+title: "模式：批处理 (Batch Processing)"
 description: "累积单个操作并作为一组执行，将每次操作的开销分摊到整个批次。"
 difficulty: "beginner"
 ---

@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Retry with Exponential Backoff"
 description: "When an operation fails, retry it with progressively longer delays plus random jitter to avoid thundering herd."
 difficulty: "beginner"
 ---

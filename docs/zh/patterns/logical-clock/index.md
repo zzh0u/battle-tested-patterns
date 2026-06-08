@@ -1,4 +1,5 @@
 ---
+title: "模式：逻辑时钟 / Epoch (Logical Clock)"
 description: "单调递增的计数器，无需物理时钟即可排序事件——实现一致性快照和过期检测。"
 difficulty: "advanced"
 ---

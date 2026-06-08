@@ -1,4 +1,5 @@
 ---
+title: "模式：协作调度 (Cooperative Scheduling)"
 description: "将长时间运行的任务拆分为小块，在每块之间让出控制权，以保持系统响应。"
 difficulty: "advanced"
 ---

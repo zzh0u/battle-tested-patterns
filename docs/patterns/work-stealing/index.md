@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Work Stealing"
 description: "Idle threads steal tasks from busy threads' queues — balancing load dynamically without central coordination."
 difficulty: "advanced"
 ---

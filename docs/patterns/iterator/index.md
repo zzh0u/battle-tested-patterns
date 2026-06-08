@@ -1,4 +1,5 @@
 ---
+title: "Pattern: Iterator / Lazy Evaluation"
 description: "Process sequences one element at a time without materializing the entire collection, enabling composable transformations with zero intermediate allocations."
 difficulty: "beginner"
 ---

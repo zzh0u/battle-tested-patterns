@@ -1,4 +1,5 @@
 ---
+title: "模式：虚函数表 / 操作分发 (Vtable / Ops Dispatch)"
 description: "将函数指针组合到结构体中实现运行时多态——接口、trait 和虚方法背后的手动基础。"
 difficulty: "advanced"
 ---

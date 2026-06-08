@@ -1,4 +1,5 @@
 ---
+title: "Pattern: LSM Tree (Log-Structured Merge Tree)"
 description: "Buffer writes in memory, flush to sorted files on disk, merge files in background — trading read amplification for fast writes."
 difficulty: "advanced"
 ---
