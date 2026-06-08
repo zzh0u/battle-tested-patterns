@@ -16,6 +16,7 @@ See [commit history](https://github.com/Totoro-jam/battle-tested-patterns/commit
 ### CI
 
 - Extract release notes from CHANGELOG.md instead of changelogen (fixes empty release notes)
+- Add answer file existence check to content-quality workflow
 
 ### Chores
 
