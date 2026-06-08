@@ -115,6 +115,71 @@ jobs:
               print("✅ All ZH code blocks match EN")
           PYEOF
 
+  check-frontmatter:
+    name: Verify frontmatter completeness
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Check frontmatter fields
+        run: |
+          exit_code=0
+          for file in docs/patterns/*/index.md docs/zh/patterns/*/index.md; do
+            [ -f "$file" ] || continue
+            # Extract frontmatter
+            fm=$(sed -n '/^---$/,/^---$/p' "$file" | sed '1d;$d')
+            missing=""
+            echo "$fm" | grep -q 'title:'       || missing="$missing title"
+            echo "$fm" | grep -q 'description:' || missing="$missing description"
+            echo "$fm" | grep -q 'difficulty:'  || missing="$missing difficulty"
+            if [ -n "$missing" ]; then
+              echo "::error file=$file::Missing frontmatter fields:$missing"
+              exit_code=1
+            fi
+          done
+          if [ $exit_code -eq 0 ]; then
+            echo "✅ All pattern docs have complete frontmatter"
+          fi
+          exit $exit_code
+
+  check-tab-order:
+    name: Verify code-group tab order
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Check tab order is TS > Rust > Go > Python
+        run: |
+          python3 - <<'PYEOF'
+          import os, re, sys
+
+          LANG_ORDER = ['TypeScript', 'Rust', 'Go', 'Python']
+          errors = 0
+
+          for base in ['docs/patterns', 'docs/zh/patterns']:
+              for d in sorted(os.listdir(base)):
+                  f = os.path.join(base, d, 'index.md')
+                  if not os.path.isfile(f):
+                      continue
+                  with open(f) as fh:
+                      content = fh.read()
+                  groups = re.findall(r'::: code-group\n(.*?)\n:::', content, re.DOTALL)
+                  for i, group in enumerate(groups):
+                      langs = re.findall(r'```\w+ \[(\w+)\]', group)
+                      present = [l for l in LANG_ORDER if l in langs]
+                      actual = [l for l in langs if l in LANG_ORDER]
+                      if actual != present:
+                          print(f"::error file={f}::Code-group {i+1} tab order is {actual}, expected {present}")
+                          errors += 1
+
+          if errors:
+              print(f"\n{errors} tab order error(s) found")
+              sys.exit(1)
+          else:
+              print("✅ All code-group tab orders are correct")
+          PYEOF
+
   check-exercises:
     name: Verify exercises exist for patterns
     runs-on: ubuntu-latest
