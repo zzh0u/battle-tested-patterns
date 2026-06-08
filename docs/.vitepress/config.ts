@@ -104,7 +104,7 @@ export default withMermaid(defineConfig({
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ['meta', { name: 'twitter:image', content: OG_IMAGE }],
     ['meta', { name: 'author', content: 'Totoro-jam' }],
-    ['meta', { name: 'keywords', content: 'programming patterns, design patterns, interactive visualizations, system design, data structures, algorithms, React, Linux, Go, Rust, TypeScript, Python, Redis, PostgreSQL, Kafka, interview preparation, computer science' }],
+    ['meta', { name: 'keywords', content: 'programming patterns, design patterns, interactive visualizations, system design, data structures, concurrency patterns, algorithms, React, Linux, Go, Rust, TypeScript, Python, Redis, PostgreSQL, Kafka, production code, computer science, software engineering' }],
   ],
 
   locales: {
@@ -434,6 +434,26 @@ export default withMermaid(defineConfig({
     search: {
       provider: 'local',
       options: {
+        detailedView: true,
+        miniSearch: {
+          options: {
+            tokenize(text: string) {
+              const segmenter = (Intl as any).Segmenter;
+              if (segmenter) {
+                const seg = new segmenter('zh-CN', { granularity: 'word' });
+                return [...seg.segment(text)]
+                  .filter((s: any) => s.isWordLike)
+                  .map((s: any) => s.segment.toLowerCase());
+              }
+              return text.split(/[\s\-]+/).filter(Boolean).map(w => w.toLowerCase());
+            },
+          },
+          searchOptions: {
+            combineWith: 'AND',
+            fuzzy: 0.2,
+            boost: { title: 4, text: 2 },
+          },
+        },
         locales: {
           zh: {
             translations: {
