@@ -44,9 +44,10 @@ pnpm test       # Run exercises
 Every pattern must meet these minimums:
 
 - ≥ 2 production proofs with precise GitHub links (to line numbers)
-- TypeScript implementation + ≥ 1 other language
-- ≥ 2 exercise test files with difficulty labels
-- All tests pass, no lint errors
+- TypeScript implementation + ≥ 1 other language (Rust/Go/Python)
+- Exercise files in all 4 languages (TS, Rust, Go, Python) + answer files
+- Chinese translation with identical code blocks
+- All tests pass (`pnpm test` · `cargo test` · `go test ./...` · `pytest`), no lint errors
 
 See the full checklist in the [PR template](https://github.com/Totoro-jam/battle-tested-patterns/blob/main/.github/PULL_REQUEST_TEMPLATE.md).
 

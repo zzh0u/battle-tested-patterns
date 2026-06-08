@@ -44,9 +44,10 @@ pnpm test       # 运行练习测试
 每个模式必须满足以下最低要求：
 
 - ≥ 2 个生产验证，附带精确到行号的 GitHub 链接
-- TypeScript 实现 + ≥ 1 种其他语言
-- ≥ 2 个练习测试文件，标注难度等级
-- 所有测试通过，无 lint 错误
+- TypeScript 实现 + ≥ 1 种其他语言（Rust/Go/Python）
+- 4 种语言的练习文件（TS、Rust、Go、Python）+ 答案文件
+- 中文翻译且代码块一致
+- 所有测试通过（`pnpm test` · `cargo test` · `go test ./...` · `pytest`），无 lint 错误
 
 完整检查清单见 [PR 模板](https://github.com/Totoro-jam/battle-tested-patterns/blob/main/.github/PULL_REQUEST_TEMPLATE.md)。
 
