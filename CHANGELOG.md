@@ -21,6 +21,7 @@ See [commit history](https://github.com/Totoro-jam/battle-tested-patterns/commit
 
 - Extract release notes from CHANGELOG.md instead of changelogen (fixes empty release notes)
 - Add answer file existence check to content-quality workflow
+- Add frontmatter completeness and code-group tab order checks to content-quality workflow
 
 ### Chores
 
