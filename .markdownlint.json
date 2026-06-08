@@ -5,6 +5,9 @@
   },
   "MD013": false,
   "MD033": false,
+  "MD025": {
+    "front_matter_title": ""
+  },
   "MD041": false,
   "MD024": {
     "siblings_only": true
