@@ -10,7 +10,7 @@ See [commit history](https://github.com/Totoro-jam/battle-tested-patterns/commit
 
 ### Fixes
 
-- Correct stale test counts in ZH README (1,073→1,074, 491→492)
+- Correct TS test count back to 491 (was incorrectly changed to 492); total 1,073
 
 ### Documentation
 
