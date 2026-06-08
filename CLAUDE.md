@@ -94,6 +94,7 @@ Standard Operating Procedures live in `.sop/`. Read them before:
 - Reviewing PRs → `.sop/05-pr-review.md`
 - Fixing broken links → `.sop/06-broken-link-fix.md`
 - CI/CD verification → `.sop/07-ci-cd-verification.md`
+- Release process → `.sop/08-release.md`
 - Vue component build pitfalls → `.sop/09-vue-build-pitfalls.md`
 - Interactive viz component audit → `.sop/10-viz-component-audit.md`
 - Difficulty classification criteria → `.sop/11-difficulty-classification.md`
