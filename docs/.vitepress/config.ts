@@ -78,19 +78,34 @@ export default withMermaid(defineConfig({
         sidebar: {
           '/guide/': [
             {
-              text: 'Introduction',
+              text: 'Getting Started',
               items: [
                 { text: 'What is This?', link: '/guide/what-is-this' },
-                { text: 'Pattern Connections', link: '/guide/pattern-connections' },
-                { text: 'Pattern Timeline', link: '/guide/timeline' },
-                { text: 'How to Contribute', link: '/guide/how-to-contribute' },
-                { text: 'Cheat Sheet', link: '/guide/cheatsheet' },
-                { text: 'Use Cases', link: '/guide/use-cases' },
-                { text: 'Interview Guide', link: '/guide/interview' },
                 { text: 'Learning Paths', link: '/guide/learning-paths' },
-                { text: 'Complexity Cheat Sheet', link: '/guide/complexity' },
-                { text: 'Pattern Comparison', link: '/guide/pattern-comparison' },
                 { text: 'Exercise Guide', link: '/guide/exercises' },
+              ],
+            },
+            {
+              text: 'Explore',
+              items: [
+                { text: 'Pattern Connections', link: '/guide/pattern-connections' },
+                { text: 'Pattern Comparison', link: '/guide/pattern-comparison' },
+                { text: 'Pattern Timeline', link: '/guide/timeline' },
+                { text: 'Use Cases', link: '/guide/use-cases' },
+              ],
+            },
+            {
+              text: 'Reference',
+              items: [
+                { text: 'Cheat Sheet', link: '/guide/cheatsheet' },
+                { text: 'Complexity Cheat Sheet', link: '/guide/complexity' },
+                { text: 'Interview Guide', link: '/guide/interview' },
+              ],
+            },
+            {
+              text: 'Community',
+              items: [
+                { text: 'How to Contribute', link: '/guide/how-to-contribute' },
               ],
             },
           ],
@@ -203,19 +218,34 @@ export default withMermaid(defineConfig({
         sidebar: {
           '/zh/guide/': [
             {
-              text: '入门',
+              text: '快速开始',
               items: [
                 { text: '这是什么？', link: '/zh/guide/what-is-this' },
-                { text: '模式如何协作', link: '/zh/guide/pattern-connections' },
-                { text: '模式时间线', link: '/zh/guide/timeline' },
-                { text: '如何贡献', link: '/zh/guide/how-to-contribute' },
-                { text: '速查表', link: '/zh/guide/cheatsheet' },
-                { text: '使用场景', link: '/zh/guide/use-cases' },
-                { text: '面试指南', link: '/zh/guide/interview' },
                 { text: '学习路径', link: '/zh/guide/learning-paths' },
-                { text: '复杂度速查表', link: '/zh/guide/complexity' },
-                { text: '模式对比', link: '/zh/guide/pattern-comparison' },
                 { text: '练习指南', link: '/zh/guide/exercises' },
+              ],
+            },
+            {
+              text: '探索',
+              items: [
+                { text: '模式如何协作', link: '/zh/guide/pattern-connections' },
+                { text: '模式对比', link: '/zh/guide/pattern-comparison' },
+                { text: '模式时间线', link: '/zh/guide/timeline' },
+                { text: '使用场景', link: '/zh/guide/use-cases' },
+              ],
+            },
+            {
+              text: '参考',
+              items: [
+                { text: '速查表', link: '/zh/guide/cheatsheet' },
+                { text: '复杂度速查表', link: '/zh/guide/complexity' },
+                { text: '面试指南', link: '/zh/guide/interview' },
+              ],
+            },
+            {
+              text: '社区',
+              items: [
+                { text: '如何贡献', link: '/zh/guide/how-to-contribute' },
               ],
             },
           ],
