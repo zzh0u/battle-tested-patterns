@@ -118,6 +118,28 @@ Some patterns look alike but serve different purposes. This guide compares commo
 | **Together?** | **Yes** — WAL provides durability | Checkpoint limits replay length |
 | **Example** | PostgreSQL WAL, Redis AOF | PostgreSQL base backup, Redis RDB |
 
+## Backpressure vs Rate Limiter
+
+| Dimension | [Backpressure](/patterns/backpressure/) | [Rate Limiter](/patterns/rate-limiter/) |
+|-----------|---------------|-------------|
+| **Direction** | Producer → Consumer (upstream signal) | External → Server (gateway enforcement) |
+| **Mechanism** | Slow/pause the producer | Drop or queue excess requests |
+| **Scope** | Internal pipeline flow control | External API boundary |
+| **Adaptation** | Dynamic (adjusts to consumer speed) | Static threshold (tokens/sec) |
+| **Example** | Node.js stream `.pipe()`, Reactive Streams | Stripe API 25 req/sec, Nginx `limit_req` |
+| **When confused** | If you control the producer → backpressure | If you can't control the sender → rate limiter |
+
+## Tombstone vs Dirty Flag
+
+| Dimension | [Tombstone](/patterns/tombstone/) | [Dirty Flag](/patterns/dirty-flag/) |
+|-----------|-----------|------------|
+| **Marks** | "This item is deleted" | "This item needs recomputation" |
+| **Lifecycle** | Permanent until compaction | Cleared after recomputation |
+| **Purpose** | Defer physical deletion | Defer expensive recalculation |
+| **Visibility** | Readers must skip tombstoned items | Readers see stale-until-recalculated value |
+| **Example** | Cassandra tombstones, LevelDB delete markers | Chromium layout invalidation, game transform |
+| **When confused** | If marking something as "gone" → tombstone | If marking "needs update" → dirty flag |
+
 ## Choosing the Right Pattern: Decision Flowchart
 
 <DecisionTree variant="pattern-selector" />
