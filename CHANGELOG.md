@@ -20,6 +20,8 @@ See [commit history](https://github.com/Totoro-jam/battle-tested-patterns/commit
 
 - Update SOPs 01/05/08 to match current 4-language exercise and release workflow
 - Add missing commands to CLAUDE.md (verify-code, Rust, Go)
+- Update CONTRIBUTING guides with 4-language exercise requirement and full command set
+- Update PR template with complete quality checklist (exercises, i18n, related patterns)
 
 ## v1.9.0
 

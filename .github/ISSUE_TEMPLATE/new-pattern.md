@@ -26,12 +26,12 @@ Which production projects use this pattern? Provide precise GitHub links:
 
 ## Languages
 
-Which languages would you implement this in?
+Implementations and exercises are required in all 4 languages:
 
 - [ ] TypeScript (required)
 - [ ] Rust
 - [ ] Go
-- [ ] C
+- [ ] Python
 
 ## Why is this pattern valuable?
 
