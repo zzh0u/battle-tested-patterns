@@ -1,4 +1,5 @@
 ---
+title: "Complexity Cheat Sheet"
 description: "Big-O complexity reference for all 46 patterns — key operations, time & space at a glance."
 ---
 

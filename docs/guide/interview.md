@@ -1,4 +1,5 @@
 ---
+title: "Interview Guide"
 description: "Ace system design and coding interviews — 46 patterns mapped to interview topics with sample questions and what interviewers look for."
 ---
 

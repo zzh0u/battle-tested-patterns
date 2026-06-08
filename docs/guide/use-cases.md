@@ -1,4 +1,5 @@
 ---
+title: "Use Cases"
 description: "Find the right pattern by scenario — web APIs, databases, distributed systems, frontend, compilers, and more."
 ---
 

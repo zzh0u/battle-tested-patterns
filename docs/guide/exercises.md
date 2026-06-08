@@ -1,4 +1,5 @@
 ---
+title: "Exercise Guide"
 description: "Step-by-step setup for TypeScript, Rust, Go, and Python exercises — prerequisites, how to run tests, and troubleshooting."
 ---
 

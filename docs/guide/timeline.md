@@ -1,4 +1,5 @@
 ---
+title: "Pattern Timeline"
 description: "Timeline of programming patterns: 80 years of computing history from von Neumann to modern distributed systems."
 ---
 

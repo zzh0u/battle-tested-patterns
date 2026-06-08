@@ -1,4 +1,5 @@
 ---
+title: "Cheat Sheet"
 description: "Quick reference card for all 46 battle-tested patterns — complexity, when to use, and pick-by-problem guide."
 ---
 

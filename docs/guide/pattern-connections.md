@@ -1,4 +1,5 @@
 ---
+title: "How Patterns Connect"
 description: "How the 46 patterns connect: composition chains, shared building blocks, and real-world pattern combinations."
 ---
 

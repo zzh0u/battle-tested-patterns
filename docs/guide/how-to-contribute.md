@@ -1,4 +1,5 @@
 ---
+title: "How to Contribute"
 description: "How to contribute a new pattern: verification requirements, source link standards, multi-language implementation guidelines."
 ---
 

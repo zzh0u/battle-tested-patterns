@@ -1,4 +1,5 @@
 ---
+title: "Learning Paths"
 description: "Four curated learning tracks to guide you through the 46 patterns — from beginner-friendly data structures to advanced distributed systems."
 ---
 

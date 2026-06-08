@@ -1,4 +1,5 @@
 ---
+title: "Pattern Comparison Matrix"
 description: "Head-to-head comparisons of similar patterns — when to pick one over the other."
 ---
 

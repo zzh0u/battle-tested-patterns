@@ -1,4 +1,5 @@
 ---
+title: "练习指南"
 description: "TypeScript、Rust、Go 和 Python 练习的分步设置指南 — 前置要求、测试运行方式和常见问题排查。"
 ---
 
