@@ -12,6 +12,8 @@ See [commit history](https://github.com/Totoro-jam/battle-tested-patterns/commit
 
 - Correct stale test counts across READMEs and exercise guides (TS 553→491, Go 173→176)
 - Add retry logic to verify-source-links for transient 5xx errors (avoids false-positive issues)
+- Add `// TODO: implement` markers to all 46 Rust exercise files for consistency with TS/Go/Python
+- Remove dead warn/strict split in verify-code-blocks script
 
 ### CI
 
