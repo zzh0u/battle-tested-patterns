@@ -176,7 +176,7 @@ These contain pure implementation code (no tests). Use them to check your work o
 
 ```bash
 # From the project root:
-pnpm test                                  # TypeScript (491 tests)
+pnpm test                                  # TypeScript (492 tests)
 (cd exercises/rust && cargo test)          # Rust (173 tests)
 (cd exercises/go && go test ./...)         # Go (176 tests)
 (cd exercises/python && pytest)            # Python (233 tests)
