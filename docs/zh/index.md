@@ -14,8 +14,8 @@ hero:
       text: 浏览模式
       link: /zh/patterns/
     - theme: alt
-      text: 面试指南
-      link: /zh/guide/interview
+      text: 学习路径
+      link: /zh/guide/learning-paths
 
 features:
   - icon:

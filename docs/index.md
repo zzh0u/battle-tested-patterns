@@ -14,8 +14,8 @@ hero:
       text: Browse Patterns
       link: /patterns/
     - theme: alt
-      text: Interview Guide
-      link: /guide/interview
+      text: Learning Paths
+      link: /guide/learning-paths
 
 features:
   - icon:
