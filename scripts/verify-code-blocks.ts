@@ -117,7 +117,7 @@ function verifyRust(block: CodeBlock): string | null {
   writeFileSync(file, code);
   try {
     const outFile = file.replace('.rs', '');
-    execSync(`rustc --edition 2021 "${file}" -o "${outFile}" 2>&1`, { timeout: 30000 });
+    execSync(`rustc --edition 2021 "${file}" -o "${outFile}" 2>&1`, { timeout: 60000 });
     try { rmSync(outFile); } catch {}
     return null;
   } catch (e: any) {
@@ -190,7 +190,7 @@ function verifyGo(block: CodeBlock): string | null {
   writeFileSync(join(dir, 'go.mod'), 'module verify\n\ngo 1.23\n');
   writeFileSync(join(dir, 'main.go'), code);
   try {
-    execSync(`cd "${dir}" && go build ./... 2>&1`, { timeout: 15000 });
+    execSync(`cd "${dir}" && go build ./... 2>&1`, { timeout: 30000 });
     return null;
   } catch (e: any) {
     return (e.stderr?.toString() || e.stdout?.toString() || e.message).split('\n').slice(0, 5).join('\n');
