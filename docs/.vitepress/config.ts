@@ -48,6 +48,46 @@ export default withMermaid(defineConfig({
     head.push(['link', { rel: 'alternate', hreflang: 'zh', href: `${SITE_URL}/${zhPath.replace(/index\.md$/, '').replace(/\.md$/, '')}` }]);
     head.push(['link', { rel: 'alternate', hreflang: 'x-default', href: `${SITE_URL}/${enPath.replace(/index\.md$/, '').replace(/\.md$/, '')}` }]);
 
+    const isPattern = /^(zh\/)?patterns\/[^/]+\/index\.md$/.test(pageData.relativePath);
+    const isHome = pageData.relativePath === 'index.md' || pageData.relativePath === 'zh/index.md';
+
+    if (isHome) {
+      const ld = {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'Battle-Tested Patterns',
+        url: SITE_URL,
+        description: DEFAULT_DESC,
+        author: { '@type': 'Person', name: 'Totoro-jam' },
+        inLanguage: isZh ? 'zh-CN' : 'en',
+      };
+      head.push(['script', { type: 'application/ld+json' }, JSON.stringify(ld)]);
+    } else if (isPattern) {
+      const slug = pageData.relativePath.replace(/^zh\//, '').replace(/^patterns\//, '').replace(/\/index\.md$/, '');
+      const breadcrumbs = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: isZh ? '首页' : 'Home', item: isZh ? `${SITE_URL}/zh/` : `${SITE_URL}/` },
+          { '@type': 'ListItem', position: 2, name: isZh ? '模式' : 'Patterns', item: isZh ? `${SITE_URL}/zh/patterns/` : `${SITE_URL}/patterns/` },
+          { '@type': 'ListItem', position: 3, name: pageData.title },
+        ],
+      };
+      const article = {
+        '@context': 'https://schema.org',
+        '@type': 'TechArticle',
+        headline: pageData.title,
+        description: desc,
+        url,
+        author: { '@type': 'Person', name: 'Totoro-jam' },
+        publisher: { '@type': 'Organization', name: 'Battle-Tested Patterns' },
+        inLanguage: isZh ? 'zh-CN' : 'en',
+        ...(pageData.lastUpdated ? { dateModified: new Date(pageData.lastUpdated).toISOString() } : {}),
+      };
+      head.push(['script', { type: 'application/ld+json' }, JSON.stringify(breadcrumbs)]);
+      head.push(['script', { type: 'application/ld+json' }, JSON.stringify(article)]);
+    }
+
     return head;
   },
 
