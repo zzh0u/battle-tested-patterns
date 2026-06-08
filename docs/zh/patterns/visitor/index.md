@@ -34,7 +34,7 @@ difficulty: "advanced"
       visitNumber(4)                               → 4
     ) → 10
 
-  Print Visitor (new op, zero tree changes):
+  Print Visitor (new operation, zero tree changes):
     visitAdd(l, r) → "(" + visit(l) + " + " + visit(r) + ")"
     → "((2 * 3) + 4)"
 ```

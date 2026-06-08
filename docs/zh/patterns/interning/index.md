@@ -35,8 +35,8 @@ difficulty: "intermediate"
   │  2 │  "foo"           │
   └────┴──────────────────┘
 
-  Equality: symbol_a == symbol_b  (integer compare, O(1))
-  Instead:  strcmp(str_a, str_b)   (character scan, O(n))
+  Equality: symbol_a == symbol_b  (integer comparison, O(1))
+  Instead of: strcmp(str_a, str_b) (character scan, O(n))
 ```
 
 | 属性 | 值 |
