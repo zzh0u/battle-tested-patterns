@@ -67,7 +67,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      - run: pip install pytest
+      - run: pip install -r exercises/python/requirements.txt
       - run: cd exercises/python && pytest -v
 
   build:
