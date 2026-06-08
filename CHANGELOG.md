@@ -20,8 +20,9 @@ See [commit history](https://github.com/Totoro-jam/battle-tested-patterns/commit
 ### Chores
 
 - Remove unused `changelogen` dependency and `changelog` script
-- Sync package.json version from 1.5.0 to 1.9.0
+- Sync package.json version from 1.5.0 to 1.9.0 (root + docs workspace)
 - Add package.json version bump step to SOP 08 release process
+- Bump dependency specifiers: commitlint 21.0.2, tsx 4.22, vitepress 1.6.4, vue 3.5.35
 
 ### Documentation
 
