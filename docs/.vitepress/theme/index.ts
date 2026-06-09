@@ -1,6 +1,6 @@
 import DefaultTheme from 'vitepress/theme';
 import type { Theme } from 'vitepress';
-import { defineAsyncComponent, defineComponent, h } from 'vue';
+import { defineAsyncComponent, defineComponent, h, ref, onMounted } from 'vue';
 import VizSkeleton from './components/VizSkeleton.vue';
 import MinHeapSkeleton from './components/MinHeapSkeleton.vue';
 import TimelineSkeleton from './components/TimelineSkeleton.vue';
@@ -75,8 +75,11 @@ function clientOnly(loader: () => Promise<any>, skeleton?: any) {
   });
   return defineComponent({
     setup() {
-      return () =>
-        typeof window === 'undefined' ? h(loadingComp) : h(AsyncComp);
+      const mounted = ref(false);
+      onMounted(() => {
+        mounted.value = true;
+      });
+      return () => (mounted.value ? h(AsyncComp) : h(loadingComp));
     },
   });
 }
