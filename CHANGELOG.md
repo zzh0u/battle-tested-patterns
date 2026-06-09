@@ -14,6 +14,7 @@ See [commit history](https://github.com/Totoro-jam/battle-tested-patterns/commit
 
 ### Documentation
 
+- Add LRU Cache screenshots to EN/ZH READMEs for visual first impression
 - Add clickable documentation links to all 46 patterns in STUDY_PLAN.md
 - Add property tables to 4 remaining patterns: Bitmask, Backpressure, Circuit Breaker, Rate Limiter (EN+ZH) — 46/46 coverage
 
