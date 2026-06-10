@@ -32,7 +32,7 @@ flowchart LR
     O3 -.->|"订阅"| S
 ```
 
-这种解耦是该模式无处不在的原因：从 DOM `addEventListener` 到 Redux `store.subscribe` 到 Node.js `EventEmitter`。
+这种解耦是该模式无处不在的原因：从 DOM `addEventListener` 到 Redux `store.subscribe` 到 Node.js `EventEmitter` 到 React 的 `useEffect` 清理模式。
 
 | 属性 | 值 |
 |------|------|
@@ -49,8 +49,8 @@ flowchart LR
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Node.js | [events.js#L456-L520](https://github.com/nodejs/node/blob/main/lib/events.js#L456-L520) | `EventEmitter.prototype.emit` — 遍历注册的监听器并逐个调用。Node 事件驱动架构的基础。 |
-| Redux | [createStore.ts#L211-L280](https://github.com/reduxjs/redux/blob/master/src/createStore.ts#L211-L280) | `subscribe()` 添加监听器，`dispatch()` 执行 reducer 后调用所有监听器。Redux 在 dispatch 前快照监听器数组以安全处理订阅/取消。 |
+| Node.js | [events.js#L456-L520](https://github.com/nodejs/node/blob/main/lib/events.js#L456-L520) | `EventEmitter.prototype.emit` — 遍历注册的监听器并逐个调用。第 209 行定义了 EventEmitter 构造函数。Node 事件驱动架构的基础。 |
+| Redux | [createStore.ts#L211-L280](https://github.com/reduxjs/redux/blob/master/src/createStore.ts#L211-L280) | `subscribe()` 添加监听器，`dispatch()`（第 280 行）执行 reducer 后调用所有监听器。Redux 在 dispatch 前快照监听器数组以安全处理订阅/取消。 |
 
 ## 实现
 
@@ -187,9 +187,9 @@ print(messages)  # ["hello", "world"] — unchanged
 
 - **事件驱动系统** — UI 事件、网络事件、消息队列
 - **模块解耦** — 插件、中间件、扩展点
-- **状态管理** — Redux store、MobX observables
+- **状态管理** — Redux store、MobX observables、Vue reactivity
 - **日志/监控** — 发射事件而不关心谁在收集
-- **微服务事件** — 跨服务通知，发布者无需知道消费者
+- **实时更新** — WebSocket 消息分发、实时数据流
 
 ## 何时不用
 
