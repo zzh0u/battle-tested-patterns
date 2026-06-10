@@ -11,7 +11,7 @@ describe('VisitorViz', () => {
     vi.useRealTimers();
   });
 
-  it('renders AST tree with 9 SVG nodes (Prog, 2 Func, 3 Stmt, 4 Expr)', () => {
+  it('renders AST tree with 10 SVG nodes (1 Prog, 2 Func, 3 Stmt, 4 Expr)', () => {
     const wrapper = mount(VisitorViz);
     expect(wrapper.find('svg').exists()).toBe(true);
 

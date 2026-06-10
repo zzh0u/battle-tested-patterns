@@ -37,11 +37,13 @@ function hashPos(h: number) {
 }
 
 function simpleHash(s: string): number {
-  let h = 0;
+  // FNV-1a inspired hash — much better distribution than naive polynomial
+  let h = 2166136261;
   for (let i = 0; i < s.length; i++) {
-    h = ((h * 37) + s.charCodeAt(i)) | 0;
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
   }
-  return ((h % 1000) + 1000) % 1000 / 1000;
+  return ((h >>> 0) % 10000) / 10000;
 }
 
 function findOwner(keyHash: number): Node | null {
@@ -75,8 +77,8 @@ function addKey() {
   const owner = findOwner(h);
   animHash.value = h;
   message.value = t(
-    `Key "${id}" hashes to ${h.toFixed(2)} → walks clockwise to node ${owner?.id ?? 'none'}. This clockwise walk is O(1) with a sorted node list.`,
-    `键 "${id}" 哈希到 ${h.toFixed(2)} → 顺时针走到节点 ${owner?.id ?? '无'}。通过排序节点列表，顺时针查找是 O(1)。`
+    `Key "${id}" hashes to ${h.toFixed(2)} → walks clockwise to node ${owner?.id ?? 'none'}. Lookup is O(log N) via binary search on the sorted node ring.`,
+    `键 "${id}" 哈希到 ${h.toFixed(2)} → 顺时针走到节点 ${owner?.id ?? '无'}。通过排序节点列表，顺时针查找是 O(log N)。`
   );
   log(message.value, 'info');
   safeTimeout(() => { animHash.value = -1; }, 500);

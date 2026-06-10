@@ -76,7 +76,7 @@ Create in `exercises/typescript/<pattern>/`:
 - Include working implementations so CI passes
 - Separator: `// ─── Tests (do not modify below this line) ───────────────────────`
 - 4-5 meaningful test cases per exercise
-- Verify: `pnpm test` AND `pnpm typecheck`
+- Verify: `pnpm test:exercises` AND `pnpm typecheck`
 
 ## Step 6: Write Challenge Questions
 

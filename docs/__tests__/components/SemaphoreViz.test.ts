@@ -110,4 +110,19 @@ describe('SemaphoreViz', () => {
     const circles = wrapper.findAll('circle[r="10"]');
     expect(circles).toHaveLength(1);
   });
+
+  it('worker ID text elements use y attribute (not cy)', async () => {
+    const wrapper = mount(SemaphoreViz);
+    const btn = wrapper.find('.viz-btn--primary');
+
+    await btn.trigger('click');
+    await flushPromises();
+
+    const idTexts = wrapper.findAll('.sem-svg-id');
+    for (const textEl of idTexts) {
+      // SVG <text> must use y, not cy (cy is for circle/ellipse)
+      expect(textEl.attributes('cy')).toBeUndefined();
+      expect(textEl.attributes('y')).toBeDefined();
+    }
+  });
 });

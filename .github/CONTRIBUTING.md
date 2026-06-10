@@ -49,7 +49,9 @@ This is our core differentiator — every claim must be verifiable:
 ```bash
 pnpm install                          # Install dependencies
 pnpm dev                              # Start VitePress dev server
-pnpm test                             # Run TypeScript exercises (Vitest)
+pnpm test                             # Run all tests (exercises + docs components)
+pnpm test:exercises                   # Run TypeScript exercises only
+pnpm test:docs                        # Run Vue component tests only
 pnpm check                            # Run all checks (lint + typecheck + test + verify)
 pnpm lint                             # Lint markdown
 pnpm typecheck                        # TypeScript type check

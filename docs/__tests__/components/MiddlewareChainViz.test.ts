@@ -31,12 +31,25 @@ describe('MiddlewareChainViz', () => {
 
   it('reset restores all middleware to enabled', async () => {
     const wrapper = mount(MiddlewareChainViz);
+
+    // First disable a middleware (index 1 = RateLimit, not Handler which can't be disabled)
+    const checkboxes = wrapper.findAll('.mw-config-item input[type="checkbox"]');
+    // Toggle the second checkbox (RateLimit) to disabled
+    await checkboxes[1].setValue(false);
+    await flushPromises();
+
+    // Verify it's actually disabled
+    const disabled = wrapper.findAll('.mw-config-item-disabled');
+    expect(disabled.length).toBeGreaterThanOrEqual(1);
+
+    // Now reset
     const resetBtn = wrapper.find('.viz-btn--danger');
     await resetBtn.trigger('click');
     await flushPromises();
 
-    const disabled = wrapper.findAll('.mw-config-item-disabled');
-    expect(disabled).toHaveLength(0);
+    // All should be enabled again
+    const disabledAfter = wrapper.findAll('.mw-config-item-disabled');
+    expect(disabledAfter).toHaveLength(0);
   });
 
   it('has preset scenario buttons', () => {

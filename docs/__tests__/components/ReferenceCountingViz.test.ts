@@ -26,15 +26,18 @@ describe('ReferenceCountingViz', () => {
     expect(wrapper.text()).toContain('rc=1'); // Obj B has 1 ref
   });
 
-  it('drop button removes a reference and decrements count', async () => {
+  it('drop reference removes a reference and decrements count', async () => {
     const wrapper = mount(ReferenceCountingViz);
-    const dropBtns = wrapper.findAll('.rc-ref-drop, .rc-drop-btn');
-    if (dropBtns.length > 0) {
-      await dropBtns[0].trigger('click');
-      vi.advanceTimersByTime(1000);
-      await flushPromises();
-    }
-    expect(wrapper.text()).toMatch(/rc=|Dropped|已删除/);
+    // Component uses .rc-ref elements with @click="dropRef(i)"
+    const refs = wrapper.findAll('.rc-ref');
+    expect(refs.length).toBeGreaterThanOrEqual(1);
+
+    await refs[0].trigger('click');
+    vi.advanceTimersByTime(1000);
+    await flushPromises();
+
+    // After dropping one ref from Obj A (initially rc=2), it should become rc=1
+    expect(wrapper.text()).toContain('rc=1');
   });
 
   it('reset restores initial objects and references', async () => {

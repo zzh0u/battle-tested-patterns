@@ -235,10 +235,12 @@ git clone https://github.com/Totoro-jam/battle-tested-patterns.git
 cd battle-tested-patterns && pnpm install
 
 # 运行任意语言的练习
-pnpm test                         # TypeScript（491 个测试，Vitest）
+pnpm test:exercises               # TypeScript（491 个测试，Vitest）
 cd exercises/rust && cargo test   # Rust（173 个测试）
 cd exercises/go && go test ./...  # Go（176 个测试）
 cd exercises/python && pytest     # Python（233 个测试）
+
+pnpm test                         # 运行所有测试（exercises + docs 组件）
 
 pnpm dev                          # 本地文档站
 ```

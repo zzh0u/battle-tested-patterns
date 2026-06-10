@@ -305,7 +305,7 @@ async function presetMutex() {
           <text
             v-if="p.workerId"
             :x="200 + (i - (MAX_PERMITS - 1) / 2) * 36"
-            cy="50"
+            y="50"
             text-anchor="middle"
             class="sem-svg-id"
           >#{{ p.workerId }}</text>

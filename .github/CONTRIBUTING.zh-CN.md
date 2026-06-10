@@ -49,7 +49,9 @@
 ```bash
 pnpm install                          # 安装依赖
 pnpm dev                              # 启动文档站开发服务器
-pnpm test                             # 运行 TypeScript 练习（Vitest）
+pnpm test                             # 运行所有测试（exercises + docs 组件）
+pnpm test:exercises                   # 仅运行 TypeScript 练习测试
+pnpm test:docs                        # 仅运行 Vue 组件测试
 pnpm check                            # 运行所有检查（lint + typecheck + test + verify）
 pnpm lint                             # Lint Markdown
 pnpm typecheck                        # TypeScript 类型检查

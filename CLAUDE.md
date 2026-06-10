@@ -15,7 +15,7 @@ Each pattern has precise source links, multi-language implementations, and runna
 2. **Never claim "project X uses this pattern"** without a verifiable link
 3. **Code must be runnable** — no pseudocode
 4. **Multi-language implementations must be idiomatic** — not line-by-line translation
-5. **Exercise tests must pass** — verify with `pnpm test` / `cargo test` / `go test ./...` / `pytest`
+5. **Exercise tests must pass** — verify with `pnpm test:exercises` / `cargo test` / `go test ./...` / `pytest`
 
 ## Source Link Standard
 
@@ -61,7 +61,9 @@ Use [Conventional Commits](https://www.conventionalcommits.org/):
 ```bash
 pnpm dev          # Start VitePress dev server
 pnpm build        # Build docs site
-pnpm test         # Run TypeScript exercises (Vitest)
+pnpm test         # Run ALL tests (exercises + docs components)
+pnpm test:exercises # Run TypeScript exercises only (Vitest)
+pnpm test:docs    # Run Vue component tests only
 pnpm check        # Run all checks (lint + typecheck + test + verify-code + verify-mermaid)
 pnpm lint         # Lint markdown files
 pnpm typecheck    # TypeScript strict type check

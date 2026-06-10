@@ -13,7 +13,7 @@ You are debugging a test failure or build error in this project. Follow the stru
 
 Run the failing command and capture the exact error:
 ```bash
-pnpm test          # TypeScript
+pnpm test          # All tests (exercises + docs components)
 cargo test         # Rust (in exercises/rust/)
 go test ./...      # Go (in exercises/go/)
 pnpm build         # VitePress

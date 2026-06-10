@@ -14,7 +14,7 @@ git clone https://github.com/Totoro-jam/battle-tested-patterns.git
 cd battle-tested-patterns
 pnpm install
 pnpm dev        # 启动文档站开发服务器
-pnpm test       # 运行练习测试
+pnpm test       # 运行所有测试（exercises + docs 组件）
 ```
 
 ## 贡献类型

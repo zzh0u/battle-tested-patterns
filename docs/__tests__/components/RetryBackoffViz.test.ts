@@ -60,4 +60,14 @@ describe('RetryBackoffViz', () => {
     const presets = wrapper.find('.viz-presets');
     expect(presets.exists()).toBe(true);
   });
+
+  it('empty state SVG viewBox is wide enough for text (>=280)', () => {
+    const wrapper = mount(RetryBackoffViz);
+    const emptySvg = wrapper.find('.rb-empty-svg');
+    expect(emptySvg.exists()).toBe(true);
+    const viewBox = emptySvg.attributes('viewBox') || emptySvg.attributes('viewbox') || '';
+    const width = parseInt(viewBox.split(' ')[2] || '0', 10);
+    // Must be at least 280 to fit English placeholder text
+    expect(width).toBeGreaterThanOrEqual(280);
+  });
 });

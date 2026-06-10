@@ -116,7 +116,7 @@ Create files in `exercises/typescript/<pattern-name>/`:
 - [ ] Use the TODO-stub format: functions with `// TODO: implement` comments containing the working solution (so CI passes), with a `// ─── Tests (do not modify) ───` separator
 - [ ] Learners are expected to delete the implementations and rewrite them to pass the tests
 - [ ] Each exercise: 4-5 meaningful test cases covering edge cases
-- [ ] Verify all tests pass locally: `pnpm test`
+- [ ] Verify all tests pass locally: `pnpm test:exercises`
 - [ ] Verify TypeScript strict mode: `pnpm typecheck`
 
 ### 5b. Write Challenge Questions
@@ -138,7 +138,7 @@ Add `## Challenge Questions` section at the end of the pattern doc:
 - [ ] **Code-group tab order must match EN** — e.g. if EN is `[TypeScript] [Rust] [Go] [Python]`, ZH must be the same
 - [ ] Production Proof table must have **identical rows** in both languages (same links, same project count)
 - [ ] Info/warning callout blocks (`::: info`, `::: tip`) must exist in both languages
-- [ ] Include `运行练习：\`pnpm test\`` after the exercise table (matching EN's `Run exercises: \`pnpm test\``)
+- [ ] Include `运行练习：\`pnpm test:exercises\`` after the exercise table (matching EN's `Run exercises: \`pnpm test:exercises\``)
 - [ ] If you cannot translate, add `<!-- TODO: translate -->` markers
 
 ### 7. Update Navigation
@@ -228,7 +228,7 @@ After pushing, verify all pages are reachable:
 
 Before tagging a release, run a comprehensive multi-dimensional audit:
 
-- [ ] **Tests**: `pnpm test` — all exercises pass
+- [ ] **Tests**: `pnpm test` — all tests pass (exercises + docs components)
 - [ ] **TypeScript**: `pnpm typecheck` — strict mode clean
 - [ ] **Code blocks**: `pnpm verify-code` — all 4 languages compile
 - [ ] **Mermaid**: `pnpm verify-mermaid` — all diagrams valid syntax

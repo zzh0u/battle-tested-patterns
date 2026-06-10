@@ -40,7 +40,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm test
+      - run: pnpm test:exercises
 
   test-rust:
     name: Test (Rust)
@@ -83,7 +83,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter docs test
+      - run: pnpm test:docs
 
   build:
     name: Build Docs
@@ -99,3 +99,20 @@ jobs:
       - run: pnpm build
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
+
+  # Gate job — Branch Protection only needs to require this single check.
+  # All individual jobs above run in parallel; this job waits for all of them.
+  ci-pass:
+    name: CI Pass
+    if: always()
+    needs: [lint, test-ts, test-rust, test-go, test-python, test-components, build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check all jobs passed
+        run: |
+          if [[ "${{ contains(needs.*.result, 'failure') }}" == "true" ]] || \
+             [[ "${{ contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+            echo "::error::One or more CI jobs failed or were cancelled"
+            exit 1
+          fi
+          echo "All CI jobs passed ✓"

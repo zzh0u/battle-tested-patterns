@@ -40,7 +40,7 @@ const maxLevel = computed(() =>
   nodes.value.length === 0 ? 1 : Math.max(...nodes.value.map(n => n.levels))
 );
 
-const svgW = computed(() => LEFT_PAD + (nodes.value.length + 2) * (NODE_W + GAP) + 40);
+const svgW = computed(() => Math.max(320, LEFT_PAD + (nodes.value.length + 2) * (NODE_W + GAP) + 40));
 const svgH = computed(() => TOP_PAD + maxLevel.value * (NODE_H + 6) + 30);
 
 function nodeX(idx: number) {
@@ -114,8 +114,8 @@ async function search(target?: number) {
           if (isAborted()) return;
           if (nodes.value[nextIdx].val === tgt) {
             message.value = t(
-              `Found ${tgt} in ${stepsCount} steps! A sorted array would need O(n) linear scan. Skip list: O(log n) on average.`,
-              `在 ${stepsCount} 步中找到 ${tgt}！有序数组需要 O(n) 线性扫描。Skip List：平均 O(log n)。`
+              `Found ${tgt} in ${stepsCount} steps! A sorted linked list would need O(n) traversal. Skip list: O(log n) average with O(log n) insert/delete.`,
+              `在 ${stepsCount} 步中找到 ${tgt}！有序链表需要 O(n) 遍历。Skip List：平均 O(log n) 搜索，且插入/删除同为 O(log n)。`
             );
             log(message.value, 'success');
             searchTarget.value = null;

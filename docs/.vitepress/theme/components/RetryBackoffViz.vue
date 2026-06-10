@@ -302,20 +302,20 @@ async function presetNoBackoff() {
 
     <!-- Empty state -->
     <div v-else class="rb-empty">
-      <svg viewBox="0 0 200 80" class="rb-empty-svg" role="img" :aria-label="t('Retry timeline placeholder', '重试时间线占位')">
-        <text x="100" y="20" text-anchor="middle" fill="var(--viz-muted)" font-size="11">{{ t('Retry timeline will appear here', '重试时间线将在此显示') }}</text>
+      <svg viewBox="0 0 280 80" class="rb-empty-svg" role="img" :aria-label="t('Retry timeline placeholder', '重试时间线占位')">
+        <text x="140" y="20" text-anchor="middle" fill="var(--viz-muted)" font-size="11">{{ t('Retry timeline will appear here', '重试时间线将在此显示') }}</text>
         <g v-for="i in 5" :key="i">
           <rect
-            :x="10 + (i - 1) * 38"
+            :x="26 + (i - 1) * 50"
             y="35"
-            width="32"
+            width="40"
             height="8"
             rx="3"
             fill="var(--viz-cell-empty)"
             opacity="0.5"
           />
           <text
-            :x="26 + (i - 1) * 38"
+            :x="46 + (i - 1) * 50"
             y="58"
             text-anchor="middle"
             fill="var(--viz-muted)"

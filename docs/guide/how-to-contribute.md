@@ -14,7 +14,7 @@ git clone https://github.com/Totoro-jam/battle-tested-patterns.git
 cd battle-tested-patterns
 pnpm install
 pnpm dev        # Start docs dev server
-pnpm test       # Run exercises
+pnpm test       # Run all tests (exercises + docs components)
 ```
 
 ## Types of Contributions

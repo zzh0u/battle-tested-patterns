@@ -70,9 +70,10 @@ function sendSuccess() {
       log(message.value, 'info');
     }
   } else {
+    failureCount.value = 0;
     message.value = t(
-      'Request succeeded — circuit stays CLOSED. Counter stays at ' + failureCount.value + '/' + threshold + '.',
-      '请求成功 — 熔断器保持关闭。计数器保持 ' + failureCount.value + '/' + threshold + '。'
+      'Request succeeded — circuit stays CLOSED. Failure counter reset to 0/' + threshold + '.',
+      '请求成功 — 熔断器保持关闭。失败计数器重置为 0/' + threshold + '。'
     );
     log(message.value, 'info');
   }

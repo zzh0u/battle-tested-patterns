@@ -73,4 +73,33 @@ describe('CircuitBreakerViz', () => {
     const presetBtns = presets.findAll('.viz-btn');
     expect(presetBtns.length).toBeGreaterThanOrEqual(3);
   });
+
+  it('success in CLOSED state resets failure counter', async () => {
+    const wrapper = mount(CircuitBreakerViz);
+    const successBtn = wrapper.find('.viz-btn--primary');
+    const failBtn = wrapper.findAll('.viz-btn--danger').find((b) =>
+      b.text().includes('Failure') || b.text().includes('失败'),
+    );
+
+    // Send 2 failures (below threshold of 3)
+    await failBtn!.trigger('click');
+    await flushPromises();
+    await failBtn!.trigger('click');
+    await flushPromises();
+
+    // Send 1 success — should reset counter to 0
+    await successBtn.trigger('click');
+    await flushPromises();
+
+    expect(wrapper.text()).toMatch(/reset.*0|重置.*0/i);
+
+    // Now send 2 more failures — should NOT trigger OPEN (counter was reset)
+    await failBtn!.trigger('click');
+    await flushPromises();
+    await failBtn!.trigger('click');
+    await flushPromises();
+
+    // Still CLOSED because counter was reset by the success
+    expect(wrapper.text()).toContain('CLOSED');
+  });
 });
