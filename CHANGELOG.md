@@ -21,14 +21,22 @@ See [commit history](https://github.com/Totoro-jam/battle-tested-patterns/commit
 ### CI
 
 - Merge `content-quality.yml` (5 jobs) into `ci.yml` — eliminates duplicate runs on push
+- Add Vue component test job (`test-components`) to CI pipeline
 - Split test scripts: `pnpm test` (all), `pnpm test:exercises`, `pnpm test:docs`
 - Gate job aggregates all 12 CI jobs; Branch Protection only needs one check
+- Fix Go cache warning by specifying `cache-dependency-path`
 
 ### Fixes
 
 - Fix flawed component tests: ReferenceCountingViz wrong selector, VisitorViz count mismatch, SkipListViz conditional guards, MiddlewareChainViz reset logic
 - Correct TS test count back to 491; total 1,073
 - Resolve SSR hydration mismatch causing skeleton/component coexistence bug
+- Eliminate shell injection risk in `verify-code-blocks.ts` (internally controlled paths)
+- Rewrite actor-model Rust implementation with `enum` + `VecDeque`
+- Correct Bitmask "Four operations" label to "Core operations"
+- Sync Observer ZH translation with EN version
+- Add 8 missing patterns to README pattern lists
+- Fix stale exercise paths in ZH pattern docs and SOPs
 
 ### Testing
 
@@ -47,12 +55,17 @@ See [commit history](https://github.com/Totoro-jam/battle-tested-patterns/commit
 - Update all docs to reference `pnpm test:exercises` (92 pattern files, guides, SOPs, skills)
 - Align Viz design tokens with Apple HIG principles
 - Add LRU Cache screenshots to EN/ZH READMEs
+- Add clickable documentation links to all 46 patterns in STUDY_PLAN.md
 - Add property tables to 4 remaining patterns — 46/46 coverage
+- Add `package.json` keywords and homepage field
+- Add Star History badge to README
 
 ### Chores
 
 - Add Husky git hooks, a11y contrast fix, README prerequisites
 - Add `.nvmrc`, `.python-version` for consistent tooling
+- Organize exercises and answers into per-pattern directories
+- Fix pnpm config for reliable dependency resolution
 
 ## v1.9.1
 
