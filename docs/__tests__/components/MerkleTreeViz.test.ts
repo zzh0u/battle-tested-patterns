@@ -33,8 +33,11 @@ describe('MerkleTreeViz', () => {
     const wrapper = mount(MerkleTreeViz);
     const verifyBtn = wrapper.findAll('.viz-btn--primary')[0];
     await verifyBtn.trigger('click');
-    vi.advanceTimersByTime(2000);
-    await flushPromises();
+
+    for (let i = 0; i < 12; i++) {
+      vi.advanceTimersByTime(400);
+      await flushPromises();
+    }
 
     expect(wrapper.text()).toMatch(/Verified|验证/);
   });

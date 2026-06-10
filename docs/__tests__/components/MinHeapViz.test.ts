@@ -17,36 +17,42 @@ describe('MinHeapViz', () => {
     expect(wrapper.find('.viz-controls').exists()).toBe(true);
   });
 
-  it('starts with empty heap', () => {
+  it('starts with empty heap (no circle nodes)', () => {
     const wrapper = mount(MinHeapViz);
-    const rects = wrapper.findAll('svg rect');
-    expect(rects).toHaveLength(0);
+    const circles = wrapper.findAll('svg circle');
+    expect(circles).toHaveLength(0);
   });
 
   it('insert button adds a node to the heap', async () => {
     const wrapper = mount(MinHeapViz);
     const insertBtn = wrapper.find('.viz-btn--primary');
     await insertBtn.trigger('click');
-    vi.advanceTimersByTime(2000);
-    await flushPromises();
 
-    const rects = wrapper.findAll('svg rect');
-    expect(rects.length).toBeGreaterThanOrEqual(1);
+    for (let i = 0; i < 10; i++) {
+      vi.advanceTimersByTime(500);
+      await flushPromises();
+    }
+
+    const circles = wrapper.findAll('svg circle');
+    expect(circles.length).toBeGreaterThanOrEqual(1);
   });
 
   it('reset clears the heap', async () => {
     const wrapper = mount(MinHeapViz);
     const insertBtn = wrapper.find('.viz-btn--primary');
     await insertBtn.trigger('click');
-    vi.advanceTimersByTime(2000);
-    await flushPromises();
+
+    for (let i = 0; i < 10; i++) {
+      vi.advanceTimersByTime(500);
+      await flushPromises();
+    }
 
     const resetBtn = wrapper.find('.viz-btn--danger');
     await resetBtn.trigger('click');
     await flushPromises();
 
-    const rects = wrapper.findAll('svg rect');
-    expect(rects).toHaveLength(0);
+    const circles = wrapper.findAll('svg circle');
+    expect(circles).toHaveLength(0);
   });
 
   it('has preset scenario buttons', () => {
