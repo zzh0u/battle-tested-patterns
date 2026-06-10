@@ -18,9 +18,9 @@ describe('RegistryViz', () => {
     expect(wrapper.text()).toContain('CSVHandler');
   });
 
-  it('starts with empty registry', () => {
+  it('starts with empty registry table', () => {
     const wrapper = mount(RegistryViz);
-    expect(wrapper.text()).toMatch(/empty|空|0 handler/i);
+    expect(wrapper.text()).toContain('No handlers registered');
   });
 
   it('clicking a plugin registers it into the registry', async () => {
@@ -42,7 +42,7 @@ describe('RegistryViz', () => {
     await resetBtn.trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toMatch(/empty|空|0 handler/i);
+    expect(wrapper.text()).toContain('No handlers registered');
   });
 
   it('has preset scenario buttons', () => {

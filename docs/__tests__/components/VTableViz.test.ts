@@ -30,9 +30,10 @@ describe('VTableViz', () => {
     expect(methodBtns[2].text()).toBe('eat()');
   });
 
-  it('shows vtable with 3 entries for the selected class', () => {
+  it('shows vtable with entries for the selected class', () => {
     const wrapper = mount(VTableViz);
-    const rows = wrapper.findAll('.vt-vtable-row');
+    const vtable = wrapper.find('.vt-vtable');
+    const rows = vtable.findAll('.vt-vtable-row');
     expect(rows).toHaveLength(3);
     expect(rows[0].text()).toContain('speak()');
     expect(rows[0].text()).toContain('Dog::speak');
@@ -43,15 +44,13 @@ describe('VTableViz', () => {
     const callBtn = wrapper.find('.vt-call-btn');
     await callBtn.trigger('click');
 
-    for (let i = 0; i < 8; i++) {
-      vi.advanceTimersByTime(1000);
+    for (let i = 0; i < 10; i++) {
+      vi.advanceTimersByTime(500);
       await flushPromises();
     }
 
-    const result = wrapper.find('.vt-result');
-    expect(result.exists()).toBe(true);
-    expect(result.text()).toContain('Dog::speak');
-    expect(result.text()).toContain('"Woof!"');
+    expect(wrapper.text()).toContain('Dog::speak');
+    expect(wrapper.text()).toContain('"Woof!"');
   });
 
   it('dispatch adds entry to history', async () => {

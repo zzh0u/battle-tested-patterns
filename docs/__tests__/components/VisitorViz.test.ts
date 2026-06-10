@@ -69,8 +69,11 @@ describe('VisitorViz', () => {
     const wrapper = mount(VisitorViz);
     const visitBtn = wrapper.find('.viz-btn--primary');
     await visitBtn.trigger('click');
-    vi.advanceTimersByTime(5000);
-    await flushPromises();
+
+    for (let i = 0; i < 25; i++) {
+      vi.advanceTimersByTime(500);
+      await flushPromises();
+    }
 
     const resetBtn = wrapper.find('.viz-btn--danger');
     await resetBtn.trigger('click');
