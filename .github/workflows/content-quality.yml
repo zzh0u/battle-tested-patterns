@@ -21,6 +21,9 @@ on:
       - "docs/zh/by-project/**"
       - "exercises/**"
 
+permissions:
+  contents: read
+
 jobs:
   check-template:
     name: Verify pattern template completeness
@@ -219,33 +222,33 @@ jobs:
             fi
 
             # Rust
-            if [ ! -f "exercises/rust/src/${snake}.rs" ]; then
-              echo "::error::Missing Rust exercise: exercises/rust/src/${snake}.rs"
+            if [ ! -f "exercises/rust/src/${snake}/mod.rs" ]; then
+              echo "::error::Missing Rust exercise: exercises/rust/src/${snake}/mod.rs"
               exit_code=1
             fi
 
             # Go
-            if [ ! -f "exercises/go/${snake}_test.go" ]; then
-              echo "::error::Missing Go exercise: exercises/go/${snake}_test.go"
+            if [ ! -f "exercises/go/${snake}/${snake}_test.go" ]; then
+              echo "::error::Missing Go exercise: exercises/go/${snake}/${snake}_test.go"
               exit_code=1
             fi
 
             # Python
-            if [ ! -f "exercises/python/test_${snake}.py" ]; then
-              echo "::error::Missing Python exercise: exercises/python/test_${snake}.py"
+            if [ ! -f "exercises/python/${snake}/test_${snake}.py" ]; then
+              echo "::error::Missing Python exercise: exercises/python/${snake}/test_${snake}.py"
               exit_code=1
             fi
 
             # Answer files
             for lang_dir in typescript rust go python; do
               if [ "$lang_dir" = "typescript" ]; then
-                ans="exercises/answers/typescript/${pattern}.ts"
+                ans="exercises/answers/typescript/${pattern}/${pattern}.ts"
               elif [ "$lang_dir" = "rust" ]; then
-                ans="exercises/answers/rust/${snake}.rs"
+                ans="exercises/answers/rust/${snake}/${snake}.rs"
               elif [ "$lang_dir" = "go" ]; then
-                ans="exercises/answers/go/${snake}.go"
+                ans="exercises/answers/go/${snake}/${snake}.go"
               else
-                ans="exercises/answers/python/${snake}.py"
+                ans="exercises/answers/python/${snake}/${snake}.py"
               fi
               if [ ! -f "$ans" ]; then
                 echo "::error::Missing answer file: $ans"
