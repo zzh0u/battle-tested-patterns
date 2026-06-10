@@ -52,8 +52,8 @@ Trie 是一种树，从根到节点的每条路径拼出一个前缀。节点按
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Linux Kernel | [fib_trie.c#L80-L120](https://github.com/torvalds/linux/blob/master/net/ipv4/fib_trie.c#L80-L120) | IP 路由表——压缩 trie（LC-trie）存储内核的转发信息库（FIB）。`key_vector` 节点支持变长前缀匹配，对每个转发的数据包进行 O(log n) 最长前缀匹配查找。 |
-| Redis | [rax.h#L80-L130](https://github.com/redis/redis/blob/unstable/src/rax.h#L80-L130) | Radix tree（`rax`）——压缩 trie 用于 Redis Streams 键、集群 slot 到节点的映射和有序集合迭代器。`raxNode` 存储压缩前缀，带 iskey/isnull 标志。 |
+| Linux Kernel | [fib_trie.c#L80-L120](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/net/ipv4/fib_trie.c#L80-L120) | IP 路由表——压缩 trie（LC-trie）存储内核的转发信息库（FIB）。`key_vector` 节点支持变长前缀匹配，对每个转发的数据包进行 O(log n) 最长前缀匹配查找。 |
+| Redis | [rax.h#L80-L130](https://github.com/redis/redis/blob/df63a65d4d4ee33ae67e9f101885074febe0bccb/src/rax.h#L80-L130) | Radix tree（`rax`）——压缩 trie 用于 Redis Streams 键、集群 slot 到节点的映射和有序集合迭代器。`raxNode` 存储压缩前缀，带 iskey/isnull 标志。 |
 
 ## 实现
 

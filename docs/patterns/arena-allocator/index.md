@@ -50,8 +50,8 @@ An arena (or bump allocator) pre-allocates a contiguous block of memory and hand
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Rust bumpalo | [lib.rs#L378-L383](https://github.com/fitzgen/bumpalo/blob/main/src/lib.rs#L378-L383) | `Bump` struct (L378) holds a bump pointer into the current chunk. `try_alloc_layout_fast` (L1330-L1422) is the hot path: read pointer, align, subtract size, check capacity. `reset` (L1059-L1099) bulk-frees all chunks. Used in `wasm-bindgen`, Rust compiler, and Deno. |
-| Go stdlib | [arena.go#L44-L67](https://github.com/golang/go/blob/master/src/arena/arena.go#L44-L67) | Experimental `Arena` type — `New[T]()` allocates from the arena, `Free()` releases everything at once bypassing GC. Minimal API wrapping runtime arena primitives. |
+| Rust bumpalo | [lib.rs#L378-L383](https://github.com/fitzgen/bumpalo/blob/d2cc4dd0b8830d5b05d44e9decc776823e6a70ea/src/lib.rs#L378-L383) | `Bump` struct (L378) holds a bump pointer into the current chunk. `try_alloc_layout_fast` (L1330-L1422) is the hot path: read pointer, align, subtract size, check capacity. `reset` (L1059-L1099) bulk-frees all chunks. Used in `wasm-bindgen`, Rust compiler, and Deno. |
+| Go stdlib | [arena.go#L44-L67](https://github.com/golang/go/blob/f5cdf4745455415c7a43cfc7d925214d4511489b/src/arena/arena.go#L44-L67) | Experimental `Arena` type — `New[T]()` allocates from the arena, `Free()` releases everything at once bypassing GC. Minimal API wrapping runtime arena primitives. |
 
 ## Implementation
 
@@ -188,7 +188,7 @@ Exercise files: Rust `exercises/rust/src/arena_allocator/mod.rs` · Go `exercise
 
 ## More Production Uses
 
-- [Go arena](https://github.com/golang/go/blob/master/src/arena/arena.go) — experimental arena API in Go standard library
+- [Go arena](https://github.com/golang/go/blob/f5cdf4745455415c7a43cfc7d925214d4511489b/src/arena/arena.go) — experimental arena API in Go standard library
 - [V8 Engine](https://chromium.googlesource.com/v8/v8/+/refs/heads/main/src/zone/zone.h) — `Zone` allocator provides arena-style bump allocation for compiler temporaries
 - [Zig](https://github.com/ziglang/zig) — `std.mem.ArenaAllocator` as a core allocator pattern
 - [ECS game engines](https://github.com/SanderMertens/flecs) — component storage with arena-style allocation

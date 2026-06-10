@@ -57,8 +57,8 @@ difficulty: "beginner"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Godot Engine | [variant.h#L78-L120](https://github.com/godotengine/godot/blob/master/core/variant/variant.h#L78-L120) | `Variant::Type` 枚举（L78-L108）列出 38 种类型（NIL、BOOL、INT、FLOAT、STRING、VECTOR2 等）。`Variant` 类存储 `Type` 标签和所有可能值的 union。每个 GDScript 值都是 `Variant`——引擎通过标签分发操作。 |
-| PyTorch | [ivalue.h#L51-L96](https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/core/ivalue.h#L51-L96) | `IValue`（解释器值）持有标签（`Tag` 枚举：Tensor、Int、Double、Bool、String、List、Dict 等）和 `Payload` union。TorchScript 解释器对异构值的所有操作使用基于标签的分发。 |
+| Godot Engine | [variant.h#L78-L120](https://github.com/godotengine/godot/blob/ec67cbe92628bdaf979b10594359ba6f02cf8838/core/variant/variant.h#L78-L120) | `Variant::Type` 枚举（L78-L108）列出 38 种类型（NIL、BOOL、INT、FLOAT、STRING、VECTOR2 等）。`Variant` 类存储 `Type` 标签和所有可能值的 union。每个 GDScript 值都是 `Variant`——引擎通过标签分发操作。 |
+| PyTorch | [ivalue.h#L51-L96](https://github.com/pytorch/pytorch/blob/cef26d1e97fcb9dd61b4471f9bd7fa9a32bd42b9/aten/src/ATen/core/ivalue.h#L51-L96) | `IValue`（解释器值）持有标签（`Tag` 枚举：Tensor、Int、Double、Bool、String、List、Dict 等）和 `Payload` union。TorchScript 解释器对异构值的所有操作使用基于标签的分发。 |
 
 ## 实现
 
@@ -209,7 +209,7 @@ def try_add(a: TaggedValue, b: TaggedValue) -> TaggedValue | None:
 
 ## 更多生产案例
 
-- [V8 Engine](https://github.com/v8/v8/blob/main/src/objects/tagged-value.h) — JavaScript 值使用标签指针区分 Smi（小整数）和堆对象
+- [V8 Engine](https://github.com/v8/v8/blob/02a623d69f6ba69f513ae2c7aef84b9914fbde51/src/objects/tagged-value.h) — JavaScript 值使用标签指针区分 Smi（小整数）和堆对象
 - [SQLite Value](https://github.com/sqlite/sqlite) — 内部 `Mem` 结构体存储类型标签 + 值 union
 - [Lua TValue](https://github.com/lua/lua) — 每个 Lua 值都是带类型标签的 `TValue` + `Value` union
 - [GHC Haskell](https://github.com/ghc/ghc) — 代数数据类型编译为标签化的堆对象

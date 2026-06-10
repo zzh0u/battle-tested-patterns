@@ -27,7 +27,7 @@ Each pattern has precise source links, multi-language implementations, and runna
 ❌ Links not verified with `curl -I`
 ```
 
-Always target `main`/`master` branch. Prefer commit SHA permalinks for stability.
+Always target `main`/`master` branch. Convert to commit SHA permalinks before release using `tsx scripts/convert-to-sha-links.ts`.
 
 ## Pattern File Template
 

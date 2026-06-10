@@ -49,8 +49,8 @@ difficulty: "intermediate"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Go runtime | [mfixalloc.go#L31-L109](https://github.com/golang/go/blob/master/src/runtime/mfixalloc.go#L31-L109) | `fixalloc` — 固定大小空闲链表分配器。`mlink` 结构体（L49-L52）是覆盖在已释放块上的侵入式链表节点。`alloc()`（L74-L87）从空闲链表弹出；`free()`（L106-L108）推入。经典 LIFO 空闲链表，驱动 Go 的内存子系统。 |
-| Linux 内核 (SLUB) | [slub.c#L530-L551](https://github.com/torvalds/linux/blob/master/mm/slub.c#L530-L551) | `get_freepointer` / `set_freepointer` — 读写嵌入在每个空闲 slab 对象内部 `object + s->offset` 处的 next-free 指针。在 `CONFIG_SLAB_FREELIST_HARDENED` 下使用 XOR 编码指针（L504-L528）防御堆损坏攻击。 |
+| Go runtime | [mfixalloc.go#L31-L109](https://github.com/golang/go/blob/f5cdf4745455415c7a43cfc7d925214d4511489b/src/runtime/mfixalloc.go#L31-L109) | `fixalloc` — 固定大小空闲链表分配器。`mlink` 结构体（L49-L52）是覆盖在已释放块上的侵入式链表节点。`alloc()`（L74-L87）从空闲链表弹出；`free()`（L106-L108）推入。经典 LIFO 空闲链表，驱动 Go 的内存子系统。 |
+| Linux 内核 (SLUB) | [slub.c#L530-L551](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/mm/slub.c#L530-L551) | `get_freepointer` / `set_freepointer` — 读写嵌入在每个空闲 slab 对象内部 `object + s->offset` 处的 next-free 指针。在 `CONFIG_SLAB_FREELIST_HARDENED` 下使用 XOR 编码指针（L504-L528）防御堆损坏攻击。 |
 
 ## 实现
 
@@ -221,7 +221,7 @@ class FreeList:
 
 ## 更多生产案例
 
-- [Godot Engine](https://github.com/godotengine/godot/blob/master/core/templates/pooled_list.h#L57-L131) — `PooledList<T>` 非侵入式空闲链表，使用独立索引数组
+- [Godot Engine](https://github.com/godotengine/godot/blob/ec67cbe92628bdaf979b10594359ba6f02cf8838/core/templates/pooled_list.h#L57-L131) — `PooledList<T>` 非侵入式空闲链表，使用独立索引数组
 - [jemalloc](https://github.com/jemalloc/jemalloc) — 小分配的线程缓存空闲链表
 - [mimalloc](https://github.com/microsoft/mimalloc) — 分片设计的段级空闲链表
 - [Vulkan Memory Allocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator) — 带空闲链表的子分配池

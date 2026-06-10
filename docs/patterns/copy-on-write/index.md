@@ -48,8 +48,8 @@ The key insight: **most data is read far more often than it is written**. CoW ex
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Git | [object-file.c#L719-L730](https://github.com/git/git/blob/master/object-file.c#L719-L730) | Git objects are immutable content-addressed blobs. When you branch, Git doesn't copy files — it shares the same objects. A new commit only creates new objects for changed files, reusing unchanged ones. This is CoW at the data model level. |
-| Rust stdlib | [borrow.rs#L169-L220](https://github.com/rust-lang/rust/blob/main/library/alloc/src/borrow.rs#L169-L220) | `Cow<'a, B>` (Clone on Write) — an enum that holds either a `Borrowed` reference or an `Owned` value. `to_mut()` (line 283) clones the data only if it's currently borrowed, making it owned for mutation. Used throughout the Rust ecosystem for zero-copy parsing. |
+| Git | [object-file.c#L719-L730](https://github.com/git/git/blob/1ff279f3404a482a83fb04c7457e41ab26884aea/object-file.c#L719-L730) | Git objects are immutable content-addressed blobs. When you branch, Git doesn't copy files — it shares the same objects. A new commit only creates new objects for changed files, reusing unchanged ones. This is CoW at the data model level. |
+| Rust stdlib | [borrow.rs#L169-L220](https://github.com/rust-lang/rust/blob/d56483a91d6cf5041351a3208b8d08f98f0c8b56/library/alloc/src/borrow.rs#L169-L220) | `Cow<'a, B>` (Clone on Write) — an enum that holds either a `Borrowed` reference or an `Owned` value. `to_mut()` (line 283) clones the data only if it's currently borrowed, making it owned for mutation. Used throughout the Rust ecosystem for zero-copy parsing. |
 
 ## Implementation
 
@@ -194,7 +194,7 @@ Exercise files: Rust `exercises/rust/src/copy_on_write/mod.rs` · Go `exercises/
 
 ## More Production Uses
 
-- [Linux fork()](https://github.com/torvalds/linux/blob/master/kernel/fork.c#L580-L620) — page table CoW via `copy_page_range`
+- [Linux fork()](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/kernel/fork.c#L580-L620) — page table CoW via `copy_page_range`
 - [Swift](https://github.com/swiftlang/swift) — value types
 - [Redis](https://github.com/redis/redis) — `BGSAVE`
 - [ZFS](https://github.com/openzfs/zfs) / Btrfs — filesystem snapshots

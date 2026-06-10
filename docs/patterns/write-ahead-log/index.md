@@ -49,8 +49,8 @@ A write-ahead log records every state change as a sequential append before the a
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| etcd | [wal.go#L72-L95](https://github.com/etcd-io/etcd/blob/main/server/storage/wal/wal.go#L72-L95) | `WAL` struct (L72) holds dir, encoder, mutex, and file pipeline. `Save` method (L958-L1000) persists Raft hard state and entries, syncs to disk, and rotates segments when exceeding `SegmentSizeBytes`. The WAL is the source of truth for etcd's distributed consensus. |
-| PostgreSQL | [xlog.c#L783-L1128](https://github.com/postgres/postgres/blob/master/src/backend/access/transam/xlog.c#L783-L1128) | `XLogInsertRecord` — the core WAL insert entry point. Reserves space, copies record data into WAL buffers, triggers flush if needed. `XLogWrite` (L2324-L2622) writes WAL pages from shared buffers to disk. Enables crash recovery, replication, and PITR. |
+| etcd | [wal.go#L72-L95](https://github.com/etcd-io/etcd/blob/e9b62f804766edf77cfa918d600cb6fb2c56b401/server/storage/wal/wal.go#L72-L95) | `WAL` struct (L72) holds dir, encoder, mutex, and file pipeline. `Save` method (L958-L1000) persists Raft hard state and entries, syncs to disk, and rotates segments when exceeding `SegmentSizeBytes`. The WAL is the source of truth for etcd's distributed consensus. |
+| PostgreSQL | [xlog.c#L783-L1128](https://github.com/postgres/postgres/blob/e18b0cb7344cb4bd28468f6c0aeeb9b9241d30aa/src/backend/access/transam/xlog.c#L783-L1128) | `XLogInsertRecord` — the core WAL insert entry point. Reserves space, copies record data into WAL buffers, triggers flush if needed. `XLogWrite` (L2324-L2622) writes WAL pages from shared buffers to disk. Enables crash recovery, replication, and PITR. |
 
 ## Implementation
 

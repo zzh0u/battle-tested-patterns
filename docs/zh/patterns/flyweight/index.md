@@ -47,8 +47,8 @@ flowchart LR
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Python (CPython) | [longobject.c#L61-L75](https://github.com/python/cpython/blob/main/Objects/longobject.c#L61-L75) | `get_small_int` 返回 -5 到 256 的预缓存整数对象。`a = 42; b = 42; a is b` 为 `True`。 |
-| Go 标准库 | [pool.go#L52-L97](https://github.com/golang/go/blob/master/src/sync/pool.go#L52-L97) | `sync.Pool` — 临时对象的享元模式。`Get()` 返回缓存实例，`Put()` 归还复用。广泛用于 `fmt`、`encoding/json`。 |
+| Python (CPython) | [longobject.c#L61-L75](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Objects/longobject.c#L61-L75) | `get_small_int` 返回 -5 到 256 的预缓存整数对象。`a = 42; b = 42; a is b` 为 `True`。 |
+| Go 标准库 | [pool.go#L52-L97](https://github.com/golang/go/blob/f5cdf4745455415c7a43cfc7d925214d4511489b/src/sync/pool.go#L52-L97) | `sync.Pool` — 临时对象的享元模式。`Get()` 返回缓存实例，`Put()` 归还复用。广泛用于 `fmt`、`encoding/json`。 |
 
 ::: info 说明
 Java 的 `String.intern()`、JavaScript 引擎字符串表（V8）和 Rust 的 `&'static str` 都实现了此模式的变体。JVM 自动驻留所有字符串字面量。
@@ -190,11 +190,11 @@ print(sys.getrefcount(256))  # many references to the same int
 
 ## 更多生产案例
 
-- [Java String.intern()](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/lang/String.java) — JVM 字符串池去重相同的字符串字面量
-- [Python small int cache](https://github.com/python/cpython/blob/main/Objects/longobject.c) — CPython 预分配 -5 到 256 的整数
+- [Java String.intern()](https://github.com/openjdk/jdk/blob/4b3ec455c85314d051800a8f46dd8f5c93881e3a/src/java.base/share/classes/java/lang/String.java) — JVM 字符串池去重相同的字符串字面量
+- [Python small int cache](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Objects/longobject.c) — CPython 预分配 -5 到 256 的整数
 - [Rust string_cache](https://crates.io/crates/string_cache) crate
-- [.NET string interning](https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/String.cs) — `String.Intern()` 维护 CLR 级别的驻留池
-- [Chromium CSS](https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/core/css/) — Blink 渲染引擎中的 CSS 值去重
+- [.NET string interning](https://github.com/dotnet/runtime/blob/bee7953796edc09e516e847e3c9006b486ab0f6d/src/libraries/System.Private.CoreLib/src/System/String.cs) — `String.Intern()` 维护 CLR 级别的驻留池
+- [Chromium CSS](https://github.com/chromium/chromium/blob/5cffea3f665b7762369a0fa84d2f208875e7225e/third_party/blink/renderer/core/css/) — Blink 渲染引擎中的 CSS 值去重
 
 ## 相关模式
 

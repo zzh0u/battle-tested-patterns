@@ -57,8 +57,8 @@ A B+ tree separates routing from storage. Internal nodes hold only keys and chil
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| PostgreSQL | [nbtinsert.c#L22-L55](https://github.com/postgres/postgres/blob/master/src/backend/access/nbtree/nbtinsert.c#L22-L55) | B-link tree (Lehman-Yao variant of B+ tree). `_bt_doinsert` manages concurrent insertions with right-links between siblings. Internal pages store keys + child pointers; leaf pages store heap TIDs and are chained for index scans via `_bt_readnextpage`. |
-| SQLite | [btreeInt.h#L190-L198](https://github.com/sqlite/sqlite/blob/master/src/btreeInt.h#L190-L198) | All tables and indexes backed by B+ trees on disk pages. Cell format defined in `btreeInt.h`: interior cells hold child page pointers + keys; leaf cells hold complete payloads. `balance_nonroot()` handles page splitting when a node overflows. |
+| PostgreSQL | [nbtinsert.c#L22-L55](https://github.com/postgres/postgres/blob/e18b0cb7344cb4bd28468f6c0aeeb9b9241d30aa/src/backend/access/nbtree/nbtinsert.c#L22-L55) | B-link tree (Lehman-Yao variant of B+ tree). `_bt_doinsert` manages concurrent insertions with right-links between siblings. Internal pages store keys + child pointers; leaf pages store heap TIDs and are chained for index scans via `_bt_readnextpage`. |
+| SQLite | [btreeInt.h#L190-L198](https://github.com/sqlite/sqlite/blob/2cb57d9d4ac7eac3b1d15cfa71511f54817cb3e4/src/btreeInt.h#L190-L198) | All tables and indexes backed by B+ trees on disk pages. Cell format defined in `btreeInt.h`: interior cells hold child page pointers + keys; leaf cells hold complete payloads. `balance_nonroot()` handles page splitting when a node overflows. |
 
 ## Implementation
 

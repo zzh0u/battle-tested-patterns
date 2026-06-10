@@ -57,8 +57,8 @@ difficulty: "beginner"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| TensorFlow | [op.h#L258-L290](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/framework/op.h#L258-L290) | `REGISTER_OP` 宏将新操作注册到全局 `OpRegistry`。每个 op 定义名称、输入、输出和形状函数。运行时在构建计算图时按名称查找 op，因此新 op 可以在不修改图执行器的情况下添加。 |
-| gRPC-Go | [server.go#L154-L170](https://github.com/grpc/grpc-go/blob/master/server.go#L154-L170) | `RegisterService` 将服务描述（方法、处理函数）添加到服务器的服务映射中。当 RPC 到达时，服务器在此注册表中查找方法以分派到正确的处理程序。服务在 init 期间自注册。 |
+| TensorFlow | [op.h#L258-L290](https://github.com/tensorflow/tensorflow/blob/b4c7e9a660badf8c8c81075fe9f781d23ed6f28a/tensorflow/core/framework/op.h#L258-L290) | `REGISTER_OP` 宏将新操作注册到全局 `OpRegistry`。每个 op 定义名称、输入、输出和形状函数。运行时在构建计算图时按名称查找 op，因此新 op 可以在不修改图执行器的情况下添加。 |
+| gRPC-Go | [server.go#L154-L170](https://github.com/grpc/grpc-go/blob/f1864955bbb48efa131f6652933fa8b2189d9305/server.go#L154-L170) | `RegisterService` 将服务描述（方法、处理函数）添加到服务器的服务映射中。当 RPC 到达时，服务器在此注册表中查找方法以分派到正确的处理程序。服务在 init 期间自注册。 |
 
 ## 实现
 

@@ -57,8 +57,8 @@ difficulty: "advanced"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| LevelDB | [merger.cc#L17-L100](https://github.com/google/leveldb/blob/main/table/merger.cc#L17-L100) | `MergingIterator` 将多个有序表迭代器（memtable + 多个 SSTable 层级）合并为单一有序视图。`FindSmallest()`（L84-L100）扫描子迭代器找到具有最小当前键的迭代器。这是 LevelDB 的核心读取路径——每个 `Get()` 和 `Seek()` 都通过此合并器来呈现分布在多个文件和内存中的数据的统一视图。 |
-| RocksDB | [merge_helper.cc#L87-L156](https://github.com/facebook/rocksdb/blob/main/db/merge_helper.cc#L87-L156) | `TimedFullMerge` 实现合并操作符，将同一键的多个版本组合起来。在 compaction 期间，`MergeHelper::MergeUntil` 遍历有序条目的迭代器，合并重复键的值。这就是 RocksDB 在 compaction 期间高效支持用户自定义合并操作（如 append、increment）的方式。 |
+| LevelDB | [merger.cc#L17-L100](https://github.com/google/leveldb/blob/7ee830d02b623e8ffe0b95d59a74db1e58da04c5/table/merger.cc#L17-L100) | `MergingIterator` 将多个有序表迭代器（memtable + 多个 SSTable 层级）合并为单一有序视图。`FindSmallest()`（L84-L100）扫描子迭代器找到具有最小当前键的迭代器。这是 LevelDB 的核心读取路径——每个 `Get()` 和 `Seek()` 都通过此合并器来呈现分布在多个文件和内存中的数据的统一视图。 |
+| RocksDB | [merge_helper.cc#L87-L156](https://github.com/facebook/rocksdb/blob/7affaee1c49ebc80cb213ad86fe7d2a3ad447da2/db/merge_helper.cc#L87-L156) | `TimedFullMerge` 实现合并操作符，将同一键的多个版本组合起来。在 compaction 期间，`MergeHelper::MergeUntil` 遍历有序条目的迭代器，合并重复键的值。这就是 RocksDB 在 compaction 期间高效支持用户自定义合并操作（如 append、increment）的方式。 |
 
 ## 实现
 

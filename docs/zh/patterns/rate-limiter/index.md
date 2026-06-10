@@ -56,8 +56,8 @@ difficulty: "intermediate"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Go x/time/rate | [rate.go#L57-L66](https://github.com/golang/time/blob/master/rate/rate.go#L57-L66) | `Limiter` 结构体——含 `tokens`、`limit`、`burst` 和 `last` 时间戳的令牌桶。`reserveN`（L337-L381）是核心算法：按经过时间推进令牌，减去请求的 `n`，计算等待时长。整个 Go 生态广泛使用。 |
-| Nginx | [ngx_http_limit_req_module.c#L405-L532](https://github.com/nginx/nginx/blob/master/src/http/modules/ngx_http_limit_req_module.c#L405-L532) | `ngx_http_limit_req_lookup` — 漏桶实现。L454：`excess = lr->excess - ctx->rate * ms / 1000 + 1000` 按经过时间排空 excess 并添加一个请求。驱动保护数百万 Nginx 服务器的 `limit_req` 指令。 |
+| Go x/time/rate | [rate.go#L57-L66](https://github.com/golang/time/blob/812b343c8714c317b0dad633efa6d103e554c006/rate/rate.go#L57-L66) | `Limiter` 结构体——含 `tokens`、`limit`、`burst` 和 `last` 时间戳的令牌桶。`reserveN`（L337-L381）是核心算法：按经过时间推进令牌，减去请求的 `n`，计算等待时长。整个 Go 生态广泛使用。 |
+| Nginx | [ngx_http_limit_req_module.c#L405-L532](https://github.com/nginx/nginx/blob/d994f5b8220847eb8f7e4400be5f7e6eb4538e46/src/http/modules/ngx_http_limit_req_module.c#L405-L532) | `ngx_http_limit_req_lookup` — 漏桶实现。L454：`excess = lr->excess - ctx->rate * ms / 1000 + 1000` 按经过时间排空 excess 并添加一个请求。驱动保护数百万 Nginx 服务器的 `limit_req` 指令。 |
 
 ## 实现
 
@@ -212,8 +212,8 @@ class TokenBucket:
 
 ## 更多生产案例
 
-- [Linux TBF](https://github.com/torvalds/linux/blob/master/net/sched/sch_tbf.c#L98-L114) — 内核令牌桶过滤器用于流量控制
-- [Guava RateLimiter](https://github.com/google/guava/blob/master/guava/src/com/google/common/util/concurrent/SmoothRateLimiter.java#L357-L369) — 带预热的平滑限流
+- [Linux TBF](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/net/sched/sch_tbf.c#L98-L114) — 内核令牌桶过滤器用于流量控制
+- [Guava RateLimiter](https://github.com/google/guava/blob/3e65944ec9207ca652128969fd1334e9920dde07/guava/src/com/google/common/util/concurrent/SmoothRateLimiter.java#L357-L369) — 带预热的平滑限流
 - [Envoy](https://github.com/envoyproxy/envoy) — 服务网格的本地/全局限流
 - [AWS API Gateway](https://github.com/aws/aws-sdk-js-v3) — API 端点的令牌桶节流
 

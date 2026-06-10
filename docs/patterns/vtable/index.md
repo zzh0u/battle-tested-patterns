@@ -56,8 +56,8 @@ A vtable (virtual function table) is a struct of function pointers that defines 
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Linux Kernel | [fs.h#L2093-L2163](https://github.com/torvalds/linux/blob/master/include/linux/fs.h#L2093-L2163) | `file_operations` struct (L2093) is a vtable of function pointers: `.read`, `.write`, `.open`, `.release`, `.mmap`, `.poll`, etc. Every file system (ext4, btrfs, tmpfs) provides its own `file_operations` instance. The VFS layer dispatches `read()` / `write()` calls through this vtable — one API, many implementations. |
-| CPython | [object.h#L250-L340](https://github.com/python/cpython/blob/main/Include/cpython/object.h#L250-L340) | `PyTypeObject` (L250) is the vtable for all Python types. It contains function pointers like `tp_repr`, `tp_hash`, `tp_call`, `tp_getattro`, `tp_richcompare`, and protocol suites (`tp_as_number`, `tp_as_sequence`, `tp_as_mapping`). Every Python `type` object points to a `PyTypeObject` vtable. |
+| Linux Kernel | [fs.h#L2093-L2163](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/include/linux/fs.h#L2093-L2163) | `file_operations` struct (L2093) is a vtable of function pointers: `.read`, `.write`, `.open`, `.release`, `.mmap`, `.poll`, etc. Every file system (ext4, btrfs, tmpfs) provides its own `file_operations` instance. The VFS layer dispatches `read()` / `write()` calls through this vtable — one API, many implementations. |
+| CPython | [object.h#L250-L340](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Include/cpython/object.h#L250-L340) | `PyTypeObject` (L250) is the vtable for all Python types. It contains function pointers like `tp_repr`, `tp_hash`, `tp_call`, `tp_getattro`, `tp_richcompare`, and protocol suites (`tp_as_number`, `tp_as_sequence`, `tp_as_mapping`). Every Python `type` object points to a `PyTypeObject` vtable. |
 
 ## Implementation
 

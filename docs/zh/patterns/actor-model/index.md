@@ -50,8 +50,8 @@ Actor 是拥有私有状态和信箱（消息队列）的轻量级进程。Actor
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Akka (Scala) | [Actor.scala#L476-L547](https://github.com/akka/akka-core/blob/main/akka-actor/src/main/scala/akka/actor/Actor.scala#L476-L547) | `trait Actor` — 核心 Actor 接口。定义 `context`、`self`、`sender()` 和 `def receive: Actor.Receive`（L528），每个 Akka Actor 通过偏函数指定其消息处理行为。`aroundReceive`（L540-L546）是分发钩子。 |
-| Erlang/OTP | [erl_process.h#L1043-L1205](https://github.com/erlang/otp/blob/master/erts/emulator/beam/erl_process.h#L1043-L1205) | `struct process` — BEAM 虚拟机中 Erlang 进程（Actor）的表示。关键字段：`sig_qs`（L1107，信号/消息队列 — 信箱）、`sig_inq`（L1168，并发信号输入队列）、`state`（L1165，原子进程状态标志）。每个进程是拥有自己堆和信箱的轻量级 Actor。 |
+| Akka (Scala) | [Actor.scala#L476-L547](https://github.com/akka/akka-core/blob/aded7b67a9dafcb32b8a5dc95f6debce3a97c0e9/akka-actor/src/main/scala/akka/actor/Actor.scala#L476-L547) | `trait Actor` — 核心 Actor 接口。定义 `context`、`self`、`sender()` 和 `def receive: Actor.Receive`（L528），每个 Akka Actor 通过偏函数指定其消息处理行为。`aroundReceive`（L540-L546）是分发钩子。 |
+| Erlang/OTP | [erl_process.h#L1043-L1205](https://github.com/erlang/otp/blob/c75602432b4eff922bcaf4a175144dc61adbd6d6/erts/emulator/beam/erl_process.h#L1043-L1205) | `struct process` — BEAM 虚拟机中 Erlang 进程（Actor）的表示。关键字段：`sig_qs`（L1107，信号/消息队列 — 信箱）、`sig_inq`（L1168，并发信号输入队列）、`state`（L1165，原子进程状态标志）。每个进程是拥有自己堆和信箱的轻量级 Actor。 |
 
 ## 实现
 
@@ -204,8 +204,8 @@ class Actor:
 
 ## 更多生产案例
 
-- [Orleans (C#)](https://github.com/dotnet/orleans/blob/main/src/Orleans.Runtime/Catalog/ActivationData.cs#L31-L55) — 虚拟 Actor（"grain"），`RunMessageLoop` 消息分发在 L980-L1012
-- [Proto.Actor (Go)](https://github.com/asynkron/protoactor-go/blob/dev/actor/message.go#L12-L14) — 极简 `Actor` 接口，仅一个 `Receive(c Context)` 方法
+- [Orleans (C#)](https://github.com/dotnet/orleans/blob/bab4fb03e99c978ae483c24d0d759f5b93222a74/src/Orleans.Runtime/Catalog/ActivationData.cs#L31-L55) — 虚拟 Actor（"grain"），`RunMessageLoop` 消息分发在 L980-L1012
+- [Proto.Actor (Go)](https://github.com/asynkron/protoactor-go/blob/288962e52f3f59533c8f463fc31f98b8d5d39e41/actor/message.go#L12-L14) — 极简 `Actor` 接口，仅一个 `Receive(c Context)` 方法
 - [Actix (Rust)](https://github.com/actix/actix) — Rust 的类型化消息 Actor 框架
 - [Microsoft DAPR](https://github.com/dapr/dapr) — 微服务的虚拟 Actor
 

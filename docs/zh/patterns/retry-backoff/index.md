@@ -51,8 +51,8 @@ difficulty: "beginner"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Kubernetes | [backoff.go#L30-L50](https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/util/wait/backoff.go#L30-L50) | `Backoff` 结构定义退避参数。`ExponentialBackoff`（行475）实现重试。用于 pod 重启、API 服务器重试。 |
-| gRPC-Go | [backoff.go#L56-L75](https://github.com/grpc/grpc-go/blob/master/internal/backoff/backoff.go#L56-L75) | `Exponential.Backoff()` — 计算带抖动的指数延迟。基础延迟每次重试翻倍，上限为 `MaxDelay`。`RunF`（L86-L109）是带上下文取消的重试编排循环。 |
+| Kubernetes | [backoff.go#L30-L50](https://github.com/kubernetes/kubernetes/blob/586cc904093af4fe7492e564908a796f0b107f97/staging/src/k8s.io/apimachinery/pkg/util/wait/backoff.go#L30-L50) | `Backoff` 结构定义退避参数。`ExponentialBackoff`（行475）实现重试。用于 pod 重启、API 服务器重试。 |
+| gRPC-Go | [backoff.go#L56-L75](https://github.com/grpc/grpc-go/blob/f1864955bbb48efa131f6652933fa8b2189d9305/internal/backoff/backoff.go#L56-L75) | `Exponential.Backoff()` — 计算带抖动的指数延迟。基础延迟每次重试翻倍，上限为 `MaxDelay`。`RunF`（L86-L109）是带上下文取消的重试编排循环。 |
 
 ## 实现
 

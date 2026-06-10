@@ -52,8 +52,8 @@ The wrap-around `index % capacity` is what makes it "ring" — it never runs out
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| LMAX Disruptor | [RingBuffer.java#L84-L130](https://github.com/LMAX-Exchange/disruptor/blob/master/src/main/java/com/lmax/disruptor/RingBuffer.java#L84-L130) | The Disruptor's `RingBuffer` is the core data structure behind LMAX Exchange — processes 6 million orders per second. Uses power-of-2 sizing for bitwise modulo (`sequence & (bufferSize - 1)`). |
-| Linux Kernel | [ring_buffer.h#L12-L70](https://github.com/torvalds/linux/blob/master/include/linux/ring_buffer.h#L12-L70) | `ring_buffer_event` struct with `type_len` packed into 5 bits + 27-bit timestamp delta. Per-CPU ring buffers — `ring_buffer_read`/`ring_buffer_consume` advance a read pointer without locks. Overflow silently overwrites oldest events. |
+| LMAX Disruptor | [RingBuffer.java#L84-L130](https://github.com/LMAX-Exchange/disruptor/blob/c871ca49826a6be7ada6957f6fbafcfecf7b1f87/src/main/java/com/lmax/disruptor/RingBuffer.java#L84-L130) | The Disruptor's `RingBuffer` is the core data structure behind LMAX Exchange — processes 6 million orders per second. Uses power-of-2 sizing for bitwise modulo (`sequence & (bufferSize - 1)`). |
+| Linux Kernel | [ring_buffer.h#L12-L70](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/include/linux/ring_buffer.h#L12-L70) | `ring_buffer_event` struct with `type_len` packed into 5 bits + 27-bit timestamp delta. Per-CPU ring buffers — `ring_buffer_read`/`ring_buffer_consume` advance a read pointer without locks. Overflow silently overwrites oldest events. |
 
 ## Implementation
 
@@ -230,7 +230,7 @@ Exercise files: Rust `exercises/rust/src/ring_buffer/mod.rs` · Go `exercises/go
 - Linux [io_uring](https://github.com/axboe/liburing)
 - [ZeroMQ](https://github.com/zeromq/libzmq)
 - [Kafka](https://github.com/apache/kafka) — log segments
-- [PortAudio](https://github.com/portaudio/portaudio/blob/master/src/common/pa_ringbuffer.c) — lock-free SPSC ring buffer for real-time audio
+- [PortAudio](https://github.com/portaudio/portaudio/blob/b0fe9de7ec86ebe5a26086f1d662ab74d7ebfae4/src/common/pa_ringbuffer.c) — lock-free SPSC ring buffer for real-time audio
 
 ## Related Patterns
 

@@ -68,8 +68,8 @@ Reference counting assigns each shared resource a counter. Every new owner (clon
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| CPython | [refcount.h#L255-L310](https://github.com/python/cpython/blob/main/Include/refcount.h#L255-L310) | `Py_INCREF` (L255-L310) is the inline function that increments `ob_refcnt`. `Py_DECREF` (L417-L430) decrements and calls `_Py_Dealloc` at zero. Every Python object carries `ob_refcnt` in `PyObject` ([object.h#L127-L150](https://github.com/python/cpython/blob/main/Include/object.h#L127-L150)). This is the primary memory management mechanism — GC only exists to break reference cycles. |
-| Rust std | [sync.rs#L269-L276](https://github.com/rust-lang/rust/blob/master/library/alloc/src/sync.rs#L269-L276) | `Arc<T>` (Atomic Reference Counted) struct at L269. `Drop` impl (L2799-L2875) calls `fetch_sub(1, Release)` on strong count, Acquire fence, then `drop_slow()` at zero. Used pervasively across Tokio, Actix, and OS-level Rust code. |
+| CPython | [refcount.h#L255-L310](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Include/refcount.h#L255-L310) | `Py_INCREF` (L255-L310) is the inline function that increments `ob_refcnt`. `Py_DECREF` (L417-L430) decrements and calls `_Py_Dealloc` at zero. Every Python object carries `ob_refcnt` in `PyObject` ([object.h#L127-L150](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Include/object.h#L127-L150)). This is the primary memory management mechanism — GC only exists to break reference cycles. |
+| Rust std | [sync.rs#L269-L276](https://github.com/rust-lang/rust/blob/ab26b175979ee7b2cb3302dce204b99df96f7efb/library/alloc/src/sync.rs#L269-L276) | `Arc<T>` (Atomic Reference Counted) struct at L269. `Drop` impl (L2799-L2875) calls `fetch_sub(1, Release)` on strong count, Acquire fence, then `drop_slow()` at zero. Used pervasively across Tokio, Actix, and OS-level Rust code. |
 
 ## Implementation
 
@@ -285,7 +285,7 @@ Exercise files: Rust `exercises/rust/src/reference_counting/mod.rs` · Go `exerc
 
 - [Swift ARC](https://github.com/apple/swift) — Swift's entire memory model is built on automatic reference counting (compiler-inserted retain/release)
 - [COM IUnknown](https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown) — `AddRef`/`Release` across every COM object in Windows
-- [Linux kernel kobject](https://github.com/torvalds/linux/blob/master/lib/kobject.c) — `kref` provides reference counting for kernel objects
+- [Linux kernel kobject](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/lib/kobject.c) — `kref` provides reference counting for kernel objects
 - [Objective-C ARC](https://clang.llvm.org/docs/AutomaticReferenceCounting.html) — compiler-managed `retain`/`release` calls
 
 ## Related Patterns

@@ -52,8 +52,8 @@ A trie (pronounced "try") is a tree where each path from root to node spells a p
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Linux Kernel | [fib_trie.c#L80-L120](https://github.com/torvalds/linux/blob/master/net/ipv4/fib_trie.c#L80-L120) | IP routing table — a compressed trie (LC-trie) stores the kernel's forwarding information base (FIB). `key_vector` nodes with variable-length prefix matching for O(log n) longest-prefix-match lookups on every packet forwarded. |
-| Redis | [rax.h#L80-L130](https://github.com/redis/redis/blob/unstable/src/rax.h#L80-L130) | Radix tree (`rax`) — a compressed trie used for Redis Streams keys, cluster slot-to-node mapping, and sorted set iterator. `raxNode` stores compressed prefixes with iskey/isnull flags. |
+| Linux Kernel | [fib_trie.c#L80-L120](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/net/ipv4/fib_trie.c#L80-L120) | IP routing table — a compressed trie (LC-trie) stores the kernel's forwarding information base (FIB). `key_vector` nodes with variable-length prefix matching for O(log n) longest-prefix-match lookups on every packet forwarded. |
+| Redis | [rax.h#L80-L130](https://github.com/redis/redis/blob/df63a65d4d4ee33ae67e9f101885074febe0bccb/src/rax.h#L80-L130) | Radix tree (`rax`) — a compressed trie used for Redis Streams keys, cluster slot-to-node mapping, and sorted set iterator. `raxNode` stores compressed prefixes with iskey/isnull flags. |
 
 ## Implementation
 

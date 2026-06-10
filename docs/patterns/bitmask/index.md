@@ -64,9 +64,9 @@ Key insight: a single `&` operation can check any combination of flags simultane
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| React | [ReactFiberFlags.js#L14-L36](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactFiberFlags.js#L14-L36) | Side-effect flags — `Placement = 0b0000010`, `Update = 0b0000100`. Tested with `fiber.flags & Update`, combined with bitwise OR. One integer replaces a dozen booleans for pending effects during reconciliation. |
-| Linux Kernel | [stat.h#L25-L33](https://github.com/torvalds/linux/blob/master/include/uapi/linux/stat.h#L25-L33) | File permission bits — the classic `rwxrwxrwx` (read/write/execute for owner/group/other) encoded as a 9-bit mask |
-| Go stdlib | [types.go#L32-L46](https://github.com/golang/go/blob/master/src/os/types.go#L32-L46) | `os.FileMode` — Go's file mode bits mirror Unix permission flags using typed constants with iota bit-shifting |
+| React | [ReactFiberFlags.js#L14-L36](https://github.com/facebook/react/blob/34b78a2897cc208260a88e6b62ecaf9ca2a9dfe4/packages/react-reconciler/src/ReactFiberFlags.js#L14-L36) | Side-effect flags — `Placement = 0b0000010`, `Update = 0b0000100`. Tested with `fiber.flags & Update`, combined with bitwise OR. One integer replaces a dozen booleans for pending effects during reconciliation. |
+| Linux Kernel | [stat.h#L25-L33](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/include/uapi/linux/stat.h#L25-L33) | File permission bits — the classic `rwxrwxrwx` (read/write/execute for owner/group/other) encoded as a 9-bit mask |
+| Go stdlib | [types.go#L32-L46](https://github.com/golang/go/blob/f5cdf4745455415c7a43cfc7d925214d4511489b/src/os/types.go#L32-L46) | `os.FileMode` — Go's file mode bits mirror Unix permission flags using typed constants with iota bit-shifting |
 
 ## Implementation
 
@@ -236,8 +236,8 @@ Exercise files: Rust `exercises/rust/src/bitmask/mod.rs` · Go `exercises/go/bit
 - [Chromium](https://chromium.googlesource.com/chromium/src) — layer compositing flags
 - [SQLite](https://www.sqlite.org/src) — VFS flags
 - [Nginx](https://github.com/nginx/nginx) — event flags
-- [Bevy ECS](https://github.com/bevyengine/bevy/blob/main/crates/bevy_ecs/src/archetype.rs) — component membership masks in archetype-based ECS
-- [Linux fcntl](https://github.com/torvalds/linux/blob/master/include/uapi/asm-generic/fcntl.h#L5-L30) — `O_RDONLY`, `O_WRONLY`, `O_CREAT` file control flags
+- [Bevy ECS](https://github.com/bevyengine/bevy/blob/fd4f66fc36ec9f8181afe85d65e22c52b14e86a9/crates/bevy_ecs/src/archetype.rs) — component membership masks in archetype-based ECS
+- [Linux fcntl](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/include/uapi/asm-generic/fcntl.h#L5-L30) — `O_RDONLY`, `O_WRONLY`, `O_CREAT` file control flags
 
 ## Related Patterns
 

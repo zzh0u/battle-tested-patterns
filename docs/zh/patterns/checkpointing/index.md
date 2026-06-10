@@ -52,8 +52,8 @@ difficulty: "intermediate"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| PostgreSQL | [checkpointer.c#L218-L360](https://github.com/postgres/postgres/blob/master/src/backend/postmaster/checkpointer.c#L218-L360) | `CheckpointerMain` — 检查点后台进程。在循环中等待检查点请求或 `checkpoint_timeout`（默认 5 分钟）。调用 `CreateCheckPoint` 将所有脏缓冲区刷写到磁盘，写入检查点 WAL 记录，并用检查点位置更新 `pg_control`。崩溃恢复时，PostgreSQL 读取 `pg_control` 找到最后的检查点，只从该点开始重放 WAL。 |
-| Redis | [rdb.c#L1414-L1529](https://github.com/redis/redis/blob/unstable/src/rdb.c#L1414-L1529) | `rdbSaveRio` 将整个 Redis 数据集序列化到 RDB 文件——一个时间点快照。Redis fork 一个子进程（`rdbSaveBackground`）来写入快照而不阻塞主线程。RDB 文件就是一个完整的检查点：重启时，Redis 加载它来即时恢复状态。结合 AOF（仅追加文件），Redis 只需重放在最后一次 RDB 快照之后写入的 AOF 条目。 |
+| PostgreSQL | [checkpointer.c#L218-L360](https://github.com/postgres/postgres/blob/e18b0cb7344cb4bd28468f6c0aeeb9b9241d30aa/src/backend/postmaster/checkpointer.c#L218-L360) | `CheckpointerMain` — 检查点后台进程。在循环中等待检查点请求或 `checkpoint_timeout`（默认 5 分钟）。调用 `CreateCheckPoint` 将所有脏缓冲区刷写到磁盘，写入检查点 WAL 记录，并用检查点位置更新 `pg_control`。崩溃恢复时，PostgreSQL 读取 `pg_control` 找到最后的检查点，只从该点开始重放 WAL。 |
+| Redis | [rdb.c#L1414-L1529](https://github.com/redis/redis/blob/df63a65d4d4ee33ae67e9f101885074febe0bccb/src/rdb.c#L1414-L1529) | `rdbSaveRio` 将整个 Redis 数据集序列化到 RDB 文件——一个时间点快照。Redis fork 一个子进程（`rdbSaveBackground`）来写入快照而不阻塞主线程。RDB 文件就是一个完整的检查点：重启时，Redis 加载它来即时恢复状态。结合 AOF（仅追加文件），Redis 只需重放在最后一次 RDB 快照之后写入的 AOF 条目。 |
 
 ## 实现
 

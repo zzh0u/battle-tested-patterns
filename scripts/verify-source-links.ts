@@ -1,7 +1,9 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
-const DOCS_DIR = join(import.meta.dirname, '..', 'docs');
+const ROOT = join(import.meta.dirname, '..');
+const DOCS_DIR = join(ROOT, 'docs');
+const ROOT_READMES = ['README.md', 'README.zh-CN.md'].map(f => join(ROOT, f));
 const GITHUB_URL_RE = /https:\/\/github\.com\/[^\s)>\]]+/g;
 
 interface LinkResult {
@@ -11,6 +13,7 @@ interface LinkResult {
   ok: boolean;
   isProductionProof: boolean;
   hasLineNumber: boolean;
+  isBranchLink: boolean;
 }
 
 function findMarkdownFiles(dir: string): string[] {
@@ -72,7 +75,10 @@ async function checkUrl(url: string, retries = 2): Promise<{ status: number | 'e
 
 async function main() {
   const isCI = process.argv.includes('--ci');
-  const files = findMarkdownFiles(DOCS_DIR);
+  const files = [
+    ...findMarkdownFiles(DOCS_DIR),
+    ...ROOT_READMES.filter(f => { try { statSync(f); return true; } catch { return false; } }),
+  ];
 
   if (files.length === 0) {
     console.log('No markdown files found.');
@@ -93,9 +99,11 @@ async function main() {
       seen.add(url);
 
       const hasLineNumber = /#L\d+/.test(url) && !url.endsWith('#L1');
+      const isShaLink = /\/(blob|tree)\/[\da-f]{40}(\/|$|[?#])/.test(url);
+      const isBranchLink = !isShaLink && /\/(blob|tree)\//.test(url);
 
       const { status, ok } = await checkUrl(url);
-      results.push({ file: file.replace(process.cwd() + '/', ''), url, status, ok, isProductionProof, hasLineNumber });
+      results.push({ file: file.replace(process.cwd() + '/', ''), url, status, ok, isProductionProof, hasLineNumber, isBranchLink });
     }
   }
 
@@ -103,6 +111,7 @@ async function main() {
 
   const broken = results.filter((r) => !r.ok);
   const impreciseProofs = results.filter((r) => r.ok && r.isProductionProof && !r.hasLineNumber);
+  const branchLinks = results.filter((r) => r.ok && r.isBranchLink);
   const validProofs = results.filter((r) => r.ok && r.isProductionProof && r.hasLineNumber);
   const otherLinks = results.filter((r) => r.ok && !r.isProductionProof);
 
@@ -115,6 +124,13 @@ async function main() {
   for (const r of impreciseProofs) {
     console.log(`  ⚠️  [proof]  ${r.url} — missing line numbers`);
   }
+  if (branchLinks.length) {
+    console.log(`\n  ℹ️  ${branchLinks.length} link(s) use branch names instead of SHA permalinks:`);
+    for (const r of branchLinks) {
+      console.log(`     ${r.url}`);
+    }
+    console.log(`     Run: tsx scripts/convert-to-sha-links.ts`);
+  }
   for (const r of broken) {
     console.log(`  ❌ ${r.status} ${r.url} (in ${r.file})`);
   }
@@ -123,6 +139,7 @@ async function main() {
   console.log(`  ✅ ${validProofs.length} production proofs (precise)`);
   console.log(`  ✅ ${otherLinks.length} other links`);
   if (impreciseProofs.length) console.log(`  ⚠️  ${impreciseProofs.length} production proofs without line numbers`);
+  if (branchLinks.length) console.log(`  ℹ️  ${branchLinks.length} branch-based links (convert before release)`);
   if (broken.length) console.log(`  ❌ ${broken.length} broken`);
 
   if (broken.length > 0) {

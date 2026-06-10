@@ -58,8 +58,8 @@ difficulty: "intermediate"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| libuv | [core.c#L427-L492](https://github.com/libuv/libuv/blob/v1.x/src/unix/core.c#L427-L492) | `uv_run`（L427-L492）是 Node.js 使用的主事件循环函数。在单个 `while` 循环中处理定时器、待处理回调、I/O 轮询（`uv__io_poll`）、check 句柄和关闭句柄。支持三种运行模式：`UV_RUN_DEFAULT`（运行直到没有活跃句柄）、`UV_RUN_ONCE`、`UV_RUN_NOWAIT`。 |
-| Redis | [ae.c#L360-L468](https://github.com/redis/redis/blob/unstable/src/ae.c#L360-L468) | `aeProcessEvents`（L360-L468）是 Redis 事件循环的核心。计算最近的定时器，以该超时调用 `aeApiPoll`（epoll/kqueue/select 抽象），然后分发文件事件和定时器事件。Redis 在单线程上实现 100K+ ops/sec，因为事件循环从不阻塞在单个操作上。 |
+| libuv | [core.c#L427-L492](https://github.com/libuv/libuv/blob/f6b713398e464a9f166328765be1703fd860981f/src/unix/core.c#L427-L492) | `uv_run`（L427-L492）是 Node.js 使用的主事件循环函数。在单个 `while` 循环中处理定时器、待处理回调、I/O 轮询（`uv__io_poll`）、check 句柄和关闭句柄。支持三种运行模式：`UV_RUN_DEFAULT`（运行直到没有活跃句柄）、`UV_RUN_ONCE`、`UV_RUN_NOWAIT`。 |
+| Redis | [ae.c#L360-L468](https://github.com/redis/redis/blob/df63a65d4d4ee33ae67e9f101885074febe0bccb/src/ae.c#L360-L468) | `aeProcessEvents`（L360-L468）是 Redis 事件循环的核心。计算最近的定时器，以该超时调用 `aeApiPoll`（epoll/kqueue/select 抽象），然后分发文件事件和定时器事件。Redis 在单线程上实现 100K+ ops/sec，因为事件循环从不阻塞在单个操作上。 |
 
 ## 实现
 

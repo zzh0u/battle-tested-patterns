@@ -49,8 +49,8 @@ Two requests for `"hello"` get the **same object** — not a copy. This is why `
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Python (CPython) | [longobject.c#L61-L75](https://github.com/python/cpython/blob/main/Objects/longobject.c#L61-L75) | `get_small_int` returns pre-cached integer objects for -5 to 256. `a = 42; b = 42; a is b` is `True` because both reference the same cached object. This avoids millions of integer allocations in typical programs. |
-| Go stdlib | [pool.go#L52-L97](https://github.com/golang/go/blob/master/src/sync/pool.go#L52-L97) | `sync.Pool` is the flyweight pattern applied to temporary objects — `Get()` returns a cached instance instead of allocating, `Put()` returns it for reuse. Used in `fmt.Fprintf`, `encoding/json`, and HTTP handlers to share buffers. |
+| Python (CPython) | [longobject.c#L61-L75](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Objects/longobject.c#L61-L75) | `get_small_int` returns pre-cached integer objects for -5 to 256. `a = 42; b = 42; a is b` is `True` because both reference the same cached object. This avoids millions of integer allocations in typical programs. |
+| Go stdlib | [pool.go#L52-L97](https://github.com/golang/go/blob/f5cdf4745455415c7a43cfc7d925214d4511489b/src/sync/pool.go#L52-L97) | `sync.Pool` is the flyweight pattern applied to temporary objects — `Get()` returns a cached instance instead of allocating, `Put()` returns it for reuse. Used in `fmt.Fprintf`, `encoding/json`, and HTTP handlers to share buffers. |
 
 ::: info Note
 Java's `String.intern()`, JavaScript engine string tables (V8), and Rust's `&'static str` all implement variations of this pattern. The JVM interns all string literals automatically.
@@ -192,11 +192,11 @@ Exercise files: Rust `exercises/rust/src/flyweight/mod.rs` · Go `exercises/go/f
 
 ## More Production Uses
 
-- [Java String.intern()](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/lang/String.java) — JVM string pool deduplicates identical string literals
-- [Python small int cache](https://github.com/python/cpython/blob/main/Objects/longobject.c) — CPython pre-allocates integers -5 to 256
+- [Java String.intern()](https://github.com/openjdk/jdk/blob/4b3ec455c85314d051800a8f46dd8f5c93881e3a/src/java.base/share/classes/java/lang/String.java) — JVM string pool deduplicates identical string literals
+- [Python small int cache](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Objects/longobject.c) — CPython pre-allocates integers -5 to 256
 - [Rust string_cache](https://crates.io/crates/string_cache) crate
-- [.NET string interning](https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/String.cs) — `String.Intern()` maintains a CLR-wide intern pool
-- [Chromium CSS](https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/core/css/) — CSS value deduplication in the Blink rendering engine
+- [.NET string interning](https://github.com/dotnet/runtime/blob/bee7953796edc09e516e847e3c9006b486ab0f6d/src/libraries/System.Private.CoreLib/src/System/String.cs) — `String.Intern()` maintains a CLR-wide intern pool
+- [Chromium CSS](https://github.com/chromium/chromium/blob/5cffea3f665b7762369a0fa84d2f208875e7225e/third_party/blink/renderer/core/css/) — CSS value deduplication in the Blink rendering engine
 
 ## Related Patterns
 

@@ -60,8 +60,8 @@ Instead of immediately removing data, write a special "tombstone" record that sh
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| LevelDB | [dbformat.h#L39-L43](https://github.com/google/leveldb/blob/main/db/dbformat.h#L39-L43) | `kTypeDeletion` (value 0x0) marks a key as deleted in the write-ahead log and SSTables. During compaction (`DoCompactionWork` in db_impl.cc), tombstones are dropped once no older snapshot references the key. |
-| Apache Cassandra | [DeletionTime.java#L37-L99](https://github.com/apache/cassandra/blob/trunk/src/java/org/apache/cassandra/db/DeletionTime.java#L37-L99) | `DeletionTime` class represents tombstones with `markedForDeleteAt` timestamp. `isLive()` (L99) checks tombstone status on read. Tombstones propagate across replicas during `gc_grace_seconds` (default 10 days, referenced at L89) before compaction purges them. |
+| LevelDB | [dbformat.h#L39-L43](https://github.com/google/leveldb/blob/7ee830d02b623e8ffe0b95d59a74db1e58da04c5/db/dbformat.h#L39-L43) | `kTypeDeletion` (value 0x0) marks a key as deleted in the write-ahead log and SSTables. During compaction (`DoCompactionWork` in db_impl.cc), tombstones are dropped once no older snapshot references the key. |
+| Apache Cassandra | [DeletionTime.java#L37-L99](https://github.com/apache/cassandra/blob/3831d8265d748c21c0fef9d31d4777b134b20637/src/java/org/apache/cassandra/db/DeletionTime.java#L37-L99) | `DeletionTime` class represents tombstones with `markedForDeleteAt` timestamp. `isLive()` (L99) checks tombstone status on read. Tombstones propagate across replicas during `gc_grace_seconds` (default 10 days, referenced at L89) before compaction purges them. |
 
 ## Implementation
 

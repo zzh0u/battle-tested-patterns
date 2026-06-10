@@ -52,8 +52,8 @@ difficulty: "advanced"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| etcd | [kvstore.go#L53-L72](https://github.com/etcd-io/etcd/blob/main/server/storage/mvcc/kvstore.go#L53-L72) | `store` 结构体（L53）包含 `currentRev int64`（L72）——单调递增的修订计数器。在 [kvstore_txn.go#L214](https://github.com/etcd-io/etcd/blob/main/server/storage/mvcc/kvstore_txn.go#L214)（`tw.s.currentRev++`）的每次写事务中递增。Watch 和快照使用此修订号实现一致性读——"给我修订号 42 之后的所有变更"。 |
-| LevelDB | [dbformat.h#L62-L66](https://github.com/google/leveldb/blob/main/db/dbformat.h#L62-L66) | `SequenceNumber`（L62）是一个 `uint64_t`，每次写操作递增。`kMaxSequenceNumber`（L66）保留 8 位用于打包类型信息。用于 WAL 中的写入排序、快照可见性判断和压缩时的键冲突解决。 |
+| etcd | [kvstore.go#L53-L72](https://github.com/etcd-io/etcd/blob/e9b62f804766edf77cfa918d600cb6fb2c56b401/server/storage/mvcc/kvstore.go#L53-L72) | `store` 结构体（L53）包含 `currentRev int64`（L72）——单调递增的修订计数器。在 [kvstore_txn.go#L214](https://github.com/etcd-io/etcd/blob/e9b62f804766edf77cfa918d600cb6fb2c56b401/server/storage/mvcc/kvstore_txn.go#L214)（`tw.s.currentRev++`）的每次写事务中递增。Watch 和快照使用此修订号实现一致性读——"给我修订号 42 之后的所有变更"。 |
+| LevelDB | [dbformat.h#L62-L66](https://github.com/google/leveldb/blob/7ee830d02b623e8ffe0b95d59a74db1e58da04c5/db/dbformat.h#L62-L66) | `SequenceNumber`（L62）是一个 `uint64_t`，每次写操作递增。`kMaxSequenceNumber`（L66）保留 8 位用于打包类型信息。用于 WAL 中的写入排序、快照可见性判断和压缩时的键冲突解决。 |
 
 ## 实现
 

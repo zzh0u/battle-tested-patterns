@@ -56,8 +56,8 @@ difficulty: "advanced"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Linux 内核 | [fs.h#L2093-L2163](https://github.com/torvalds/linux/blob/master/include/linux/fs.h#L2093-L2163) | `file_operations` 结构体（L2093）是一个函数指针 vtable：`.read`、`.write`、`.open`、`.release`、`.mmap`、`.poll` 等。每个文件系统（ext4、btrfs、tmpfs）提供自己的 `file_operations` 实例。VFS 层通过这个 vtable 分发 `read()` / `write()` 调用——一个 API，多种实现。 |
-| CPython | [object.h#L250-L340](https://github.com/python/cpython/blob/main/Include/cpython/object.h#L250-L340) | `PyTypeObject`（L250）是所有 Python 类型的 vtable。包含 `tp_repr`、`tp_hash`、`tp_call`、`tp_getattro`、`tp_richcompare` 等函数指针，以及协议套件（`tp_as_number`、`tp_as_sequence`、`tp_as_mapping`）。每个 Python `type` 对象指向一个 `PyTypeObject` vtable。 |
+| Linux 内核 | [fs.h#L2093-L2163](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/include/linux/fs.h#L2093-L2163) | `file_operations` 结构体（L2093）是一个函数指针 vtable：`.read`、`.write`、`.open`、`.release`、`.mmap`、`.poll` 等。每个文件系统（ext4、btrfs、tmpfs）提供自己的 `file_operations` 实例。VFS 层通过这个 vtable 分发 `read()` / `write()` 调用——一个 API，多种实现。 |
+| CPython | [object.h#L250-L340](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Include/cpython/object.h#L250-L340) | `PyTypeObject`（L250）是所有 Python 类型的 vtable。包含 `tp_repr`、`tp_hash`、`tp_call`、`tp_getattro`、`tp_richcompare` 等函数指针，以及协议套件（`tp_as_number`、`tp_as_sequence`、`tp_as_mapping`）。每个 Python `type` 对象指向一个 `PyTypeObject` vtable。 |
 
 ## 实现
 

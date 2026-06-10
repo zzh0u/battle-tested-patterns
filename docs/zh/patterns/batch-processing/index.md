@@ -52,8 +52,8 @@ flowchart LR
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Apache Kafka | [RecordAccumulator.java#L69-L120](https://github.com/apache/kafka/blob/trunk/clients/src/main/java/org/apache/kafka/clients/producer/internals/RecordAccumulator.java#L69-L120) | Kafka 生产者按分区累积记录为批次。`append()` 添加记录，sender 线程排空就绪批次。这是 Kafka 实现百万消息/秒的关键。 |
-| Linux Kernel | [blk-merge.c#L350-L395](https://github.com/torvalds/linux/blob/master/block/blk-merge.c#L350-L395) | `blk_attempt_req_merge` — 块层将相邻 I/O 请求合并为批量操作，摊薄寻道时间。合并前检查两个请求是否有连续扇区和兼容标志。 |
+| Apache Kafka | [RecordAccumulator.java#L69-L120](https://github.com/apache/kafka/blob/b7b1c0a83d856766390ee0c05e33b63711eee80e/clients/src/main/java/org/apache/kafka/clients/producer/internals/RecordAccumulator.java#L69-L120) | Kafka 生产者按分区累积记录为批次。`append()` 添加记录，sender 线程排空就绪批次。这是 Kafka 实现百万消息/秒的关键。 |
+| Linux Kernel | [blk-merge.c#L350-L395](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/block/blk-merge.c#L350-L395) | `blk_attempt_req_merge` — 块层将相邻 I/O 请求合并为批量操作，摊薄寻道时间。合并前检查两个请求是否有连续扇区和兼容标志。 |
 
 ::: info
 React 的 `setState` 批处理是另一个知名例子——同一事件处理器中的多次 `setState` 被批处理为一次重渲染。
@@ -232,7 +232,7 @@ class BatchProcessor:
 
 ## 更多生产案例
 
-- [React 自动批处理](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactFiberWorkLoop.js#L588-L600) — React 18+ 默认批处理所有状态更新
+- [React 自动批处理](https://github.com/facebook/react/blob/34b78a2897cc208260a88e6b62ecaf9ca2a9dfe4/packages/react-reconciler/src/ReactFiberWorkLoop.js#L588-L600) — React 18+ 默认批处理所有状态更新
 - [DataLoader](https://github.com/graphql/dataloader) — GraphQL N+1
 - [Redis](https://github.com/redis/redis) — Pipeline
 - [Elasticsearch](https://github.com/elastic/elasticsearch) — Bulk API

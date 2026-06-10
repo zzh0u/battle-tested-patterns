@@ -22,18 +22,18 @@ pnpm test       # Run exercises
 ### Add a New Pattern
 
 1. Open an [Issue](https://github.com/Totoro-jam/battle-tested-patterns/issues/new?template=new-pattern.md) to propose the pattern
-2. Follow [SOP 01: New Pattern](https://github.com/Totoro-jam/battle-tested-patterns/blob/main/.sop/01-new-pattern.md)
+2. Follow [SOP 01: New Pattern](https://github.com/Totoro-jam/battle-tested-patterns/blob/e758be266d38db94723be233863e6f3effbf46cc/.sop/01-new-pattern.md)
 3. Submit a PR with the filled-out checklist
 
 ### Add a Language Implementation
 
 - Pick a pattern that's missing your language
-- Follow [SOP 03: Multi-Language Implementation](https://github.com/Totoro-jam/battle-tested-patterns/blob/main/.sop/03-multi-lang-impl.md)
+- Follow [SOP 03: Multi-Language Implementation](https://github.com/Totoro-jam/battle-tested-patterns/blob/e758be266d38db94723be233863e6f3effbf46cc/.sop/03-multi-lang-impl.md)
 - Implementations must be **idiomatic** — not line-by-line translations
 
 ### Fix a Broken Link
 
-- Follow [SOP 06: Broken Link Fix](https://github.com/Totoro-jam/battle-tested-patterns/blob/main/.sop/06-broken-link-fix.md)
+- Follow [SOP 06: Broken Link Fix](https://github.com/Totoro-jam/battle-tested-patterns/blob/e758be266d38db94723be233863e6f3effbf46cc/.sop/06-broken-link-fix.md)
 
 ### Improve Documentation
 
@@ -50,7 +50,7 @@ Every pattern must meet these minimums:
 - Chinese translation with identical code blocks
 - All tests pass (`pnpm test` · `cargo test` · `go test ./...` · `pytest`), no lint errors
 
-See the full checklist in the [PR template](https://github.com/Totoro-jam/battle-tested-patterns/blob/main/.github/PULL_REQUEST_TEMPLATE.md).
+See the full checklist in the [PR template](https://github.com/Totoro-jam/battle-tested-patterns/blob/e758be266d38db94723be233863e6f3effbf46cc/.github/PULL_REQUEST_TEMPLATE.md).
 
 ## Commit Convention
 

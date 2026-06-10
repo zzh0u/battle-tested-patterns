@@ -68,8 +68,8 @@ difficulty: "beginner"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| CPython | [refcount.h#L255-L310](https://github.com/python/cpython/blob/main/Include/refcount.h#L255-L310) | `Py_INCREF`（L255-L310）是递增 `ob_refcnt` 的内联函数。`Py_DECREF`（L417-L430）递减并在归零时调用 `_Py_Dealloc`。每个 Python 对象在 `PyObject`（[object.h#L127-L150](https://github.com/python/cpython/blob/main/Include/object.h#L127-L150)）中携带 `ob_refcnt`。这是主要的内存管理机制——GC 仅用于打破引用循环。 |
-| Rust std | [sync.rs#L269-L276](https://github.com/rust-lang/rust/blob/master/library/alloc/src/sync.rs#L269-L276) | `Arc<T>`（原子引用计数）结构体定义在 L269。`Drop` 实现（L2799-L2875）对强计数调用 `fetch_sub(1, Release)`，Acquire 屏障，归零时调用 `drop_slow()`。在 Tokio、Actix 和操作系统级 Rust 代码中广泛使用。 |
+| CPython | [refcount.h#L255-L310](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Include/refcount.h#L255-L310) | `Py_INCREF`（L255-L310）是递增 `ob_refcnt` 的内联函数。`Py_DECREF`（L417-L430）递减并在归零时调用 `_Py_Dealloc`。每个 Python 对象在 `PyObject`（[object.h#L127-L150](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Include/object.h#L127-L150)）中携带 `ob_refcnt`。这是主要的内存管理机制——GC 仅用于打破引用循环。 |
+| Rust std | [sync.rs#L269-L276](https://github.com/rust-lang/rust/blob/ab26b175979ee7b2cb3302dce204b99df96f7efb/library/alloc/src/sync.rs#L269-L276) | `Arc<T>`（原子引用计数）结构体定义在 L269。`Drop` 实现（L2799-L2875）对强计数调用 `fetch_sub(1, Release)`，Acquire 屏障，归零时调用 `drop_slow()`。在 Tokio、Actix 和操作系统级 Rust 代码中广泛使用。 |
 
 ## 实现
 
@@ -285,7 +285,7 @@ class RefCounted(Generic[T]):
 
 - [Swift ARC](https://github.com/apple/swift) — Swift 的整个内存模型基于自动引用计数（编译器插入的 retain/release）
 - [COM IUnknown](https://learn.microsoft.com/en-us/windows/win32/api/unknwn/nn-unknwn-iunknown) — Windows 中每个 COM 对象的 `AddRef`/`Release`
-- [Linux kernel kobject](https://github.com/torvalds/linux/blob/master/lib/kobject.c) — `kref` 为内核对象提供引用计数
+- [Linux kernel kobject](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/lib/kobject.c) — `kref` 为内核对象提供引用计数
 - [Objective-C ARC](https://clang.llvm.org/docs/AutomaticReferenceCounting.html) — 编译器管理的 `retain`/`release` 调用
 
 ## 相关模式

@@ -43,10 +43,12 @@ This applies to ALL GitHub links in the Production Proof table — including sup
 - Confirm the code at the specified lines actually demonstrates the pattern
 - Confirm the usage description in the table is accurate
 
-### 4. Check Branch
+### 4. Check Branch & Permalink
 
 - Must target `main` or `master` (not a feature branch)
-- Consider commit SHA permalinks for stability
+- **Before release**: all branch-based links must be converted to SHA permalinks
+- Run `tsx scripts/convert-to-sha-links.ts --dry-run` to check unconverted links
+- Run `tsx scripts/convert-to-sha-links.ts` to batch-convert
 
 ## When a Link is Broken
 

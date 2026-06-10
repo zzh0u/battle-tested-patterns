@@ -58,8 +58,8 @@ A Merkle tree is a binary tree of hashes. Each leaf node contains the hash of a 
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Git | [tree.c#L136-L171](https://github.com/git/git/blob/master/tree.c#L136-L171) | `parse_tree_gently` parses tree objects, each storing hashes of child blobs/trees. Git's object model is a Merkle DAG — every commit, tree, and blob is content-addressed by SHA-1. Changing a single byte in any file changes all hashes up to the root commit. This enables efficient diff, fetch (only transfer missing objects), and integrity verification with `git fsck`. |
-| ZFS | [blkptr.c (OpenZFS)](https://github.com/openzfs/zfs/blob/master/module/zfs/blkptr.c#L30-L77) | `blkptr_verify` validates block pointer checksums. Every block in ZFS stores a checksum of its contents in the parent block's pointer — forming a Merkle tree from data blocks up to the uberblock. This self-validating structure detects silent data corruption (bit rot) without a separate integrity database. The `zpool scrub` command walks this tree to verify every block. |
+| Git | [tree.c#L136-L171](https://github.com/git/git/blob/1ff279f3404a482a83fb04c7457e41ab26884aea/tree.c#L136-L171) | `parse_tree_gently` parses tree objects, each storing hashes of child blobs/trees. Git's object model is a Merkle DAG — every commit, tree, and blob is content-addressed by SHA-1. Changing a single byte in any file changes all hashes up to the root commit. This enables efficient diff, fetch (only transfer missing objects), and integrity verification with `git fsck`. |
+| ZFS | [blkptr.c (OpenZFS)](https://github.com/openzfs/zfs/blob/7e054b2e7ea80c7c838f7fd44b7d517eea5c9d18/module/zfs/blkptr.c#L30-L77) | `blkptr_verify` validates block pointer checksums. Every block in ZFS stores a checksum of its contents in the parent block's pointer — forming a Merkle tree from data blocks up to the uberblock. This self-validating structure detects silent data corruption (bit rot) without a separate integrity database. The `zpool scrub` command walks this tree to verify every block. |
 
 ## Implementation
 

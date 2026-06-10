@@ -55,8 +55,8 @@ difficulty: "advanced"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| LLVM | [InstVisitor.h#L45-L107](https://github.com/llvm/llvm-project/blob/main/llvm/include/llvm/IR/InstVisitor.h#L45-L107) | `InstVisitor<SubClass, RetTy>`（L45）是对所有 LLVM IR 指令类型的 CRTP 访问者。通过 `visit(Instruction &I)` 按操作码分发到 `visitAdd`、`visitBr`、`visitCall` 等。用于指令计数、常量折叠和优化遍历。默认行为委托给父类访问者。 |
-| Vue.js | [transforms/vIf.ts#L35-L60](https://github.com/vuejs/core/blob/main/packages/compiler-core/src/transforms/vIf.ts#L35-L60) | `transformIf` 是一个遍历模板 AST 的 `NodeTransform` 访问者。编译器的 `traverseNode`（在 transform.ts 中）将每个 AST 节点分发到注册的转换访问者。每个转换（v-if、v-for、v-bind）都是一个访问者，在不修改 AST 结构代码的情况下重写节点。 |
+| LLVM | [InstVisitor.h#L45-L107](https://github.com/llvm/llvm-project/blob/1dc53bacd24fb555dfd2ec030a5ee33f5db3fadf/llvm/include/llvm/IR/InstVisitor.h#L45-L107) | `InstVisitor<SubClass, RetTy>`（L45）是对所有 LLVM IR 指令类型的 CRTP 访问者。通过 `visit(Instruction &I)` 按操作码分发到 `visitAdd`、`visitBr`、`visitCall` 等。用于指令计数、常量折叠和优化遍历。默认行为委托给父类访问者。 |
+| Vue.js | [transforms/vIf.ts#L35-L60](https://github.com/vuejs/core/blob/48ad452dd61926a59e358da3c74c5ef750ae21c4/packages/compiler-core/src/transforms/vIf.ts#L35-L60) | `transformIf` 是一个遍历模板 AST 的 `NodeTransform` 访问者。编译器的 `traverseNode`（在 transform.ts 中）将每个 AST 节点分发到注册的转换访问者。每个转换（v-if、v-for、v-bind）都是一个访问者，在不修改 AST 结构代码的情况下重写节点。 |
 
 ## 实现
 

@@ -56,8 +56,8 @@ The pattern: run a loop, check a deadline after each unit of work, and `yield` i
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| React | [Scheduler.js#L188-L258](https://github.com/facebook/react/blob/main/packages/scheduler/src/forks/Scheduler.js#L188-L258) | The `workLoop` function processes tasks from a min-heap. At each iteration it calls `shouldYieldToHost()` (line ~447) to check if the 5ms time slice has elapsed — if so, it breaks and schedules a continuation via `MessageChannel`. |
-| Go Runtime | [proc.go#L4143-L4200](https://github.com/golang/go/blob/master/src/runtime/proc.go#L4143-L4200) | The `schedule()` function is the goroutine scheduler's main loop. `Gosched()` (line 394) is the voluntary yield point, and `goschedImpl` (line 4315) handles the actual context switch. |
+| React | [Scheduler.js#L188-L258](https://github.com/facebook/react/blob/34b78a2897cc208260a88e6b62ecaf9ca2a9dfe4/packages/scheduler/src/forks/Scheduler.js#L188-L258) | The `workLoop` function processes tasks from a min-heap. At each iteration it calls `shouldYieldToHost()` (line ~447) to check if the 5ms time slice has elapsed — if so, it breaks and schedules a continuation via `MessageChannel`. |
+| Go Runtime | [proc.go#L4143-L4200](https://github.com/golang/go/blob/f5cdf4745455415c7a43cfc7d925214d4511489b/src/runtime/proc.go#L4143-L4200) | The `schedule()` function is the goroutine scheduler's main loop. `Gosched()` (line 394) is the voluntary yield point, and `goschedImpl` (line 4315) handles the actual context switch. |
 
 ## Implementation
 
@@ -254,9 +254,9 @@ Exercise files: Rust `exercises/rust/src/cooperative_scheduling/mod.rs` · Go `e
 ## More Production Uses
 
 - [Lua](https://github.com/lua/lua) — coroutines
-- Python [asyncio](https://github.com/python/cpython/blob/main/Lib/asyncio/tasks.py#L1-L50) — `Task` wraps coroutines, `__step` drives them one `send()` at a time
-- [Erlang/BEAM VM](https://github.com/erlang/otp/blob/master/erts/emulator/beam/emu/beam_emu.c#L305-L350) — reduction counting (yields after ~4000 reductions)
-- [Unity](https://github.com/Unity-Technologies/UnityCsReference/blob/master/Runtime/Export/Scripting/Coroutines.cs) — coroutines with `yield return`
+- Python [asyncio](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Lib/asyncio/tasks.py#L1-L50) — `Task` wraps coroutines, `__step` drives them one `send()` at a time
+- [Erlang/BEAM VM](https://github.com/erlang/otp/blob/c75602432b4eff922bcaf4a175144dc61adbd6d6/erts/emulator/beam/emu/beam_emu.c#L305-L350) — reduction counting (yields after ~4000 reductions)
+- [Unity](https://github.com/Unity-Technologies/UnityCsReference/blob/59b03b8a0f179c0b7e038178c90b6c80b340aa9f/Runtime/Export/Scripting/Coroutines.cs) — coroutines with `yield return`
 
 ## Related Patterns
 

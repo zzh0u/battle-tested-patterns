@@ -52,8 +52,8 @@ graph TD
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| React | [SchedulerMinHeap.js#L17-L90](https://github.com/facebook/react/blob/main/packages/scheduler/src/SchedulerMinHeap.js#L17-L90) | React 调度器将任务存储在按 `sortIndex`（过期时间）排序的最小堆中。`peek()` 以 O(1) 返回最高优先级任务。整个实现约 75 行。 |
-| Linux 内核 | [fair.c#L1407-L1460](https://github.com/torvalds/linux/blob/master/kernel/sched/fair.c#L1407-L1460) | CFS 的 `update_curr` 更新虚拟运行时间。`pick_next_task_fair`（行9234）从红黑树中选择最小 vruntime 的任务——与最小堆"始终访问最小值"原理相同。 |
+| React | [SchedulerMinHeap.js#L17-L90](https://github.com/facebook/react/blob/34b78a2897cc208260a88e6b62ecaf9ca2a9dfe4/packages/scheduler/src/SchedulerMinHeap.js#L17-L90) | React 调度器将任务存储在按 `sortIndex`（过期时间）排序的最小堆中。`peek()` 以 O(1) 返回最高优先级任务。整个实现约 75 行。 |
+| Linux 内核 | [fair.c#L1407-L1460](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/kernel/sched/fair.c#L1407-L1460) | CFS 的 `update_curr` 更新虚拟运行时间。`pick_next_task_fair`（行9234）从红黑树中选择最小 vruntime 的任务——与最小堆"始终访问最小值"原理相同。 |
 
 ## 实现
 
@@ -324,9 +324,9 @@ class MinHeap:
 ## 更多生产案例
 
 - [Node.js libuv](https://github.com/libuv/libuv) — timer queue
-- [Java PriorityQueue](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/PriorityQueue.java) — 二叉堆支撑的优先队列
-- [Python heapq](https://github.com/python/cpython/blob/main/Lib/heapq.py)
-- [Rust BinaryHeap](https://github.com/rust-lang/rust/blob/main/library/alloc/src/collections/binary_heap/mod.rs) — 标准库最大堆，可通过 `Reverse` 包装为最小堆
+- [Java PriorityQueue](https://github.com/openjdk/jdk/blob/4b3ec455c85314d051800a8f46dd8f5c93881e3a/src/java.base/share/classes/java/util/PriorityQueue.java) — 二叉堆支撑的优先队列
+- [Python heapq](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Lib/heapq.py)
+- [Rust BinaryHeap](https://github.com/rust-lang/rust/blob/d56483a91d6cf5041351a3208b8d08f98f0c8b56/library/alloc/src/collections/binary_heap/mod.rs) — 标准库最大堆，可通过 `Reverse` 包装为最小堆
 
 ## 相关模式
 

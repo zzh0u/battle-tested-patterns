@@ -52,8 +52,8 @@ flowchart LR
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Apache Kafka | [RecordAccumulator.java#L69-L120](https://github.com/apache/kafka/blob/trunk/clients/src/main/java/org/apache/kafka/clients/producer/internals/RecordAccumulator.java#L69-L120) | The Kafka producer accumulates records into batches per partition. `append()` (line 280) adds records to the current batch; the sender thread drains ready batches. This is how Kafka achieves millions of messages/sec. |
-| Linux Kernel | [blk-merge.c#L350-L395](https://github.com/torvalds/linux/blob/master/block/blk-merge.c#L350-L395) | `blk_attempt_req_merge` — the block layer merges adjacent I/O requests into batched operations, amortizing seek time. Checks if two requests have contiguous sectors and compatible flags before merging. |
+| Apache Kafka | [RecordAccumulator.java#L69-L120](https://github.com/apache/kafka/blob/b7b1c0a83d856766390ee0c05e33b63711eee80e/clients/src/main/java/org/apache/kafka/clients/producer/internals/RecordAccumulator.java#L69-L120) | The Kafka producer accumulates records into batches per partition. `append()` (line 280) adds records to the current batch; the sender thread drains ready batches. This is how Kafka achieves millions of messages/sec. |
+| Linux Kernel | [blk-merge.c#L350-L395](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/block/blk-merge.c#L350-L395) | `blk_attempt_req_merge` — the block layer merges adjacent I/O requests into batched operations, amortizing seek time. Checks if two requests have contiguous sectors and compatible flags before merging. |
 
 ::: info Note
 React's `setState` batching is another well-known example — multiple `setState` calls within the same event handler are batched into a single re-render.
@@ -232,7 +232,7 @@ Exercise files: Rust `exercises/rust/src/batch_processing/mod.rs` · Go `exercis
 
 ## More Production Uses
 
-- [React automatic batching](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactFiberWorkLoop.js#L588-L600) — React 18+ batches all state updates by default
+- [React automatic batching](https://github.com/facebook/react/blob/34b78a2897cc208260a88e6b62ecaf9ca2a9dfe4/packages/react-reconciler/src/ReactFiberWorkLoop.js#L588-L600) — React 18+ batches all state updates by default
 - [DataLoader](https://github.com/graphql/dataloader) — GraphQL N+1
 - [Redis](https://github.com/redis/redis) — Pipeline
 - [Elasticsearch](https://github.com/elastic/elasticsearch) — Bulk API

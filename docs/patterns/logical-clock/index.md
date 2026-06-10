@@ -52,8 +52,8 @@ Wall clocks are unreliable in distributed systems — they drift, jump on NTP sy
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| etcd | [kvstore.go#L53-L72](https://github.com/etcd-io/etcd/blob/main/server/storage/mvcc/kvstore.go#L53-L72) | `store` struct (L53) with `currentRev int64` (L72) — a monotonic revision counter. Incremented in [kvstore_txn.go#L214](https://github.com/etcd-io/etcd/blob/main/server/storage/mvcc/kvstore_txn.go#L214) (`tw.s.currentRev++`) on every write transaction. Watches and snapshots use this revision for consistent reads — "give me everything after revision 42." |
-| LevelDB | [dbformat.h#L62-L66](https://github.com/google/leveldb/blob/main/db/dbformat.h#L62-L66) | `SequenceNumber` (L62) is a `uint64_t` incremented on every write operation. `kMaxSequenceNumber` (L66) reserves 8 bits for packing type info alongside the sequence. Used to order writes in the WAL, determine snapshot visibility, and resolve key conflicts during compaction. |
+| etcd | [kvstore.go#L53-L72](https://github.com/etcd-io/etcd/blob/e9b62f804766edf77cfa918d600cb6fb2c56b401/server/storage/mvcc/kvstore.go#L53-L72) | `store` struct (L53) with `currentRev int64` (L72) — a monotonic revision counter. Incremented in [kvstore_txn.go#L214](https://github.com/etcd-io/etcd/blob/e9b62f804766edf77cfa918d600cb6fb2c56b401/server/storage/mvcc/kvstore_txn.go#L214) (`tw.s.currentRev++`) on every write transaction. Watches and snapshots use this revision for consistent reads — "give me everything after revision 42." |
+| LevelDB | [dbformat.h#L62-L66](https://github.com/google/leveldb/blob/7ee830d02b623e8ffe0b95d59a74db1e58da04c5/db/dbformat.h#L62-L66) | `SequenceNumber` (L62) is a `uint64_t` incremented on every write operation. `kMaxSequenceNumber` (L66) reserves 8 bits for packing type info alongside the sequence. Used to order writes in the WAL, determine snapshot visibility, and resolve key conflicts during compaction. |
 
 ## Implementation
 

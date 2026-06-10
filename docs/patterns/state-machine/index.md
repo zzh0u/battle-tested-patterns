@@ -49,8 +49,8 @@ The power: **impossible transitions don't exist**. You can't go from `success` t
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| XState | [StateMachine.ts#L58-L120](https://github.com/statelyai/xstate/blob/main/packages/core/src/StateMachine.ts#L58-L120) | `StateMachine` class — `transition()` takes current state + event, evaluates guard conditions, returns next state config. Supports hierarchical states via nested `states` property with parallel regions and history nodes. |
-| Linux Kernel | [tcp_input.c#L4865-L4920](https://github.com/torvalds/linux/blob/master/net/ipv4/tcp_input.c#L4865-L4920) | TCP connection state machine — the `switch (sk->sk_state)` block implements the TCP state transitions (LISTEN → SYN_SENT → ESTABLISHED → FIN_WAIT, etc.) that every internet connection uses. |
+| XState | [StateMachine.ts#L58-L120](https://github.com/statelyai/xstate/blob/9d9b9f1439b773979c5120a793215f5aa4568d8f/packages/core/src/StateMachine.ts#L58-L120) | `StateMachine` class — `transition()` takes current state + event, evaluates guard conditions, returns next state config. Supports hierarchical states via nested `states` property with parallel regions and history nodes. |
+| Linux Kernel | [tcp_input.c#L4865-L4920](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/net/ipv4/tcp_input.c#L4865-L4920) | TCP connection state machine — the `switch (sk->sk_state)` block implements the TCP state transitions (LISTEN → SYN_SENT → ESTABLISHED → FIN_WAIT, etc.) that every internet connection uses. |
 
 ## Implementation
 
@@ -220,10 +220,10 @@ Exercise files: Rust `exercises/rust/src/state_machine/mod.rs` · Go `exercises/
 
 ## More Production Uses
 
-- [RE2](https://github.com/google/re2/blob/main/re2/nfa.cc) — NFA-based regex engine using Thompson's algorithm
+- [RE2](https://github.com/google/re2/blob/972a15cedd008d846f1a39b2e88ce48d7f166cbd/re2/nfa.cc) — NFA-based regex engine using Thompson's algorithm
 - HTTP/2 stream states ([RFC 7540](https://datatracker.ietf.org/doc/html/rfc7540))
-- [Kubernetes](https://github.com/kubernetes/kubernetes/blob/master/pkg/kubelet/lifecycle/handlers.go) — pod lifecycle state transitions
-- [Godot Engine](https://github.com/godotengine/godot/blob/master/scene/animation/animation_tree.cpp) — animation state machine for game characters
+- [Kubernetes](https://github.com/kubernetes/kubernetes/blob/586cc904093af4fe7492e564908a796f0b107f97/pkg/kubelet/lifecycle/handlers.go) — pod lifecycle state transitions
+- [Godot Engine](https://github.com/godotengine/godot/blob/ec67cbe92628bdaf979b10594359ba6f02cf8838/scene/animation/animation_tree.cpp) — animation state machine for game characters
 
 ## Related Patterns
 

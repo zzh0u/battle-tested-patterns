@@ -51,8 +51,8 @@ sequenceDiagram
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Linux 内核 | [semaphore.h#L15-L55](https://github.com/torvalds/linux/blob/master/include/linux/semaphore.h#L15-L55) | `struct semaphore` — 内核计数信号量，`down()`（获取）和 `up()`（释放）。用于设备驱动访问控制。 |
-| Go stdlib | [semaphore.go#L28-L107](https://github.com/golang/sync/blob/master/semaphore/semaphore.go#L28-L107) | `Weighted` 结构体（L28-L33），含 `size`、`cur`、`mu`、`waiters`。`Acquire`（L38-L107）阻塞直到信号量权重可用或上下文取消。 |
+| Linux 内核 | [semaphore.h#L15-L55](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/include/linux/semaphore.h#L15-L55) | `struct semaphore` — 内核计数信号量，`down()`（获取）和 `up()`（释放）。用于设备驱动访问控制。 |
+| Go stdlib | [semaphore.go#L28-L107](https://github.com/golang/sync/blob/5071ed6a9f1617117556b66384f765c934de3698/semaphore/semaphore.go#L28-L107) | `Weighted` 结构体（L28-L33），含 `size`、`cur`、`mu`、`waiters`。`Acquire`（L38-L107）阻塞直到信号量权重可用或上下文取消。 |
 
 ## 实现
 
@@ -182,8 +182,8 @@ async def fetch_with_limit(urls: list[str], max_concurrent: int = 5):
 
 ## 更多生产案例
 
-- [Java Semaphore](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/concurrent/Semaphore.java) — 公平/非公平计数信号量
-- [Python threading.Semaphore](https://github.com/python/cpython/blob/main/Lib/threading.py) — 基于条件变量的信号量
+- [Java Semaphore](https://github.com/openjdk/jdk/blob/4b3ec455c85314d051800a8f46dd8f5c93881e3a/src/java.base/share/classes/java/util/concurrent/Semaphore.java) — 公平/非公平计数信号量
+- [Python threading.Semaphore](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Lib/threading.py) — 基于条件变量的信号量
 - [Nginx](https://github.com/nginx/nginx) — worker connections
 - [PostgreSQL](https://github.com/postgres/postgres) — `max_connections`
 

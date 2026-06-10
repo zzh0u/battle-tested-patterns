@@ -50,8 +50,8 @@ An actor is a lightweight process with private state and a mailbox (message queu
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Akka (Scala) | [Actor.scala#L476-L547](https://github.com/akka/akka-core/blob/main/akka-actor/src/main/scala/akka/actor/Actor.scala#L476-L547) | `trait Actor` — the core actor interface. Defines `context`, `self`, `sender()`, and `def receive: Actor.Receive` (L528) where every Akka actor specifies its message-handling behavior via a partial function. `aroundReceive` (L540-L546) is the dispatch hook. |
-| Erlang/OTP | [erl_process.h#L1043-L1205](https://github.com/erlang/otp/blob/master/erts/emulator/beam/erl_process.h#L1043-L1205) | `struct process` — the BEAM VM's representation of an Erlang process (actor). Key fields: `sig_qs` (L1107, signal/message queues — the mailbox), `sig_inq` (L1168, concurrent signal input queue), `state` (L1165, atomic process state flags). Each process is a lightweight actor with its own heap and mailbox. |
+| Akka (Scala) | [Actor.scala#L476-L547](https://github.com/akka/akka-core/blob/aded7b67a9dafcb32b8a5dc95f6debce3a97c0e9/akka-actor/src/main/scala/akka/actor/Actor.scala#L476-L547) | `trait Actor` — the core actor interface. Defines `context`, `self`, `sender()`, and `def receive: Actor.Receive` (L528) where every Akka actor specifies its message-handling behavior via a partial function. `aroundReceive` (L540-L546) is the dispatch hook. |
+| Erlang/OTP | [erl_process.h#L1043-L1205](https://github.com/erlang/otp/blob/c75602432b4eff922bcaf4a175144dc61adbd6d6/erts/emulator/beam/erl_process.h#L1043-L1205) | `struct process` — the BEAM VM's representation of an Erlang process (actor). Key fields: `sig_qs` (L1107, signal/message queues — the mailbox), `sig_inq` (L1168, concurrent signal input queue), `state` (L1165, atomic process state flags). Each process is a lightweight actor with its own heap and mailbox. |
 
 ## Implementation
 
@@ -204,8 +204,8 @@ Exercise files: Rust `exercises/rust/src/actor_model/mod.rs` · Go `exercises/go
 
 ## More Production Uses
 
-- [Orleans (C#)](https://github.com/dotnet/orleans/blob/main/src/Orleans.Runtime/Catalog/ActivationData.cs#L31-L55) — virtual actor ("grain") with `RunMessageLoop` dispatch at L980-L1012
-- [Proto.Actor (Go)](https://github.com/asynkron/protoactor-go/blob/dev/actor/message.go#L12-L14) — minimal `Actor` interface with single `Receive(c Context)` method
+- [Orleans (C#)](https://github.com/dotnet/orleans/blob/bab4fb03e99c978ae483c24d0d759f5b93222a74/src/Orleans.Runtime/Catalog/ActivationData.cs#L31-L55) — virtual actor ("grain") with `RunMessageLoop` dispatch at L980-L1012
+- [Proto.Actor (Go)](https://github.com/asynkron/protoactor-go/blob/288962e52f3f59533c8f463fc31f98b8d5d39e41/actor/message.go#L12-L14) — minimal `Actor` interface with single `Receive(c Context)` method
 - [Actix (Rust)](https://github.com/actix/actix) — actor framework for Rust with typed messages
 - [Microsoft DAPR](https://github.com/dapr/dapr) — virtual actors for microservices
 

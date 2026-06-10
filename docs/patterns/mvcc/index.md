@@ -49,8 +49,8 @@ MVCC stores every write as a new version tagged with a timestamp or transaction 
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| PostgreSQL | [heapam_visibility.c#L917-L1096](https://github.com/postgres/postgres/blob/master/src/backend/access/heap/heapam_visibility.c#L917-L1096) | `HeapTupleSatisfiesMVCC` — the core visibility check. Given a heap tuple and an MVCC snapshot, determines if the tuple is visible to the current transaction. Uses `XidInMVCCSnapshot` to check transaction visibility without contention on `ProcArrayLock`. |
-| etcd | [kvstore.go#L53-L135](https://github.com/etcd-io/etcd/blob/main/server/storage/mvcc/kvstore.go#L53-L135) | `store` struct (L53-L82) tracks `currentRev` and `compactMainRev` with a B-tree `kvindex` for multi-version lookups. `NewStore` (L87-L135) initializes the MVCC store and rebuilds the in-memory index from persisted revisions. Powers Kubernetes' configuration backbone. |
+| PostgreSQL | [heapam_visibility.c#L917-L1096](https://github.com/postgres/postgres/blob/e18b0cb7344cb4bd28468f6c0aeeb9b9241d30aa/src/backend/access/heap/heapam_visibility.c#L917-L1096) | `HeapTupleSatisfiesMVCC` — the core visibility check. Given a heap tuple and an MVCC snapshot, determines if the tuple is visible to the current transaction. Uses `XidInMVCCSnapshot` to check transaction visibility without contention on `ProcArrayLock`. |
+| etcd | [kvstore.go#L53-L135](https://github.com/etcd-io/etcd/blob/e9b62f804766edf77cfa918d600cb6fb2c56b401/server/storage/mvcc/kvstore.go#L53-L135) | `store` struct (L53-L82) tracks `currentRev` and `compactMainRev` with a B-tree `kvindex` for multi-version lookups. `NewStore` (L87-L135) initializes the MVCC store and rebuilds the in-memory index from persisted revisions. Powers Kubernetes' configuration backbone. |
 
 ## Implementation
 
@@ -227,7 +227,7 @@ Exercise files: Rust `exercises/rust/src/mvcc/mod.rs` · Go `exercises/go/mvcc/m
 
 ## More Production Uses
 
-- [CockroachDB](https://github.com/cockroachdb/cockroach/blob/master/pkg/storage/mvcc.go#L1923-L1962) — `MVCCPut` / `MVCCGet` for distributed SQL
+- [CockroachDB](https://github.com/cockroachdb/cockroach/blob/5f5932a2bf50713ff76a0f859a41fd7985dec307/pkg/storage/mvcc.go#L1923-L1962) — `MVCCPut` / `MVCCGet` for distributed SQL
 - [MySQL InnoDB](https://github.com/mysql/mysql-server) — undo logs for MVCC row versioning
 - [TiKV](https://github.com/tikv/tikv) — Percolator-based distributed MVCC transactions
 - [FoundationDB](https://github.com/apple/foundationdb) — multi-version storage layer

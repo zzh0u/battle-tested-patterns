@@ -51,8 +51,8 @@ A bloom filter is a space-efficient probabilistic data structure. It uses a bit 
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| LevelDB | [bloom.cc#L17-L80](https://github.com/google/leveldb/blob/main/util/bloom.cc#L17-L80) | `BloomFilterPolicy` — uses double-hashing (Kirsch-Mitzenmacher) with rotate-right-17 to set `k` bits per key. `KeyMayMatch` returns false immediately if any probed bit is zero. Avoids disk reads for keys that don't exist. |
-| Chromium (Blink) | [selector_filter.h#L149-L175](https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/core/css/selector_filter.h#L149-L175) | 8192-bit bloom filter for CSS ancestor selector fast-rejection — discards 60-70% of CSS rules without full matching. Uses salted hashing (tag/id/class/attr) to prevent cross-type collisions. |
+| LevelDB | [bloom.cc#L17-L80](https://github.com/google/leveldb/blob/7ee830d02b623e8ffe0b95d59a74db1e58da04c5/util/bloom.cc#L17-L80) | `BloomFilterPolicy` — uses double-hashing (Kirsch-Mitzenmacher) with rotate-right-17 to set `k` bits per key. `KeyMayMatch` returns false immediately if any probed bit is zero. Avoids disk reads for keys that don't exist. |
+| Chromium (Blink) | [selector_filter.h#L149-L175](https://github.com/chromium/chromium/blob/5cffea3f665b7762369a0fa84d2f208875e7225e/third_party/blink/renderer/core/css/selector_filter.h#L149-L175) | 8192-bit bloom filter for CSS ancestor selector fast-rejection — discards 60-70% of CSS rules without full matching. Uses salted hashing (tag/id/class/attr) to prevent cross-type collisions. |
 
 ## Implementation
 
@@ -224,9 +224,9 @@ Exercise files: Rust `exercises/rust/src/bloom_filter/mod.rs` · Go `exercises/g
 
 ## More Production Uses
 
-- [PostgreSQL](https://github.com/postgres/postgres/blob/master/contrib/bloom/blutils.c#L265-L293) — bloom index for multi-column filtering
+- [PostgreSQL](https://github.com/postgres/postgres/blob/e18b0cb7344cb4bd28468f6c0aeeb9b9241d30aa/contrib/bloom/blutils.c#L265-L293) — bloom index for multi-column filtering
 - [Apache Cassandra](https://github.com/apache/cassandra) — SSTable bloom filters to avoid disk reads
-- [bits-and-blooms/bloom](https://github.com/bits-and-blooms/bloom/blob/master/bloom.go#L77-L81) — popular Go bloom filter library (7k+ stars)
+- [bits-and-blooms/bloom](https://github.com/bits-and-blooms/bloom/blob/f0c3e57ab5ce07691a0a3124b9ed2db6df82ac9b/bloom.go#L77-L81) — popular Go bloom filter library (7k+ stars)
 - [Bitcoin](https://github.com/bitcoin/bitcoin) — SPV bloom filters for lightweight clients
 
 ## Related Patterns

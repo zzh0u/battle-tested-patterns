@@ -53,8 +53,8 @@ Backpressure is a flow control mechanism where the consumer signals the producer
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Node.js Streams | [writable.js#L548-L585](https://github.com/nodejs/node/blob/main/lib/internal/streams/writable.js#L548-L585) | `writeOrBuffer()` — L576 checks `state.length < state.highWaterMark`; when buffer exceeds the threshold, L579 sets `kNeedDrain` flag and L585 returns `false`, signaling the producer to pause until the `drain` event fires. |
-| Reactive Streams | [Subscription.java#L14-L37](https://github.com/reactive-streams/reactive-streams-jvm/blob/master/api/src/main/java/org/reactivestreams/Subscription.java#L14-L37) | `request(long n)` (L29) — the consumer explicitly requests `n` items from the producer. "No events will be sent by a Publisher until demand is signaled via this method." Foundation of RxJava Flowable, Project Reactor, and Akka Streams. |
+| Node.js Streams | [writable.js#L548-L585](https://github.com/nodejs/node/blob/19c46abbefdb8711b913d7237b3c1299367f87d7/lib/internal/streams/writable.js#L548-L585) | `writeOrBuffer()` — L576 checks `state.length < state.highWaterMark`; when buffer exceeds the threshold, L579 sets `kNeedDrain` flag and L585 returns `false`, signaling the producer to pause until the `drain` event fires. |
+| Reactive Streams | [Subscription.java#L14-L37](https://github.com/reactive-streams/reactive-streams-jvm/blob/a625d3aba756e9842ad1291a5b73f5db280b6168/api/src/main/java/org/reactivestreams/Subscription.java#L14-L37) | `request(long n)` (L29) — the consumer explicitly requests `n` items from the producer. "No events will be sent by a Publisher until demand is signaled via this method." Foundation of RxJava Flowable, Project Reactor, and Akka Streams. |
 
 ## Implementation
 
@@ -200,7 +200,7 @@ Exercise files: Rust `exercises/rust/src/backpressure/mod.rs` · Go `exercises/g
 
 - [RxJava Flowable](https://github.com/ReactiveX/RxJava) — backpressure-aware reactive streams
 - [Kafka](https://github.com/apache/kafka) — producer `buffer.memory` and `max.block.ms` for flow control
-- [Linux TCP](https://github.com/torvalds/linux/blob/master/net/ipv4/tcp_output.c) — congestion window (`cwnd`) as backpressure
+- [Linux TCP](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/net/ipv4/tcp_output.c) — congestion window (`cwnd`) as backpressure
 - [gRPC](https://github.com/grpc/grpc) — flow control windows in HTTP/2
 
 ## Related Patterns

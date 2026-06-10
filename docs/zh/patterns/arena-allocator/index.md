@@ -50,8 +50,8 @@ Arena（或 bump 分配器）预分配一块连续内存，通过推进指针分
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Rust bumpalo | [lib.rs#L378-L383](https://github.com/fitzgen/bumpalo/blob/main/src/lib.rs#L378-L383) | `Bump` 结构体（L378）持有指向当前 chunk 的 bump 指针。`try_alloc_layout_fast`（L1330-L1422）是热路径：读指针、对齐、减去大小、检查容量。`reset`（L1059-L1099）批量释放所有 chunk。被 `wasm-bindgen`、Rust 编译器和 Deno 使用。 |
-| Go stdlib | [arena.go#L44-L67](https://github.com/golang/go/blob/master/src/arena/arena.go#L44-L67) | 实验性 `Arena` 类型——`New[T]()` 从 arena 分配，`Free()` 一次性释放所有内容绕过 GC。封装运行时 arena 原语的简洁 API。 |
+| Rust bumpalo | [lib.rs#L378-L383](https://github.com/fitzgen/bumpalo/blob/d2cc4dd0b8830d5b05d44e9decc776823e6a70ea/src/lib.rs#L378-L383) | `Bump` 结构体（L378）持有指向当前 chunk 的 bump 指针。`try_alloc_layout_fast`（L1330-L1422）是热路径：读指针、对齐、减去大小、检查容量。`reset`（L1059-L1099）批量释放所有 chunk。被 `wasm-bindgen`、Rust 编译器和 Deno 使用。 |
+| Go stdlib | [arena.go#L44-L67](https://github.com/golang/go/blob/f5cdf4745455415c7a43cfc7d925214d4511489b/src/arena/arena.go#L44-L67) | 实验性 `Arena` 类型——`New[T]()` 从 arena 分配，`Free()` 一次性释放所有内容绕过 GC。封装运行时 arena 原语的简洁 API。 |
 
 ## 实现
 
@@ -188,7 +188,7 @@ class Arena:
 
 ## 更多生产案例
 
-- [Go arena](https://github.com/golang/go/blob/master/src/arena/arena.go) — Go 标准库中的实验性 arena API
+- [Go arena](https://github.com/golang/go/blob/f5cdf4745455415c7a43cfc7d925214d4511489b/src/arena/arena.go) — Go 标准库中的实验性 arena API
 - [V8 Engine](https://chromium.googlesource.com/v8/v8/+/refs/heads/main/src/zone/zone.h) — `Zone` 分配器为编译器临时对象提供 arena 风格的 bump 分配
 - [Zig](https://github.com/ziglang/zig) — `std.mem.ArenaAllocator` 作为核心分配器模式
 - [ECS 游戏引擎](https://github.com/SanderMertens/flecs) — 使用 arena 风格分配的组件存储

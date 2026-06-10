@@ -50,8 +50,8 @@ stateDiagram-v2
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| React | [ReactFiber.js#L327-L355](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactFiber.js#L327-L355) | `createWorkInProgress` — 创建或复用 alternate fiber。注释写道：*"We use a double buffering pooling technique because we know that we'll only ever need at most two versions of a tree."* |
-| SDL | [SDL_render.c#L5535-L5570](https://github.com/libsdl-org/SDL/blob/main/src/render/SDL_render.c#L5535-L5570) | `SDL_RenderPresent` — 刷新排队的渲染命令，调用后端的 `RenderPresent` 交换前后缓冲区实现无撕裂帧呈现，处理 vsync 模拟。 |
+| React | [ReactFiber.js#L327-L355](https://github.com/facebook/react/blob/34b78a2897cc208260a88e6b62ecaf9ca2a9dfe4/packages/react-reconciler/src/ReactFiber.js#L327-L355) | `createWorkInProgress` — 创建或复用 alternate fiber。注释写道：*"We use a double buffering pooling technique because we know that we'll only ever need at most two versions of a tree."* |
+| SDL | [SDL_render.c#L5535-L5570](https://github.com/libsdl-org/SDL/blob/14b0e9d922da78001223e563efd2f54f473a4115/src/render/SDL_render.c#L5535-L5570) | `SDL_RenderPresent` — 刷新排队的渲染命令，调用后端的 `RenderPresent` 交换前后缓冲区实现无撕裂帧呈现，处理 vsync 模拟。 |
 
 ## 实现
 
@@ -217,8 +217,8 @@ assert buf.current()["pixels"] == [255, 128]  # now visible
 
 - [OpenGL](https://www.khronos.org/opengl/) / Vulkan — swap chains
 - [PostgreSQL](https://github.com/postgres/postgres) — MVCC snapshot isolation
-- [Godot Engine](https://github.com/godotengine/godot/blob/master/servers/rendering/renderer_rd/renderer_scene_render_rd.cpp) — 双缓冲帧渲染
-- [Linux fbdev](https://github.com/torvalds/linux/blob/master/drivers/video/fbdev/core/fbmem.c) — 帧缓冲双缓冲，用于控制台和显示输出
+- [Godot Engine](https://github.com/godotengine/godot/blob/ec67cbe92628bdaf979b10594359ba6f02cf8838/servers/rendering/renderer_rd/renderer_scene_render_rd.cpp) — 双缓冲帧渲染
+- [Linux fbdev](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/drivers/video/fbdev/core/fbmem.c) — 帧缓冲双缓冲，用于控制台和显示输出
 
 ## 相关模式
 

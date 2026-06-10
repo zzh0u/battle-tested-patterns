@@ -64,9 +64,9 @@ difficulty: "beginner"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| React | [ReactFiberFlags.js#L14-L36](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactFiberFlags.js#L14-L36) | Fiber 节点的副作用标志 — 追踪协调过程中每个 fiber 上待处理的效果（Placement、Update、Deletion、Ref 等） |
-| Linux 内核 | [stat.h#L25-L33](https://github.com/torvalds/linux/blob/master/include/uapi/linux/stat.h#L25-L33) | 文件权限位 — 经典的 `rwxrwxrwx`（所有者/组/其他的读/写/执行）编码为 9 位掩码 |
-| Go 标准库 | [types.go#L32-L46](https://github.com/golang/go/blob/master/src/os/types.go#L32-L46) | `os.FileMode` — Go 的文件模式位使用 iota 位移的类型常量镜像 Unix 权限标志 |
+| React | [ReactFiberFlags.js#L14-L36](https://github.com/facebook/react/blob/34b78a2897cc208260a88e6b62ecaf9ca2a9dfe4/packages/react-reconciler/src/ReactFiberFlags.js#L14-L36) | Fiber 节点的副作用标志 — 追踪协调过程中每个 fiber 上待处理的效果（Placement、Update、Deletion、Ref 等） |
+| Linux 内核 | [stat.h#L25-L33](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/include/uapi/linux/stat.h#L25-L33) | 文件权限位 — 经典的 `rwxrwxrwx`（所有者/组/其他的读/写/执行）编码为 9 位掩码 |
+| Go 标准库 | [types.go#L32-L46](https://github.com/golang/go/blob/f5cdf4745455415c7a43cfc7d925214d4511489b/src/os/types.go#L32-L46) | `os.FileMode` — Go 的文件模式位使用 iota 位移的类型常量镜像 Unix 权限标志 |
 
 ## 实现
 
@@ -236,8 +236,8 @@ assert not has_flag(editor, DELETE)  # True
 - [Chromium](https://chromium.googlesource.com/chromium/src) — layer compositing flags
 - [SQLite](https://www.sqlite.org/src) — VFS flags
 - [Nginx](https://github.com/nginx/nginx) — event flags
-- [Bevy ECS](https://github.com/bevyengine/bevy/blob/main/crates/bevy_ecs/src/archetype.rs) — 原型 ECS 中的组件成员掩码
-- [Linux fcntl](https://github.com/torvalds/linux/blob/master/include/uapi/asm-generic/fcntl.h#L5-L30) — `O_RDONLY`、`O_WRONLY`、`O_CREAT` 文件控制标志
+- [Bevy ECS](https://github.com/bevyengine/bevy/blob/fd4f66fc36ec9f8181afe85d65e22c52b14e86a9/crates/bevy_ecs/src/archetype.rs) — 原型 ECS 中的组件成员掩码
+- [Linux fcntl](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/include/uapi/asm-generic/fcntl.h#L5-L30) — `O_RDONLY`、`O_WRONLY`、`O_CREAT` 文件控制标志
 
 ## 相关模式
 

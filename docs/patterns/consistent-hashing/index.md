@@ -54,8 +54,8 @@ Traditional modular hashing (`hash(key) % n`) remaps almost every key when `n` c
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Go groupcache | [consistenthash.go#L28-L81](https://github.com/golang/groupcache/blob/master/consistenthash/consistenthash.go#L28-L81) | `Map` struct (L28-L33) with sorted keys and hashMap. `Add` (L53-L62) inserts virtual nodes. `Get` (L65-L81) uses `sort.Search` binary search to find the closest node clockwise. By Brad Fitzpatrick (creator of memcached). |
-| HAProxy | [lb_chash.c#L415-L491](https://github.com/haproxy/haproxy/blob/master/src/lb_chash.c#L415-L491) | `chash_get_server_hash` — finds the nearest server on the consistent hash ring using elastic binary trees (eb-trees) for O(log n) lookups. Supports bounded-loads balancing and server eligibility checks. |
+| Go groupcache | [consistenthash.go#L28-L81](https://github.com/golang/groupcache/blob/2c02b8208cf8c02a3e358cb1d9b60950647543fc/consistenthash/consistenthash.go#L28-L81) | `Map` struct (L28-L33) with sorted keys and hashMap. `Add` (L53-L62) inserts virtual nodes. `Get` (L65-L81) uses `sort.Search` binary search to find the closest node clockwise. By Brad Fitzpatrick (creator of memcached). |
+| HAProxy | [lb_chash.c#L415-L491](https://github.com/haproxy/haproxy/blob/fb38e40ad5751090992cde15d919866b1e91b8aa/src/lb_chash.c#L415-L491) | `chash_get_server_hash` — finds the nearest server on the consistent hash ring using elastic binary trees (eb-trees) for O(log n) lookups. Supports bounded-loads balancing and server eligibility checks. |
 
 ## Implementation
 
@@ -250,7 +250,7 @@ Exercise files: Rust `exercises/rust/src/consistent_hashing/mod.rs` · Go `exerc
 
 ## More Production Uses
 
-- [serialx/hashring](https://github.com/serialx/hashring/blob/master/hashring.go#L31-L37) — Go hash ring with weighted nodes
+- [serialx/hashring](https://github.com/serialx/hashring/blob/22c0c7ab6b1be4be7b950bae8b117767da7b18b6/hashring.go#L31-L37) — Go hash ring with weighted nodes
 - [Apache Cassandra](https://github.com/apache/cassandra) — partitioner uses consistent hashing for token ring
 - [Amazon DynamoDB](https://www.allthingsdistributed.com/2007/10/amazons_dynamo.html) — original paper on consistent hashing in production
 - [Memcached](https://github.com/memcached/memcached) — client-side consistent hashing (ketama algorithm)

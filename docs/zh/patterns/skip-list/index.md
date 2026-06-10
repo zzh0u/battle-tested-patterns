@@ -52,8 +52,8 @@ difficulty: "advanced"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Redis | [t_zset.c#L70-L130](https://github.com/redis/redis/blob/unstable/src/t_zset.c#L70-L130) | `zskiplist` / `zskiplistNode` — Redis 有序集合使用跳表（而非平衡树）实现 O(log n) 范围查询。`zslInsert` 创建随机层级节点。Antirez 选择它因其简单性和缓存友好性。 |
-| LevelDB | [skiplist.h#L40-L90](https://github.com/google/leveldb/blob/main/db/skiplist.h#L40-L90) | `SkipList` 类模板——用作 LevelDB 的内存有序结构（MemTable）。`Insert` 和 `Contains` 使用 compare-and-swap 支持并发读。LSM 树架构的基础。 |
+| Redis | [t_zset.c#L70-L130](https://github.com/redis/redis/blob/df63a65d4d4ee33ae67e9f101885074febe0bccb/src/t_zset.c#L70-L130) | `zskiplist` / `zskiplistNode` — Redis 有序集合使用跳表（而非平衡树）实现 O(log n) 范围查询。`zslInsert` 创建随机层级节点。Antirez 选择它因其简单性和缓存友好性。 |
+| LevelDB | [skiplist.h#L40-L90](https://github.com/google/leveldb/blob/7ee830d02b623e8ffe0b95d59a74db1e58da04c5/db/skiplist.h#L40-L90) | `SkipList` 类模板——用作 LevelDB 的内存有序结构（MemTable）。`Insert` 和 `Contains` 使用 compare-and-swap 支持并发读。LSM 树架构的基础。 |
 
 ## 实现
 
@@ -327,7 +327,7 @@ class SkipList:
 
 ## 更多生产案例
 
-- [RocksDB](https://github.com/facebook/rocksdb/blob/main/memtable/inlineskiplist.h) — `InlineSkipList` 用于并发 MemTable
+- [RocksDB](https://github.com/facebook/rocksdb/blob/7affaee1c49ebc80cb213ad86fe7d2a3ad447da2/memtable/inlineskiplist.h) — `InlineSkipList` 用于并发 MemTable
 - [CockroachDB](https://github.com/cockroachdb/cockroach) — Pebble 存储引擎的跳表 memtable
 - [Java ConcurrentSkipListMap](https://github.com/openjdk/jdk) — JDK 中的无锁有序 map
 - [FoundationDB](https://github.com/apple/foundationdb) — 内存有序数据的跳表

@@ -54,8 +54,8 @@ sequenceDiagram
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| React | [Scheduler.js#L188-L258](https://github.com/facebook/react/blob/main/packages/scheduler/src/forks/Scheduler.js#L188-L258) | `workLoop` 从最小堆中处理任务，每轮调用 `shouldYieldToHost()`（~行447）检查 5ms 时间片是否耗尽。 |
-| Go Runtime | [proc.go#L4143-L4200](https://github.com/golang/go/blob/master/src/runtime/proc.go#L4143-L4200) | `schedule()` 是调度器主循环。`Gosched()`（行394）是主动让出点，`goschedImpl`（行4315）处理协作式上下文切换。 |
+| React | [Scheduler.js#L188-L258](https://github.com/facebook/react/blob/34b78a2897cc208260a88e6b62ecaf9ca2a9dfe4/packages/scheduler/src/forks/Scheduler.js#L188-L258) | `workLoop` 从最小堆中处理任务，每轮调用 `shouldYieldToHost()`（~行447）检查 5ms 时间片是否耗尽。 |
+| Go Runtime | [proc.go#L4143-L4200](https://github.com/golang/go/blob/f5cdf4745455415c7a43cfc7d925214d4511489b/src/runtime/proc.go#L4143-L4200) | `schedule()` 是调度器主循环。`Gosched()`（行394）是主动让出点，`goschedImpl`（行4315）处理协作式上下文切换。 |
 
 ## 实现
 
@@ -252,9 +252,9 @@ remaining = work_loop(
 ## 更多生产案例
 
 - [Lua](https://github.com/lua/lua) — coroutines
-- Python [asyncio](https://github.com/python/cpython/blob/main/Lib/asyncio/tasks.py#L1-L50) — `Task` 包装协程，`__step` 通过逐次 `send()` 驱动执行
-- [Erlang/BEAM VM](https://github.com/erlang/otp/blob/master/erts/emulator/beam/emu/beam_emu.c#L305-L350) — reduction counting（每 ~4000 次 reduction 后 yield）
-- [Unity](https://github.com/Unity-Technologies/UnityCsReference/blob/master/Runtime/Export/Scripting/Coroutines.cs) — 使用 `yield return` 的协程
+- Python [asyncio](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Lib/asyncio/tasks.py#L1-L50) — `Task` 包装协程，`__step` 通过逐次 `send()` 驱动执行
+- [Erlang/BEAM VM](https://github.com/erlang/otp/blob/c75602432b4eff922bcaf4a175144dc61adbd6d6/erts/emulator/beam/emu/beam_emu.c#L305-L350) — reduction counting（每 ~4000 次 reduction 后 yield）
+- [Unity](https://github.com/Unity-Technologies/UnityCsReference/blob/59b03b8a0f179c0b7e038178c90b6c80b340aa9f/Runtime/Export/Scripting/Coroutines.cs) — 使用 `yield return` 的协程
 
 ## 相关模式
 

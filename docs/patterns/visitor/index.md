@@ -55,8 +55,8 @@ The visitor pattern separates "how to walk a tree" from "what to do at each node
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| LLVM | [InstVisitor.h#L45-L107](https://github.com/llvm/llvm-project/blob/main/llvm/include/llvm/IR/InstVisitor.h#L45-L107) | `InstVisitor<SubClass, RetTy>` (L45) is a CRTP visitor over all LLVM IR instruction types. It dispatches via `visit(Instruction &I)` which switches on opcode to call `visitAdd`, `visitBr`, `visitCall`, etc. Used for instruction counting, constant folding, and optimization passes. Default behavior delegates to parent class visitors. |
-| Vue.js | [transforms/vIf.ts#L35-L60](https://github.com/vuejs/core/blob/main/packages/compiler-core/src/transforms/vIf.ts#L35-L60) | `transformIf` is a `NodeTransform` visitor that walks the template AST. The compiler's `traverseNode` (in transform.ts) dispatches each AST node to registered transform visitors. Each transform (v-if, v-for, v-bind) is a visitor that rewrites nodes without modifying the AST structure code. |
+| LLVM | [InstVisitor.h#L45-L107](https://github.com/llvm/llvm-project/blob/1dc53bacd24fb555dfd2ec030a5ee33f5db3fadf/llvm/include/llvm/IR/InstVisitor.h#L45-L107) | `InstVisitor<SubClass, RetTy>` (L45) is a CRTP visitor over all LLVM IR instruction types. It dispatches via `visit(Instruction &I)` which switches on opcode to call `visitAdd`, `visitBr`, `visitCall`, etc. Used for instruction counting, constant folding, and optimization passes. Default behavior delegates to parent class visitors. |
+| Vue.js | [transforms/vIf.ts#L35-L60](https://github.com/vuejs/core/blob/48ad452dd61926a59e358da3c74c5ef750ae21c4/packages/compiler-core/src/transforms/vIf.ts#L35-L60) | `transformIf` is a `NodeTransform` visitor that walks the template AST. The compiler's `traverseNode` (in transform.ts) dispatches each AST node to registered transform visitors. Each transform (v-if, v-for, v-bind) is a visitor that rewrites nodes without modifying the AST structure code. |
 
 ## Implementation
 

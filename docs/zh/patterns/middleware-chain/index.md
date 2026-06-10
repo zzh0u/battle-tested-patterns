@@ -59,8 +59,8 @@ difficulty: "intermediate"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| gRPC-Go | [server.go#L1224-L1260](https://github.com/grpc/grpc-go/blob/master/server.go#L1224-L1260) | `chainUnaryServerInterceptors`（L1224）将拦截器链接为单一处理器。`getChainUnaryHandler`（L1252）递归构建链——每个拦截器接收请求和 `handler` 函数（相当于 `next`）。用于生产 gRPC 服务中的认证、日志、追踪和限流。 |
-| Koa.js | [application.js#L152-L204](https://github.com/koajs/koa/blob/master/lib/application.js#L152-L204) | `use()`（L152-L157）将中间件推入数组。`callback()`（L168）通过 `koa-compose` 将它们组合为单一函数。`handleRequest`（L198-L205）执行组合后的链。Koa 开创了异步洋葱模型——每个 `await next()` 创建一个栈帧，使下游中间件可以使用干净的 try/catch/finally。 |
+| gRPC-Go | [server.go#L1224-L1260](https://github.com/grpc/grpc-go/blob/f1864955bbb48efa131f6652933fa8b2189d9305/server.go#L1224-L1260) | `chainUnaryServerInterceptors`（L1224）将拦截器链接为单一处理器。`getChainUnaryHandler`（L1252）递归构建链——每个拦截器接收请求和 `handler` 函数（相当于 `next`）。用于生产 gRPC 服务中的认证、日志、追踪和限流。 |
+| Koa.js | [application.js#L152-L204](https://github.com/koajs/koa/blob/78efdc87df1f8d49a494f313d478814d67c3f00f/lib/application.js#L152-L204) | `use()`（L152-L157）将中间件推入数组。`callback()`（L168）通过 `koa-compose` 将它们组合为单一函数。`handleRequest`（L198-L205）执行组合后的链。Koa 开创了异步洋葱模型——每个 `await next()` 创建一个栈帧，使下游中间件可以使用干净的 try/catch/finally。 |
 
 ## 实现
 

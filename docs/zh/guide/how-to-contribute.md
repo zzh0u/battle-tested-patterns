@@ -22,18 +22,18 @@ pnpm test       # 运行练习测试
 ### 添加新模式
 
 1. 开一个 [Issue](https://github.com/Totoro-jam/battle-tested-patterns/issues/new?template=new-pattern.md) 提议该模式
-2. 遵循 [SOP 01: 新增模式](https://github.com/Totoro-jam/battle-tested-patterns/blob/main/.sop/01-new-pattern.md)
+2. 遵循 [SOP 01: 新增模式](https://github.com/Totoro-jam/battle-tested-patterns/blob/e758be266d38db94723be233863e6f3effbf46cc/.sop/01-new-pattern.md)
 3. 提交 PR 并填写完整的 checklist
 
 ### 添加语言实现
 
 - 选择一个缺少你擅长语言的模式
-- 遵循 [SOP 03: 多语言实现](https://github.com/Totoro-jam/battle-tested-patterns/blob/main/.sop/03-multi-lang-impl.md)
+- 遵循 [SOP 03: 多语言实现](https://github.com/Totoro-jam/battle-tested-patterns/blob/e758be266d38db94723be233863e6f3effbf46cc/.sop/03-multi-lang-impl.md)
 - 实现必须**地道** — 不能逐行翻译
 
 ### 修复失效链接
 
-- 遵循 [SOP 06: 失效链接修复](https://github.com/Totoro-jam/battle-tested-patterns/blob/main/.sop/06-broken-link-fix.md)
+- 遵循 [SOP 06: 失效链接修复](https://github.com/Totoro-jam/battle-tested-patterns/blob/e758be266d38db94723be233863e6f3effbf46cc/.sop/06-broken-link-fix.md)
 
 ### 改进文档
 
@@ -50,7 +50,7 @@ pnpm test       # 运行练习测试
 - 中文翻译且代码块一致
 - 所有测试通过（`pnpm test` · `cargo test` · `go test ./...` · `pytest`），无 lint 错误
 
-完整检查清单见 [PR 模板](https://github.com/Totoro-jam/battle-tested-patterns/blob/main/.github/PULL_REQUEST_TEMPLATE.md)。
+完整检查清单见 [PR 模板](https://github.com/Totoro-jam/battle-tested-patterns/blob/e758be266d38db94723be233863e6f3effbf46cc/.github/PULL_REQUEST_TEMPLATE.md)。
 
 ## 提交规范
 

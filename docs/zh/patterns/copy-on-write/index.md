@@ -48,8 +48,8 @@ flowchart LR
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Git | [object-file.c#L719-L730](https://github.com/git/git/blob/master/object-file.c#L719-L730) | Git 对象是不可变的内容寻址 blob。分支时不复制文件——共享相同对象。新 commit 只为变更的文件创建新对象。 |
-| Rust 标准库 | [borrow.rs#L169-L220](https://github.com/rust-lang/rust/blob/main/library/alloc/src/borrow.rs#L169-L220) | `Cow<'a, B>` — 持有 `Borrowed` 引用或 `Owned` 值的枚举。`to_mut()` 仅在当前是借用时才克隆。广泛用于零拷贝解析。 |
+| Git | [object-file.c#L719-L730](https://github.com/git/git/blob/1ff279f3404a482a83fb04c7457e41ab26884aea/object-file.c#L719-L730) | Git 对象是不可变的内容寻址 blob。分支时不复制文件——共享相同对象。新 commit 只为变更的文件创建新对象。 |
+| Rust 标准库 | [borrow.rs#L169-L220](https://github.com/rust-lang/rust/blob/d56483a91d6cf5041351a3208b8d08f98f0c8b56/library/alloc/src/borrow.rs#L169-L220) | `Cow<'a, B>` — 持有 `Borrowed` 引用或 `Owned` 值的枚举。`to_mut()` 仅在当前是借用时才克隆。广泛用于零拷贝解析。 |
 
 ## 实现
 
@@ -194,7 +194,7 @@ print(original["users"])        # ["alice", "bob"] — unchanged
 
 ## 更多生产案例
 
-- [Linux fork()](https://github.com/torvalds/linux/blob/master/kernel/fork.c#L580-L620) — 通过 `copy_page_range` 实现页表 CoW
+- [Linux fork()](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/kernel/fork.c#L580-L620) — 通过 `copy_page_range` 实现页表 CoW
 - [Swift](https://github.com/swiftlang/swift) — value types
 - [Redis](https://github.com/redis/redis) — `BGSAVE`
 - [ZFS](https://github.com/openzfs/zfs) / Btrfs — filesystem snapshots

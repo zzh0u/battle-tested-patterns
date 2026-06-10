@@ -55,8 +55,8 @@ difficulty: "intermediate"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Rust 编译器 (rustc) | [symbol.rs#L24-L79](https://github.com/rust-lang/rust/blob/master/compiler/rustc_span/src/symbol.rs#L24-L79) | `Symbol`（L24）是 `u32` 的 newtype——全局驻留表的索引。`Interner`（L56-L79）在 `Vec` 中存储字符串，通过 `HashMap` 去重。Rust 编译器中的所有标识符都是 `Symbol`——相等性是一次 `u32` 比较。 |
-| CPython | [unicodeobject.c#L15575-L15631](https://github.com/python/cpython/blob/main/Objects/unicodeobject.c#L15575-L15631) | `PyUnicode_InternInPlace`（L15575）通过将 Python 字符串存储在全局 dict 中来驻留。如果字符串已存在，返回现有对象并递减新对象的引用计数。所有标识符字符串（变量名、属性名）自动驻留以实现 O(1) 的 dict 查找。 |
+| Rust 编译器 (rustc) | [symbol.rs#L24-L79](https://github.com/rust-lang/rust/blob/ab26b175979ee7b2cb3302dce204b99df96f7efb/compiler/rustc_span/src/symbol.rs#L24-L79) | `Symbol`（L24）是 `u32` 的 newtype——全局驻留表的索引。`Interner`（L56-L79）在 `Vec` 中存储字符串，通过 `HashMap` 去重。Rust 编译器中的所有标识符都是 `Symbol`——相等性是一次 `u32` 比较。 |
+| CPython | [unicodeobject.c#L15575-L15631](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Objects/unicodeobject.c#L15575-L15631) | `PyUnicode_InternInPlace`（L15575）通过将 Python 字符串存储在全局 dict 中来驻留。如果字符串已存在，返回现有对象并递减新对象的引用计数。所有标识符字符串（变量名、属性名）自动驻留以实现 O(1) 的 dict 查找。 |
 
 ## 实现
 

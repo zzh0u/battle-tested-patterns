@@ -57,8 +57,8 @@ A tagged union (also called a variant, discriminated union, or sum type) pairs a
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Godot Engine | [variant.h#L78-L120](https://github.com/godotengine/godot/blob/master/core/variant/variant.h#L78-L120) | `Variant::Type` enum (L78-L108) lists 38 types (NIL, BOOL, INT, FLOAT, STRING, VECTOR2, ...). The `Variant` class stores a `Type` tag and a union of all possible values. Every GDScript value is a `Variant` — the engine dispatches operations via the tag. |
-| PyTorch | [ivalue.h#L51-L96](https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/core/ivalue.h#L51-L96) | `IValue` (Interpreter Value) holds a tag (`Tag` enum: Tensor, Int, Double, Bool, String, List, Dict, etc.) and a `Payload` union. The TorchScript interpreter uses tag-based dispatch for all operations on heterogeneous values. |
+| Godot Engine | [variant.h#L78-L120](https://github.com/godotengine/godot/blob/ec67cbe92628bdaf979b10594359ba6f02cf8838/core/variant/variant.h#L78-L120) | `Variant::Type` enum (L78-L108) lists 38 types (NIL, BOOL, INT, FLOAT, STRING, VECTOR2, ...). The `Variant` class stores a `Type` tag and a union of all possible values. Every GDScript value is a `Variant` — the engine dispatches operations via the tag. |
+| PyTorch | [ivalue.h#L51-L96](https://github.com/pytorch/pytorch/blob/cef26d1e97fcb9dd61b4471f9bd7fa9a32bd42b9/aten/src/ATen/core/ivalue.h#L51-L96) | `IValue` (Interpreter Value) holds a tag (`Tag` enum: Tensor, Int, Double, Bool, String, List, Dict, etc.) and a `Payload` union. The TorchScript interpreter uses tag-based dispatch for all operations on heterogeneous values. |
 
 ## Implementation
 
@@ -209,7 +209,7 @@ Exercise files: Rust `exercises/rust/src/tagged_union/mod.rs` · Go `exercises/g
 
 ## More Production Uses
 
-- [V8 Engine](https://github.com/v8/v8/blob/main/src/objects/tagged-value.h) — JavaScript values use tagged pointers to distinguish Smis (small integers) from heap objects
+- [V8 Engine](https://github.com/v8/v8/blob/02a623d69f6ba69f513ae2c7aef84b9914fbde51/src/objects/tagged-value.h) — JavaScript values use tagged pointers to distinguish Smis (small integers) from heap objects
 - [SQLite](https://github.com/sqlite/sqlite) — internal `Mem` struct stores type tag + value union for all SQL types
 - [Lua TValue](https://github.com/lua/lua) — every Lua value is a `TValue` with a type tag and `Value` union
 - [GHC Haskell](https://github.com/ghc/ghc) — algebraic data types compile to tagged heap objects

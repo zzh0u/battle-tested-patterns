@@ -52,8 +52,8 @@ difficulty: "beginner"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| LMAX Disruptor | [RingBuffer.java#L84-L130](https://github.com/LMAX-Exchange/disruptor/blob/master/src/main/java/com/lmax/disruptor/RingBuffer.java#L84-L130) | Disruptor 的核心数据结构，支撑 LMAX 交易所每秒处理 600 万笔订单。使用 2 的幂大小以位运算取模。 |
-| Linux 内核 | [ring_buffer.h#L12-L70](https://github.com/torvalds/linux/blob/master/include/linux/ring_buffer.h#L12-L70) | 内核 tracing 子系统 (ftrace) 使用环形缓冲区进行无锁事件记录，per-CPU 缓冲区实现零竞争。 |
+| LMAX Disruptor | [RingBuffer.java#L84-L130](https://github.com/LMAX-Exchange/disruptor/blob/c871ca49826a6be7ada6957f6fbafcfecf7b1f87/src/main/java/com/lmax/disruptor/RingBuffer.java#L84-L130) | Disruptor 的核心数据结构，支撑 LMAX 交易所每秒处理 600 万笔订单。使用 2 的幂大小以位运算取模。 |
+| Linux 内核 | [ring_buffer.h#L12-L70](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/include/linux/ring_buffer.h#L12-L70) | 内核 tracing 子系统 (ftrace) 使用环形缓冲区进行无锁事件记录，per-CPU 缓冲区实现零竞争。 |
 
 ## 实现
 
@@ -230,7 +230,7 @@ class RingBuffer:
 - Linux [io_uring](https://github.com/axboe/liburing)
 - [ZeroMQ](https://github.com/zeromq/libzmq)
 - [Kafka](https://github.com/apache/kafka) — log segments
-- [PortAudio](https://github.com/portaudio/portaudio/blob/master/src/common/pa_ringbuffer.c) — 实时音频无锁 SPSC 环形缓冲区
+- [PortAudio](https://github.com/portaudio/portaudio/blob/b0fe9de7ec86ebe5a26086f1d662ab74d7ebfae4/src/common/pa_ringbuffer.c) — 实时音频无锁 SPSC 环形缓冲区
 
 ## 相关模式
 

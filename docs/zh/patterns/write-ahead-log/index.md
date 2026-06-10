@@ -49,8 +49,8 @@ difficulty: "intermediate"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| etcd | [wal.go#L72-L95](https://github.com/etcd-io/etcd/blob/main/server/storage/wal/wal.go#L72-L95) | `WAL` 结构体（L72）持有目录、编码器、互斥锁和文件管道。`Save` 方法（L958-L1000）持久化 Raft 硬状态和条目，同步到磁盘，超过 `SegmentSizeBytes` 时轮转段。WAL 是 etcd 分布式共识的事实来源。 |
-| PostgreSQL | [xlog.c#L783-L1128](https://github.com/postgres/postgres/blob/master/src/backend/access/transam/xlog.c#L783-L1128) | `XLogInsertRecord` — WAL 核心插入入口。预留空间，将记录数据复制到 WAL 缓冲区，按需触发刷盘。`XLogWrite`（L2324-L2622）将 WAL 页从共享缓冲区写入磁盘。支持崩溃恢复、复制和 PITR。 |
+| etcd | [wal.go#L72-L95](https://github.com/etcd-io/etcd/blob/e9b62f804766edf77cfa918d600cb6fb2c56b401/server/storage/wal/wal.go#L72-L95) | `WAL` 结构体（L72）持有目录、编码器、互斥锁和文件管道。`Save` 方法（L958-L1000）持久化 Raft 硬状态和条目，同步到磁盘，超过 `SegmentSizeBytes` 时轮转段。WAL 是 etcd 分布式共识的事实来源。 |
+| PostgreSQL | [xlog.c#L783-L1128](https://github.com/postgres/postgres/blob/e18b0cb7344cb4bd28468f6c0aeeb9b9241d30aa/src/backend/access/transam/xlog.c#L783-L1128) | `XLogInsertRecord` — WAL 核心插入入口。预留空间，将记录数据复制到 WAL 缓冲区，按需触发刷盘。`XLogWrite`（L2324-L2622）将 WAL 页从共享缓冲区写入磁盘。支持崩溃恢复、复制和 PITR。 |
 
 ## 实现
 

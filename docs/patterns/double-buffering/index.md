@@ -50,8 +50,8 @@ After swap: old "current" becomes new "work-in-progress" (reused, not GC'd). The
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| React | [ReactFiber.js#L327-L355](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactFiber.js#L327-L355) | `createWorkInProgress` — creates or reuses an alternate fiber. The comment says: *"We use a double buffering pooling technique because we know that we'll only ever need at most two versions of a tree."* `current.alternate = workInProgress` and `workInProgress.alternate = current` establish the mutual link. |
-| SDL | [SDL_render.c#L5535-L5570](https://github.com/libsdl-org/SDL/blob/main/src/render/SDL_render.c#L5535-L5570) | `SDL_RenderPresent` — flushes queued render commands, calls the backend's `RenderPresent` to swap front/back buffers for tear-free frame presentation, and handles vsync simulation. |
+| React | [ReactFiber.js#L327-L355](https://github.com/facebook/react/blob/34b78a2897cc208260a88e6b62ecaf9ca2a9dfe4/packages/react-reconciler/src/ReactFiber.js#L327-L355) | `createWorkInProgress` — creates or reuses an alternate fiber. The comment says: *"We use a double buffering pooling technique because we know that we'll only ever need at most two versions of a tree."* `current.alternate = workInProgress` and `workInProgress.alternate = current` establish the mutual link. |
+| SDL | [SDL_render.c#L5535-L5570](https://github.com/libsdl-org/SDL/blob/14b0e9d922da78001223e563efd2f54f473a4115/src/render/SDL_render.c#L5535-L5570) | `SDL_RenderPresent` — flushes queued render commands, calls the backend's `RenderPresent` to swap front/back buffers for tear-free frame presentation, and handles vsync simulation. |
 
 ## Implementation
 
@@ -217,8 +217,8 @@ Exercise files: Rust `exercises/rust/src/double_buffering/mod.rs` · Go `exercis
 
 - [OpenGL](https://www.khronos.org/opengl/) / Vulkan — swap chains
 - [PostgreSQL](https://github.com/postgres/postgres) — MVCC snapshot isolation
-- [Godot Engine](https://github.com/godotengine/godot/blob/master/servers/rendering/renderer_rd/renderer_scene_render_rd.cpp) — double-buffered frame rendering
-- [Linux fbdev](https://github.com/torvalds/linux/blob/master/drivers/video/fbdev/core/fbmem.c) — framebuffer double buffering for console and display output
+- [Godot Engine](https://github.com/godotengine/godot/blob/ec67cbe92628bdaf979b10594359ba6f02cf8838/servers/rendering/renderer_rd/renderer_scene_render_rd.cpp) — double-buffered frame rendering
+- [Linux fbdev](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/drivers/video/fbdev/core/fbmem.c) — framebuffer double buffering for console and display output
 
 ## Related Patterns
 

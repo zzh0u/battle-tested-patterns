@@ -61,8 +61,8 @@ The dirty flag pattern avoids redundant computation by tracking whether derived 
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Chromium/Blink | [layout_object.h#L1425-L1430](https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/core/layout/layout_object.h#L1425-L1430) | `NeedsLayout()` returns whether the layout object's geometry is dirty. When CSS properties change, `SetNeedsLayout()` marks the node and ancestors dirty. Layout computation only happens during the next layout pass — not on every style change. This batches hundreds of DOM mutations into a single layout computation. |
-| React | [ReactFiberFlags.js#L18-L22](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactFiberFlags.js#L18-L22) | Fiber flags like `Placement`, `Update`, `Deletion` are dirty flags on fiber nodes. When state changes, fibers are marked with flags. The commit phase only processes fibers with non-zero flags, skipping unchanged subtrees entirely. |
+| Chromium/Blink | [layout_object.h#L1425-L1430](https://github.com/chromium/chromium/blob/5cffea3f665b7762369a0fa84d2f208875e7225e/third_party/blink/renderer/core/layout/layout_object.h#L1425-L1430) | `NeedsLayout()` returns whether the layout object's geometry is dirty. When CSS properties change, `SetNeedsLayout()` marks the node and ancestors dirty. Layout computation only happens during the next layout pass — not on every style change. This batches hundreds of DOM mutations into a single layout computation. |
+| React | [ReactFiberFlags.js#L18-L22](https://github.com/facebook/react/blob/34b78a2897cc208260a88e6b62ecaf9ca2a9dfe4/packages/react-reconciler/src/ReactFiberFlags.js#L18-L22) | Fiber flags like `Placement`, `Update`, `Deletion` are dirty flags on fiber nodes. When state changes, fibers are marked with flags. The commit phase only processes fibers with non-zero flags, skipping unchanged subtrees entirely. |
 
 ## Implementation
 
@@ -253,7 +253,7 @@ Exercise files: Rust `exercises/rust/src/dirty_flag/mod.rs` · Go `exercises/go/
 ## More Production Uses
 
 - [Unity Engine](https://github.com/Unity-Technologies/UnityCsReference) — `Transform.hasChanged` flag defers world matrix recomputation
-- [Qt Framework](https://github.com/qt/qtbase/blob/dev/src/widgets/kernel/qwidget.cpp) — `QWidget::update()` marks regions dirty; painting happens in the next event loop iteration
+- [Qt Framework](https://github.com/qt/qtbase/blob/70891a20ed56ac28c8d4c8265266a06700ce5a09/src/widgets/kernel/qwidget.cpp) — `QWidget::update()` marks regions dirty; painting happens in the next event loop iteration
 - [Make](https://www.gnu.org/software/make/) — file modification times as dirty flags; only rebuild targets newer than sources
 - [Excel/Google Sheets](https://support.google.com) — cell dependency graph with dirty propagation; only recalculates changed subgraph
 

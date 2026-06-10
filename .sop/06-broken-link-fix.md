@@ -64,6 +64,8 @@ git commit -m "fix: update broken source link in <pattern>"
 
 ## Prevention
 
-- Prefer `main`/`master` branch links (more stable than tags)
-- Consider using commit SHA permalinks for critical references
-- The weekly CI job catches issues early — respond within 1 week
+- Prefer `main`/`master` branch links during development (easier for contributors)
+- **Before release**: convert all branch links to SHA permalinks using `tsx scripts/convert-to-sha-links.ts`
+- SHA permalinks are immune to file moves/renames — they point to an immutable snapshot
+- The weekly CI job catches broken links early — respond within 1 week
+- `pnpm verify-links` reports branch-based links as informational warnings

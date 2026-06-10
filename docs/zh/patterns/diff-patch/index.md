@@ -51,8 +51,8 @@ React 的协调器用此确定要创建、更新或删除哪些 DOM 节点。Git
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| React | [ReactChildFiber.js#L1169-L1340](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactChildFiber.js#L1169-L1340) | `reconcileChildrenArray` 对比新旧子节点，~行1294 调用 `mapRemainingChildren` 构建 key→fiber 映射，检测移动、插入和删除。 |
-| Git | [diff.c#L5020-L5060](https://github.com/git/git/blob/master/diff.c#L5020-L5060) | `run_diff` 分派文件对比，`builtin_diff`（行3839）处理实际 diff。Git 内部使用优化版 Myers 算法（在 `xdiff/` 中）。 |
+| React | [ReactChildFiber.js#L1169-L1340](https://github.com/facebook/react/blob/34b78a2897cc208260a88e6b62ecaf9ca2a9dfe4/packages/react-reconciler/src/ReactChildFiber.js#L1169-L1340) | `reconcileChildrenArray` 对比新旧子节点，~行1294 调用 `mapRemainingChildren` 构建 key→fiber 映射，检测移动、插入和删除。 |
+| Git | [diff.c#L5020-L5060](https://github.com/git/git/blob/1ff279f3404a482a83fb04c7457e41ab26884aea/diff.c#L5020-L5060) | `run_diff` 分派文件对比，`builtin_diff`（行3839）处理实际 diff。Git 内部使用优化版 Myers 算法（在 `xdiff/` 中）。 |
 
 ## 实现
 
@@ -282,7 +282,7 @@ assert patch(ops) == ["a", "c", "e", "d"]
 - [VS Code](https://github.com/microsoft/vscode) — text buffer diff
 - [jsdiff](https://github.com/kpdecker/jsdiff)
 - [Vue 3](https://github.com/vuejs/core) — template diff
-- [Git](https://github.com/git/git/blob/master/diff.c) — core diff engine for commits, merges, and patches
+- [Git](https://github.com/git/git/blob/1ff279f3404a482a83fb04c7457e41ab26884aea/diff.c) — core diff engine for commits, merges, and patches
 
 ## 相关模式
 

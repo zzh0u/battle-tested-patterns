@@ -51,8 +51,8 @@ sequenceDiagram
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Linux Kernel | [semaphore.h#L15-L55](https://github.com/torvalds/linux/blob/master/include/linux/semaphore.h#L15-L55) | `struct semaphore` — kernel counting semaphore with `down()` (acquire) and `up()` (release). Used for device driver access control, limiting concurrent I/O operations. |
-| Go stdlib | [semaphore.go#L28-L107](https://github.com/golang/sync/blob/master/semaphore/semaphore.go#L28-L107) | `Weighted` struct (L28-L33) with `size`, `cur`, `mu`, `waiters`. `Acquire` (L38-L107) blocks until semaphore weight is available or context is cancelled. Used internally by `errgroup` to limit goroutine concurrency. |
+| Linux Kernel | [semaphore.h#L15-L55](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/include/linux/semaphore.h#L15-L55) | `struct semaphore` — kernel counting semaphore with `down()` (acquire) and `up()` (release). Used for device driver access control, limiting concurrent I/O operations. |
+| Go stdlib | [semaphore.go#L28-L107](https://github.com/golang/sync/blob/5071ed6a9f1617117556b66384f765c934de3698/semaphore/semaphore.go#L28-L107) | `Weighted` struct (L28-L33) with `size`, `cur`, `mu`, `waiters`. `Acquire` (L38-L107) blocks until semaphore weight is available or context is cancelled. Used internally by `errgroup` to limit goroutine concurrency. |
 
 ## Implementation
 
@@ -182,8 +182,8 @@ Exercise files: Rust `exercises/rust/src/semaphore/mod.rs` · Go `exercises/go/s
 
 ## More Production Uses
 
-- [Java Semaphore](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/concurrent/Semaphore.java) — fair/nonfair counting semaphore
-- [Python threading.Semaphore](https://github.com/python/cpython/blob/main/Lib/threading.py) — condition-variable-based semaphore
+- [Java Semaphore](https://github.com/openjdk/jdk/blob/4b3ec455c85314d051800a8f46dd8f5c93881e3a/src/java.base/share/classes/java/util/concurrent/Semaphore.java) — fair/nonfair counting semaphore
+- [Python threading.Semaphore](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Lib/threading.py) — condition-variable-based semaphore
 - [Nginx](https://github.com/nginx/nginx) — worker connections
 - [PostgreSQL](https://github.com/postgres/postgres) — `max_connections`
 

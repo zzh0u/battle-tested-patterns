@@ -53,8 +53,8 @@ difficulty: "intermediate"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Node.js Streams | [writable.js#L548-L585](https://github.com/nodejs/node/blob/main/lib/internal/streams/writable.js#L548-L585) | `writeOrBuffer()` — L576 检查 `state.length < state.highWaterMark`；缓冲区超过阈值时，L579 设置 `kNeedDrain` 标志，L585 返回 `false`，通知生产者暂停直到 `drain` 事件触发。 |
-| Reactive Streams | [Subscription.java#L14-L37](https://github.com/reactive-streams/reactive-streams-jvm/blob/master/api/src/main/java/org/reactivestreams/Subscription.java#L14-L37) | `request(long n)`（L29）— 消费者显式从生产者请求 `n` 项。"在通过此方法发出需求信号之前，Publisher 不会发送任何事件。" 是 RxJava Flowable、Project Reactor 和 Akka Streams 的基础。 |
+| Node.js Streams | [writable.js#L548-L585](https://github.com/nodejs/node/blob/19c46abbefdb8711b913d7237b3c1299367f87d7/lib/internal/streams/writable.js#L548-L585) | `writeOrBuffer()` — L576 检查 `state.length < state.highWaterMark`；缓冲区超过阈值时，L579 设置 `kNeedDrain` 标志，L585 返回 `false`，通知生产者暂停直到 `drain` 事件触发。 |
+| Reactive Streams | [Subscription.java#L14-L37](https://github.com/reactive-streams/reactive-streams-jvm/blob/a625d3aba756e9842ad1291a5b73f5db280b6168/api/src/main/java/org/reactivestreams/Subscription.java#L14-L37) | `request(long n)`（L29）— 消费者显式从生产者请求 `n` 项。"在通过此方法发出需求信号之前，Publisher 不会发送任何事件。" 是 RxJava Flowable、Project Reactor 和 Akka Streams 的基础。 |
 
 ## 实现
 
@@ -200,7 +200,7 @@ async def main():
 
 - [RxJava Flowable](https://github.com/ReactiveX/RxJava) — 背压感知的响应式流
 - [Kafka](https://github.com/apache/kafka) — 生产者 `buffer.memory` 和 `max.block.ms` 用于流控
-- [Linux TCP](https://github.com/torvalds/linux/blob/master/net/ipv4/tcp_output.c) — 拥塞窗口（`cwnd`）作为背压
+- [Linux TCP](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/net/ipv4/tcp_output.c) — 拥塞窗口（`cwnd`）作为背压
 - [gRPC](https://github.com/grpc/grpc) — HTTP/2 中的流控窗口
 
 ## 相关模式

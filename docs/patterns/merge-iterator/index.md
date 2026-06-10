@@ -57,8 +57,8 @@ A merge iterator maintains a min-heap of size K, where each entry tracks the cur
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| LevelDB | [merger.cc#L17-L100](https://github.com/google/leveldb/blob/main/table/merger.cc#L17-L100) | `MergingIterator` merges multiple sorted table iterators (memtable + multiple SSTable levels) into a single sorted view. `FindSmallest()` (L84-L100) scans children to find the iterator with the smallest current key. This is the core read path of LevelDB — every `Get()` and `Seek()` goes through this merger to present a unified view of data spread across multiple files and memory. |
-| RocksDB | [merge_helper.cc#L87-L156](https://github.com/facebook/rocksdb/blob/main/db/merge_helper.cc#L87-L156) | `TimedFullMerge` implements the merge operator that combines multiple versions of the same key. During compaction, `MergeHelper::MergeUntil` walks through an iterator of sorted entries, merging values for duplicate keys. This is how RocksDB supports user-defined merge operations (e.g., append, increment) efficiently during compaction. |
+| LevelDB | [merger.cc#L17-L100](https://github.com/google/leveldb/blob/7ee830d02b623e8ffe0b95d59a74db1e58da04c5/table/merger.cc#L17-L100) | `MergingIterator` merges multiple sorted table iterators (memtable + multiple SSTable levels) into a single sorted view. `FindSmallest()` (L84-L100) scans children to find the iterator with the smallest current key. This is the core read path of LevelDB — every `Get()` and `Seek()` goes through this merger to present a unified view of data spread across multiple files and memory. |
+| RocksDB | [merge_helper.cc#L87-L156](https://github.com/facebook/rocksdb/blob/7affaee1c49ebc80cb213ad86fe7d2a3ad447da2/db/merge_helper.cc#L87-L156) | `TimedFullMerge` implements the merge operator that combines multiple versions of the same key. During compaction, `MergeHelper::MergeUntil` walks through an iterator of sorted entries, merging values for duplicate keys. This is how RocksDB supports user-defined merge operations (e.g., append, increment) efficiently during compaction. |
 
 ## Implementation
 

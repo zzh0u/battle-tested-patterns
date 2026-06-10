@@ -63,8 +63,8 @@ An LSM tree absorbs writes into an in-memory sorted structure (the memtable). Wh
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| LevelDB | [db_impl.cc#L1241-L1368](https://github.com/google/leveldb/blob/main/db/db_impl.cc#L1241-L1368) | `DBImpl::Write` — the core write path. Batches writes into a group (L1241-L1288), appends to WAL (L1311), inserts into memtable (L1337-L1354). When memtable exceeds `write_buffer_size`, `MakeRoomForWrite` (L1368) triggers a flush: the current memtable becomes immutable and a new one is created. Background compaction then merges SSTable files across levels. |
-| RocksDB | [memtable.cc#L458-L534](https://github.com/facebook/rocksdb/blob/main/db/memtable.cc#L458-L534) | `MemTable::Add` inserts a key-value pair with sequence number and type into the skip-list backed memtable. The memtable is the first destination for all writes. When it reaches `write_buffer_size`, it's made immutable and scheduled for flush to an L0 SST file. RocksDB extends LevelDB's design with concurrent memtable writes, column families, and pluggable memtable implementations. |
+| LevelDB | [db_impl.cc#L1241-L1368](https://github.com/google/leveldb/blob/7ee830d02b623e8ffe0b95d59a74db1e58da04c5/db/db_impl.cc#L1241-L1368) | `DBImpl::Write` — the core write path. Batches writes into a group (L1241-L1288), appends to WAL (L1311), inserts into memtable (L1337-L1354). When memtable exceeds `write_buffer_size`, `MakeRoomForWrite` (L1368) triggers a flush: the current memtable becomes immutable and a new one is created. Background compaction then merges SSTable files across levels. |
+| RocksDB | [memtable.cc#L458-L534](https://github.com/facebook/rocksdb/blob/7affaee1c49ebc80cb213ad86fe7d2a3ad447da2/db/memtable.cc#L458-L534) | `MemTable::Add` inserts a key-value pair with sequence number and type into the skip-list backed memtable. The memtable is the first destination for all writes. When it reaches `write_buffer_size`, it's made immutable and scheduled for flush to an L0 SST file. RocksDB extends LevelDB's design with concurrent memtable writes, column families, and pluggable memtable implementations. |
 
 ## Implementation
 

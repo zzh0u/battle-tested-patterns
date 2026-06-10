@@ -49,8 +49,8 @@ flowchart LR
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Node.js | [events.js#L456-L520](https://github.com/nodejs/node/blob/main/lib/events.js#L456-L520) | `EventEmitter.prototype.emit` — 遍历注册的监听器并逐个调用。第 209 行定义了 EventEmitter 构造函数。Node 事件驱动架构的基础。 |
-| Redux | [createStore.ts#L211-L280](https://github.com/reduxjs/redux/blob/master/src/createStore.ts#L211-L280) | `subscribe()` 添加监听器，`dispatch()`（第 280 行）执行 reducer 后调用所有监听器。Redux 在 dispatch 前快照监听器数组以安全处理订阅/取消。 |
+| Node.js | [events.js#L456-L520](https://github.com/nodejs/node/blob/19c46abbefdb8711b913d7237b3c1299367f87d7/lib/events.js#L456-L520) | `EventEmitter.prototype.emit` — 遍历注册的监听器并逐个调用。第 209 行定义了 EventEmitter 构造函数。Node 事件驱动架构的基础。 |
+| Redux | [createStore.ts#L211-L280](https://github.com/reduxjs/redux/blob/1d761f471cf58faabe88c50ea16645212d986cd0/src/createStore.ts#L211-L280) | `subscribe()` 添加监听器，`dispatch()`（第 280 行）执行 reducer 后调用所有监听器。Redux 在 dispatch 前快照监听器数组以安全处理订阅/取消。 |
 
 ## 实现
 
@@ -203,8 +203,8 @@ print(messages)  # ["hello", "world"] — unchanged
 - [RxJS](https://github.com/ReactiveX/rxjs) — reactive streams
 - [Vue 3](https://github.com/vuejs/core) — reactivity system
 - [MobX](https://github.com/mobxjs/mobx)
-- [Chromium EventTarget](https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/core/dom/events/event_target.cc) — Blink 中 DOM `addEventListener` 的实现
-- [.NET events](https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/EventHandler.cs) — C# `event` 关键字委托
+- [Chromium EventTarget](https://github.com/chromium/chromium/blob/5cffea3f665b7762369a0fa84d2f208875e7225e/third_party/blink/renderer/core/dom/events/event_target.cc) — Blink 中 DOM `addEventListener` 的实现
+- [.NET events](https://github.com/dotnet/runtime/blob/bee7953796edc09e516e847e3c9006b486ab0f6d/src/libraries/System.Private.CoreLib/src/System/EventHandler.cs) — C# `event` 关键字委托
 
 ## 相关模式
 

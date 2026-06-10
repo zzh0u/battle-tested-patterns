@@ -44,8 +44,8 @@ No intermediate arrays are created. Each element flows through the entire chain 
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Rust stdlib | [iterator.rs#L68-L112](https://github.com/rust-lang/rust/blob/main/library/core/src/iter/traits/iterator.rs#L68-L112) | The `Iterator` trait — `next()` (line 78) is the single required method. `map` (line 831), `filter` (line 952), `fold`, `collect` are all built on top. This is the foundation of Rust's zero-cost abstraction for sequences. |
-| Python | [genobject.c#L259-L374](https://github.com/python/cpython/blob/main/Objects/genobject.c#L259-L374) | `gen_send_ex2` (L259-L324) — core generator send: pushes arg onto frame stack, calls `_PyEval_EvalFrame`, distinguishes yield vs return. `gen_send_ex` (L329-L374) validates generator state (CREATED/EXECUTING/FINISHED) before delegating. |
+| Rust stdlib | [iterator.rs#L68-L112](https://github.com/rust-lang/rust/blob/d56483a91d6cf5041351a3208b8d08f98f0c8b56/library/core/src/iter/traits/iterator.rs#L68-L112) | The `Iterator` trait — `next()` (line 78) is the single required method. `map` (line 831), `filter` (line 952), `fold`, `collect` are all built on top. This is the foundation of Rust's zero-cost abstraction for sequences. |
+| Python | [genobject.c#L259-L374](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Objects/genobject.c#L259-L374) | `gen_send_ex2` (L259-L324) — core generator send: pushes arg onto frame stack, calls `_PyEval_EvalFrame`, distinguishes yield vs return. `gen_send_ex` (L329-L374) validates generator state (CREATED/EXECUTING/FINISHED) before delegating. |
 
 ## Implementation
 
@@ -200,11 +200,11 @@ Exercise files: Rust `exercises/rust/src/iterator/mod.rs` · Go `exercises/go/it
 
 ## More Production Uses
 
-- [Java Streams](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/stream/Stream.java) — lazy pipeline with intermediate/terminal operations
-- [C# LINQ](https://github.com/dotnet/runtime/blob/main/src/libraries/System.Linq/src/System/Linq/Enumerable.cs) — deferred query execution over `IEnumerable<T>`
+- [Java Streams](https://github.com/openjdk/jdk/blob/4b3ec455c85314d051800a8f46dd8f5c93881e3a/src/java.base/share/classes/java/util/stream/Stream.java) — lazy pipeline with intermediate/terminal operations
+- [C# LINQ](https://github.com/dotnet/runtime/blob/bee7953796edc09e516e847e3c9006b486ab0f6d/src/libraries/System.Linq/src/System/Linq/Enumerable.cs) — deferred query execution over `IEnumerable<T>`
 - [GHC Haskell](https://github.com/ghc/ghc) — lazy lists are the default; every `[a]` is an iterator
-- [Kotlin Sequences](https://github.com/JetBrains/kotlin/blob/master/libraries/stdlib/src/kotlin/collections/Sequences.kt) — lazy evaluation analogous to Java Streams
-- [Swift LazySequence](https://github.com/swiftlang/swift/blob/main/stdlib/public/core/LazySequence.swift) — `.lazy` adapter for deferred computation
+- [Kotlin Sequences](https://github.com/JetBrains/kotlin/blob/9a0a74253fc6720b322756ca3a20febf2b266a1e/libraries/stdlib/src/kotlin/collections/Sequences.kt) — lazy evaluation analogous to Java Streams
+- [Swift LazySequence](https://github.com/swiftlang/swift/blob/626f109a4614c6482adc3b2326adb49718c3aef0/stdlib/public/core/LazySequence.swift) — `.lazy` adapter for deferred computation
 
 ## Related Patterns
 

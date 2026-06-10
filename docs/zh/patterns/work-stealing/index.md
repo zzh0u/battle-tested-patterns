@@ -48,8 +48,8 @@ difficulty: "advanced"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Go runtime | [proc.go#L3836-L3903](https://github.com/golang/go/blob/master/src/runtime/proc.go#L3836-L3903) | `stealWork` — goroutine 调度器的窃取循环。随机顺序迭代所有 P 4 次，调用 `runqsteal`（L7774-L7791）从受害者 P 的本地运行队列中 CAS 抢占一半 goroutine。底层 `runqgrab`（L7706-L7769）使用原子 CAS 操作 `runqhead`。 |
-| Tokio (Rust) | [worker.rs#L1136-L1175](https://github.com/tokio-rs/tokio/blob/master/tokio/src/runtime/scheduler/multi_thread/worker.rs#L1136-L1175) | `Core::steal_work` — 从随机索引开始迭代远程 worker，对每个 worker 的窃取队列调用 `steal_into`。仅在不到一半 worker 正在搜索时才尝试窃取。回退到全局注入队列。 |
+| Go runtime | [proc.go#L3836-L3903](https://github.com/golang/go/blob/f5cdf4745455415c7a43cfc7d925214d4511489b/src/runtime/proc.go#L3836-L3903) | `stealWork` — goroutine 调度器的窃取循环。随机顺序迭代所有 P 4 次，调用 `runqsteal`（L7774-L7791）从受害者 P 的本地运行队列中 CAS 抢占一半 goroutine。底层 `runqgrab`（L7706-L7769）使用原子 CAS 操作 `runqhead`。 |
+| Tokio (Rust) | [worker.rs#L1136-L1175](https://github.com/tokio-rs/tokio/blob/bde89678532a8091d958268c0d36eac9362317d8/tokio/src/runtime/scheduler/multi_thread/worker.rs#L1136-L1175) | `Core::steal_work` — 从随机索引开始迭代远程 worker，对每个 worker 的窃取队列调用 `steal_into`。仅在不到一半 worker 正在搜索时才尝试窃取。回退到全局注入队列。 |
 
 ## 实现
 
@@ -248,7 +248,7 @@ class WorkStealingScheduler:
 
 ## 更多生产案例
 
-- [Java ForkJoinPool](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/concurrent/ForkJoinPool.java) — `scan` 方法实现随机化工作窃取
+- [Java ForkJoinPool](https://github.com/openjdk/jdk/blob/4b3ec455c85314d051800a8f46dd8f5c93881e3a/src/java.base/share/classes/java/util/concurrent/ForkJoinPool.java) — `scan` 方法实现随机化工作窃取
 - [Rayon (Rust)](https://github.com/rayon-rs/rayon) — 数据并行库，内置工作窃取线程池
 - [Intel TBB](https://github.com/oneapi-src/oneTBB) — `task_arena` 工作窃取调度器
 - [Cilk](https://github.com/OpenCilk/opencilk-project) — fork-join 并行的工作窃取先驱

@@ -41,6 +41,7 @@ and stale references. Rate each dimension 1-10.
 - [ ] `pnpm verify-mermaid` — all Mermaid diagrams valid
 - [ ] `pnpm build` — docs site builds
 - [ ] `pnpm verify-links` — all production proof links alive
+- [ ] `tsx scripts/convert-to-sha-links.ts --dry-run` — no unconverted branch links (convert if any found)
 - [ ] CI green on latest commit
 - [ ] No `<!-- TODO -->` markers in completed pattern docs
 

@@ -49,8 +49,8 @@ stateDiagram-v2
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| XState | [StateMachine.ts#L58-L120](https://github.com/statelyai/xstate/blob/main/packages/core/src/StateMachine.ts#L58-L120) | JavaScript/TypeScript 工业级状态机库。Netflix、Microsoft、AWS 在复杂 UI 流程和工作流中使用。 |
-| Linux 内核 | [tcp_input.c#L4865-L4920](https://github.com/torvalds/linux/blob/master/net/ipv4/tcp_input.c#L4865-L4920) | TCP 连接状态机——`switch (sk->sk_state)` 实现了每个互联网连接使用的 TCP 状态转换。 |
+| XState | [StateMachine.ts#L58-L120](https://github.com/statelyai/xstate/blob/9d9b9f1439b773979c5120a793215f5aa4568d8f/packages/core/src/StateMachine.ts#L58-L120) | JavaScript/TypeScript 工业级状态机库。Netflix、Microsoft、AWS 在复杂 UI 流程和工作流中使用。 |
+| Linux 内核 | [tcp_input.c#L4865-L4920](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/net/ipv4/tcp_input.c#L4865-L4920) | TCP 连接状态机——`switch (sk->sk_state)` 实现了每个互联网连接使用的 TCP 状态转换。 |
 
 ## 实现
 
@@ -220,10 +220,10 @@ traffic_light.send("TIMER")  # "green"
 
 ## 更多生产案例
 
-- [RE2](https://github.com/google/re2/blob/main/re2/nfa.cc) — 基于 Thompson 算法的 NFA 正则引擎
+- [RE2](https://github.com/google/re2/blob/972a15cedd008d846f1a39b2e88ce48d7f166cbd/re2/nfa.cc) — 基于 Thompson 算法的 NFA 正则引擎
 - HTTP/2 stream states ([RFC 7540](https://datatracker.ietf.org/doc/html/rfc7540))
-- [Kubernetes](https://github.com/kubernetes/kubernetes/blob/master/pkg/kubelet/lifecycle/handlers.go) — Pod 生命周期状态转换
-- [Godot Engine](https://github.com/godotengine/godot/blob/master/scene/animation/animation_tree.cpp) — 游戏角色动画状态机
+- [Kubernetes](https://github.com/kubernetes/kubernetes/blob/586cc904093af4fe7492e564908a796f0b107f97/pkg/kubelet/lifecycle/handlers.go) — Pod 生命周期状态转换
+- [Godot Engine](https://github.com/godotengine/godot/blob/ec67cbe92628bdaf979b10594359ba6f02cf8838/scene/animation/animation_tree.cpp) — 游戏角色动画状态机
 
 ## 相关模式
 

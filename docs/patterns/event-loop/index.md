@@ -58,8 +58,8 @@ Instead of dedicating one thread per connection (expensive context switches, hig
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| libuv | [core.c#L427-L492](https://github.com/libuv/libuv/blob/v1.x/src/unix/core.c#L427-L492) | `uv_run` (L427-L492) is the main event loop function used by Node.js. Processes timers, pending callbacks, polls for I/O (`uv__io_poll`), runs check handles, and closes handles in a single `while` loop. Supports three run modes: `UV_RUN_DEFAULT` (run until no more active handles), `UV_RUN_ONCE`, `UV_RUN_NOWAIT`. |
-| Redis | [ae.c#L360-L468](https://github.com/redis/redis/blob/unstable/src/ae.c#L360-L468) | `aeProcessEvents` (L360-L468) is Redis's event loop core. Calculates the nearest timer, calls `aeApiPoll` (epoll/kqueue/select abstraction) with that timeout, then dispatches file events and timer events. Redis achieves 100K+ ops/sec on a single thread because the event loop never blocks on individual operations. |
+| libuv | [core.c#L427-L492](https://github.com/libuv/libuv/blob/f6b713398e464a9f166328765be1703fd860981f/src/unix/core.c#L427-L492) | `uv_run` (L427-L492) is the main event loop function used by Node.js. Processes timers, pending callbacks, polls for I/O (`uv__io_poll`), runs check handles, and closes handles in a single `while` loop. Supports three run modes: `UV_RUN_DEFAULT` (run until no more active handles), `UV_RUN_ONCE`, `UV_RUN_NOWAIT`. |
+| Redis | [ae.c#L360-L468](https://github.com/redis/redis/blob/df63a65d4d4ee33ae67e9f101885074febe0bccb/src/ae.c#L360-L468) | `aeProcessEvents` (L360-L468) is Redis's event loop core. Calculates the nearest timer, calls `aeApiPoll` (epoll/kqueue/select abstraction) with that timeout, then dispatches file events and timer events. Redis achieves 100K+ ops/sec on a single thread because the event loop never blocks on individual operations. |
 
 ## Implementation
 

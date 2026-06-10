@@ -63,8 +63,8 @@ LSM 树将写入吸收到内存中的有序结构（memtable）中。当 memtabl
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| LevelDB | [db_impl.cc#L1241-L1368](https://github.com/google/leveldb/blob/main/db/db_impl.cc#L1241-L1368) | `DBImpl::Write` — 核心写入路径。将写入批量分组（L1241-L1288），追加到 WAL（L1311），插入 memtable（L1337-L1354）。当 memtable 超过 `write_buffer_size` 时，`MakeRoomForWrite`（L1368）触发刷写：当前 memtable 变为不可变并创建新的。后台 compaction 然后跨层级合并 SSTable 文件。 |
-| RocksDB | [memtable.cc#L458-L534](https://github.com/facebook/rocksdb/blob/main/db/memtable.cc#L458-L534) | `MemTable::Add` 将带有序列号和类型的键值对插入基于跳表的 memtable。memtable 是所有写入的第一个目的地。当达到 `write_buffer_size` 时变为不可变并安排刷写到 L0 SST 文件。RocksDB 扩展了 LevelDB 的设计，支持并发 memtable 写入、column family 和可插拔的 memtable 实现。 |
+| LevelDB | [db_impl.cc#L1241-L1368](https://github.com/google/leveldb/blob/7ee830d02b623e8ffe0b95d59a74db1e58da04c5/db/db_impl.cc#L1241-L1368) | `DBImpl::Write` — 核心写入路径。将写入批量分组（L1241-L1288），追加到 WAL（L1311），插入 memtable（L1337-L1354）。当 memtable 超过 `write_buffer_size` 时，`MakeRoomForWrite`（L1368）触发刷写：当前 memtable 变为不可变并创建新的。后台 compaction 然后跨层级合并 SSTable 文件。 |
+| RocksDB | [memtable.cc#L458-L534](https://github.com/facebook/rocksdb/blob/7affaee1c49ebc80cb213ad86fe7d2a3ad447da2/db/memtable.cc#L458-L534) | `MemTable::Add` 将带有序列号和类型的键值对插入基于跳表的 memtable。memtable 是所有写入的第一个目的地。当达到 `write_buffer_size` 时变为不可变并安排刷写到 L0 SST 文件。RocksDB 扩展了 LevelDB 的设计，支持并发 memtable 写入、column family 和可插拔的 memtable 实现。 |
 
 ## 实现
 

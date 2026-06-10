@@ -57,8 +57,8 @@ A registry is a central map from names (strings) to implementations (functions, 
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| TensorFlow | [op.h#L258-L290](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/framework/op.h#L258-L290) | `REGISTER_OP` macro registers a new operation into the global `OpRegistry`. Each op defines its name, inputs, outputs, and shape function. The runtime looks up ops by name when building computation graphs, so new ops can be added without touching the graph executor. |
-| gRPC-Go | [server.go#L154-L170](https://github.com/grpc/grpc-go/blob/master/server.go#L154-L170) | `RegisterService` adds a service description (methods, handler functions) to the server's service map. When an RPC arrives, the server looks up the method in this registry to dispatch to the correct handler. Services self-register during init. |
+| TensorFlow | [op.h#L258-L290](https://github.com/tensorflow/tensorflow/blob/b4c7e9a660badf8c8c81075fe9f781d23ed6f28a/tensorflow/core/framework/op.h#L258-L290) | `REGISTER_OP` macro registers a new operation into the global `OpRegistry`. Each op defines its name, inputs, outputs, and shape function. The runtime looks up ops by name when building computation graphs, so new ops can be added without touching the graph executor. |
+| gRPC-Go | [server.go#L154-L170](https://github.com/grpc/grpc-go/blob/f1864955bbb48efa131f6652933fa8b2189d9305/server.go#L154-L170) | `RegisterService` adds a service description (methods, handler functions) to the server's service map. When an RPC arrives, the server looks up the method in this registry to dispatch to the correct handler. Services self-register during init. |
 
 ## Implementation
 

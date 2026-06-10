@@ -51,8 +51,8 @@ difficulty: "intermediate"
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| LevelDB | [bloom.cc#L17-L80](https://github.com/google/leveldb/blob/main/util/bloom.cc#L17-L80) | `BloomFilterPolicy` — 使用双重哈希（Kirsch-Mitzenmacher）和旋转右移17位设置每个 key 的 `k` 个位。`KeyMayMatch` 在任一探测位为零时立即返回 false，避免对不存在的 key 进行磁盘读取。 |
-| Chromium (Blink) | [selector_filter.h#L149-L175](https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/core/css/selector_filter.h#L149-L175) | 8192 位布隆过滤器用于 CSS 祖先选择器快速拒绝——无需完整匹配即可淘汰 60-70% 的 CSS 规则。使用加盐哈希（标签/id/class/属性）防止跨类型碰撞。 |
+| LevelDB | [bloom.cc#L17-L80](https://github.com/google/leveldb/blob/7ee830d02b623e8ffe0b95d59a74db1e58da04c5/util/bloom.cc#L17-L80) | `BloomFilterPolicy` — 使用双重哈希（Kirsch-Mitzenmacher）和旋转右移17位设置每个 key 的 `k` 个位。`KeyMayMatch` 在任一探测位为零时立即返回 false，避免对不存在的 key 进行磁盘读取。 |
+| Chromium (Blink) | [selector_filter.h#L149-L175](https://github.com/chromium/chromium/blob/5cffea3f665b7762369a0fa84d2f208875e7225e/third_party/blink/renderer/core/css/selector_filter.h#L149-L175) | 8192 位布隆过滤器用于 CSS 祖先选择器快速拒绝——无需完整匹配即可淘汰 60-70% 的 CSS 规则。使用加盐哈希（标签/id/class/属性）防止跨类型碰撞。 |
 
 ## 实现
 
@@ -224,9 +224,9 @@ class BloomFilter:
 
 ## 更多生产案例
 
-- [PostgreSQL](https://github.com/postgres/postgres/blob/master/contrib/bloom/blutils.c#L265-L293) — bloom 索引用于多列过滤
+- [PostgreSQL](https://github.com/postgres/postgres/blob/e18b0cb7344cb4bd28468f6c0aeeb9b9241d30aa/contrib/bloom/blutils.c#L265-L293) — bloom 索引用于多列过滤
 - [Apache Cassandra](https://github.com/apache/cassandra) — SSTable 布隆过滤器避免磁盘读取
-- [bits-and-blooms/bloom](https://github.com/bits-and-blooms/bloom/blob/master/bloom.go#L77-L81) — 流行的 Go 布隆过滤器库（7k+ stars）
+- [bits-and-blooms/bloom](https://github.com/bits-and-blooms/bloom/blob/f0c3e57ab5ce07691a0a3124b9ed2db6df82ac9b/bloom.go#L77-L81) — 流行的 Go 布隆过滤器库（7k+ stars）
 - [Bitcoin](https://github.com/bitcoin/bitcoin) — 轻量客户端的 SPV 布隆过滤器
 
 ## 相关模式

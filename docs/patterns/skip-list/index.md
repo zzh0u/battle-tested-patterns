@@ -52,8 +52,8 @@ A skip list is a multi-level linked list where each level skips over more elemen
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Redis | [t_zset.c#L70-L130](https://github.com/redis/redis/blob/unstable/src/t_zset.c#L70-L130) | `zskiplist` / `zskiplistNode` — Redis sorted sets use a skip list (not a balanced tree) for O(log n) range queries. `zslInsert` creates nodes with random levels. Chosen by Antirez for its simplicity and cache-friendliness. |
-| LevelDB | [skiplist.h#L40-L90](https://github.com/google/leveldb/blob/main/db/skiplist.h#L40-L90) | `SkipList` class template — used as the in-memory sorted structure (MemTable) for LevelDB. `Insert` and `Contains` with compare-and-swap for concurrent reads. Foundation of LSM-tree architecture. |
+| Redis | [t_zset.c#L70-L130](https://github.com/redis/redis/blob/df63a65d4d4ee33ae67e9f101885074febe0bccb/src/t_zset.c#L70-L130) | `zskiplist` / `zskiplistNode` — Redis sorted sets use a skip list (not a balanced tree) for O(log n) range queries. `zslInsert` creates nodes with random levels. Chosen by Antirez for its simplicity and cache-friendliness. |
+| LevelDB | [skiplist.h#L40-L90](https://github.com/google/leveldb/blob/7ee830d02b623e8ffe0b95d59a74db1e58da04c5/db/skiplist.h#L40-L90) | `SkipList` class template — used as the in-memory sorted structure (MemTable) for LevelDB. `Insert` and `Contains` with compare-and-swap for concurrent reads. Foundation of LSM-tree architecture. |
 
 ## Implementation
 
@@ -327,7 +327,7 @@ Exercise files: Rust `exercises/rust/src/skip_list/mod.rs` · Go `exercises/go/s
 
 ## More Production Uses
 
-- [RocksDB](https://github.com/facebook/rocksdb/blob/main/memtable/inlineskiplist.h) — `InlineSkipList` for concurrent MemTable
+- [RocksDB](https://github.com/facebook/rocksdb/blob/7affaee1c49ebc80cb213ad86fe7d2a3ad447da2/memtable/inlineskiplist.h) — `InlineSkipList` for concurrent MemTable
 - [CockroachDB](https://github.com/cockroachdb/cockroach) — skip list-based memtable for Pebble storage engine
 - [Java ConcurrentSkipListMap](https://github.com/openjdk/jdk) — lock-free sorted map in JDK
 - [FoundationDB](https://github.com/apple/foundationdb) — skip list for in-memory sorted data

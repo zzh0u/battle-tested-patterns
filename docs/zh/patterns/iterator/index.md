@@ -42,8 +42,8 @@ flowchart LR
 
 | 项目 | 源码 | 用途 |
 |------|------|------|
-| Rust 标准库 | [iterator.rs#L68-L112](https://github.com/rust-lang/rust/blob/main/library/core/src/iter/traits/iterator.rs#L68-L112) | `Iterator` trait — `next()` 是唯一必须方法。`map`、`filter`、`fold`、`collect` 都构建其上。Rust 零成本抽象的基础。 |
-| Python | [genobject.c#L259-L374](https://github.com/python/cpython/blob/main/Objects/genobject.c#L259-L374) | `gen_send_ex2`（L259-L324）— 核心生成器 send：推送参数到帧栈，调用 `_PyEval_EvalFrame`，区分 yield 和 return。`gen_send_ex`（L329-L374）在委派前验证生成器状态。 |
+| Rust 标准库 | [iterator.rs#L68-L112](https://github.com/rust-lang/rust/blob/d56483a91d6cf5041351a3208b8d08f98f0c8b56/library/core/src/iter/traits/iterator.rs#L68-L112) | `Iterator` trait — `next()` 是唯一必须方法。`map`、`filter`、`fold`、`collect` 都构建其上。Rust 零成本抽象的基础。 |
+| Python | [genobject.c#L259-L374](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Objects/genobject.c#L259-L374) | `gen_send_ex2`（L259-L324）— 核心生成器 send：推送参数到帧栈，调用 `_PyEval_EvalFrame`，区分 yield 和 return。`gen_send_ex`（L329-L374）在委派前验证生成器状态。 |
 
 ## 实现
 
@@ -198,11 +198,11 @@ first_10 = [next(evens) for _ in range(10)]
 
 ## 更多生产案例
 
-- [Java Streams](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/stream/Stream.java) — 惰性管线，中间/终端操作
-- [C# LINQ](https://github.com/dotnet/runtime/blob/main/src/libraries/System.Linq/src/System/Linq/Enumerable.cs) — 基于 `IEnumerable<T>` 的延迟查询执行
+- [Java Streams](https://github.com/openjdk/jdk/blob/4b3ec455c85314d051800a8f46dd8f5c93881e3a/src/java.base/share/classes/java/util/stream/Stream.java) — 惰性管线，中间/终端操作
+- [C# LINQ](https://github.com/dotnet/runtime/blob/bee7953796edc09e516e847e3c9006b486ab0f6d/src/libraries/System.Linq/src/System/Linq/Enumerable.cs) — 基于 `IEnumerable<T>` 的延迟查询执行
 - [GHC Haskell](https://github.com/ghc/ghc) — 惰性列表是默认方式；每个 `[a]` 都是迭代器
-- [Kotlin Sequences](https://github.com/JetBrains/kotlin/blob/master/libraries/stdlib/src/kotlin/collections/Sequences.kt) — 类似 Java Streams 的惰性求值
-- [Swift LazySequence](https://github.com/swiftlang/swift/blob/main/stdlib/public/core/LazySequence.swift) — `.lazy` 延迟计算适配器
+- [Kotlin Sequences](https://github.com/JetBrains/kotlin/blob/9a0a74253fc6720b322756ca3a20febf2b266a1e/libraries/stdlib/src/kotlin/collections/Sequences.kt) — 类似 Java Streams 的惰性求值
+- [Swift LazySequence](https://github.com/swiftlang/swift/blob/626f109a4614c6482adc3b2326adb49718c3aef0/stdlib/public/core/LazySequence.swift) — `.lazy` 延迟计算适配器
 
 ## 相关模式
 

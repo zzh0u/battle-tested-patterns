@@ -48,8 +48,8 @@ Each worker owns a local deque (double-ended queue). Workers push/pop tasks from
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Go runtime | [proc.go#L3836-L3903](https://github.com/golang/go/blob/master/src/runtime/proc.go#L3836-L3903) | `stealWork` — the goroutine scheduler's steal loop. Iterates 4× over all P's in random order, calling `runqsteal` (L7774-L7791) to CAS-grab half the runnable goroutines from a victim P's local run queue. Low-level `runqgrab` (L7706-L7769) uses atomic CAS on `runqhead`. |
-| Tokio (Rust) | [worker.rs#L1136-L1175](https://github.com/tokio-rs/tokio/blob/master/tokio/src/runtime/scheduler/multi_thread/worker.rs#L1136-L1175) | `Core::steal_work` — iterates over remote workers from a random index, calls `steal_into` on each worker's steal queue. Only attempts stealing if fewer than half the workers are already searching. Falls back to the global inject queue. |
+| Go runtime | [proc.go#L3836-L3903](https://github.com/golang/go/blob/f5cdf4745455415c7a43cfc7d925214d4511489b/src/runtime/proc.go#L3836-L3903) | `stealWork` — the goroutine scheduler's steal loop. Iterates 4× over all P's in random order, calling `runqsteal` (L7774-L7791) to CAS-grab half the runnable goroutines from a victim P's local run queue. Low-level `runqgrab` (L7706-L7769) uses atomic CAS on `runqhead`. |
+| Tokio (Rust) | [worker.rs#L1136-L1175](https://github.com/tokio-rs/tokio/blob/bde89678532a8091d958268c0d36eac9362317d8/tokio/src/runtime/scheduler/multi_thread/worker.rs#L1136-L1175) | `Core::steal_work` — iterates over remote workers from a random index, calls `steal_into` on each worker's steal queue. Only attempts stealing if fewer than half the workers are already searching. Falls back to the global inject queue. |
 
 ## Implementation
 
@@ -248,7 +248,7 @@ Exercise files: Rust `exercises/rust/src/work_stealing/mod.rs` · Go `exercises/
 
 ## More Production Uses
 
-- [Java ForkJoinPool](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/concurrent/ForkJoinPool.java) — `scan` method with randomized work stealing
+- [Java ForkJoinPool](https://github.com/openjdk/jdk/blob/4b3ec455c85314d051800a8f46dd8f5c93881e3a/src/java.base/share/classes/java/util/concurrent/ForkJoinPool.java) — `scan` method with randomized work stealing
 - [Rayon (Rust)](https://github.com/rayon-rs/rayon) — data-parallelism library with work-stealing thread pool
 - [Intel TBB](https://github.com/oneapi-src/oneTBB) — `task_arena` with work-stealing scheduler
 - [Cilk](https://github.com/OpenCilk/opencilk-project) — pioneered work stealing for fork-join parallelism

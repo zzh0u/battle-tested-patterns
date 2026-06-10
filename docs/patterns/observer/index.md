@@ -49,8 +49,8 @@ This decoupling is why the pattern is everywhere: from DOM `addEventListener` to
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Node.js | [events.js#L456-L520](https://github.com/nodejs/node/blob/main/lib/events.js#L456-L520) | `EventEmitter.prototype.emit` — the core method that iterates over registered listeners and calls each one. Line 209 defines the `EventEmitter` constructor. This is the foundation of Node's event-driven architecture. |
-| Redux | [createStore.ts#L211-L280](https://github.com/reduxjs/redux/blob/master/src/createStore.ts#L211-L280) | `subscribe()` adds a listener, `dispatch()` (line 280) calls all listeners after running the reducer. Redux snapshots the listener array before dispatch to handle subscribe/unsubscribe during notification safely. |
+| Node.js | [events.js#L456-L520](https://github.com/nodejs/node/blob/19c46abbefdb8711b913d7237b3c1299367f87d7/lib/events.js#L456-L520) | `EventEmitter.prototype.emit` — the core method that iterates over registered listeners and calls each one. Line 209 defines the `EventEmitter` constructor. This is the foundation of Node's event-driven architecture. |
+| Redux | [createStore.ts#L211-L280](https://github.com/reduxjs/redux/blob/1d761f471cf58faabe88c50ea16645212d986cd0/src/createStore.ts#L211-L280) | `subscribe()` adds a listener, `dispatch()` (line 280) calls all listeners after running the reducer. Redux snapshots the listener array before dispatch to handle subscribe/unsubscribe during notification safely. |
 
 ## Implementation
 
@@ -203,8 +203,8 @@ Exercise files: Rust `exercises/rust/src/observer/mod.rs` · Go `exercises/go/ob
 - [RxJS](https://github.com/ReactiveX/rxjs) — reactive streams
 - [Vue 3](https://github.com/vuejs/core) — reactivity system
 - [MobX](https://github.com/mobxjs/mobx)
-- [Chromium EventTarget](https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/core/dom/events/event_target.cc) — DOM `addEventListener` implementation in Blink
-- [.NET events](https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/EventHandler.cs) — C# `event` keyword delegates
+- [Chromium EventTarget](https://github.com/chromium/chromium/blob/5cffea3f665b7762369a0fa84d2f208875e7225e/third_party/blink/renderer/core/dom/events/event_target.cc) — DOM `addEventListener` implementation in Blink
+- [.NET events](https://github.com/dotnet/runtime/blob/bee7953796edc09e516e847e3c9006b486ab0f6d/src/libraries/System.Private.CoreLib/src/System/EventHandler.cs) — C# `event` keyword delegates
 
 ## Related Patterns
 

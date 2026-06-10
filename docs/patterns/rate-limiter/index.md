@@ -56,8 +56,8 @@ A token bucket starts full with `capacity` tokens and refills at `rate` tokens p
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Go x/time/rate | [rate.go#L57-L66](https://github.com/golang/time/blob/master/rate/rate.go#L57-L66) | `Limiter` struct — token bucket with `tokens`, `limit`, `burst`, and `last` timestamp. `reserveN` (L337-L381) is the core algorithm: advances tokens by elapsed time, subtracts requested `n`, computes wait duration. Used across Go ecosystem. |
-| Nginx | [ngx_http_limit_req_module.c#L405-L532](https://github.com/nginx/nginx/blob/master/src/http/modules/ngx_http_limit_req_module.c#L405-L532) | `ngx_http_limit_req_lookup` — leaky bucket implementation. L454: `excess = lr->excess - ctx->rate * ms / 1000 + 1000` drains excess by elapsed time and adds one request. Powers `limit_req` directive protecting millions of Nginx servers. |
+| Go x/time/rate | [rate.go#L57-L66](https://github.com/golang/time/blob/812b343c8714c317b0dad633efa6d103e554c006/rate/rate.go#L57-L66) | `Limiter` struct — token bucket with `tokens`, `limit`, `burst`, and `last` timestamp. `reserveN` (L337-L381) is the core algorithm: advances tokens by elapsed time, subtracts requested `n`, computes wait duration. Used across Go ecosystem. |
+| Nginx | [ngx_http_limit_req_module.c#L405-L532](https://github.com/nginx/nginx/blob/d994f5b8220847eb8f7e4400be5f7e6eb4538e46/src/http/modules/ngx_http_limit_req_module.c#L405-L532) | `ngx_http_limit_req_lookup` — leaky bucket implementation. L454: `excess = lr->excess - ctx->rate * ms / 1000 + 1000` drains excess by elapsed time and adds one request. Powers `limit_req` directive protecting millions of Nginx servers. |
 
 ## Implementation
 
@@ -212,8 +212,8 @@ Exercise files: Rust `exercises/rust/src/rate_limiter/mod.rs` · Go `exercises/g
 
 ## More Production Uses
 
-- [Linux TBF](https://github.com/torvalds/linux/blob/master/net/sched/sch_tbf.c#L98-L114) — kernel token bucket filter for traffic control
-- [Guava RateLimiter](https://github.com/google/guava/blob/master/guava/src/com/google/common/util/concurrent/SmoothRateLimiter.java#L357-L369) — smooth rate limiting with warm-up
+- [Linux TBF](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/net/sched/sch_tbf.c#L98-L114) — kernel token bucket filter for traffic control
+- [Guava RateLimiter](https://github.com/google/guava/blob/3e65944ec9207ca652128969fd1334e9920dde07/guava/src/com/google/common/util/concurrent/SmoothRateLimiter.java#L357-L369) — smooth rate limiting with warm-up
 - [Envoy](https://github.com/envoyproxy/envoy) — local/global rate limiting for service mesh
 - [AWS API Gateway](https://github.com/aws/aws-sdk-js-v3) — token bucket throttling for API endpoints
 

@@ -49,8 +49,8 @@ A free list tracks available memory slots in a linked list threaded through the 
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Go runtime | [mfixalloc.go#L31-L109](https://github.com/golang/go/blob/master/src/runtime/mfixalloc.go#L31-L109) | `fixalloc` — fixed-size free-list allocator. `mlink` struct (L49-L52) is the intrusive list node overlaid on freed blocks. `alloc()` (L74-L87) pops from the free list; `free()` (L106-L108) pushes onto it. Classic LIFO free list powering Go's memory subsystem. |
-| Linux kernel (SLUB) | [slub.c#L530-L551](https://github.com/torvalds/linux/blob/master/mm/slub.c#L530-L551) | `get_freepointer` / `set_freepointer` — reads/writes the next-free pointer embedded inside each free slab object at `object + s->offset`. Uses XOR-encoded pointers (L504-L528) under `CONFIG_SLAB_FREELIST_HARDENED` to defend against heap corruption attacks. |
+| Go runtime | [mfixalloc.go#L31-L109](https://github.com/golang/go/blob/f5cdf4745455415c7a43cfc7d925214d4511489b/src/runtime/mfixalloc.go#L31-L109) | `fixalloc` — fixed-size free-list allocator. `mlink` struct (L49-L52) is the intrusive list node overlaid on freed blocks. `alloc()` (L74-L87) pops from the free list; `free()` (L106-L108) pushes onto it. Classic LIFO free list powering Go's memory subsystem. |
+| Linux kernel (SLUB) | [slub.c#L530-L551](https://github.com/torvalds/linux/blob/acb7500801e98639f6d8c2d796ed9f64cba83d3a/mm/slub.c#L530-L551) | `get_freepointer` / `set_freepointer` — reads/writes the next-free pointer embedded inside each free slab object at `object + s->offset`. Uses XOR-encoded pointers (L504-L528) under `CONFIG_SLAB_FREELIST_HARDENED` to defend against heap corruption attacks. |
 
 ## Implementation
 
@@ -221,7 +221,7 @@ Exercise files: Rust `exercises/rust/src/free_list/mod.rs` · Go `exercises/go/f
 
 ## More Production Uses
 
-- [Godot Engine](https://github.com/godotengine/godot/blob/master/core/templates/pooled_list.h#L57-L131) — `PooledList<T>` non-intrusive free list with separate index array
+- [Godot Engine](https://github.com/godotengine/godot/blob/ec67cbe92628bdaf979b10594359ba6f02cf8838/core/templates/pooled_list.h#L57-L131) — `PooledList<T>` non-intrusive free list with separate index array
 - [jemalloc](https://github.com/jemalloc/jemalloc) — thread-cache free lists for small allocations
 - [mimalloc](https://github.com/microsoft/mimalloc) — segment-level free lists with sharded design
 - [Vulkan Memory Allocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator) — sub-allocation pools with free lists

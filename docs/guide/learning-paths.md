@@ -116,4 +116,4 @@ For systems programmers who want to understand allocators and GC alternatives.
 
 For each pattern: read the doc (10 min) → run the visualization (5 min) → complete the exercise in one language (15-30 min) → try the challenge questions (5 min).
 
-> **Tip**: Fork the repo and use the [Study Plan](https://github.com/Totoro-jam/battle-tested-patterns/blob/main/STUDY_PLAN.md) to track your progress with checkboxes.
+> **Tip**: Fork the repo and use the [Study Plan](https://github.com/Totoro-jam/battle-tested-patterns/blob/e758be266d38db94723be233863e6f3effbf46cc/STUDY_PLAN.md) to track your progress with checkboxes.

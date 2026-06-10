@@ -116,4 +116,4 @@ description: "四条精选学习路径，引导你系统掌握 46 个模式 — 
 
 每个模式的建议流程：阅读文档（10 分钟）→ 操作可视化（5 分钟）→ 用一种语言完成练习（15-30 分钟）→ 回答挑战问题（5 分钟）。
 
-> **提示**：Fork 本仓库，使用[学习计划](https://github.com/Totoro-jam/battle-tested-patterns/blob/main/STUDY_PLAN.md)中的 checkbox 追踪你的进度。
+> **提示**：Fork 本仓库，使用[学习计划](https://github.com/Totoro-jam/battle-tested-patterns/blob/e758be266d38db94723be233863e6f3effbf46cc/STUDY_PLAN.md)中的 checkbox 追踪你的进度。

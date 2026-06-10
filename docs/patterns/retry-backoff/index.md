@@ -53,8 +53,8 @@ The formula: `delay = min(base * 2^attempt + random(0, jitter), maxDelay)`
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| Kubernetes | [backoff.go#L30-L50](https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/util/wait/backoff.go#L30-L50) | `Backoff` struct defines `Duration`, `Factor`, `Jitter`, `Steps`, `Cap`. `ExponentialBackoff` (line 475) retries with this config. Used for pod restart backoff, API server retries, controller reconciliation. |
-| gRPC-Go | [backoff.go#L56-L75](https://github.com/grpc/grpc-go/blob/master/internal/backoff/backoff.go#L56-L75) | `Exponential.Backoff()` — computes exponential delay with jitter. Base delay doubles per retry, capped at `MaxDelay`. `RunF` (L86-L109) is the retry orchestration loop with context cancellation and `ErrResetBackoff` support. |
+| Kubernetes | [backoff.go#L30-L50](https://github.com/kubernetes/kubernetes/blob/586cc904093af4fe7492e564908a796f0b107f97/staging/src/k8s.io/apimachinery/pkg/util/wait/backoff.go#L30-L50) | `Backoff` struct defines `Duration`, `Factor`, `Jitter`, `Steps`, `Cap`. `ExponentialBackoff` (line 475) retries with this config. Used for pod restart backoff, API server retries, controller reconciliation. |
+| gRPC-Go | [backoff.go#L56-L75](https://github.com/grpc/grpc-go/blob/f1864955bbb48efa131f6652933fa8b2189d9305/internal/backoff/backoff.go#L56-L75) | `Exponential.Backoff()` — computes exponential delay with jitter. Base delay doubles per retry, capped at `MaxDelay`. `RunF` (L86-L109) is the retry orchestration loop with context cancellation and `ErrResetBackoff` support. |
 
 ## Implementation
 

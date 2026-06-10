@@ -59,8 +59,8 @@ Each middleware receives a context and a `next()` function. Calling `next()` pas
 
 | Project | Source | Usage |
 |---------|--------|-------|
-| gRPC-Go | [server.go#L1224-L1260](https://github.com/grpc/grpc-go/blob/master/server.go#L1224-L1260) | `chainUnaryServerInterceptors` (L1224) chains interceptors into a single handler. `getChainUnaryHandler` (L1252) recursively builds the chain — each interceptor receives the request and a `handler` function (equivalent to `next`). Used for authentication, logging, tracing, and rate limiting in production gRPC services. |
-| Koa.js | [application.js#L152-L204](https://github.com/koajs/koa/blob/master/lib/application.js#L152-L204) | `use()` (L152-L157) pushes middleware into an array. `callback()` (L168) composes them via `koa-compose` into a single function. `handleRequest` (L198-L205) executes the composed chain. Koa pioneered the async onion model — each `await next()` creates a stack frame, enabling clean try/catch/finally around downstream middleware. |
+| gRPC-Go | [server.go#L1224-L1260](https://github.com/grpc/grpc-go/blob/f1864955bbb48efa131f6652933fa8b2189d9305/server.go#L1224-L1260) | `chainUnaryServerInterceptors` (L1224) chains interceptors into a single handler. `getChainUnaryHandler` (L1252) recursively builds the chain — each interceptor receives the request and a `handler` function (equivalent to `next`). Used for authentication, logging, tracing, and rate limiting in production gRPC services. |
+| Koa.js | [application.js#L152-L204](https://github.com/koajs/koa/blob/78efdc87df1f8d49a494f313d478814d67c3f00f/lib/application.js#L152-L204) | `use()` (L152-L157) pushes middleware into an array. `callback()` (L168) composes them via `koa-compose` into a single function. `handleRequest` (L198-L205) executes the composed chain. Koa pioneered the async onion model — each `await next()` creates a stack frame, enabling clean try/catch/finally around downstream middleware. |
 
 ## Implementation
 
