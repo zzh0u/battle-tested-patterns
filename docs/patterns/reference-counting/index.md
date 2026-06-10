@@ -266,7 +266,7 @@ class RefCounted(Generic[T]):
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/reference_counting.rs` · Go `exercises/go/reference_counting_test.go` · Python `exercises/python/test_reference_counting.py`
+Exercise files: Rust `exercises/rust/src/reference_counting/mod.rs` · Go `exercises/go/reference_counting/reference_counting_test.go` · Python `exercises/python/reference_counting/test_reference_counting.py`
 
 ## When to Use
 

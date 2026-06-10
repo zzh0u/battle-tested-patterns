@@ -234,7 +234,7 @@ class DirtyFlag(Generic[T]):
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/dirty_flag.rs` · Go `exercises/go/dirty_flag_test.go` · Python `exercises/python/test_dirty_flag.py`
+Exercise files: Rust `exercises/rust/src/dirty_flag/mod.rs` · Go `exercises/go/dirty_flag/dirty_flag_test.go` · Python `exercises/python/dirty_flag/test_dirty_flag.py`
 
 ## When to Use
 

@@ -235,7 +235,7 @@ remaining = work_loop(
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/cooperative_scheduling.rs` · Go `exercises/go/cooperative_scheduling_test.go` · Python `exercises/python/test_cooperative_scheduling.py`
+Exercise files: Rust `exercises/rust/src/cooperative_scheduling/mod.rs` · Go `exercises/go/cooperative_scheduling/cooperative_scheduling_test.go` · Python `exercises/python/cooperative_scheduling/test_cooperative_scheduling.py`
 
 ## When to Use
 

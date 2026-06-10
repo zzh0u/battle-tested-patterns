@@ -199,7 +199,7 @@ eval_visitor = {
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/visitor.rs` · Go `exercises/go/visitor_test.go` · Python `exercises/python/test_visitor.py`
+Exercise files: Rust `exercises/rust/src/visitor/mod.rs` · Go `exercises/go/visitor/visitor_test.go` · Python `exercises/python/visitor/test_visitor.py`
 
 ## When to Use
 

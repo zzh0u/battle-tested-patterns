@@ -180,7 +180,7 @@ async def main():
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/backpressure.rs` · Go `exercises/go/backpressure_test.go` · Python `exercises/python/test_backpressure.py`
+Exercise files: Rust `exercises/rust/src/backpressure/mod.rs` · Go `exercises/go/backpressure/backpressure_test.go` · Python `exercises/python/backpressure/test_backpressure.py`
 
 ## When to Use
 

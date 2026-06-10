@@ -202,7 +202,7 @@ class FreeList:
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/free_list.rs` · Go `exercises/go/free_list_test.go` · Python `exercises/python/test_free_list.py`
+Exercise files: Rust `exercises/rust/src/free_list/mod.rs` · Go `exercises/go/free_list/free_list_test.go` · Python `exercises/python/free_list/test_free_list.py`
 
 ## When to Use
 

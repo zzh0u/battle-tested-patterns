@@ -173,7 +173,7 @@ print(sys.getrefcount(256))  # many references to the same int
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/flyweight.rs` · Go `exercises/go/flyweight_test.go` · Python `exercises/python/test_flyweight.py`
+Exercise files: Rust `exercises/rust/src/flyweight/mod.rs` · Go `exercises/go/flyweight/flyweight_test.go` · Python `exercises/python/flyweight/test_flyweight.py`
 
 ## When to Use
 

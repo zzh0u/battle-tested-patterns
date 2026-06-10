@@ -183,7 +183,7 @@ first_10 = [next(evens) for _ in range(10)]
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/iterator.rs` · Go `exercises/go/iterator_test.go` · Python `exercises/python/test_iterator.py`
+Exercise files: Rust `exercises/rust/src/iterator/mod.rs` · Go `exercises/go/iterator/iterator_test.go` · Python `exercises/python/iterator/test_iterator.py`
 
 ## When to Use
 

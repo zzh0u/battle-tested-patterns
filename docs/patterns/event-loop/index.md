@@ -227,7 +227,7 @@ class EventLoop:
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/event_loop.rs` · Go `exercises/go/event_loop_test.go` · Python `exercises/python/test_event_loop.py`
+Exercise files: Rust `exercises/rust/src/event_loop/mod.rs` · Go `exercises/go/event_loop/event_loop_test.go` · Python `exercises/python/event_loop/test_event_loop.py`
 
 ## When to Use
 

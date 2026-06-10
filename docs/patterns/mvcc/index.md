@@ -209,7 +209,7 @@ class MVCCStore:
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/mvcc.rs` · Go `exercises/go/mvcc_test.go` · Python `exercises/python/test_mvcc.py`
+Exercise files: Rust `exercises/rust/src/mvcc/mod.rs` · Go `exercises/go/mvcc/mvcc_test.go` · Python `exercises/python/mvcc/test_mvcc.py`
 
 ## When to Use
 

@@ -205,7 +205,7 @@ class BloomFilter:
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/bloom_filter.rs` · Go `exercises/go/bloom_filter_test.go` · Python `exercises/python/test_bloom_filter.py`
+Exercise files: Rust `exercises/rust/src/bloom_filter/mod.rs` · Go `exercises/go/bloom_filter/bloom_filter_test.go` · Python `exercises/python/bloom_filter/test_bloom_filter.py`
 
 ## When to Use
 

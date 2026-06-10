@@ -240,7 +240,7 @@ class Registry:
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/registry.rs` · Go `exercises/go/registry_test.go` · Python `exercises/python/test_registry.py`
+Exercise files: Rust `exercises/rust/src/registry/mod.rs` · Go `exercises/go/registry/registry_test.go` · Python `exercises/python/registry/test_registry.py`
 
 ## When to Use
 

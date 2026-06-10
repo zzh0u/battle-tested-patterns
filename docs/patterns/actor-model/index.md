@@ -183,7 +183,7 @@ class Actor:
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/actor_model.rs` · Go `exercises/go/actor_model_test.go` · Python `exercises/python/test_actor_model.py`
+Exercise files: Rust `exercises/rust/src/actor_model/mod.rs` · Go `exercises/go/actor_model/actor_model_test.go` · Python `exercises/python/actor_model/test_actor_model.py`
 
 ## When to Use
 

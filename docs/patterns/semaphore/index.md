@@ -165,7 +165,7 @@ async def fetch_with_limit(urls: list[str], max_concurrent: int = 5):
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/semaphore.rs` · Go `exercises/go/semaphore_test.go` · Python `exercises/python/test_semaphore.py`
+Exercise files: Rust `exercises/rust/src/semaphore/mod.rs` · Go `exercises/go/semaphore/semaphore_test.go` · Python `exercises/python/semaphore/test_semaphore.py`
 
 ## When to Use
 

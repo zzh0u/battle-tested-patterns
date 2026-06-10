@@ -174,7 +174,7 @@ class StringInterner:
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/interning.rs` · Go `exercises/go/interning_test.go` · Python `exercises/python/test_interning.py`
+Exercise files: Rust `exercises/rust/src/interning/mod.rs` · Go `exercises/go/interning/interning_test.go` · Python `exercises/python/interning/test_interning.py`
 
 ## When to Use
 

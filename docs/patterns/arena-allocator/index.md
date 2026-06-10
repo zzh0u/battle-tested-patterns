@@ -170,7 +170,7 @@ class Arena:
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/arena_allocator.rs` · Go `exercises/go/arena_allocator_test.go` · Python `exercises/python/test_arena_allocator.py`
+Exercise files: Rust `exercises/rust/src/arena_allocator/mod.rs` · Go `exercises/go/arena_allocator/arena_allocator_test.go` · Python `exercises/python/arena_allocator/test_arena_allocator.py`
 
 ## When to Use
 

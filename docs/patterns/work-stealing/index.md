@@ -230,7 +230,7 @@ class WorkStealingScheduler:
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/work_stealing.rs` · Go `exercises/go/work_stealing_test.go` · Python `exercises/python/test_work_stealing.py`
+Exercise files: Rust `exercises/rust/src/work_stealing/mod.rs` · Go `exercises/go/work_stealing/work_stealing_test.go` · Python `exercises/python/work_stealing/test_work_stealing.py`
 
 ## When to Use
 

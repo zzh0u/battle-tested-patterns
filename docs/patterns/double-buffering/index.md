@@ -197,7 +197,7 @@ assert buf.current()["pixels"] == [255, 128]  # now visible
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/double_buffering.rs` · Go `exercises/go/double_buffering_test.go` · Python `exercises/python/test_double_buffering.py`
+Exercise files: Rust `exercises/rust/src/double_buffering/mod.rs` · Go `exercises/go/double_buffering/double_buffering_test.go` · Python `exercises/python/double_buffering/test_double_buffering.py`
 
 ## When to Use
 

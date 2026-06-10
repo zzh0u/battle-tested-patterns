@@ -176,7 +176,7 @@ def retry_with_backoff(fn, max_retries=5, base_delay=1.0, max_delay=30.0, jitter
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/retry_backoff.rs` · Go `exercises/go/retry_backoff_test.go` · Python `exercises/python/test_retry_backoff.py`
+Exercise files: Rust `exercises/rust/src/retry_backoff/mod.rs` · Go `exercises/go/retry_backoff/retry_backoff_test.go` · Python `exercises/python/retry_backoff/test_retry_backoff.py`
 
 ## When to Use
 

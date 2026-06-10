@@ -273,7 +273,7 @@ def merge_k_sorted(streams: list[list[int]]) -> list[int]:
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/merge_iterator.rs` · Go `exercises/go/merge_iterator_test.go` · Python `exercises/python/test_merge_iterator.py`
+Exercise files: Rust `exercises/rust/src/merge_iterator/mod.rs` · Go `exercises/go/merge_iterator/merge_iterator_test.go` · Python `exercises/python/merge_iterator/test_merge_iterator.py`
 
 ## When to Use
 

@@ -191,7 +191,7 @@ def try_add(a: TaggedValue, b: TaggedValue) -> TaggedValue | None:
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/tagged_union.rs` · Go `exercises/go/tagged_union_test.go` · Python `exercises/python/test_tagged_union.py`
+Exercise files: Rust `exercises/rust/src/tagged_union/mod.rs` · Go `exercises/go/tagged_union/tagged_union_test.go` · Python `exercises/python/tagged_union/test_tagged_union.py`
 
 ## When to Use
 

@@ -191,7 +191,7 @@ class LRUCache:
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/lru_cache.rs` · Go `exercises/go/lru_cache_test.go` · Python `exercises/python/test_lru_cache.py`
+Exercise files: Rust `exercises/rust/src/lru_cache/mod.rs` · Go `exercises/go/lru_cache/lru_cache_test.go` · Python `exercises/python/lru_cache/test_lru_cache.py`
 
 ## When to Use
 

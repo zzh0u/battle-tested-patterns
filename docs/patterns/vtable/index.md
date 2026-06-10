@@ -197,7 +197,7 @@ def create_rect(w: float, h: float) -> Shape:
 
 Run exercises: `pnpm test` (TypeScript) · `cargo test` (Rust) · `go test ./...` (Go) · `pytest` (Python)
 
-Exercise files: Rust `exercises/rust/src/vtable.rs` · Go `exercises/go/vtable_test.go` · Python `exercises/python/test_vtable.py`
+Exercise files: Rust `exercises/rust/src/vtable/mod.rs` · Go `exercises/go/vtable/vtable_test.go` · Python `exercises/python/vtable/test_vtable.py`
 
 ## When to Use
 
