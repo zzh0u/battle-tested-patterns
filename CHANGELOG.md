@@ -4,6 +4,40 @@ All notable changes to this project will be documented in this file.
 
 See [commit history](https://github.com/Totoro-jam/battle-tested-patterns/commits/main) for detailed changes.
 
+## v1.11.0
+
+[compare changes](https://github.com/Totoro-jam/battle-tested-patterns/compare/v1.10.0...v1.11.0)
+
+### Features
+
+- Add `scripts/lib/patterns.ts` shared library for pattern discovery, frontmatter parsing, and CI diagnostics
+- Add `scripts/check-structure.ts` — validate frontmatter, required sections, tab order, property table, and production proof links (rules S1–S8)
+- Add `scripts/check-zh-parity.ts` — validate EN/ZH code block, section, and source link parity (rules P1–P7)
+- Add `scripts/check-exercises.ts` — validate exercise/answer files, solution markers, and runner scripts (rules E1–E6)
+- Add `scripts/check-relations.ts` — validate Related Patterns bidirectionality and sidebar consistency (rules R1–R3)
+- Add `scripts/verify-line-ranges.ts` — validate production proof line ranges against actual file content with caching (rules L1–L2)
+- Add `pnpm check:content`, `pnpm check:structure`, `pnpm check:zh-parity`, `pnpm check:exercises`, `pnpm check:relations`, `pnpm verify-lines` commands
+- Merge 5 CI heredoc jobs into single typed `check-content` job
+
+### Security
+
+- Replace `execSync` with `execFileSync` in `verify-code-blocks.ts` — eliminates shell command injection (3 call sites)
+- Add `sanitizeAnnotation()` in `patterns.ts` — prevents GitHub Actions annotation injection
+- Add `AbortSignal.timeout(15s)` to all `fetch` calls in `verify-line-ranges.ts`, `verify-source-links.ts`, and `convert-to-sha-links.ts`
+- Cap retry depth (2) and wait time (60s) in `convert-to-sha-links.ts` `resolveSHA` — prevents unbounded recursion
+
+### Fixes
+
+- Fix interning pattern `unicodeobject.c` line range (L15575→L14416)
+- Fix backpressure `Subscription.java` line range (L25-L45→L14-L37)
+- Fix stale line range references in README.md and README.zh-CN.md
+
+### Documentation
+
+- Update CLAUDE.md with new check/verify commands
+- Update CONTRIBUTING guides, PR template, and SOPs 01/02/07/08/13
+- Update `.claude/skills/verify-source/SKILL.md` for new toolchain
+
 ## v1.10.0
 
 [compare changes](https://github.com/Totoro-jam/battle-tested-patterns/compare/v1.9.1...v1.10.0)
