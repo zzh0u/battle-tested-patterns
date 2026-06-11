@@ -115,7 +115,7 @@ All of these must be updated:
 
 Run ALL checks before committing:
 ```bash
-pnpm check         # All checks (lint + typecheck + test + verify-code + verify-mermaid)
+pnpm check         # All checks (lint + typecheck + test + verify-code + verify-mermaid + check:content)
 pnpm build         # VitePress builds
 ```
 

@@ -56,7 +56,7 @@ Interning stores each unique value exactly once in a table and hands out lightwe
 | Project | Source | Usage |
 |---------|--------|-------|
 | Rust Compiler (rustc) | [symbol.rs#L24-L79](https://github.com/rust-lang/rust/blob/ab26b175979ee7b2cb3302dce204b99df96f7efb/compiler/rustc_span/src/symbol.rs#L24-L79) | `Symbol` (L24) is a newtype around `u32` — an index into the global interning table. `Interner` (L56-L79) stores strings in a `Vec` and deduplicates via a `HashMap`. All identifiers in the Rust compiler are `Symbol`s — equality is a single `u32` comparison. |
-| CPython | [unicodeobject.c#L15575-L15631](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Objects/unicodeobject.c#L15575-L15631) | `PyUnicode_InternInPlace` (L15575) interns Python strings by storing them in a global dict. If the string already exists, the existing object is returned and the new one's refcount is decremented. All identifier strings (variable names, attribute names) are interned automatically for O(1) dict lookups. |
+| CPython | [unicodeobject.c#L14416-L14472](https://github.com/python/cpython/blob/ff64d8de66ab7f8e56b5d410796a7d76c955280c/Objects/unicodeobject.c#L14416-L14472) | `PyUnicode_InternInPlace` (L14416) interns Python strings by storing them in a global dict. If the string already exists, the existing object is returned and the new one's refcount is decremented. All identifier strings (variable names, attribute names) are interned automatically for O(1) dict lookups. |
 
 ## Implementation
 

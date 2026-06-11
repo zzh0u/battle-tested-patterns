@@ -40,7 +40,9 @@ and stale references. Rate each dimension 1-10.
 - [ ] `pnpm verify-code` — all code blocks compile
 - [ ] `pnpm verify-mermaid` — all Mermaid diagrams valid
 - [ ] `pnpm build` — docs site builds
+- [ ] `pnpm check:content` — content quality checks pass (structure, parity, exercises, relations)
 - [ ] `pnpm verify-links` — all production proof links alive
+- [ ] `pnpm verify-lines` — line ranges valid and keywords match (requires network)
 - [ ] `tsx scripts/convert-to-sha-links.ts --dry-run` — no unconverted branch links (convert if any found)
 - [ ] CI green on latest commit
 - [ ] No `<!-- TODO -->` markers in completed pattern docs

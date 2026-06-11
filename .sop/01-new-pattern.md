@@ -161,6 +161,7 @@ Add `## Challenge Questions` section at the end of the pattern doc:
 - [ ] Run `pnpm verify-code` — all code blocks compile (TS/Python/Rust/Go)
 - [ ] Run `pnpm verify-mermaid` — all Mermaid diagrams have valid syntax
 - [ ] Run `pnpm lint` — no markdown lint errors
+- [ ] Run `pnpm check:content` — content quality checks pass (structure, parity, exercises, relations)
 - [ ] Run `pnpm build` — docs site builds
 - [ ] Run `pnpm verify-links` — source links alive
 

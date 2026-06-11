@@ -52,12 +52,14 @@ pnpm dev                              # 启动文档站开发服务器
 pnpm test                             # 运行所有测试（exercises + docs 组件）
 pnpm test:exercises                   # 仅运行 TypeScript 练习测试
 pnpm test:docs                        # 仅运行 Vue 组件测试
-pnpm check                            # 运行所有检查（lint + typecheck + test + verify）
+pnpm check                            # 运行所有检查（lint + typecheck + test + verify + 内容质量）
 pnpm lint                             # Lint Markdown
 pnpm typecheck                        # TypeScript 类型检查
 pnpm verify-code                      # 验证所有代码块可编译
 pnpm verify-mermaid                   # 验证 Mermaid 图表语法
 pnpm verify-links                     # 验证源码链接（需要网络）
+pnpm verify-lines                     # 验证 Production Proof 行号范围（需要网络）
+pnpm check:content                    # 运行所有内容质量检查
 cd exercises/rust && cargo test       # 运行 Rust 练习
 cd exercises/go && go test ./...      # 运行 Go 练习
 cd exercises/python && pytest         # 运行 Python 练习

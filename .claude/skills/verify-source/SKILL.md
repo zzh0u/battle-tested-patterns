@@ -1,6 +1,6 @@
 ---
 name: verify-source
-description: Verify all production proof source links in pattern documents. Run curl checks, report broken/invalid URLs, and suggest fixes.
+description: Verify all production proof source links in pattern documents. Run automated checks for HTTP status, format, SHA permanence, and line-range content accuracy.
 ---
 
 # Verify Source Links
@@ -9,34 +9,80 @@ You are verifying production proof links in this repository. This is the most cr
 
 ## Steps
 
-### 1. Collect all links
+### 1. Run automated link check
 
-Scan `docs/patterns/*.md` files for GitHub URLs in Production Proof tables. Extract every URL that matches `https://github.com/*/blob/*#L*`.
+```bash
+pnpm verify-links
+```
 
-### 2. Validate format
+This scans all `docs/**/*.md` and root `README.md`/`README.zh-CN.md` files, extracts GitHub URLs, and checks:
+- HTTP status (with automatic retry on 5xx)
+- Whether Production Proof links include line numbers (`#L18-L22`)
+- Whether links use SHA permalinks vs branch names
+- Whether any `#L1` file-level links exist in Production Proof
 
-For each link, check:
-- Points to `main` or `master` branch (not a feature branch)
-- Includes line numbers (`#L18` or `#L18-L22`)
-- Is a file link (`/blob/`), not a directory link (`/tree/`)
+Output categories:
+- `✅ [proof]` — valid Production Proof link with line numbers
+- `✅ [other]` — valid non-Production-Proof link
+- `⚠️ [proof]` — Production Proof link missing line numbers
+- `ℹ️` — branch-based link (not SHA permalink)
+- `❌` — broken link (HTTP error)
 
-Report any format violations.
+For CI mode (exit 1 on broken links): `pnpm verify-links -- --ci`
 
-### 3. Check HTTP status
+### 2. Convert branch links to SHA permalinks
 
-Run `curl -sI <url> | head -1` for each link. Expected: `HTTP/2 200`.
+If the report shows branch-based links, convert them:
 
-### 4. Verify content accuracy
+```bash
+tsx scripts/convert-to-sha-links.ts --dry-run    # preview changes
+tsx scripts/convert-to-sha-links.ts               # execute conversion
+```
 
-For links that are HTTP 200, open them and confirm:
-- The code at the specified lines actually demonstrates the pattern described
+Authentication: prefers `gh auth token` (system keyring), falls back to `GITHUB_TOKEN` env var.
+
+### 3. Verify line-range content
+
+For links that pass HTTP checks, verify that the referenced code lines actually match the pattern:
+
+```bash
+pnpm verify-lines                    # Check all Production Proof links
+pnpm verify-lines --pattern <name>   # Check a single pattern
+pnpm verify-lines --verbose          # Show all results including passes
+pnpm verify-lines --section all      # Also check "More Production Uses" section
+pnpm verify-lines --no-cache         # Re-fetch everything (ignore cache)
+```
+
+This script performs two layers of verification:
+- **L1: Range validity** — checks that line numbers are within file bounds
+- **L2: Keyword presence** — checks that pattern-related keywords appear in the referenced code
+
+Output:
+- `✅` — line range valid and keywords found
+- `⚠️` — line range valid but no keywords found (review manually)
+- `❌ FAIL` — line range exceeds file length (must fix)
+- `❌ ERROR` — fetch failed (network issue, retry)
+
+Results are cached in `tmp/line-range-cache.json` (SHA links are immutable, so cache is permanent).
+
+### 4. Manual verification (for warnings)
+
+For any `⚠️` warnings from `verify-lines`, manually confirm:
+- Open the GitHub link in a browser
+- Verify the code at the specified lines actually demonstrates the pattern
 - The usage description in the table is accurate
+
+For `❌ FAIL` results (line range out of bounds), the link must be fixed:
+1. Open the raw file at the SHA commit
+2. Find the correct line range for the relevant code
+3. Update the link in both EN and ZH pattern docs
+4. Also check README.md / README.zh-CN.md for the same link
 
 ### 5. Report
 
 Output a summary:
 - ✅ Valid links (count)
-- ⚠️ Format issues (list each)
+- ⚠️ Format issues or keyword warnings (list each)
 - ❌ Broken links (list each with file location)
 
 For broken links, suggest the fix per `.sop/06-broken-link-fix.md`.
@@ -44,5 +90,6 @@ For broken links, suggest the fix per `.sop/06-broken-link-fix.md`.
 ## Rules
 
 - Never fabricate a replacement URL — if you can't find the new location, leave a `<!-- TODO -->` marker
-- Always verify with `curl` before claiming a link is valid
+- Always verify with automated tools first (`pnpm verify-links`, `pnpm verify-lines`), then manually for warnings
+- When fixing line-range errors in pattern docs, also update README.md and README.zh-CN.md if they contain the same link
 - Check the actual code content, not just HTTP status

@@ -42,6 +42,15 @@ This applies to ALL GitHub links in the Production Proof table — including sup
 - Open the link in browser
 - Confirm the code at the specified lines actually demonstrates the pattern
 - Confirm the usage description in the table is accurate
+- Or run automated line-range verification:
+
+```bash
+pnpm verify-lines                    # Check all Production Proof links
+pnpm verify-lines --pattern <name>   # Check a single pattern
+pnpm verify-lines --verbose          # Show all results including passes
+```
+
+This fetches file content from `raw.githubusercontent.com`, checks line ranges are within bounds (L1), and verifies pattern-related keywords exist in the referenced code (L2).
 
 ### 4. Check Branch & Permalink
 

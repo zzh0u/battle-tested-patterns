@@ -47,6 +47,7 @@
 ### Code Quality
 - [ ] No lint errors (`pnpm lint`)
 - [ ] TypeScript strict mode passes (`pnpm typecheck`)
+- [ ] Content quality checks pass (`pnpm check:content`)
 - [ ] CI green
 
 ## Notes for reviewers

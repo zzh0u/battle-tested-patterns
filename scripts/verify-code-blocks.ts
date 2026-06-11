@@ -1,6 +1,6 @@
 import { readFileSync, readdirSync, statSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
 import { join, basename } from 'node:path';
-import { execSync, execFileSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 
 const DOCS_DIR = join(import.meta.dirname, '..', 'docs', 'patterns');
 const TMP_DIR = join(import.meta.dirname, '..', '.tmp-code-verify');
@@ -53,10 +53,10 @@ function verifyTypeScript(block: CodeBlock): string | null {
   const file = join(TMP_DIR, `${block.pattern}.ts`);
   writeFileSync(file, block.code);
   try {
-    execSync(`npx tsc --noEmit --strict --target ES2022 --moduleResolution bundler "${file}" 2>&1`, { timeout: 15000 });
+    execFileSync('npx', ['tsc', '--noEmit', '--strict', '--target', 'ES2022', '--moduleResolution', 'bundler', file], { timeout: 15000, stdio: ['pipe', 'pipe', 'pipe'] });
     return null;
   } catch (e: any) {
-    return e.stdout?.toString() || e.message;
+    return e.stderr?.toString() || e.message;
   }
 }
 
@@ -117,7 +117,7 @@ function verifyRust(block: CodeBlock): string | null {
   writeFileSync(file, code);
   try {
     const outFile = file.replace('.rs', '');
-    execSync(`rustc --edition 2021 "${file}" -o "${outFile}" 2>&1`, { timeout: 60000 });
+    execFileSync('rustc', ['--edition', '2021', file, '-o', outFile], { timeout: 60000, stdio: ['pipe', 'pipe', 'pipe'] });
     try { rmSync(outFile); } catch {}
     return null;
   } catch (e: any) {
@@ -190,7 +190,7 @@ function verifyGo(block: CodeBlock): string | null {
   writeFileSync(join(dir, 'go.mod'), 'module verify\n\ngo 1.23\n');
   writeFileSync(join(dir, 'main.go'), code);
   try {
-    execSync(`cd "${dir}" && go build ./... 2>&1`, { timeout: 30000 });
+    execFileSync('go', ['build', './...'], { cwd: dir, timeout: 30000, stdio: ['pipe', 'pipe', 'pipe'] });
     return null;
   } catch (e: any) {
     return (e.stderr?.toString() || e.stdout?.toString() || e.message).split('\n').slice(0, 5).join('\n');

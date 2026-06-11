@@ -74,7 +74,7 @@ interface RepoRef {
 
 const shaCache = new Map<string, string>();
 
-async function resolveSHA(owner: string, repo: string, branch: string, token: string): Promise<string | null> {
+async function resolveSHA(owner: string, repo: string, branch: string, token: string, retries = 2): Promise<string | null> {
   const key = `${owner}/${repo}@${branch}`;
   if (shaCache.has(key)) return shaCache.get(key)!;
 
@@ -88,15 +88,19 @@ async function resolveSHA(owner: string, repo: string, branch: string, token: st
   }
 
   try {
-    const res = await fetch(url, { headers });
+    const res = await fetch(url, { headers, signal: AbortSignal.timeout(15_000) });
     if (res.status === 403) {
       const remaining = res.headers.get('x-ratelimit-remaining');
       if (remaining === '0') {
         const reset = Number(res.headers.get('x-ratelimit-reset')) * 1000;
-        const wait = Math.max(reset - Date.now(), 1000);
+        const wait = Math.min(Math.max(reset - Date.now(), 1000), 60_000);
         console.log(`  Rate limited. Waiting ${Math.ceil(wait / 1000)}s...`);
         await new Promise(r => setTimeout(r, wait));
-        return resolveSHA(owner, repo, branch, token); // Retry
+        if (retries > 0) {
+          return resolveSHA(owner, repo, branch, token, retries - 1); // Retry
+        }
+        console.error(`  ✗ ${key}: rate limit retry exhausted`);
+        return null;
       }
     }
     if (!res.ok) {
@@ -173,7 +177,7 @@ async function main() {
     console.log('\n--verify-only mode: checking existing URLs...');
     let broken = 0;
     for (const url of uniqueUrls.slice(0, 10)) {
-      const res = await fetch(url, { method: 'HEAD', redirect: 'follow' });
+      const res = await fetch(url, { method: 'HEAD', redirect: 'follow', signal: AbortSignal.timeout(15_000) });
       const status = res.ok ? '✓' : '✗';
       if (!res.ok) broken++;
       console.log(`  ${status} ${res.status} ${url.substring(0, 80)}...`);

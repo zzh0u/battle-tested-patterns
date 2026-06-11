@@ -10,7 +10,7 @@
 
 | Workflow | Trigger | Purpose |
 |----------|---------|---------|
-| `ci.yml` | push + PR | Lint, typecheck, verify-code, verify-mermaid, tests (TS + Rust + Go + Python + Vue), docs build, content quality checks (template, EN-ZH parity, frontmatter, tab order, exercises) |
+| `ci.yml` | push + PR | Lint, typecheck, verify-code, verify-mermaid, tests (TS + Rust + Go + Python + Vue), docs build, content quality (`check-content`: structure, EN-ZH parity, exercises, relations) |
 | `deploy.yml` | push to main | Build VitePress → deploy GitHub Pages |
 | `verify-links.yml` | push (patterns changed) + weekly cron | HTTP check all production proof links |
 | `release.yml` | push tag `v*` | Generate release notes, create GitHub Release |
@@ -25,7 +25,7 @@ Settings → Pages → Source → "GitHub Actions"
 ### Branch Protection (recommended)
 ```
 Settings → Branches → Add rule for "main"
-  → Require status checks: "CI / CI Pass" (single gate job covers all 12 checks)
+  → Require status checks: "CI / CI Pass" (single gate job covers all 9 checks)
   → Block force pushes
 ```
 

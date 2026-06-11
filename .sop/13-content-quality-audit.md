@@ -89,20 +89,22 @@ Code blocks and structural elements must be identical across languages.
 - [ ] More Production Uses entries have verified URLs
 - [ ] Run `pnpm verify-links` for automated HTTP checks
 
-## Audit Script Template
+## Automated Audit Commands
 
-For EN/ZH code sync, use a Python script that:
+All content quality checks are now implemented as TypeScript scripts in `scripts/`:
 
-1. Reads all pattern `index.md` files in both `docs/patterns/` and `docs/zh/patterns/`
-2. Extracts fenced code blocks and compares byte-for-byte
-3. Extracts Production Proof URLs and compares sets
-4. Extracts More Production Uses URLs and compares sets
-5. Reports mismatches with file paths and line numbers
+```bash
+pnpm check:content      # Run all 4 checks below in sequence
+pnpm check:structure    # S1-S8: frontmatter, sections, tab order, property table, source links
+pnpm check:zh-parity    # P1-P7: code blocks, links, Mermaid parity between EN/ZH
+pnpm check:exercises    # E1-E6: exercise + answer files, stub detection
+pnpm check:relations    # R1-R3: bidirectional Related Patterns, sidebar, homepage consistency
+pnpm verify-lines       # L1-L2: Production Proof line range validity + keyword presence
+```
 
-Key implementation notes:
-- Use `re.findall(r'\[([^\]]*?)\]\((https?://[^)]+)\)', content)` for link extraction
-- Compare code blocks by content hash, not line numbers (ZH may have different surrounding text)
-- zsh escapes `!=` even in single-quoted heredocs — write Python scripts via Edit/Write tool, not heredoc
+These scripts output GitHub Actions annotations in CI and human-readable format locally. All checks are also run as part of `pnpm check`.
+
+Shared utilities live in `scripts/lib/patterns.ts` (pattern discovery, frontmatter parsing, section extraction, CI output formatting).
 
 ## Audit Frequency
 

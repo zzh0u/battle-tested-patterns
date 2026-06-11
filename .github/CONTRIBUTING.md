@@ -52,12 +52,14 @@ pnpm dev                              # Start VitePress dev server
 pnpm test                             # Run all tests (exercises + docs components)
 pnpm test:exercises                   # Run TypeScript exercises only
 pnpm test:docs                        # Run Vue component tests only
-pnpm check                            # Run all checks (lint + typecheck + test + verify)
+pnpm check                            # Run all checks (lint + typecheck + test + verify + content quality)
 pnpm lint                             # Lint markdown
 pnpm typecheck                        # TypeScript type check
 pnpm verify-code                      # Verify all code blocks compile
 pnpm verify-mermaid                   # Validate Mermaid diagram syntax
 pnpm verify-links                     # Verify source URLs (requires network)
+pnpm verify-lines                     # Verify Production Proof line ranges (requires network)
+pnpm check:content                    # Run all content quality checks
 cd exercises/rust && cargo test       # Run Rust exercises
 cd exercises/go && go test ./...      # Run Go exercises
 cd exercises/python && pytest         # Run Python exercises

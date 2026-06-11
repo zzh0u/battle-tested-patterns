@@ -55,7 +55,7 @@ function extractLinks(content: string): Array<{ url: string; isProductionProof: 
 async function checkUrl(url: string, retries = 2): Promise<{ status: number | 'error'; ok: boolean }> {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const res = await fetch(url, { method: 'HEAD', redirect: 'follow' });
+      const res = await fetch(url, { method: 'HEAD', redirect: 'follow', signal: AbortSignal.timeout(15_000) });
       if (res.ok) return { status: res.status, ok: true };
       if (res.status >= 500 && attempt < retries) {
         await new Promise((r) => setTimeout(r, 3000 * (attempt + 1)));

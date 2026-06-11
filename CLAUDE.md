@@ -64,12 +64,18 @@ pnpm build        # Build docs site
 pnpm test         # Run ALL tests (exercises + docs components)
 pnpm test:exercises # Run TypeScript exercises only (Vitest)
 pnpm test:docs    # Run Vue component tests only
-pnpm check        # Run all checks (lint + typecheck + test + verify-code + verify-mermaid)
+pnpm check        # Run all checks (lint + typecheck + test + verify + content quality)
 pnpm lint         # Lint markdown files
 pnpm typecheck    # TypeScript strict type check
 pnpm verify-code  # Verify all code blocks in patterns compile (TS/Rust/Go/Python)
 pnpm verify-mermaid # Validate Mermaid diagram syntax
 pnpm verify-links # Verify all source URLs are alive (requires network)
+pnpm verify-lines # Verify Production Proof line ranges match content (requires network)
+pnpm check:content   # Run all content quality checks (structure + parity + exercises + relations)
+pnpm check:structure # Verify doc structure: frontmatter, sections, tab order, property table
+pnpm check:zh-parity # Verify EN/ZH code blocks, links, and Mermaid parity
+pnpm check:exercises # Verify exercise + answer files exist for all patterns
+pnpm check:relations # Verify Related Patterns bidirectionality and sidebar consistency
 cd exercises/rust && cargo test    # Run Rust exercises
 cd exercises/go && go test ./...   # Run Go exercises
 cd exercises/python && pytest      # Run Python exercises
