@@ -10,6 +10,7 @@ import DifficultyBadge from './components/DifficultyBadge.vue';
 import CompositionFlow from './components/CompositionFlow.vue';
 import DecisionTree from './components/DecisionTree.vue';
 import { initMermaidLoader } from './mermaid-loader';
+import { setupChunkErrorHandler } from './chunk-error-handler';
 import './custom.css';
 
 const vizComponents: Record<string, () => Promise<any>> = {
@@ -160,6 +161,11 @@ export default {
     app.component('DecisionTree', DecisionTree);
     for (const [name, loader] of Object.entries(vizComponents)) {
       app.component(name, clientOnly(loader, skeletonOverrides[name], name));
+    }
+
+    // Stale deployment chunk error handler — reload on stale chunk 404s
+    if (typeof window !== 'undefined') {
+      setupChunkErrorHandler();
     }
 
     // Mermaid conditional loading: only loads library on pages with diagrams
