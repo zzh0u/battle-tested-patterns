@@ -4,6 +4,18 @@ Thank you for your interest in contributing! This project collects production-pr
 
 ## Before You Start
 
+### Prerequisites
+
+| Tool | Version | Check |
+|------|---------|-------|
+| Node.js | ≥ 22.5 (see `.nvmrc`) | `node --version` |
+| pnpm | ≥ 9 | `pnpm --version` |
+| Rust | stable (latest) | `rustc --version` |
+| Go | ≥ 1.23 | `go version` |
+| Python | ≥ 3.12 + pytest | `python3 --version && pytest --version` |
+
+> Rust, Go, and Python are needed for exercises and `pnpm verify-code`. If you only work on TypeScript or docs, you can skip them locally — CI will verify the rest.
+
 1. Read the [SOPs](./../.sop/README.md) — especially [SOP 01: New Pattern](./../.sop/01-new-pattern.md)
 2. Check existing [patterns](../docs/patterns/) to avoid duplicates
 3. Open an Issue first to discuss new patterns before submitting a PR
