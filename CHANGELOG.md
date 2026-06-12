@@ -4,6 +4,43 @@ All notable changes to this project will be documented in this file.
 
 See [commit history](https://github.com/Totoro-jam/battle-tested-patterns/commits/main) for detailed changes.
 
+## v1.12.0
+
+[compare changes](https://github.com/Totoro-jam/battle-tested-patterns/compare/v1.11.0...v1.12.0)
+
+### Features
+
+- Add ErrorBoundary and VizErrorBoundary components (Vue `defineComponent`) with ErrorFallback.vue for graceful error display
+- Add mermaid FOUC prevention: CSS `visibility: hidden` + `data-mermaid-status` lifecycle + Apple HIG shimmer placeholder (dark/light mode)
+- Add stale chunk auto-reload handler for deploy version skew (SPA navigation resilience)
+- Add `verify-skip` info-string flag for code blocks that should not be compiled
+
+### Performance
+
+- Rewrite `verify-code-blocks.ts` execution engine (~30x faster: 115s → 3.6s)
+  - TypeScript: single `ts.createProgram` with per-block module isolation
+  - Rust: `rustc --emit=metadata` (skip codegen+linking) + bounded concurrency
+  - Go: shared module + single `go vet ./...`
+  - Python: bounded-concurrency `py_compile`
+
+### Fixes
+
+- Fix `<p>` nesting hydration warning in docs/index.md
+- Fix Rust answer for batch-processing pattern exercise
+- Unify approximate year notation in zh timeline table (`约` → `~`, `~1960s` → `~1960`)
+- Downgrade mermaid render failure log from `console.error` to `console.warn`
+
+### CI/CD
+
+- Split `verify-code` into dedicated CI job with all 4 toolchains — fixes historical gap where 138 non-TS code blocks were silently skipped in CI
+- Fix Go cache warnings (use `go.mod` instead of non-existent `go.sum`)
+- Script now fails hard in CI (`CI=true`) when a toolchain is missing
+
+### Documentation
+
+- Expand SOP 08 AI Agent Review from 2 to 7 specialized roles (Contributor, Content, Source Proof, Multi-Language, Bilingual, Security, Frontend & A11y)
+- Add prerequisites table to CONTRIBUTING.md and CONTRIBUTING.zh-CN.md
+
 ## v1.11.0
 
 [compare changes](https://github.com/Totoro-jam/battle-tested-patterns/compare/v1.10.0...v1.11.0)
