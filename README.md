@@ -258,6 +258,18 @@ See [CONTRIBUTING.md](.github/CONTRIBUTING.md). The bar is intentionally high:
 5. All tests pass (`pnpm test` · `cargo test` · `go test ./...` · `pytest`), no lint errors
 6. Source links checked weekly by CI — broken links auto-open an Issue
 
+## Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+Thanks to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Totoro-jam/battle-tested-patterns&type=Date)](https://star-history.com/#Totoro-jam/battle-tested-patterns&Date)

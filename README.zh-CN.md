@@ -258,6 +258,18 @@ pnpm dev                          # 本地文档站
 5. 所有测试通过（`pnpm test` · `cargo test` · `go test ./...` · `pytest`），无 lint 错误
 6. 源码链接每周由 CI 自动检查——失效链接自动开 Issue
 
+## 贡献者
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+感谢这些优秀的贡献者（[表情符号说明](https://allcontributors.org/docs/en/emoji-key)）：
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+本项目遵循 [all-contributors](https://github.com/all-contributors/all-contributors) 规范。欢迎任何形式的贡献！
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Totoro-jam/battle-tested-patterns&type=Date)](https://star-history.com/#Totoro-jam/battle-tested-patterns&Date)
