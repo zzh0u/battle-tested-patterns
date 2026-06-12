@@ -14,40 +14,59 @@ export function initMermaidLoader(): () => Promise<void> {
     const elements = document.querySelectorAll<HTMLPreElement>('pre.mermaid');
     if (elements.length === 0) return;
 
-    // Lazy load mermaid only when needed
-    if (!mermaidModule) {
-      mermaidModule = await import('mermaid');
+    try {
+      // Lazy load mermaid only when needed
+      if (!mermaidModule) {
+        mermaidModule = await import('mermaid');
+      }
+
+      const isDark = document.documentElement.classList.contains('dark');
+      mermaidModule.default.initialize({
+        startOnLoad: false,
+        theme: isDark ? 'dark' : 'default',
+      });
+
+      // Preserve original source for re-rendering on theme change
+      elements.forEach((el) => {
+        if (!el.dataset.mermaidSource) {
+          el.dataset.mermaidSource = el.textContent || '';
+        }
+      });
+
+      // Restore original definitions before re-rendering
+      elements.forEach((el) => {
+        if (el.dataset.mermaidSource) {
+          el.textContent = el.dataset.mermaidSource;
+          el.removeAttribute('data-processed');
+          // Reset status so CSS hides source during re-render (theme switch)
+          delete el.dataset.mermaidStatus;
+        }
+      });
+
+      await mermaidModule.default.run({ nodes: elements });
+
+      // Mark all elements as rendered — CSS uses this to reveal the SVG
+      elements.forEach((el) => {
+        el.dataset.mermaidStatus = 'rendered';
+      });
+    } catch (err) {
+      // A malformed diagram (or a library error) must never crash the page or
+      // break SPA navigation. Log for observability and restore visibility so
+      // the user can still read the raw diagram source.
+      console.warn('[mermaid-loader] Failed to render diagram(s):', err);
+      elements.forEach((el) => {
+        el.dataset.mermaidStatus = 'error';
+      });
     }
-
-    const isDark = document.documentElement.classList.contains('dark');
-    mermaidModule.default.initialize({
-      startOnLoad: false,
-      theme: isDark ? 'dark' : 'default',
-    });
-
-    // Preserve original source for re-rendering on theme change
-    elements.forEach((el) => {
-      if (!el.dataset.mermaidSource) {
-        el.dataset.mermaidSource = el.textContent || '';
-      }
-    });
-
-    // Restore original definitions before re-rendering
-    elements.forEach((el) => {
-      if (el.dataset.mermaidSource) {
-        el.textContent = el.dataset.mermaidSource;
-        el.removeAttribute('data-processed');
-      }
-    });
-
-    await mermaidModule.default.run({ nodes: elements });
   }
 
   // Watch for theme changes (.dark class toggle on <html>)
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       if (mutation.attributeName === 'class') {
-        renderMermaid();
+        // renderMermaid handles its own errors internally; mark the floating
+        // promise as intentionally unawaited.
+        void renderMermaid();
         break;
       }
     }

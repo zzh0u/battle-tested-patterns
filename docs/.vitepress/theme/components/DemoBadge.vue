@@ -6,11 +6,17 @@ const { lang } = useData();
 const isZh = computed(() => lang.value.startsWith('zh'));
 
 function scrollToDemo() {
-  const viz = document.querySelector('.viz-container:not(.viz-skeleton)');
-  if (viz) {
-    viz.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    viz.classList.add('viz-highlight');
-    setTimeout(() => viz.classList.remove('viz-highlight'), 1500);
+  try {
+    const viz = document.querySelector('.viz-container:not(.viz-skeleton)');
+    if (viz) {
+      viz.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      viz.classList.add('viz-highlight');
+      setTimeout(() => viz.classList.remove('viz-highlight'), 1500);
+    }
+  } catch (err) {
+    // scrollIntoView / classList are well-supported, but guard defensively so
+    // a badge click can never throw an unhandled error that disrupts the page.
+    console.error('[DemoBadge] scrollToDemo failed:', err);
   }
 }
 </script>

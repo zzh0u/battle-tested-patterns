@@ -68,8 +68,8 @@ Every pattern page has a hands-on visualization like this one. Click **Insert Ra
 
 <PatternTimelineViz />
 
-<p style="text-align: center; margin-top: 2rem;">
+<div style="text-align: center; margin-top: 2rem;">
 
 [Browse all 46 patterns →](/patterns/)
 
-</p>
+</div>

@@ -1,10 +1,11 @@
 import DefaultTheme from 'vitepress/theme';
 import type { Theme } from 'vitepress';
-import { defineAsyncComponent, defineComponent, h, ref, onMounted, onErrorCaptured, computed } from 'vue';
-import { useData } from 'vitepress';
+import { defineAsyncComponent, defineComponent, h, ref, onMounted } from 'vue';
 import VizSkeleton from './components/VizSkeleton.vue';
 import MinHeapSkeleton from './components/MinHeapSkeleton.vue';
 import TimelineSkeleton from './components/TimelineSkeleton.vue';
+import VizErrorBoundary from './components/VizErrorBoundary';
+import ErrorBoundary from './components/ErrorBoundary';
 import DemoBadge from './components/DemoBadge.vue';
 import DifficultyBadge from './components/DifficultyBadge.vue';
 import CompositionFlow from './components/CompositionFlow.vue';
@@ -80,74 +81,10 @@ function clientOnly(loader: () => Promise<any>, skeleton?: any, componentName?: 
     name: 'VizClientOnly',
     setup() {
       const mounted = ref(false);
-      const hasError = ref(false);
-      const errorMsg = ref('');
-      const showDetails = ref(false);
-
-      const { lang } = useData();
-      const isZh = computed(() => lang.value === 'zh-CN');
-
-      onMounted(() => {
-        mounted.value = true;
-      });
-      onErrorCaptured((err: Error) => {
-        hasError.value = true;
-        errorMsg.value = err?.message || 'Unknown error';
-        console.error('[VizErrorBoundary]', componentName || 'unknown', err);
-        return false; // prevent propagation — isolate crash to this component
-      });
-      return () => {
-        if (hasError.value) {
-          const issueTitle = encodeURIComponent(
-            `[Bug] ${componentName || 'Viz'} render error: ${errorMsg.value.slice(0, 60)}`
-          );
-          const issueBody = encodeURIComponent(
-            `## Component\n${componentName || 'Unknown'}\n\n## Error\n\`\`\`\n${errorMsg.value}\n\`\`\`\n\n## Steps to reproduce\n1. Open the page containing ${componentName || 'this component'}\n2. (describe what you did)\n\n## Environment\n- Browser: \n- OS: \n`
-          );
-          const issueUrl = `https://github.com/nicepkg/battle-tested-patterns/issues/new?title=${issueTitle}&body=${issueBody}&labels=bug,viz`;
-
-          return h('div', {
-            class: 'viz-container viz-error-boundary',
-            role: 'alert',
-          }, [
-            h('p', { class: 'viz-error-title' },
-              isZh.value
-                ? '⚠ 可视化组件渲染失败'
-                : '⚠ Visualization failed to render'
-            ),
-            h('p', { class: 'viz-error-hint' },
-              isZh.value
-                ? '这不会影响页面其他内容。你可以尝试重试，或反馈此问题帮助我们改进。'
-                : 'This won\'t affect the rest of the page. You can retry or report this issue to help us improve.'
-            ),
-            h('div', { class: 'viz-error-actions' }, [
-              h('button', {
-                class: 'viz-btn',
-                onClick: () => { hasError.value = false; showDetails.value = false; },
-              }, isZh.value ? '重试' : 'Retry'),
-              h('a', {
-                class: 'viz-btn viz-btn--outline',
-                href: issueUrl,
-                target: '_blank',
-                rel: 'noopener noreferrer',
-              }, isZh.value ? '反馈问题' : 'Report Issue'),
-              h('button', {
-                class: 'viz-btn viz-btn--ghost',
-                onClick: () => { showDetails.value = !showDetails.value; },
-              }, showDetails.value
-                ? (isZh.value ? '收起详情' : 'Hide Details')
-                : (isZh.value ? '查看详情' : 'Show Details')
-              ),
-            ]),
-            showDetails.value
-              ? h('pre', { class: 'viz-error-details' },
-                  `[${componentName || 'Unknown'}] ${errorMsg.value}`
-                )
-              : null,
-          ]);
-        }
-        return mounted.value ? h(AsyncComp) : h(loadingComp);
-      };
+      onMounted(() => { mounted.value = true; });
+      return () => h(VizErrorBoundary, { name: componentName, component: mounted.value ? AsyncComp : null }, () =>
+        mounted.value ? null : h(loadingComp)
+      );
     },
   });
 }
@@ -157,11 +94,30 @@ export default {
   enhanceApp({ app, router }) {
     app.component('DemoBadge', DemoBadge);
     app.component('DifficultyBadge', DifficultyBadge);
-    app.component('CompositionFlow', CompositionFlow);
-    app.component('DecisionTree', DecisionTree);
+
+    // Wrap synchronous interactive components with ErrorBoundary
+    app.component('CompositionFlow', defineComponent({
+      name: 'CompositionFlowGuarded',
+      setup() {
+        return () => h(ErrorBoundary, { name: 'CompositionFlow', component: CompositionFlow });
+      },
+    }));
+    app.component('DecisionTree', defineComponent({
+      name: 'DecisionTreeGuarded',
+      setup() {
+        return () => h(ErrorBoundary, { name: 'DecisionTree', component: DecisionTree });
+      },
+    }));
+
+    // Viz components: async loading + VizErrorBoundary + skeleton
     for (const [name, loader] of Object.entries(vizComponents)) {
       app.component(name, clientOnly(loader, skeletonOverrides[name], name));
     }
+
+    // Global error handler — catches errors not intercepted by ErrorBoundary
+    app.config.errorHandler = (err, _instance, info) => {
+      console.error('[GlobalErrorHandler]', err, info);
+    };
 
     // Stale deployment chunk error handler — reload on stale chunk 404s
     if (typeof window !== 'undefined') {
