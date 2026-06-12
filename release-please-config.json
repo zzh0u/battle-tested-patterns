@@ -4,6 +4,7 @@
       "release-type": "node",
       "package-name": "battle-tested-patterns",
       "changelog-path": "CHANGELOG.md",
+      "include-component-in-tag": false,
       "last-release-sha": "3dfd4631b7f61091c3e87c98553d9d05503a4d91"
     }
   },
