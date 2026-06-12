@@ -4,6 +4,18 @@
 
 ## 开始之前
 
+### 前置要求
+
+| 工具 | 版本 | 检查命令 |
+|------|------|----------|
+| Node.js | ≥ 22.5（见 `.nvmrc`） | `node --version` |
+| pnpm | ≥ 9 | `pnpm --version` |
+| Rust | stable（最新） | `rustc --version` |
+| Go | ≥ 1.23 | `go version` |
+| Python | ≥ 3.12 + pytest | `python3 --version && pytest --version` |
+
+> Rust、Go、Python 用于练习和 `pnpm verify-code`。如果你只修改 TypeScript 或文档，本地可以跳过——CI 会验证其余部分。
+
 1. 阅读 [SOPs](../.sop/README.md) — 特别是 [SOP 01: 新增模式](../.sop/01-new-pattern.md)
 2. 查看已有的[模式](../docs/patterns/)避免重复
 3. 先开一个 Issue 讨论新模式，然后再提交 PR
