@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll: clearTimers, speed, isAborted } = useVizTimers();
@@ -15,6 +17,10 @@ const message = ref(t(
   'Toggle bits to build a permission mask — each bit is a yes/no flag packed into a single integer',
   '切换位来构建权限掩码 — 每个位都是打包到单个整数中的是/否标志'
 ));
+const history = useVizHistory<number>(0, {
+  getMessage: () => message.value,
+  onRestore: (snap, msg) => { presetRunning = false; bits.value = snap; if (msg !== undefined) message.value = msg; },
+});
 let presetRunning = false;
 
 function toggle(idx: number) {
@@ -26,6 +32,7 @@ function toggle(idx: number) {
     `${label} ${on ? '开启' : '关闭'} — 掩码现为 0b${bits.value.toString(2).padStart(8, '0')} (${bits.value})。XOR (^) 翻转单个位而不影响其他位 — O(1) 设置/清除。`
   );
   log(message.value, on ? 'success' : 'info');
+  history.commit(bits.value, `toggle(${label})`);
 }
 
 function setAll() {
@@ -35,6 +42,7 @@ function setAll() {
     '所有标志已设置 — 掩码 = 0xFF (255)。一个整数存储 8 个布尔值。Linux 文件权限正是这样用的：rwxrwxrwx = 一个 mode_t 中的 9 位。'
   );
   log(message.value, 'highlight');
+  history.commit(bits.value, 'setAll');
 }
 
 function clearAllBits() {
@@ -46,6 +54,7 @@ function clearAllBits() {
     '所有标志已清除 — 掩码 = 0x00 (0)。赋值是 O(1) — 不需要遍历各个标志。'
   );
   clearLog();
+  history.reset();
 }
 
 const binaryStr = computed(() => bits.value.toString(2).padStart(8, '0'));
@@ -79,11 +88,13 @@ async function presetUnixPerms() {
   bits.value |= (1 << 0); // READ
   message.value = t('READ (bit 0) set — like chmod\'s "r" flag', 'READ（位 0）已设置 — 类似 chmod 的 "r" 标志');
   log(message.value, 'success');
+  history.commit(bits.value, 'READ');
   await delay(600);
   if (!presetRunning || isAborted()) return;
   bits.value |= (1 << 1); // WRITE
   message.value = t('WRITE (bit 1) set — like chmod\'s "w" flag', 'WRITE（位 1）已设置 — 类似 chmod 的 "w" 标志');
   log(message.value, 'success');
+  history.commit(bits.value, 'WRITE');
   await delay(600);
   if (!presetRunning || isAborted()) return;
   bits.value |= (1 << 2); // EXEC
@@ -92,6 +103,7 @@ async function presetUnixPerms() {
     'EXEC（位 2）已设置 — rwx = 0b00000111 = 7。这就是 chmod 755 意味着所有者=rwx，组=rx，其他=rx 的原因。三个八进制数字，九个位。'
   );
   log(message.value, 'success');
+  history.commit(bits.value, 'EXEC');
   presetRunning = false;
 }
 
@@ -114,6 +126,7 @@ async function presetReactFlags() {
     'Placement | Update = 0b00000110 = 6。React 通过 (flags & Placement) !== 0 检查 fiber 是否需要放置。单条 CPU 指令！'
   );
   log(message.value, 'success');
+  history.commit(bits.value, 'Placement|Update');
   await delay(1000);
   if (!presetRunning || isAborted()) return;
   bits.value = 0b00001110; // + Deletion
@@ -122,6 +135,7 @@ async function presetReactFlags() {
     '添加 Deletion 标志：0b00001110 = 14。三个操作编码在一个整数中。位掩码让 React 在常数时间内批量检查多个效果。'
   );
   log(message.value, 'success');
+  history.commit(bits.value, '+Deletion');
   presetRunning = false;
 }
 
@@ -136,6 +150,7 @@ async function presetMaskCheck() {
     '检查特定标志是否设置 — 核心操作。READ=1，EXEC=4，NET=32，IO=128。使用 AND 测试：(mask & flag) !== 0。'
   );
   log(message.value, 'highlight');
+  history.commit(bits.value, 'maskCheck');
   await delay(800);
   if (!presetRunning || isAborted()) return;
   const hasRead = (bits.value & 1) !== 0;
@@ -206,6 +221,7 @@ async function presetMaskCheck() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

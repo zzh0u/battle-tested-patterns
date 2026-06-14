@@ -3,7 +3,9 @@ import { ref, watch } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { safeTimeout, safeInterval, clearAll, speed, delay, isAborted } = useVizTimers();
@@ -27,6 +29,28 @@ const message = ref(t(
   '切换模式并点击"启动长任务" — 或选择场景对比阻塞与协作调度'
 ));
 let presetRunning = false;
+
+interface CsSnapshot {
+  cooperative: boolean;
+  progress: number;
+  timeline: Array<{ type: string; chunk: number }>;
+}
+
+const vizHistory = useVizHistory<CsSnapshot>(
+  { cooperative: false, progress: 0, timeline: [] },
+  {
+    getMessage: () => message.value,
+    onRestore(snapshot, msg) {
+      presetRunning = false;
+      clearAll();
+      cooperative.value = snapshot.cooperative;
+      progress.value = snapshot.progress;
+      timeline.value = snapshot.timeline as Array<{ type: 'work' | 'yield' | 'idle'; chunk: number }>;
+      running.value = false;
+      blocked.value = false;
+      yieldGap.value = false; if (msg !== undefined) message.value = msg; },
+  }
+);
 
 function startBallAnimation() {
   safeInterval(() => {
@@ -74,6 +98,7 @@ function runBlocking() {
         `完成！所有 ${TOTAL_UNITS} 个单元在一次阻塞运行中处理完毕。UI 全程冻结 — 200ms 的任务会在 60fps 应用中造成明显卡顿。`
       );
       log(message.value, 'warning');
+      vizHistory.commit({ cooperative: cooperative.value, progress: progress.value, timeline: timeline.value }, 'blocking done');
       return;
     }
     done++;
@@ -109,6 +134,7 @@ function runCooperative(startUnit: number) {
           `完成！${TOTAL_UNITS} 个单元分 ${Math.ceil(TOTAL_UNITS / CHUNK_SIZE)} 块处理。UI 全程保持响应！React 的 fiber 调度器使用完全相同的模式 — 每次工作 5ms，然后让出给浏览器。`
         );
         log(message.value, 'success');
+        vizHistory.commit({ cooperative: cooperative.value, progress: progress.value, timeline: timeline.value }, 'cooperative done');
         return;
       }
       yieldGap.value = true;
@@ -118,6 +144,7 @@ function runCooperative(startUnit: number) {
         'Yielding... UI can update (ball bounces). This is like React\'s shouldYield() — check if the browser needs the main thread back.',
         '让出中...UI 可以更新（球在跳动）。这类似 React 的 shouldYield() — 检查浏览器是否需要回收主线程。'
       );
+      vizHistory.commit({ cooperative: cooperative.value, progress: progress.value, timeline: timeline.value }, `yield chunk ${chunkNum + 1}`);
       safeTimeout(() => {
         yieldGap.value = false;
         runCooperative(done);
@@ -141,6 +168,7 @@ function reset() {
   ballAnimating.value = true;
   timeline.value = [];
   presetRunning = false;
+  vizHistory.reset();
   message.value = t('Reset. Toggle mode and start again.', '已重置。切换模式并重新开始。');
   clearLog();
   startBallAnimation();
@@ -339,6 +367,7 @@ const chunkColors = [
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="vizHistory" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

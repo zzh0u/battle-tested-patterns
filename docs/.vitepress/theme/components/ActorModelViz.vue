@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { safeTimeout, clearAll, delay, speed, isAborted } = useVizTimers();
@@ -50,6 +52,25 @@ const message = ref(t(
 ));
 let presetRunning = false;
 
+interface ActorSnapshot {
+  actors: Actor[];
+  totalSent: number;
+  totalProcessed: number;
+}
+
+const history = useVizHistory<ActorSnapshot>(
+  { actors: actors.value, totalSent: 0, totalProcessed: 0 },
+  {
+    getMessage: () => message.value,
+    onRestore(snap, msg) {
+      presetRunning = false;
+      clearAll();
+      actors.value = snap.actors;
+      totalSent.value = snap.totalSent;
+      totalProcessed.value = snap.totalProcessed; if (msg !== undefined) message.value = msg; },
+  },
+);
+
 const msgTypes = [
   { value: 'increment', label: 'increment (+1)', labelZh: 'increment（+1）' },
   { value: 'decrement', label: 'decrement (-1)', labelZh: 'decrement（-1）' },
@@ -89,6 +110,7 @@ function sendMessage() {
     `${sender.name} → ${receiver.name}："${content}"。消息被排入队列 — Actor 逐个处理，确保没有共享可变状态。`
   );
   log(message.value, 'info');
+  history.commit({ actors: actors.value, totalSent: totalSent.value, totalProcessed: totalProcessed.value }, `send: ${content}`);
 
   if (!receiver.processing) {
     processNext(selectedTo.value);
@@ -119,6 +141,7 @@ function flood() {
     `向 ${receiver.name} 洪泛 5 条消息 — 邮箱充当背压缓冲区。Erlang/OTP 进程以这种方式处理数百万排队消息。`
   );
   log(message.value, 'warning');
+  history.commit({ actors: actors.value, totalSent: totalSent.value, totalProcessed: totalProcessed.value }, 'flood x5');
 
   if (!receiver.processing) {
     processNext(target);
@@ -131,6 +154,7 @@ function processNext(actorIdx: number) {
   if (!pending) {
     actor.processing = false;
     actor.state = 'idle';
+    history.commit({ actors: actors.value, totalSent: totalSent.value, totalProcessed: totalProcessed.value }, `idle: ${actor.name}`);
     return;
   }
 
@@ -150,6 +174,7 @@ function processNext(actorIdx: number) {
       default: break;
     }
     actor.log = [...actor.log.slice(-4), `${pending.content} (from ${pending.from})`];
+    history.commit({ actors: actors.value, totalSent: totalSent.value, totalProcessed: totalProcessed.value }, `process: ${pending.content}`);
 
     safeTimeout(() => {
       actor.mailbox = actor.mailbox.filter(m => m.id !== pending.id);
@@ -171,6 +196,7 @@ function reset() {
   presetRunning = false;
   message.value = t('Reset — actors ready', '已重置 — Actor 就绪');
   clearLog();
+  history.reset();
 }
 
 async function presetPingPong() {
@@ -405,6 +431,7 @@ async function presetFanOut() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

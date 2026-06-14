@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -31,6 +33,15 @@ const message = ref(t(
 const highlightIds = ref<Set<number>>(new Set());
 const sorting = ref(false);
 let presetRunning = false;
+
+const history = useVizHistory<BNode>(
+  createNode(true),
+  { getMessage: () => message.value,
+ onRestore: (s, msg) => { presetRunning = false; root.value = s; highlightIds.value = new Set(); sorting.value = false; if (msg !== undefined) message.value = msg; } },
+);
+function commitSnapshot(label: string) {
+  history.commit(root.value, label);
+}
 
 function insertKey(node: BNode, key: number): { split: boolean; midKey: number; left: BNode; right: BNode } | null {
   if (node.isLeaf) {
@@ -97,6 +108,7 @@ function insert() {
     `已插入 ${key} — 树深度：${depth}。B+ 树通过分裂满节点维持 O(log n) 高度。阶为 ${ORDER} 时，每个节点持有 1-${ORDER} 个键。`
   );
   log(message.value, 'info');
+  commitSnapshot(`insert ${key}`);
 }
 
 function collectKeys(node: BNode): number[] {
@@ -162,6 +174,7 @@ function reset() {
   presetRunning = false;
   message.value = t('Tree cleared — insert keys to build a new tree', '树已清空 — 插入键构建新树');
   clearLog();
+  history.reset();
 }
 
 function loadDemo() {
@@ -189,7 +202,9 @@ async function presetSplitDemo() {
   for (const k of keys) {
     if (!presetRunning || isAborted()) return;
     doInsert(k);
+    commitSnapshot(`insert ${k}`);
     const depth = getDepth(root.value);
+    log(t(`insert ${k} (depth ${depth})`, `插入 ${k}（深度 ${depth}）`), 'info');
     message.value = t(
       `Inserted ${k} — depth ${depth}. ${k === 40 ? 'Split happened! The root grew taller. This is the only way a B+ tree increases height — always balanced.' : 'Node not full yet, no split needed.'}`,
       `已插入 ${k} — 深度 ${depth}。${k === 40 ? '发生分裂！根变高了。这是 B+ 树增加高度的唯一方式 — 始终平衡。' : '节点未满，无需分裂。'}`
@@ -213,7 +228,9 @@ async function presetSequentialInsert() {
   for (let k = 1; k <= 12; k++) {
     if (!presetRunning || isAborted()) return;
     doInsert(k);
+    commitSnapshot(`insert ${k}`);
     const depth = getDepth(root.value);
+    log(t(`insert ${k} (depth ${depth})`, `插入 ${k}（深度 ${depth}）`), 'info');
     message.value = t(
       `Inserted ${k} — depth ${depth}. ${depth > 1 ? `${k} keys fit in ${depth} levels. A naive BST would need ${k} levels.` : 'Still fits in one node.'}`,
       `已插入 ${k} — 深度 ${depth}。${depth > 1 ? `${k} 个键只需 ${depth} 层。朴素 BST 需要 ${k} 层。` : '仍在一个节点内。'}`
@@ -236,6 +253,7 @@ async function presetRangeQuery() {
   for (const k of [10, 20, 30, 40, 50, 5, 15, 25, 35, 45]) {
     doInsert(k);
   }
+  commitSnapshot('load range query data');
   message.value = t(
     'Range query: B+ tree leaf nodes form a linked list, enabling efficient range scans. SELECT * WHERE id BETWEEN 15 AND 35 traverses only the relevant leaves.',
     '范围查询：B+ 树叶节点形成链表，支持高效范围扫描。SELECT * WHERE id BETWEEN 15 AND 35 只遍历相关叶子。'
@@ -394,6 +412,7 @@ const edges = computed(() => getEdges(treeLayout.value));
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

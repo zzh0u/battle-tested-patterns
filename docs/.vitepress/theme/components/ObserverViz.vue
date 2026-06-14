@@ -3,7 +3,9 @@ import { ref } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -32,6 +34,23 @@ const message = ref(t(
   '点击"发送事件"向所有订阅者广播 — DOM addEventListener、Node.js EventEmitter 和 RxJS Subject 就是这样工作的'
 ));
 
+interface ObserverSnapshot {
+  subscribers: Subscriber[];
+  lastEvent: string;
+}
+
+const history = useVizHistory<ObserverSnapshot>(
+  { subscribers: subscribers.value, lastEvent: lastEvent.value },
+  {
+    getMessage: () => message.value,
+    onRestore(state, msg) {
+      presetRunning = false;
+      subscribers.value = state.subscribers;
+      lastEvent.value = state.lastEvent;
+      broadcasting.value = false; if (msg !== undefined) message.value = msg; },
+  },
+);
+
 async function emitEvent() {
   if (broadcasting.value) return;
   broadcasting.value = true;
@@ -52,6 +71,7 @@ async function emitEvent() {
   if (isAborted()) return;
   lastEvent.value = '';
   broadcasting.value = false;
+  history.commit({ subscribers: subscribers.value, lastEvent: lastEvent.value }, `broadcast "${event}"`);
 }
 
 function addSubscriber() {
@@ -63,6 +83,7 @@ function addSubscriber() {
   }
   subscribers.value.push({ id: nextId++, name, messages: [] });
   message.value = t(`${name} subscribed`, `${name} 已订阅`);
+  history.commit({ subscribers: subscribers.value, lastEvent: lastEvent.value }, `subscribe ${name}`);
 }
 
 function removeSubscriber() {
@@ -72,6 +93,7 @@ function removeSubscriber() {
   }
   const removed = subscribers.value.pop()!;
   message.value = t(`${removed.name} unsubscribed`, `${removed.name} 已取消订阅`);
+  history.commit({ subscribers: subscribers.value, lastEvent: lastEvent.value }, `unsubscribe ${removed.name}`);
 }
 
 function reset() {
@@ -87,6 +109,7 @@ function reset() {
   broadcasting.value = false;
   message.value = t('Observer reset', 'Observer 已重置');
   clearLog();
+  history.reset();
 }
 
 async function presetFanOut() {
@@ -224,6 +247,7 @@ async function presetEventStorm() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

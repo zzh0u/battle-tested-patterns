@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { safeTimeout, delay, clearAll, speed, isAborted } = useVizTimers();
@@ -29,6 +31,30 @@ const availablePlugins = ref([
 ]);
 
 const registry = ref<Handler[]>([]);
+
+interface RegistrySnapshot {
+  availablePlugins: Array<{ name: string; description: string; registered: boolean }>;
+  registry: Handler[];
+}
+
+const history = useVizHistory<RegistrySnapshot>(
+  {
+    availablePlugins: JSON.parse(JSON.stringify(availablePlugins.value)),
+    registry: [],
+  },
+  {
+    getMessage: () => message.value,
+    onRestore(snap, msg) {
+      presetRunning = false;
+      availablePlugins.value = snap.availablePlugins;
+      registry.value = snap.registry;
+      lookupResult.value = null;
+      lookupNotFound.value = false;
+      flashId.value = -1;
+      dispatchTarget.value = null; if (msg !== undefined) message.value = msg; },
+  },
+);
+
 const lookupQuery = ref('');
 const message = ref(t('Register handlers into the registry, then look them up by name.', '将处理器注册到注册表中，然后按名称查找。'));
 const lookupResult = ref<Handler | null>(null);
@@ -54,6 +80,10 @@ function registerHandler(pluginName: string) {
   message.value = t(`Registered "${plugin.name}" (order #${handler.registeredAt}). Registry now has ${registry.value.length} handler(s).`, `已注册 "${plugin.name}"（顺序 #${handler.registeredAt}）。注册表现有 ${registry.value.length} 个处理器。`);
   log(t(`register "${plugin.name}" (#${handler.registeredAt})`, `注册 "${plugin.name}" (#${handler.registeredAt})`), 'info');
   safeTimeout(() => { flashId.value = -1; }, 600);
+  history.commit(
+    { availablePlugins: JSON.parse(JSON.stringify(availablePlugins.value)), registry: JSON.parse(JSON.stringify(registry.value)) },
+    `register ${plugin.name}`,
+  );
 }
 
 function unregisterHandler(handler: Handler) {
@@ -66,6 +96,10 @@ function unregisterHandler(handler: Handler) {
     lookupResult.value = null;
   }
   message.value = t(`Unregistered "${handler.name}". ${registry.value.length} handler(s) remain.`, `已注销 "${handler.name}"。剩余 ${registry.value.length} 个处理器。`);
+  history.commit(
+    { availablePlugins: JSON.parse(JSON.stringify(availablePlugins.value)), registry: JSON.parse(JSON.stringify(registry.value)) },
+    `unregister ${handler.name}`,
+  );
 }
 
 function doLookup() {
@@ -95,6 +129,10 @@ function doLookup() {
     safeTimeout(() => { dispatchTarget.value = null; }, 800);
   }, 300);
   lookupQuery.value = '';
+  history.commit(
+    { availablePlugins: JSON.parse(JSON.stringify(availablePlugins.value)), registry: JSON.parse(JSON.stringify(registry.value)) },
+    `lookup ${q}`,
+  );
 }
 
 function registerAll() {
@@ -116,6 +154,7 @@ function reset() {
   dispatchTarget.value = null;
   flashId.value = -1;
   clearLog();
+  history.reset();
   message.value = t('Registry cleared. Register handlers to begin.', '注册表已清空。注册处理器以开始。');
 }
 
@@ -395,6 +434,7 @@ async function presetMissAndFallback() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

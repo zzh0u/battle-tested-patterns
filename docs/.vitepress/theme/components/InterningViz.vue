@@ -3,7 +3,9 @@ import { ref, computed, reactive } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { safeTimeout, safeInterval, delay, clearAll, speed, isAborted } = useVizTimers();
@@ -36,6 +38,32 @@ let varNameCounter = 0;
 let presetRunning = false;
 
 const varNames = 'abcdefghijklmnopqrstuvwxyz'.split('');
+
+/* ── Time-travel history ── */
+interface InterningSnapshot {
+  pool: InternEntry[];
+  variables: VarRef[];
+}
+
+const vizHistory = useVizHistory<InterningSnapshot>(
+  { pool: [], variables: [] },
+  {
+    getMessage: () => message.value,
+    onRestore(snap, msg) {
+      presetRunning = false;
+      clearAll();
+      pool.value = snap.pool;
+      variables.value = snap.variables;
+      highlightValue.value = '';
+      highlightAction.value = '';
+      compareA.value = null;
+      compareB.value = null;
+      compareResult.value = '';
+      compareSteps.length = 0;
+      comparingCharIdx.value = -1;
+      isComparing.value = false; if (msg !== undefined) message.value = msg; },
+  },
+);
 
 /* ── Comparison demo state ───────────────────── */
 const compareA = ref<VarRef | null>(null);
@@ -120,6 +148,7 @@ function intern(str?: string) {
   }
   inputText.value = '';
   safeTimeout(() => { highlightValue.value = ''; highlightAction.value = ''; }, 700);
+  vizHistory.commit({ pool: [...pool.value], variables: [...variables.value] }, `intern "${val}"`);
 }
 
 function removeVariable(v: VarRef) {
@@ -152,6 +181,7 @@ function removeVariable(v: VarRef) {
     );
   }
   safeTimeout(() => { highlightValue.value = ''; highlightAction.value = ''; }, 700);
+  vizHistory.commit({ pool: [...pool.value], variables: [...variables.value] }, `release ${v.name}`);
 }
 
 function reset() {
@@ -171,6 +201,7 @@ function reset() {
   isComparing.value = false;
   presetRunning = false;
   clearLog();
+  vizHistory.reset();
 }
 
 function refsForEntry(value: string): VarRef[] {
@@ -572,6 +603,7 @@ async function presetComparisonDemo() {
       'in-status--remove': highlightAction === 'remove',
       'in-status--gc': highlightAction === 'gc',
     }">{{ message }}</div>
+    <VizPlaybackBar :history="vizHistory" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

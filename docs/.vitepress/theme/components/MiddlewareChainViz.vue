@@ -3,7 +3,9 @@ import { ref, computed, reactive } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -77,6 +79,52 @@ const rejectAt = ref(-1);
 const requestCount = ref(0);
 let presetRunning = false;
 
+interface MiddlewareSnapshot {
+  middlewares: Array<{ name: string; enabled: boolean; behavior: string }>;
+  requestCount: number;
+  activeIdx: number;
+  phase: 'idle' | 'forward' | 'backward';
+  rejected: boolean;
+  rejectAt: number;
+}
+
+function snapNow(): MiddlewareSnapshot {
+  return {
+    middlewares: middlewares.map(x => ({ name: x.name, enabled: x.enabled, behavior: x.behavior })),
+    requestCount: requestCount.value,
+    activeIdx: activeIdx.value,
+    phase: phase.value,
+    rejected: rejected.value,
+    rejectAt: rejectAt.value,
+  };
+}
+
+const history = useVizHistory<MiddlewareSnapshot>(
+  {
+    middlewares: middlewares.map(m => ({ name: m.name, enabled: m.enabled, behavior: m.behavior })),
+    requestCount: 0,
+    activeIdx: -1,
+    phase: 'idle',
+    rejected: false,
+    rejectAt: -1,
+  },
+  {
+    getMessage: () => message.value,
+    onRestore(snap, msg) {
+      presetRunning = false;
+      snap.middlewares.forEach((s, i) => {
+        middlewares[i].enabled = s.enabled;
+        middlewares[i].behavior = s.behavior as MiddlewareBehavior;
+      });
+      requestCount.value = snap.requestCount;
+      activeIdx.value = snap.activeIdx;
+      phase.value = snap.phase;
+      running.value = false;
+      rejected.value = snap.rejected;
+      rejectAt.value = snap.rejectAt; if (msg !== undefined) message.value = msg; },
+  },
+);
+
 const message = ref(t(
   'Configure middleware and click "Send Request" — this is how Express, Koa, and ASP.NET Core process HTTP requests',
   '配置 Middleware 后点击"发送请求" — Express、Koa 和 ASP.NET Core 就是这样处理 HTTP 请求的'
@@ -119,6 +167,7 @@ async function sendRequest() {
         `X ${m.name}: REJECTED the request`,
         `X ${m.name}: 拒绝了请求`
       );
+      history.commit(snapNow(), `#${reqNum} ${m.name} rejected`);
       await delay(500);
       if (isAborted()) return;
       break;
@@ -135,6 +184,7 @@ async function sendRequest() {
         'success'
       );
     }
+    history.commit(snapNow(), `#${reqNum} ${m.name} →`);
   }
 
   phase.value = 'backward';
@@ -144,6 +194,7 @@ async function sendRequest() {
       'info'
     );
     message.value = t('Response flowing back through chain...', '响应正在沿链路返回...');
+    history.commit(snapNow(), `#${reqNum} backward start`);
     await delay(300);
     if (isAborted()) return;
   }
@@ -170,6 +221,7 @@ async function sendRequest() {
     );
     await delay(350);
     if (isAborted()) return;
+    history.commit(snapNow(), `#${reqNum} ← ${m.name}`);
   }
 
   activeIdx.value = -1;
@@ -195,6 +247,7 @@ async function sendRequest() {
     );
   }
   running.value = false;
+  history.commit(snapNow(), `#${reqNum} done`);
 }
 
 function toggleEnabled(idx: number) {
@@ -209,6 +262,7 @@ function toggleEnabled(idx: number) {
     `${m.name} ${m.enabled ? 'enabled' : 'disabled'}`,
     `${m.name} ${m.enabled ? '已启用' : '已禁用'}`
   );
+  history.commit(snapNow(), `toggle ${m.name}`);
 }
 
 function toggleBehavior(idx: number) {
@@ -220,6 +274,7 @@ function toggleBehavior(idx: number) {
     `${m.name} will ${m.behavior === 'pass' ? 'PASS' : 'REJECT'} requests`,
     `${m.name} 将${m.behavior === 'pass' ? '通过' : '拒绝'}请求`
   );
+  history.commit(snapNow(), `${m.name} -> ${m.behavior}`);
 }
 
 function reset() {
@@ -236,6 +291,7 @@ function reset() {
     m.enabled = true;
     m.behavior = 'pass';
   });
+  history.reset();
   message.value = t(
     'Reset — configure middleware and send a request',
     '已重置 — 配置 Middleware 后发送请求'
@@ -423,6 +479,7 @@ async function presetSkipMiddleware() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

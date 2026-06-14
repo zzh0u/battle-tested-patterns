@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll: clearTimers, speed, isAborted } = useVizTimers();
@@ -56,6 +58,33 @@ const message = ref(t(
   '所有读取者共享 v1。写入创建副本，交换使其成为当前版本，刷新更新读取者。Linux fork() 和 Java CopyOnWriteArrayList 使用完全相同的模式。',
 ));
 let presetRunning = false;
+
+interface CoWSnapshot {
+  versions: DataVersion[];
+  readers: Reader[];
+  phase: string;
+  opHistory: HistoryEntry[];
+}
+
+const vizHistory = useVizHistory<CoWSnapshot>(
+  { versions: versions.value, readers: readers.value, phase: phase.value, opHistory: history.value },
+  {
+    getMessage: () => message.value,
+    onRestore(snap, msg) {
+      presetRunning = false;
+      versions.value = snap.versions;
+      readers.value = snap.readers;
+      phase.value = snap.phase as Phase;
+      history.value = snap.opHistory; if (msg !== undefined) message.value = msg; },
+  },
+);
+
+function commitVizSnapshot(label: string) {
+  vizHistory.commit(
+    { versions: versions.value, readers: readers.value, phase: phase.value, opHistory: history.value },
+    label,
+  );
+}
 
 const currentVersion = computed(() =>
   versions.value.find(v => v.status === 'current'),
@@ -132,6 +161,7 @@ function doWrite() {
     `已复制 v${current.version} -> v${copy.version}，将 [${selectedIndex.value}] 改为 "${val}"。读取者仍然看到 v${current.version} — 零读取中断。点击"交换"进行原子指针更新。`,
   );
   vizLog(message.value, 'info');
+  commitVizSnapshot('copy');
 }
 
 function doSwap() {
@@ -161,6 +191,7 @@ function doSwap() {
     `已交换！v${draft.version} 现在是当前版本。旧读取者仍然安全地看到 v${current.version} — 这是 Linux 内核中使用的 RCU（读-复制-更新）宽限期。`,
   );
   vizLog(message.value, 'success');
+  commitVizSnapshot('swap');
 }
 
 function refreshReaders() {
@@ -211,6 +242,7 @@ function refreshReaders() {
     `所有读取者现在看到 v${current.version}。${gcCount > 0 ? `${gcCount} 个旧版本已垃圾回收 — 没有读取者引用它们。` : ''}在 Linux RCU 中，这是 synchronize_rcu() — 等待所有读取者退出临界区。`,
   );
   vizLog(message.value, 'success');
+  commitVizSnapshot('refresh');
 }
 
 function reset() {
@@ -235,6 +267,7 @@ function reset() {
     '已重置。所有读取者再次共享 v1。',
   );
   clearLog();
+  vizHistory.reset();
 }
 
 async function presetFullCycle() {
@@ -507,6 +540,7 @@ async function presetConcurrentRead() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="vizHistory" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
 
     <!-- Operation history -->

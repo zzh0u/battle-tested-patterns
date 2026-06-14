@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { safeTimeout, delay, clearAll, speed, isAborted } = useVizTimers();
@@ -37,6 +39,32 @@ const store = ref<KeyVersions[]>([
 ]);
 
 const transactions = ref<Transaction[]>([]);
+
+interface MVCCSnapshot {
+  globalVer: number;
+  store: KeyVersions[];
+  transactions: Transaction[];
+}
+
+const vizHistory = useVizHistory<MVCCSnapshot>(
+  {
+    globalVer: 1,
+    store: JSON.parse(JSON.stringify(store.value)),
+    transactions: [],
+  },
+  {
+    getMessage: () => message.value,
+    onRestore(snap, msg) {
+      presetRunning = false;
+      globalVer.value = snap.globalVer;
+      store.value = snap.store;
+      transactions.value = snap.transactions;
+      highlightKey.value = '';
+      highlightVer.value = -1;
+      selectedTxn.value = null; if (msg !== undefined) message.value = msg; },
+  },
+);
+
 const message = ref(t(
   'Begin a transaction to start. Each gets a snapshot version — this is how PostgreSQL, MySQL InnoDB, and CockroachDB achieve isolation without locks.',
   '开始一个事务。每个事务获取一个快照版本 — PostgreSQL、MySQL InnoDB 和 CockroachDB 就是这样无锁实现隔离的。'
@@ -56,6 +84,10 @@ function beginTxn() {
   message.value = t(
     `T${txn.id} started at snapshot version ${txn.snapshotVer}. It will read data as of v${txn.snapshotVer} — later commits are invisible.`,
     `T${txn.id} 在快照版本 ${txn.snapshotVer} 启动。它将读取 v${txn.snapshotVer} 时的数据 — 之后的提交不可见。`
+  );
+  vizHistory.commit(
+    { globalVer: globalVer.value, store: JSON.parse(JSON.stringify(store.value)), transactions: JSON.parse(JSON.stringify(transactions.value)) },
+    `begin T${txn.id}`,
   );
 }
 
@@ -139,6 +171,10 @@ function writeToKey() {
   txn.writes.push({ key: writeKey.value, value: val });
   message.value = t(`T${txn.id} staged WRITE "${writeKey.value}" = ${val}. Not visible to others until commit.`, `T${txn.id} 暂存写入 "${writeKey.value}" = ${val}。提交前对其他事务不可见。`);
   writeValue.value = '';
+  vizHistory.commit(
+    { globalVer: globalVer.value, store: JSON.parse(JSON.stringify(store.value)), transactions: JSON.parse(JSON.stringify(transactions.value)) },
+    `T${txn.id} write ${writeKey.value}`,
+  );
 }
 
 function commitTxn() {
@@ -172,6 +208,10 @@ function commitTxn() {
   );
   log(message.value, 'success');
   selectedTxn.value = null;
+  vizHistory.commit(
+    { globalVer: globalVer.value, store: JSON.parse(JSON.stringify(store.value)), transactions: JSON.parse(JSON.stringify(transactions.value)) },
+    `commit T${txn.id}`,
+  );
 }
 
 function abortTxn() {
@@ -188,6 +228,10 @@ function abortTxn() {
   message.value = t(`T${txn.id} ABORTED. All staged writes discarded.`, `T${txn.id} 已中止。所有暂存写入已丢弃。`);
   log(message.value, 'warning');
   selectedTxn.value = null;
+  vizHistory.commit(
+    { globalVer: globalVer.value, store: JSON.parse(JSON.stringify(store.value)), transactions: JSON.parse(JSON.stringify(transactions.value)) },
+    `abort T${txn.id}`,
+  );
 }
 
 function reset() {
@@ -208,6 +252,7 @@ function reset() {
     '开始一个事务。每个事务获取一个快照版本。'
   );
   clearLog();
+  vizHistory.reset();
 }
 
 async function presetSnapshotIsolation() {
@@ -315,12 +360,14 @@ async function presetVersionChainGrowth() {
   for (let i = 0; i < 3; i++) {
     if (!presetRunning || isAborted()) return;
     beginTxn();
+    log(t(`Txn ${txnCounter} started`, `事务 ${txnCounter} 已开始`), 'info');
     await delay(300);
     if (!presetRunning || isAborted()) return;
     selectTxn(txnCounter);
     writeKey.value = 'user';
     writeValue.value = `"user_v${i + 2}"`;
     writeToKey();
+    log(t(`write user = "user_v${i + 2}"`, `写入 user = "user_v${i + 2}"`), 'info');
     await delay(300);
     if (!presetRunning || isAborted()) return;
     commitTxn();
@@ -429,6 +476,7 @@ async function presetVersionChainGrowth() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="vizHistory" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

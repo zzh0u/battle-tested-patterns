@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -34,6 +36,16 @@ const recomputeCount = ref(0);
 const skipCount = ref(0);
 let presetRunning = false;
 
+interface DirtyFlagSnapshot { entities: Entity[]; recomputeCount: number; skipCount: number }
+const history = useVizHistory<DirtyFlagSnapshot>(
+  { entities: JSON.parse(JSON.stringify(entities.value)), recomputeCount: 0, skipCount: 0 },
+  { getMessage: () => message.value,
+ onRestore: (s, msg) => { presetRunning = false; entities.value = s.entities; recomputeCount.value = s.recomputeCount; skipCount.value = s.skipCount; if (msg !== undefined) message.value = msg; } },
+);
+function commitSnapshot(label: string) {
+  history.commit({ entities: JSON.parse(JSON.stringify(entities.value)), recomputeCount: recomputeCount.value, skipCount: skipCount.value }, label);
+}
+
 function moveEntity(idx: number) {
   const e = entities.value[idx];
   e.x = Math.round(50 + Math.random() * 280);
@@ -43,6 +55,7 @@ function moveEntity(idx: number) {
     `${e.name} moved to (${e.x},${e.y}) — marked DIRTY. Only this entity needs recomputation, not all ${entities.value.length}.`,
     `${e.name} 移动到 (${e.x},${e.y}) - 标记为脏。只有这个实体需要重算，而非全部 ${entities.value.length} 个。`
   );
+  commitSnapshot(`move ${e.name}`);
 }
 
 function recompute() {
@@ -66,6 +79,7 @@ function recompute() {
     `已重算: ${computed} 个脏 | 跳过: ${skipped} 个干净 - 累计节省: ${skipCount.value}。React.memo 和 shouldComponentUpdate 就是这样工作的。`
   );
   log(message.value, 'success');
+  commitSnapshot(`recompute (${computed} dirty, ${skipped} skipped)`);
 }
 
 function recomputeAll() {
@@ -79,6 +93,7 @@ function recomputeAll() {
     `重算全部 ${entities.value.length} 个实体（无 Dirty Flag 优化）— 这是脏标记要避免的朴素方法。`
   );
   log(message.value, 'warning');
+  commitSnapshot(`recomputeAll (${entities.value.length})`);
 }
 
 function reset() {
@@ -94,6 +109,7 @@ function reset() {
   presetRunning = false;
   message.value = t('Reset — move entities and recompute', '已重置 - 移动实体并重新计算');
   clearLog();
+  history.reset();
 }
 
 const dirtyCount = computed(() => entities.value.filter(e => e.dirty).length);
@@ -263,6 +279,7 @@ async function presetCascadingDirty() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

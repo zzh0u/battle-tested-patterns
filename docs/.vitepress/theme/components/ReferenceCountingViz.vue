@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { safeTimeout, delay, clearAll, speed, isAborted } = useVizTimers();
@@ -36,6 +38,26 @@ const references = ref<Reference[]>([
   { from: 'var z', toId: 2, color: 'var(--viz-warning)' },
 ]);
 
+interface RCSnapshot {
+  objects: RCObject[];
+  references: Reference[];
+}
+
+const history = useVizHistory<RCSnapshot>(
+  {
+    objects: JSON.parse(JSON.stringify(objects.value)),
+    references: JSON.parse(JSON.stringify(references.value)),
+  },
+  {
+    getMessage: () => message.value,
+    onRestore(snap, msg) {
+      presetRunning = false;
+      objects.value = snap.objects;
+      references.value = snap.references;
+      lastFreed.value = -1; if (msg !== undefined) message.value = msg; },
+  },
+);
+
 const message = ref(t(
   'Drop references to decrement ref counts. Objects are freed at rc=0 — this is how CPython, Objective-C ARC, and Rust\'s Rc<T>/Arc<T> manage memory',
   '删除引用以减少引用计数。rc=0 时对象将被释放 — CPython、Objective-C ARC 和 Rust 的 Rc<T>/Arc<T> 就是这样管理内存的'
@@ -60,6 +82,10 @@ function dropRef(refIdx: number) {
     message.value = t(`Dropped ${r.from} → ${obj.name} — rc=${obj.refCount}`, `已删除 ${r.from} → ${obj.name} — rc=${obj.refCount}`);
     log(t(`drop ${r.from} → ${obj.name}, rc=${obj.refCount}`, `删除 ${r.from} → ${obj.name}, rc=${obj.refCount}`), 'info');
   }
+  history.commit(
+    { objects: JSON.parse(JSON.stringify(objects.value)), references: JSON.parse(JSON.stringify(references.value)) },
+    `drop ${r.from}`,
+  );
 }
 
 function addRef(targetId?: number) {
@@ -78,6 +104,10 @@ function addRef(targetId?: number) {
   references.value = [...references.value, { from: varName, toId: target.id, color }];
   target.refCount++;
   message.value = t(`Added ${varName} → ${target.name} — rc=${target.refCount}`, `已添加 ${varName} → ${target.name} — rc=${target.refCount}`);
+  history.commit(
+    { objects: JSON.parse(JSON.stringify(objects.value)), references: JSON.parse(JSON.stringify(references.value)) },
+    `add ${varName}`,
+  );
 }
 
 function addObject() {
@@ -88,6 +118,10 @@ function addObject() {
   const obj: RCObject = { id: nextObjId++, name: `Obj ${String.fromCharCode(64 + nextObjId - 1)}`, refCount: 0, freed: false };
   objects.value = [...objects.value, obj];
   message.value = t(`Created ${obj.name} with rc=0 — add a reference or it stays unreachable`, `已创建 ${obj.name}，rc=0 — 添加引用否则将不可达`);
+  history.commit(
+    { objects: JSON.parse(JSON.stringify(objects.value)), references: JSON.parse(JSON.stringify(references.value)) },
+    `add ${obj.name}`,
+  );
 }
 
 function reset() {
@@ -105,6 +139,7 @@ function reset() {
   ];
   lastFreed.value = -1;
   clearLog();
+  history.reset();
   message.value = t('Reset — drop references to see ref counting in action', '已重置 — 删除引用以查看引用计数的工作过程');
 }
 
@@ -148,9 +183,11 @@ async function presetSharedOwnership() {
   if (!presetRunning || isAborted()) return;
 
   addRef(1);
+  log(t('addRef → Obj A (rc+1)', 'addRef → Obj A (rc+1)'), 'info');
   await delay(400);
   if (!presetRunning || isAborted()) return;
   addRef(1);
+  log(t('addRef → Obj A (rc+1)', 'addRef → Obj A (rc+1)'), 'info');
   await delay(400);
   if (!presetRunning || isAborted()) return;
 
@@ -188,6 +225,7 @@ async function presetDanglingZero() {
   if (!presetRunning || isAborted()) return;
 
   addObject();
+  log(t('New object created with rc=0', '创建新对象 rc=0'), 'info');
   await delay(500);
   if (!presetRunning || isAborted()) return;
 
@@ -285,6 +323,7 @@ async function presetDanglingZero() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

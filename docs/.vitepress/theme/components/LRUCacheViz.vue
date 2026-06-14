@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { safeTimeout, clearAll, speed } = useVizTimers();
@@ -18,6 +20,10 @@ interface CacheEntry {
 }
 
 const entries = ref<CacheEntry[]>([]);
+const history = useVizHistory<CacheEntry[]>([], {
+  getMessage: () => message.value,
+  onRestore: (snap, msg) => { presetRunning = false; entries.value = snap; animKey.value = ''; animAction.value = ''; if (msg !== undefined) message.value = msg; },
+});
 const message = ref(t('Try get("A") or put("A","1") — or pick a preset scenario below', '试试 get("A") 或 put("A","1") — 或选择下方的预设场景'));
 const animKey = ref('');
 const animAction = ref<'hit' | 'miss' | 'evict' | 'insert' | ''>('');
@@ -66,6 +72,7 @@ function put(key?: string, value?: string) {
   inputKey.value = '';
   inputValue.value = '';
   safeTimeout(() => { animKey.value = ''; animAction.value = ''; }, 500);
+  history.commit([...entries.value], `put("${k}")`);
 }
 
 function get(key?: string) {
@@ -94,6 +101,7 @@ function get(key?: string) {
   }
   inputKey.value = '';
   safeTimeout(() => { animKey.value = ''; animAction.value = ''; }, 500);
+  history.commit([...entries.value], `get("${k}")`);
 }
 
 function reset() {
@@ -104,6 +112,7 @@ function reset() {
   animAction.value = '';
   presetRunning = false;
   clearLog();
+  history.reset();
 }
 
 async function runPreset(steps: Array<{ op: 'put' | 'get'; key: string; val?: string }>) {
@@ -112,7 +121,7 @@ async function runPreset(steps: Array<{ op: 'put' | 'get'; key: string; val?: st
   presetRunning = true;
   for (const step of steps) {
     if (!presetRunning) return;
-    await new Promise(r => safeTimeout(r, 800));
+    await new Promise<void>(r => safeTimeout(r, 800));
     if (!presetRunning) return;
     if (step.op === 'put') put(step.key, step.val ?? step.key.toLowerCase());
     else get(step.key);
@@ -230,6 +239,7 @@ const emptySlots = computed(() => Math.max(0, CAPACITY - entries.value.length));
       'viz-status--miss': animAction === 'miss',
       'viz-status--evict': animAction === 'evict',
     }">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

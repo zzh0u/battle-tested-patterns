@@ -3,7 +3,9 @@ import { ref } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { safeInterval, safeTimeout, clearAll, speed } = useVizTimers();
@@ -37,6 +39,18 @@ const running = ref(false);
 const stealHighlight = ref('');
 let presetRunning = false;
 
+const history = useVizHistory<Worker[]>(
+  workers.value,
+  {
+    getMessage: () => message.value,
+    onRestore(state, msg) {
+      presetRunning = false;
+      workers.value = state;
+      stealHighlight.value = '';
+      running.value = false; if (msg !== undefined) message.value = msg; },
+  },
+);
+
 function addTasks(workerIdx: number, count = 4) {
   const w = workers.value[workerIdx];
   for (let i = 0; i < count; i++) {
@@ -46,6 +60,7 @@ function addTasks(workerIdx: number, count = 4) {
     `Added ${count} tasks to ${w.name} (queue: ${w.queue.length}). Uneven distribution triggers work stealing.`,
     `已添加 ${count} 个任务到 ${w.name}（队列：${w.queue.length}）。不均匀分布会触发 work stealing。`
   );
+  history.commit(workers.value, `addTask ${w.name} +${count}`);
 }
 
 function startProcessing() {
@@ -82,6 +97,7 @@ function startProcessing() {
             `${w.name} 从 ${busiest.name} 窃取了任务 #${stolen.id}！从双端队列的尾部窃取最小化竞争 — 这是 Go goroutine 调度器的关键。`
           );
           anyWork = true;
+          history.commit(workers.value, `steal ${busiest.name}->${w.name}`);
           safeTimeout(() => { stealHighlight.value = ''; }, 400);
         }
       }
@@ -96,6 +112,8 @@ function startProcessing() {
       );
       log(t(`done: ${totalStolen} steals`, `完成：${totalStolen} 次窃取`), 'success');
       log(t('Steal from tail, process from head — deque minimizes contention', '从尾部窃取，从头部处理 — 双端队列最小化争用'), 'highlight');
+    } else {
+      history.commit(workers.value, 'process step');
     }
   }, 300);
 }
@@ -116,6 +134,7 @@ function reset() {
   ];
   stealHighlight.value = '';
   clearLog();
+  history.reset();
   message.value = t('Reset — add tasks and start processing', '已重置 — 添加任务并开始处理');
 }
 
@@ -124,7 +143,9 @@ function presetImbalanced() {
   reset();
   presetRunning = true;
   addTasks(0, 8);
+  log(t('W1: +8 tasks (queue: 8) — heavily loaded', 'W1：+8 任务（队列：8）— 重负载'), 'info');
   addTasks(1, 2);
+  log(t('W2: +2 tasks (queue: 2) — lightly loaded', 'W2：+2 任务（队列：2）— 轻负载'), 'info');
   message.value = t(
     'Imbalanced: W1 has 8 tasks, W2 has 2, W3 has 0. Click Start — watch W3 steal from W1 to balance the load.',
     '不平衡：W1 有 8 个任务，W2 有 2 个，W3 有 0 个。点击开始 — 观察 W3 从 W1 窃取以平衡负载。'
@@ -137,8 +158,11 @@ function presetAllBusy() {
   reset();
   presetRunning = true;
   addTasks(0, 4);
+  log(t('W1: +4 tasks (queue: 4)', 'W1：+4 任务（队列：4）'), 'info');
   addTasks(1, 4);
+  log(t('W2: +4 tasks (queue: 4)', 'W2：+4 任务（队列：4）'), 'info');
   addTasks(2, 4);
+  log(t('W3: +4 tasks (queue: 4)', 'W3：+4 任务（队列：4）'), 'info');
   message.value = t(
     'All workers equally loaded — no stealing needed. This is the ideal initial distribution. Work stealing is a fallback, not the primary strategy.',
     '所有工作线程负载均等 — 无需窃取。这是理想的初始分布。Work stealing 是后备策略，而非主要策略。'
@@ -151,6 +175,7 @@ function presetOneWorker() {
   reset();
   presetRunning = true;
   addTasks(0, 12);
+  log(t('W1: +12 tasks (queue: 12) — all work on one thread', 'W1：+12 任务（队列：12）— 所有工作集中在一个线程'), 'info');
   message.value = t(
     'Worst case: all 12 tasks on W1. W2 and W3 will steal aggressively. This models recursive task spawning (e.g., fork-join) where one thread generates all work.',
     '最坏情况：所有 12 个任务在 W1 上。W2 和 W3 会积极窃取。这模拟了递归任务生成（如 fork-join），其中一个线程生成所有工作。'
@@ -221,6 +246,7 @@ function presetOneWorker() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

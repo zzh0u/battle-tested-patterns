@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 const { t } = useI18n();
 const { safeInterval, delay, clearAll, speed, isAborted } = useVizTimers();
 const { entries: logEntries, log, clear: clearLog } = useVizLog();
@@ -21,6 +23,23 @@ const workers = ref<Worker[]>([]);
 const message = ref(t('Click "Acquire" to spawn a worker that claims a permit', '点击"获取"生成一个申请许可的工作线程'));
 let nextId = 1;
 let presetRunning = false;
+
+interface WorkerSnapshot {
+  id: number;
+  state: 'active' | 'waiting' | 'done';
+  permitIndex: number;
+  remainingMs: number;
+  totalMs: number;
+}
+
+const vizHistory = useVizHistory<WorkerSnapshot[]>([], {
+  getMessage: () => message.value,
+  onRestore(snapshot, msg) {
+    presetRunning = false;
+    clearAll();
+    // Restored workers are frozen snapshots — no timers running
+    workers.value = snapshot.map(w => ({ ...w })); if (msg !== undefined) message.value = msg; },
+});
 
 const activeWorkers = computed(() =>
   workers.value.filter((w) => w.state === 'active'),
@@ -91,6 +110,7 @@ function releaseWorker(w: Worker) {
   w.state = 'done';
   workers.value = workers.value.filter((x) => x.id !== w.id);
   tryPromoteWaiting();
+  vizHistory.commit(workers.value.map(x => ({ ...x })), `release #${w.id}`);
 }
 
 function acquire() {
@@ -109,6 +129,7 @@ function acquire() {
     message.value = t(`Worker #${id} acquired permit ${slot + 1}`, `工作线程 #${id} 获取了许可 ${slot + 1}`);
     log(t(`W#${id} acquired permit ${slot + 1}`, `W#${id} 获取许可 ${slot + 1}`), 'info');
     startWorkerTimer(w);
+    vizHistory.commit(workers.value.map(x => ({ ...x })), `acquire #${id}`);
   } else {
     const w: Worker = {
       id,
@@ -120,6 +141,7 @@ function acquire() {
     workers.value.push(w);
     message.value = t(`No permits available — Worker #${id} is waiting in queue`, `无可用许可 — 工作线程 #${id} 正在队列中等待`);
     log(t(`W#${id} waiting (no permits)`, `W#${id} 等待中（无许可）`), 'warning');
+    vizHistory.commit(workers.value.map(x => ({ ...x })), `wait #${id}`);
   }
 }
 
@@ -129,6 +151,7 @@ function reset() {
   workers.value = [];
   nextId = 1;
   clearLog();
+  vizHistory.reset();
   message.value = t('Reset — all workers cleared', '已重置 — 所有工作线程已清除');
 }
 
@@ -436,6 +459,7 @@ async function presetMutex() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="vizHistory" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

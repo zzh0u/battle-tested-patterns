@@ -3,7 +3,9 @@ import { ref } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { safeInterval, safeTimeout, delay, clearAll, speed, isAborted } = useVizTimers();
@@ -19,6 +21,24 @@ const message = ref(t(
 ));
 const running = ref(false);
 let presetRunning = false;
+
+interface RateLimiterSnapshot {
+  tokens: number;
+  requestLog: { time: number; accepted: boolean }[];
+}
+
+const history = useVizHistory<RateLimiterSnapshot>(
+  { tokens: capacity, requestLog: [] },
+  {
+    getMessage: () => message.value,
+    onRestore(state, msg) {
+      presetRunning = false;
+      clearAll();
+      running.value = false;
+      tokens.value = state.tokens;
+      requestLog.value = state.requestLog; if (msg !== undefined) message.value = msg; },
+  },
+);
 
 function startRefill() {
   if (running.value) return;
@@ -52,6 +72,7 @@ function sendRequest() {
   if (requestLog.value.length > 20) {
     requestLog.value = requestLog.value.slice(-20);
   }
+  history.commit({ tokens: tokens.value, requestLog: [...requestLog.value] }, message.value);
 }
 
 function sendBurst() {
@@ -68,6 +89,7 @@ function reset() {
   requestLog.value = [];
   message.value = t('Bucket refilled to capacity', '令牌桶已补满');
   clearLog();
+  history.reset();
 }
 
 function tokenColor(i: number) {
@@ -227,6 +249,7 @@ async function presetDrainAndBlock() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

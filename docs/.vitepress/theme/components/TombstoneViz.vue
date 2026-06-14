@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { safeTimeout, delay, clearAll, speed, isAborted } = useVizTimers();
@@ -29,6 +31,16 @@ const readKey = ref('');
 const readResult = ref<{ found: boolean; value?: string; tombstoned?: boolean } | null>(null);
 const flashId = ref(-1);
 const compacting = ref(false);
+
+const vizHistory = useVizHistory<Entry[]>([], {
+  getMessage: () => message.value,
+  onRestore(snapshot, msg) {
+    presetRunning = false;
+    clearAll();
+    compacting.value = false;
+    store.value = snapshot.map(e => ({ ...e }));
+    flashId.value = -1; if (msg !== undefined) message.value = msg; },
+});
 
 function createInitial(): Entry[] {
   nextId = 0;
@@ -95,6 +107,7 @@ function doWrite() {
     writeKey.value = '';
     writeValue.value = '';
     safeTimeout(() => { flashId.value = -1; }, 600);
+    vizHistory.commit(store.value.map(e => ({ ...e })), `write ${key}`);
     return;
   }
 
@@ -114,6 +127,7 @@ function doWrite() {
   writeKey.value = '';
   writeValue.value = '';
   safeTimeout(() => { flashId.value = -1; }, 600);
+  vizHistory.commit(store.value.map(e => ({ ...e })), `write ${key}`);
 }
 
 function doDelete(entry: Entry) {
@@ -126,6 +140,7 @@ function doDelete(entry: Entry) {
     readResult.value = null;
   }
   safeTimeout(() => { flashId.value = -1; }, 600);
+  vizHistory.commit(store.value.map(e => ({ ...e })), `delete ${entry.key}`);
 }
 
 function doRead() {
@@ -192,6 +207,7 @@ async function doCompact() {
   compacting.value = false;
   message.value = t(`Compaction done. Reclaimed ${tombstoned.length} slot(s). Active entries shifted left.`, `压缩完成。回收了 ${tombstoned.length} 个槽位。活跃条目已左移。`);
   log(message.value, 'highlight');
+  vizHistory.commit(store.value.map(e => ({ ...e })), 'compact');
 }
 
 function reset() {
@@ -207,6 +223,7 @@ function reset() {
   compacting.value = false;
   message.value = t('Store reset. Write, delete, read, and compact to explore tombstone deletion.', '存储已重置。写入、删除、读取和压缩以探索墓碑删除。');
   clearLog();
+  vizHistory.reset();
 }
 
 /* ---------- Preset scenarios ---------- */
@@ -261,6 +278,7 @@ async function presetWriteDeleteCompact() {
     '写-删-压缩循环：基于墓碑存储的核心生命周期。Cassandra 在 DELETE 时写入墓碑，然后在 gc_grace_seconds（默认 10 天）后的压缩中移除它们。'
   );
   log(message.value, 'highlight');
+  vizHistory.commit(store.value.map(e => ({ ...e })), 'preset:intro');
 
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -269,18 +287,21 @@ async function presetWriteDeleteCompact() {
   programmaticWrite('order:1', 'pending');
   message.value = t('Writing order:1 = "pending"...', '写入 order:1 = "pending"...');
   log(message.value, 'info');
+  vizHistory.commit(store.value.map(e => ({ ...e })), 'write order:1');
   await delay(600);
   if (!presetRunning || isAborted()) return;
 
   programmaticWrite('order:2', 'shipped');
   message.value = t('Writing order:2 = "shipped"...', '写入 order:2 = "shipped"...');
   log(message.value, 'info');
+  vizHistory.commit(store.value.map(e => ({ ...e })), 'write order:2');
   await delay(600);
   if (!presetRunning || isAborted()) return;
 
   programmaticWrite('order:3', 'delivered');
   message.value = t('Writing order:3 = "delivered"...', '写入 order:3 = "delivered"...');
   log(message.value, 'info');
+  vizHistory.commit(store.value.map(e => ({ ...e })), 'write order:3');
   await delay(800);
   if (!presetRunning || isAborted()) return;
 
@@ -288,18 +309,21 @@ async function presetWriteDeleteCompact() {
   programmaticDelete('order:1');
   message.value = t('Deleting order:1 — tombstone placed. Data still occupies the slot.', '删除 order:1 — 放置墓碑。数据仍占用槽位。');
   log(message.value, 'warning');
+  vizHistory.commit(store.value.map(e => ({ ...e })), 'delete order:1');
   await delay(700);
   if (!presetRunning || isAborted()) return;
 
   programmaticDelete('order:2');
   message.value = t('Deleting order:2 — another tombstone. 2 slots wasted until compaction.', '删除 order:2 — 又一个墓碑。在压缩之前浪费 2 个槽位。');
   log(message.value, 'warning');
+  vizHistory.commit(store.value.map(e => ({ ...e })), 'delete order:2');
   await delay(800);
   if (!presetRunning || isAborted()) return;
 
   // Compact
   message.value = t('Starting compaction to reclaim tombstoned slots...', '开始压缩以回收墓碑槽位...');
   log(message.value, 'highlight');
+  vizHistory.commit(store.value.map(e => ({ ...e })), 'compact:start');
   await delay(400);
   if (!presetRunning || isAborted()) return;
   await doCompact();
@@ -567,6 +591,7 @@ async function presetReadThroughTombstone() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="vizHistory" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

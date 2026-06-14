@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, safeTimeout, clearAll, speed, isAborted } = useVizTimers();
@@ -14,6 +16,17 @@ const buffer = ref<(string | null)[]>(Array(SIZE).fill(null));
 const head = ref(0);
 const tail = ref(0);
 const count = ref(0);
+
+interface RingSnapshot { buffer: (string | null)[]; head: number; tail: number; count: number; nextVal: number; }
+const history = useVizHistory<RingSnapshot>(
+  { buffer: Array(SIZE).fill(null), head: 0, tail: 0, count: 0, nextVal: 1 },
+  { getMessage: () => message.value,
+ onRestore: (s, msg) => { presetRunning = false; buffer.value = [...s.buffer]; head.value = s.head; tail.value = s.tail; count.value = s.count; nextValue.value = s.nextVal; animatingIndex.value = -1; animationType.value = ''; if (msg !== undefined) message.value = msg; } },
+);
+
+function commitSnapshot(label: string) {
+  history.commit({ buffer: [...buffer.value], head: head.value, tail: tail.value, count: count.value, nextVal: nextValue.value }, label);
+}
 const message = ref(t(
   'Click Enqueue to add items — or pick a scenario to see circular reuse in action',
   '点击"入队"添加元素 — 或选择场景观看循环复用过程'
@@ -72,6 +85,7 @@ function enqueue() {
   );
   log(message.value, 'info');
   safeTimeout(() => { animatingIndex.value = -1; animationType.value = ''; }, 400);
+  commitSnapshot(`enqueue("${val}")`);
 }
 
 function dequeue() {
@@ -93,6 +107,7 @@ function dequeue() {
   );
   log(message.value, 'info');
   safeTimeout(() => { animatingIndex.value = -1; animationType.value = ''; }, 400);
+  commitSnapshot(`dequeue`);
 }
 
 function reset() {
@@ -107,6 +122,7 @@ function reset() {
   presetRunning = false;
   message.value = t('Reset! Click Enqueue to start.', '已重置！点击"入队"开始。');
   clearLog();
+  history.reset();
 }
 
 async function presetFillDrain() {
@@ -251,6 +267,7 @@ async function presetOverflow() {
           <button class="viz-btn" @click="presetOverflow">{{ t('Overflow', '溢出') }}</button>
         </div>
         <div class="viz-status" aria-live="polite">{{ message }}</div>
+        <VizPlaybackBar :history="history" :speed="speed" />
         <VizLog :entries="logEntries" @clear="clearLog" />
       </div>
     </div>

@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, safeTimeout, clearAll, speed, isAborted } = useVizTimers();
@@ -30,6 +32,16 @@ const message = ref(t(
 const animHash = ref(-1);
 let nextKeyId = 1;
 let presetRunning = false;
+
+interface ConsistentHashSnapshot { nodes: {id: string; hash: number; color: string}[]; keys: {id: string; hash: number}[] }
+const history = useVizHistory<ConsistentHashSnapshot>(
+  { nodes: JSON.parse(JSON.stringify(nodes.value)), keys: [] },
+  { getMessage: () => message.value,
+ onRestore: (s, msg) => { presetRunning = false; nodes.value = s.nodes; keys.value = s.keys; animHash.value = -1; if (msg !== undefined) message.value = msg; } },
+);
+function commitSnapshot(label: string) {
+  history.commit({ nodes: JSON.parse(JSON.stringify(nodes.value)), keys: JSON.parse(JSON.stringify(keys.value)) }, label);
+}
 
 function hashPos(h: number) {
   const angle = h * 2 * Math.PI - Math.PI / 2;
@@ -82,6 +94,7 @@ function addKey() {
   );
   log(message.value, 'info');
   safeTimeout(() => { animHash.value = -1; }, 500);
+  commitSnapshot(`addKey ${id}`);
 }
 
 function addNode() {
@@ -97,6 +110,7 @@ function addNode() {
     `已添加节点 ${id}，位置 ${h.toFixed(2)}。仅 ${moved}/${keys.value.length} 个键迁移 — 这是一致性哈希的核心特性：O(K/N) 重分布。`
   );
   log(message.value, 'success');
+  commitSnapshot(`addNode ${id}`);
 }
 
 function removeNode() {
@@ -109,6 +123,7 @@ function removeNode() {
     `已删除节点 ${removed.id}。仅 ${movedKeys.length} 个键重分布到邻居节点 — 其他键不受影响。对比取模哈希，所有键都会移动。`
   );
   log(message.value, 'warning');
+  commitSnapshot(`removeNode ${removed.id}`);
 }
 
 function reset() {
@@ -123,6 +138,7 @@ function reset() {
   presetRunning = false;
   message.value = t('Reset! Add keys to see consistent hashing in action.', '已重置！添加键来查看一致性哈希的效果。');
   clearLog();
+  history.reset();
 }
 
 async function presetScaleOut() {
@@ -296,6 +312,7 @@ async function presetHotSpot() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

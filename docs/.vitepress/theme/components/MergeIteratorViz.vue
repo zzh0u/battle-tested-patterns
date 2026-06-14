@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { safeTimeout, delay, clearAll, speed, isAborted } = useVizTimers();
@@ -39,6 +41,30 @@ const iterators = ref<Iterator[]>(
   }))
 );
 
+interface Snapshot {
+  iterators: Iterator[];
+  output: number[];
+  done: boolean;
+}
+
+const vizHistory = useVizHistory<Snapshot>(
+  {
+    iterators: initialData.map((items, i) => ({ label: `Iter ${i + 1}`, items: [...items], pos: 0 })),
+    output: [],
+    done: false,
+  },
+  {
+    getMessage: () => message.value,
+    onRestore(s, msg) {
+      presetRunning = false;
+      iterators.value = s.iterators;
+      output.value = s.output;
+      done.value = s.done;
+      highlightIdx.value = -1;
+      pickedValue.value = null; if (msg !== undefined) message.value = msg; },
+  },
+);
+
 const heads = computed(() =>
   iterators.value.map((it) =>
     it.pos < it.items.length ? it.items[it.pos] : null
@@ -66,6 +92,7 @@ function next() {
     log(message.value, 'success');
     highlightIdx.value = -1;
     pickedValue.value = null;
+    vizHistory.commit({ iterators: iterators.value, output: output.value, done: done.value }, 'Merge complete');
     return;
   }
 
@@ -89,6 +116,7 @@ function next() {
     );
     log(message.value, 'success');
   }
+  vizHistory.commit({ iterators: iterators.value, output: output.value, done: done.value }, `Pick ${minVal}`);
 }
 
 function reset() {
@@ -105,6 +133,7 @@ function reset() {
   presetRunning = false;
   message.value = t('Press "Next" to pick the minimum head and advance', '按"下一个"选择最小的头元素并推进');
   clearLog();
+  vizHistory.reset();
 }
 
 async function presetAutoRun() {
@@ -120,6 +149,9 @@ async function presetAutoRun() {
   while (!done.value) {
     if (!presetRunning || isAborted()) return;
     next();
+    if (!done.value && pickedValue.value !== null) {
+      log(t(`pick ${pickedValue.value}`, `选取 ${pickedValue.value}`), 'info');
+    }
     await delay(350);
   }
   log(t('k-way merge: O(n log k) via min-heap — the core of LSM compaction', 'k 路归并：通过最小堆实现 O(n log k) — LSM 压缩的核心'), 'highlight');
@@ -146,6 +178,9 @@ async function presetUnbalanced() {
   while (!done.value) {
     if (!presetRunning || isAborted()) return;
     next();
+    if (!done.value && pickedValue.value !== null) {
+      log(t(`pick ${pickedValue.value}`, `选取 ${pickedValue.value}`), 'info');
+    }
     await delay(350);
   }
   log(t('Graceful exhaustion: short iterators finish early, merge continues seamlessly', '优雅耗尽：短迭代器先结束，归并无缝继续'), 'highlight');
@@ -172,6 +207,9 @@ async function presetDuplicates() {
   while (!done.value) {
     if (!presetRunning || isAborted()) return;
     next();
+    if (!done.value && pickedValue.value !== null) {
+      log(t(`pick ${pickedValue.value}`, `选取 ${pickedValue.value}`), 'info');
+    }
     await delay(350);
   }
   log(t('Duplicates preserved in merge — LSM resolves by keeping newest version', '归并保留重复 — LSM 通过保留最新版本解决'), 'highlight');
@@ -252,6 +290,7 @@ async function presetDuplicates() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="vizHistory" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

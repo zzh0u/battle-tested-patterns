@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -25,6 +27,27 @@ const requestLog = ref<{ type: 'success' | 'failure' | 'rejected'; id: number }[
 let reqId = 0;
 let presetRunning = false;
 
+type Snapshot = {
+  state: State;
+  failureCount: number;
+  successCount: number;
+  requestLog: { type: string; id: number }[];
+};
+
+const history = useVizHistory<Snapshot>(
+  { state: 'CLOSED', failureCount: 0, successCount: 0, requestLog: [] },
+  {
+    getMessage: () => message.value,
+    onRestore(snap, msg) {
+      presetRunning = false;
+      state.value = snap.state;
+      failureCount.value = snap.failureCount;
+      successCount.value = snap.successCount;
+      requestLog.value = snap.requestLog as typeof requestLog.value;
+      lastResult.value = ''; if (msg !== undefined) message.value = msg; },
+  },
+);
+
 const stateColor = computed(() => {
   switch (state.value) {
     case 'CLOSED': return 'var(--viz-success)';
@@ -45,6 +68,7 @@ function sendSuccess() {
     log(message.value, 'warning');
     lastResult.value = 'failure';
     cleanLog();
+    history.commit({ state: state.value, failureCount: failureCount.value, successCount: successCount.value, requestLog: requestLog.value }, 'success rejected (OPEN)');
     return;
   }
 
@@ -78,6 +102,7 @@ function sendSuccess() {
     log(message.value, 'info');
   }
   cleanLog();
+  history.commit({ state: state.value, failureCount: failureCount.value, successCount: successCount.value, requestLog: requestLog.value }, 'send success');
 }
 
 function sendFailure() {
@@ -90,6 +115,7 @@ function sendFailure() {
     log(message.value, 'warning');
     lastResult.value = 'failure';
     cleanLog();
+    history.commit({ state: state.value, failureCount: failureCount.value, successCount: successCount.value, requestLog: requestLog.value }, 'failure rejected (OPEN)');
     return;
   }
 
@@ -122,6 +148,7 @@ function sendFailure() {
     }
   }
   cleanLog();
+  history.commit({ state: state.value, failureCount: failureCount.value, successCount: successCount.value, requestLog: requestLog.value }, 'send failure');
 }
 
 function tryReset() {
@@ -136,6 +163,7 @@ function tryReset() {
     '超时到期 → HALF-OPEN。下一个请求是探测：一次成功开始恢复，一次失败重新触发。'
   );
   log(message.value, 'highlight');
+  history.commit({ state: state.value, failureCount: failureCount.value, successCount: successCount.value, requestLog: requestLog.value }, 'timeout reset → HALF_OPEN');
 }
 
 function reset() {
@@ -148,6 +176,7 @@ function reset() {
   presetRunning = false;
   message.value = t('Reset! Circuit is CLOSED.', '已重置！熔断器已关闭。');
   clearLog();
+  history.reset();
 }
 
 function cleanLog() {
@@ -322,6 +351,7 @@ const states: { key: State; label: string; x: number; y: number }[] = [
     <div class="viz-status" aria-live="polite" :style="{ borderLeft: `3px solid ${stateColor}` }">
       {{ message }}
     </div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

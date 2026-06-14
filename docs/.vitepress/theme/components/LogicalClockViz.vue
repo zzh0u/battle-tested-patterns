@@ -3,7 +3,9 @@ import { ref } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -29,6 +31,29 @@ const message = ref(t(
 const pendingMessages = ref<{ from: number; clock: number }[]>([]);
 let presetRunning = false;
 
+interface Snapshot {
+  processes: Process[];
+  pendingMessages: { from: number; clock: number }[];
+}
+
+const vizHistory = useVizHistory<Snapshot>(
+  {
+    processes: [
+      { name: 'P1', color: 'var(--viz-primary)', clock: 0, events: [] },
+      { name: 'P2', color: 'var(--viz-success)', clock: 0, events: [] },
+      { name: 'P3', color: 'var(--viz-warning)', clock: 0, events: [] },
+    ],
+    pendingMessages: [],
+  },
+  {
+    getMessage: () => message.value,
+    onRestore(s, msg) {
+      presetRunning = false;
+      processes.value = s.processes;
+      pendingMessages.value = s.pendingMessages; if (msg !== undefined) message.value = msg; },
+  },
+);
+
 function localEvent(idx: number) {
   const p = processes.value[idx];
   p.clock++;
@@ -37,6 +62,7 @@ function localEvent(idx: number) {
     `${p.name}: local event → clock = ${p.clock}. Rule: increment on every event. This timestamps the event for causal ordering.`,
     `${p.name}：本地事件 → 时钟 = ${p.clock}。规则：每个事件递增。这为因果排序标记时间戳。`
   );
+  vizHistory.commit({ processes: processes.value, pendingMessages: pendingMessages.value }, `${p.name} local event`);
 }
 
 function sendMessage(fromIdx: number) {
@@ -48,6 +74,7 @@ function sendMessage(fromIdx: number) {
     `${from.name}: sent message (clock=${from.clock}) — click "Receive" on another process. The message carries the sender's timestamp.`,
     `${from.name}：已发送消息 (clock=${from.clock}) — 在其他进程上点击"接收"。消息携带发送方的时间戳。`
   );
+  vizHistory.commit({ processes: processes.value, pendingMessages: pendingMessages.value }, `${from.name} send`);
 }
 
 function receiveMessage(toIdx: number) {
@@ -71,6 +98,7 @@ function receiveMessage(toIdx: number) {
     `${to.name}：已接收 (发送方 clock=${msg.clock}) → max(${prevClock}, ${msg.clock}) + 1 = ${to.clock}。max() 确保因果顺序：如果 A→B，则 clock(A) < clock(B)。`
   );
   log(message.value, 'success');
+  vizHistory.commit({ processes: processes.value, pendingMessages: pendingMessages.value }, `${to.name} receive`);
 }
 
 function reset() {
@@ -84,6 +112,7 @@ function reset() {
   presetRunning = false;
   message.value = t('Reset — perform events to see Lamport clocks', '已重置 — 执行事件以查看 Lamport 时钟');
   clearLog();
+  vizHistory.reset();
 }
 
 async function presetCausalChain() {
@@ -126,15 +155,15 @@ async function presetConcurrentEvents() {
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
-  localEvent(0); await delay(300);
+  localEvent(0); log(t('P1 local event', 'P1 本地事件'), 'info'); await delay(300);
   if (!presetRunning || isAborted()) return;
-  localEvent(1); await delay(300);
+  localEvent(1); log(t('P2 local event', 'P2 本地事件'), 'info'); await delay(300);
   if (!presetRunning || isAborted()) return;
-  localEvent(2); await delay(300);
+  localEvent(2); log(t('P3 local event', 'P3 本地事件'), 'info'); await delay(300);
   if (!presetRunning || isAborted()) return;
-  localEvent(0); await delay(300);
+  localEvent(0); log(t('P1 local event #2', 'P1 本地事件 #2'), 'info'); await delay(300);
   if (!presetRunning || isAborted()) return;
-  localEvent(2); await delay(500);
+  localEvent(2); log(t('P3 local event #2', 'P3 本地事件 #2'), 'info'); await delay(500);
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'All three processes have clock=1 or clock=2 — same value but no causal link. This is Lamport clocks\' limitation: equal timestamps don\'t mean simultaneous. Vector clocks (used by DynamoDB) solve this by tracking per-process counters.',
@@ -155,10 +184,14 @@ async function presetClockSkew() {
   await delay(800);
   if (!presetRunning || isAborted()) return;
   for (let i = 0; i < 5; i++) {
-    localEvent(0); await delay(250);
+    localEvent(0);
+    log(t(`P1 local event #${i + 1}`, `P1 本地事件 #${i + 1}`), 'info');
+    await delay(250);
     if (!presetRunning || isAborted()) return;
   }
-  sendMessage(0); await delay(500);
+  sendMessage(0);
+  log(t('P1 send → clock incremented', 'P1 发送 → 时钟递增'), 'info');
+  await delay(500);
   if (!presetRunning || isAborted()) return;
   receiveMessage(1); await delay(500);
   if (!presetRunning || isAborted()) return;
@@ -227,6 +260,7 @@ async function presetClockSkew() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="vizHistory" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

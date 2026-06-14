@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { safeInterval, safeTimeout, delay, clearAll, speed, isAborted } = useVizTimers();
@@ -54,6 +56,58 @@ const totalReleases = ref(0);
 const poolHits = ref(0);
 const poolMisses = ref(0);
 
+interface ObjectPoolSnapshot {
+  pool: Array<{ id: number; name: string; state: string; purpose: string; remaining: number }>;
+  totalAcquires: number;
+  totalReleases: number;
+  poolHits: number;
+  poolMisses: number;
+}
+
+function snapshotPool(): ObjectPoolSnapshot {
+  return {
+    pool: pool.value.map(o => ({ id: o.id, name: o.name, state: o.state, purpose: o.purpose, remaining: o.remaining })),
+    totalAcquires: totalAcquires.value,
+    totalReleases: totalReleases.value,
+    poolHits: poolHits.value,
+    poolMisses: poolMisses.value,
+  };
+}
+
+const history = useVizHistory<ObjectPoolSnapshot>(
+  {
+    pool: createPool(INITIAL_POOL_SIZE).map(o => ({ id: o.id, name: o.name, state: o.state, purpose: o.purpose, remaining: o.remaining })),
+    totalAcquires: 0,
+    totalReleases: 0,
+    poolHits: 0,
+    poolMisses: 0,
+  },
+  {
+    getMessage: () => message.value,
+    onRestore(state, msg) {
+      presetRunning = false;
+      // Clear existing timers before restoring
+      for (const obj of pool.value) {
+        if (obj.timerId !== undefined) {
+          clearInterval(obj.timerId);
+          obj.timerId = undefined;
+        }
+      }
+      pool.value = state.pool.map(o => ({
+        id: o.id,
+        name: o.name,
+        state: o.state as PoolObject['state'],
+        purpose: o.purpose,
+        remaining: o.remaining,
+        timerId: undefined,
+      }));
+      totalAcquires.value = state.totalAcquires;
+      totalReleases.value = state.totalReleases;
+      poolHits.value = state.poolHits;
+      poolMisses.value = state.poolMisses; if (msg !== undefined) message.value = msg; },
+  },
+);
+
 const inUseCount = computed(() =>
   pool.value.filter((o) => o.state === 'in-use').length,
 );
@@ -82,12 +136,14 @@ function acquire() {
       `Pool exhausted! All ${poolSize.value} objects in use. Grow the pool or wait for a release.`,
       `池已耗尽！全部 ${poolSize.value} 个对象使用中。请扩容或等待归还。`,
     );
+    history.commit(snapshotPool(), 'acquire: pool exhausted');
     return;
   }
   poolHits.value++;
   checkOut(obj, purpose);
   log(message.value, 'info');
   purposeInput.value = '';
+  history.commit(snapshotPool(), `acquire: ${purpose}`);
 }
 
 function checkOut(obj: PoolObject, purpose: string) {
@@ -133,6 +189,7 @@ function returnObject(obj: PoolObject, auto = false) {
     );
   }
   log(message.value, 'success');
+  history.commit(snapshotPool(), `release: ${obj.name}`);
 }
 
 function growPool() {
@@ -158,6 +215,7 @@ function reset() {
   poolMisses.value = 0;
   message.value = t('Pool reset — all objects available', '池已重置 — 所有对象可用');
   clearLog();
+  history.reset();
 }
 
 function stateColor(s: PoolObject['state']): string {
@@ -391,6 +449,7 @@ async function presetDynamicGrowth() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

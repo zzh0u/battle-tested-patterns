@@ -3,7 +3,9 @@ import { ref, reactive, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -50,6 +52,30 @@ const visitorType = ref<'print' | 'count'>('print');
 const output = reactive<string[]>([]);
 const nodeCount = ref(0);
 const message = ref(t('Select a visitor type and click "Visit" to traverse the AST', '选择访问者类型并点击"访问"以遍历 AST'));
+
+/* ── Time-travel history ── */
+interface VisitorSnapshot {
+  tree: AstNode;
+  output: string[];
+  nodeCount: number;
+  visitorType: string;
+}
+
+const vizHistory = useVizHistory<VisitorSnapshot>(
+  { tree: buildTree(), output: [], nodeCount: 0, visitorType: 'print' },
+  {
+    getMessage: () => message.value,
+    onRestore(snap, msg) {
+      presetRunning = false;
+      tree.value = snap.tree;
+      output.length = 0;
+      output.push(...snap.output);
+      nodeCount.value = snap.nodeCount;
+      visitorType.value = snap.visitorType as 'print' | 'count';
+      currentNodeId.value = -1;
+      visiting.value = false; if (msg !== undefined) message.value = msg; },
+  },
+);
 
 function flatten(node: AstNode): AstNode[] {
   const result: AstNode[] = [node];
@@ -107,6 +133,12 @@ async function startVisit() {
     log(t(`Count Visitor: total=${nodeCount.value}`, `Count Visitor：总计=${nodeCount.value}`), 'success');
   }
   visiting.value = false;
+  vizHistory.commit({
+    tree: tree.value,
+    output: [...output],
+    nodeCount: nodeCount.value,
+    visitorType: visitorType.value,
+  }, `visit ${visitorType.value}`);
 }
 
 function reset() {
@@ -119,6 +151,7 @@ function reset() {
   nodeCount.value = 0;
   clearLog();
   message.value = t('Select a visitor type and click "Visit" to traverse the AST', '选择访问者类型并点击"访问"以遍历 AST');
+  vizHistory.reset();
 }
 
 /* ---- Tree layout for SVG ---- */
@@ -367,6 +400,7 @@ async function presetBothVisitors() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="vizHistory" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

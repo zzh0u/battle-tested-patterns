@@ -3,7 +3,9 @@ import { ref, reactive, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, safeTimeout, clearAll, speed, isAborted } = useVizTimers();
@@ -14,6 +16,17 @@ const HASH_COUNT = 3;
 
 const bits = reactive<boolean[]>(Array(BIT_COUNT).fill(false));
 const items = ref<string[]>([]);
+
+interface BloomSnapshot { bits: boolean[]; items: string[]; }
+const history = useVizHistory<BloomSnapshot>(
+  { bits: Array(BIT_COUNT).fill(false), items: [] },
+  { getMessage: () => message.value,
+ onRestore: (s, msg) => { presetRunning = false; s.bits.forEach((v, i) => { bits[i] = v; }); items.value = [...s.items]; highlightBits.value = []; highlightType.value = ''; if (msg !== undefined) message.value = msg; } },
+);
+function commitSnapshot(label: string) {
+  history.commit({ bits: [...bits], items: [...items.value] }, label);
+}
+
 const message = ref(t(
   'Add items to the Bloom filter, then test membership — or pick a scenario to see false positives in action',
   '向 Bloom Filter 添加元素，然后测试成员关系 — 或选择场景观看假阳性演示'
@@ -55,6 +68,7 @@ function add(item?: string) {
   log(message.value, 'info');
   inputText.value = '';
   safeTimeout(() => { highlightBits.value = []; highlightType.value = ''; }, 600);
+  commitSnapshot(`add("${item ?? inputText.value}")`);
 }
 
 function test(item?: string) {
@@ -103,6 +117,7 @@ function reset() {
   presetRunning = false;
   message.value = t('Filter cleared!', '过滤器已清空！');
   clearLog();
+  history.reset();
 }
 
 async function presetUrlDedup() {
@@ -257,24 +272,28 @@ const presetTests = ['cat', 'rat', 'fox', 'ant'];
       'viz-status--fp': highlightType === 'false-positive',
       'viz-status--add': highlightType === 'add',
     }">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>
 
 <style scoped>
 .bloom-bits {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-  padding: 0.75rem 0;
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+  gap: 6px;
+  padding: 0.75rem 0 1rem;
 }
 
 .bloom-bit {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 36px;
-  height: 44px;
+  justify-content: center;
+  gap: 3px;
+  min-width: 0;
+  aspect-ratio: 3 / 4;
+  padding: 4px 0;
   border: 1.5px solid var(--viz-border);
   border-radius: var(--viz-radius-sm);
   background: var(--vp-c-bg);
@@ -311,27 +330,29 @@ const presetTests = ['cat', 'rat', 'fox', 'ant'];
   font-weight: 700;
   font-family: var(--vp-font-family-mono);
   color: var(--viz-text);
-  line-height: 28px;
+  line-height: 1;
 }
 
 .bloom-bit-idx {
-  font-size: 0.5625rem;
+  font-size: 0.625rem;
+  line-height: 1;
   color: var(--viz-muted);
+  font-family: var(--vp-font-family-mono);
 }
 
 .bloom-fill {
   position: relative;
-  height: 14px;
+  height: 22px;
   background: var(--viz-bg);
   border: 1px solid var(--viz-border);
-  border-radius: 7px;
+  border-radius: 11px;
   overflow: hidden;
   margin-bottom: 0.5rem;
 }
 
 .bloom-fill-bar {
   height: 100%;
-  border-radius: 7px;
+  border-radius: 11px;
   transition: all var(--viz-transition);
 }
 
@@ -340,10 +361,11 @@ const presetTests = ['cat', 'rat', 'fox', 'ant'];
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 0.5625rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--viz-text);
   font-family: var(--vp-font-family-mono);
+  text-shadow: 0 0 3px var(--vp-c-bg), 0 0 3px var(--vp-c-bg);
 }
 
 .bloom-items {
@@ -419,4 +441,12 @@ const presetTests = ['cat', 'rat', 'fox', 'ant'];
 
 .viz-status--fp { border-left: 3px solid var(--viz-warning); }
 .viz-status--add { border-left: 3px solid var(--viz-primary); }
+
+/* Narrow screens: fold the 16-bit row into 8 columns × 2 rows */
+@media (max-width: 640px) {
+  .bloom-bits {
+    grid-template-columns: repeat(8, 1fr);
+    gap: 5px;
+  }
+}
 </style>

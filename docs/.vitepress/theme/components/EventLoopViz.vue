@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -28,12 +30,36 @@ const message = ref(t(
 const running = ref(false);
 const currentPhase = ref<'idle' | 'stack' | 'micro' | 'macro'>('idle');
 
+interface EventLoopSnapshot {
+  callStack: Task[];
+  macroQueue: Task[];
+  microQueue: Task[];
+  log: string[];
+  currentPhase: string;
+}
+
+const history = useVizHistory<EventLoopSnapshot>(
+  { callStack: [], macroQueue: [], microQueue: [], log: [], currentPhase: 'idle' },
+  {
+    getMessage: () => message.value,
+    onRestore(snapshot, msg) {
+      clearAll();
+      running.value = false;
+      callStack.value = snapshot.callStack;
+      macroQueue.value = snapshot.macroQueue;
+      microQueue.value = snapshot.microQueue;
+      log.value = snapshot.log;
+      currentPhase.value = snapshot.currentPhase as typeof currentPhase.value; if (msg !== undefined) message.value = msg; },
+  },
+);
+
 function addSync() {
   callStack.value.push({ label: `fn${nextId}()`, type: 'sync', id: nextId++ });
   message.value = t(
     'Synchronous function pushed to call stack. It will execute before any queued tasks.',
     '同步函数已压入调用栈。它将在任何排队任务之前执行。'
   );
+  history.commit({ callStack: callStack.value, macroQueue: macroQueue.value, microQueue: microQueue.value, log: log.value, currentPhase: currentPhase.value }, 'addSync');
 }
 
 function addMacro() {
@@ -44,6 +70,7 @@ function addMacro() {
     `"${label}" queued as macrotask. Only one macrotask runs per event loop iteration.`,
     `"${label}" 作为宏任务入队。每次事件循环迭代只运行一个宏任务。`
   );
+  history.commit({ callStack: callStack.value, macroQueue: macroQueue.value, microQueue: microQueue.value, log: log.value, currentPhase: currentPhase.value }, 'addMacro');
 }
 
 function addMicro() {
@@ -54,6 +81,7 @@ function addMicro() {
     `"${label}" queued as microtask. ALL microtasks drain before the next macrotask — this is the key rule.`,
     `"${label}" 作为微任务入队。所有微任务在下一个宏任务之前全部执行 — 这是核心规则。`
   );
+  history.commit({ callStack: callStack.value, macroQueue: macroQueue.value, microQueue: microQueue.value, log: log.value, currentPhase: currentPhase.value }, 'addMicro');
 }
 
 function loadDemo() {
@@ -72,6 +100,7 @@ function loadDemo() {
     '示例已加载 — 点击"单步"逐步执行。注意：微任务在宏任务之前运行。'
   );
   vizLog(message.value, 'highlight');
+  history.commit({ callStack: callStack.value, macroQueue: macroQueue.value, microQueue: microQueue.value, log: log.value, currentPhase: currentPhase.value }, 'loadDemo');
 }
 
 async function loadPromiseChain() {
@@ -88,6 +117,7 @@ async function loadPromiseChain() {
     'Promise 链 vs setTimeout(0)：B→C→D 在 A 之前运行。微任务总是先排空 — 即使 setTimeout(fn, 0) 也不例外。'
   );
   vizLog(message.value, 'highlight');
+  history.commit({ callStack: callStack.value, macroQueue: macroQueue.value, microQueue: microQueue.value, log: log.value, currentPhase: currentPhase.value }, 'loadPromiseChain');
 }
 
 async function loadStarvation() {
@@ -106,6 +136,7 @@ async function loadStarvation() {
     '微任务饥饿：5 个微任务阻塞了"UI repaint"宏任务。在实际应用中，递归微任务可能冻结 UI。'
   );
   vizLog(message.value, 'warning');
+  history.commit({ callStack: callStack.value, macroQueue: macroQueue.value, microQueue: microQueue.value, log: log.value, currentPhase: currentPhase.value }, 'loadStarvation');
 }
 
 async function step() {
@@ -126,6 +157,8 @@ async function step() {
     if (callStack.value.length === 0 && microQueue.value.length === 0 && macroQueue.value.length === 0) {
       currentPhase.value = 'idle';
     }
+    vizLog(t(`exec "${task.label}" (stack)`, `执行 "${task.label}"（调用栈）`), 'info');
+    history.commit({ callStack: callStack.value, macroQueue: macroQueue.value, microQueue: microQueue.value, log: log.value, currentPhase: currentPhase.value }, 'step:stack');
     return;
   }
 
@@ -148,6 +181,8 @@ async function step() {
     }
     running.value = false;
     if (macroQueue.value.length === 0) currentPhase.value = 'idle';
+    vizLog(t(`drained ${microCount} microtask(s)`, `排空 ${microCount} 个微任务`), 'info');
+    history.commit({ callStack: callStack.value, macroQueue: macroQueue.value, microQueue: microQueue.value, log: log.value, currentPhase: currentPhase.value }, 'step:micro');
     return;
   }
 
@@ -167,6 +202,8 @@ async function step() {
     if (isAborted()) return;
     running.value = false;
     currentPhase.value = 'idle';
+    vizLog(t(`macrotask "${task.label}" executed`, `宏任务 "${task.label}" 已执行`), 'info');
+    history.commit({ callStack: callStack.value, macroQueue: macroQueue.value, microQueue: microQueue.value, log: log.value, currentPhase: currentPhase.value }, 'step:macro');
     return;
   }
 
@@ -200,6 +237,7 @@ function reset() {
   message.value = t('Event loop reset.', 'Event Loop 已重置。');
   nextId = 0;
   clearLog();
+  history.reset();
 }
 
 const phaseLabel = computed(() => {
@@ -294,6 +332,7 @@ const phaseColor = computed(() => {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

@@ -3,7 +3,9 @@ import { ref, watch } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { safeInterval, safeTimeout, clearAll, speed } = useVizTimers();
@@ -27,6 +29,29 @@ let presetRunning = false;
 let producerTimerId: ReturnType<typeof setInterval> | null = null;
 let consumerTimerId: ReturnType<typeof setInterval> | null = null;
 
+interface BackpressureSnapshot {
+  queue: number[];
+  produced: number;
+  consumed: number;
+  dropped: number;
+}
+
+const history = useVizHistory<BackpressureSnapshot>(
+  { queue: [], produced: 0, consumed: 0, dropped: 0 },
+  {
+    getMessage: () => message.value,
+    onRestore(snap, msg) {
+      presetRunning = false;
+      clearAll();
+      queue.value = snap.queue;
+      produced.value = snap.produced;
+      consumed.value = snap.consumed;
+      dropped.value = snap.dropped;
+      producerActive.value = false;
+      consumerActive.value = false; if (msg !== undefined) message.value = msg; },
+  },
+);
+
 function producerTick() {
   if (!producerActive.value) return;
   if (queue.value.length >= QUEUE_CAP) {
@@ -36,6 +61,7 @@ function producerTick() {
       `背压！项目 #${nextItem} 被丢弃 — 队列已满（${QUEUE_CAP}）。在 TCP 中，这会触发窗口收缩；在 RxJS 中，会丢弃或缓冲。`
     );
     log(message.value, 'error');
+    history.commit({ queue: [...queue.value], produced: produced.value, consumed: consumed.value, dropped: dropped.value }, `drop #${nextItem}`);
     nextItem++;
   } else {
     queue.value.push(nextItem);
@@ -51,6 +77,7 @@ function producerTick() {
       message.value = t(`Produced #${nextItem} — queue at ${fill}%`, `已生产 #${nextItem} — 队列 ${fill}%`);
       log(message.value, 'info');
     }
+    history.commit({ queue: [...queue.value], produced: produced.value, consumed: consumed.value, dropped: dropped.value }, `produce #${nextItem}`);
     nextItem++;
   }
 }
@@ -62,6 +89,7 @@ function consumerTick() {
     consumed.value++;
     message.value = t(`Consumed #${item}`, `已消费 #${item}`);
     log(message.value, 'success');
+    history.commit({ queue: [...queue.value], produced: produced.value, consumed: consumed.value, dropped: dropped.value }, `consume #${item}`);
   }
 }
 
@@ -110,6 +138,7 @@ function reset() {
   nextItem = 1;
   message.value = t('Reset! Configure rates and start.', '已重置！配置速率并开始。');
   clearLog();
+  history.reset();
 }
 
 function presetOverload() {
@@ -259,6 +288,7 @@ function fillColor() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

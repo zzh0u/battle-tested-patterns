@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { safeTimeout, delay, clearAll, speed, isAborted } = useVizTimers();
@@ -37,6 +39,30 @@ const cacheHits = ref(0);
 const cacheMisses = ref(0);
 const lastAddedIds = ref<Set<number>>(new Set());
 let presetRunning = false;
+
+/* ── Time-travel history ── */
+interface FlyweightSnapshot {
+  pool: [string, Flyweight][];
+  instances: CharInstance[];
+  cacheHits: number;
+  cacheMisses: number;
+  lastAddedIds: number[];
+}
+
+const vizHistory = useVizHistory<FlyweightSnapshot>(
+  { pool: [], instances: [], cacheHits: 0, cacheMisses: 0, lastAddedIds: [] },
+  {
+    getMessage: () => message.value,
+    onRestore(snap, msg) {
+      presetRunning = false;
+      flyweightPool.value = new Map(snap.pool);
+      instances.value = snap.instances;
+      cacheHits.value = snap.cacheHits;
+      cacheMisses.value = snap.cacheMisses;
+      lastAddedIds.value = new Set(snap.lastAddedIds);
+      selectedChar.value = null; if (msg !== undefined) message.value = msg; },
+  },
+);
 
 /* ── Derived stats ── */
 
@@ -122,6 +148,13 @@ function applyText() {
     `处理了 ${total} 个字符，仅使用 ${unique} 个唯一的 Flyweight 对象。每个字形位图只存储一次 — Java 的 String.intern() 和 Python 的字符串驻留原理相同。`
   );
   log(message.value, 'success');
+  vizHistory.commit({
+    pool: [...flyweightPool.value.entries()],
+    instances: instances.value,
+    cacheHits: cacheHits.value,
+    cacheMisses: cacheMisses.value,
+    lastAddedIds: [...lastAddedIds.value],
+  }, `setText "${text}"`);
 }
 
 function appendText() {
@@ -146,6 +179,13 @@ function appendText() {
       `追加了 ${text.length} 个实例。创建了 ${newFlyweights} 个新 Flyweight，复用了 ${text.length - newFlyweights} 个。`
     );
   }
+  vizHistory.commit({
+    pool: [...flyweightPool.value.entries()],
+    instances: instances.value,
+    cacheHits: cacheHits.value,
+    cacheMisses: cacheMisses.value,
+    lastAddedIds: [...lastAddedIds.value],
+  }, `append "${text}"`);
 }
 
 function selectChar(char: string) {
@@ -164,6 +204,7 @@ function reset() {
   presetRunning = false;
   message.value = t('Reset. Type a sentence and click Apply.', '已重置。输入一句话并点击应用。');
   clearLog();
+  vizHistory.reset();
 }
 
 function formatBytes(bytes: number): string {
@@ -404,6 +445,7 @@ applyText();
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="vizHistory" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

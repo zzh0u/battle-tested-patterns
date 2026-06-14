@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { safeTimeout, clearAll, delay, speed, isAborted } = useVizTimers();
@@ -36,6 +38,25 @@ const message = ref(t(
 const flushing = ref(false);
 let presetRunning = false;
 
+interface BatchSnapshot {
+  buffer: Item[];
+  batches: BatchRecord[];
+  totalItems: number;
+}
+
+const history = useVizHistory<BatchSnapshot>(
+  { buffer: [], batches: [], totalItems: 0 },
+  {
+    getMessage: () => message.value,
+    onRestore(snap, msg) {
+      presetRunning = false;
+      buffer.value = snap.buffer;
+      batches.value = snap.batches;
+      totalItems.value = snap.totalItems;
+      flushing.value = false; if (msg !== undefined) message.value = msg; },
+  },
+);
+
 const batchCount = computed(() => batches.value.length);
 const avgPerBatch = computed(() => {
   if (batches.value.length === 0) return 0;
@@ -56,6 +77,7 @@ function addItem() {
     `已添加 ${item.label} — 缓冲区 ${buffer.value.length}/${BATCH_THRESHOLD}。每个元素单独需要完整的往返；批处理将 N 次调用减少为 1 次。`
   );
   log(message.value, 'info');
+  history.commit({ buffer: buffer.value, batches: batches.value, totalItems: totalItems.value }, `add ${item.label}`);
 
   if (!flushing.value && buffer.value.length >= BATCH_THRESHOLD) {
     flushBatch();
@@ -91,6 +113,7 @@ function flushBatch() {
       `批次 #${batch.id} 已刷新（${batch.size} 个元素）— 缓冲区已清空。React 以相同方式批量处理 setState 调用：多次更新，一次重渲染。`
     );
     log(message.value, 'success');
+    history.commit({ buffer: buffer.value, batches: batches.value, totalItems: totalItems.value }, `flush batch #${batch.id}`);
     if (buffer.value.length >= BATCH_THRESHOLD) {
       flushBatch();
     }
@@ -111,6 +134,7 @@ function reset() {
     `已重置 — 添加元素填满缓冲区（阈值: ${BATCH_THRESHOLD}）`
   );
   clearLog();
+  history.reset();
 }
 
 async function presetAutoFill() {
@@ -289,6 +313,7 @@ async function presetMultiBatch() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { safeTimeout, delay, clearAll, speed, isAborted } = useVizTimers();
@@ -29,6 +31,26 @@ const inputWord = ref('');
 const message = ref(t('Type a word and insert it into the trie', '输入一个单词并插入到 Trie 中'));
 const highlightIds = ref<Set<number>>(new Set());
 const words = ref<string[]>([]);
+
+// History uses words list as snapshot; trie is rebuilt on undo/redo
+const history = useVizHistory<string[]>([], {
+  getMessage: () => message.value,
+  onRestore: (snap, msg) => {
+    presetRunning = false;
+    nextId = 0;
+    root.value = createNode('');
+    words.value = [];
+    for (const w of snap) {
+      let current = root.value;
+      for (const ch of w) {
+        if (!current.children.has(ch)) current.children.set(ch, createNode(ch));
+        current = current.children.get(ch)!;
+      }
+      current.isEnd = true;
+      words.value.push(w);
+    }
+    highlightIds.value = new Set(); if (msg !== undefined) message.value = msg; },
+});
 
 function insertWord() {
   const word = inputWord.value.trim().toLowerCase();
@@ -59,6 +81,7 @@ function insertWord() {
   inputWord.value = '';
 
   safeTimeout(() => { highlightIds.value = new Set(); }, 800);
+  history.commit([...words.value], `insert("${word}")`);
 }
 
 async function searchWord() {
@@ -97,10 +120,12 @@ async function searchWord() {
 }
 
 function addPresets() {
+  reset();
   for (const w of ['cat', 'car', 'card', 'care', 'dog', 'do']) {
     inputWord.value = w;
     insertWord();
   }
+  inputWord.value = '';
   message.value = t('Added preset words: cat, car, card, care, dog, do', '已添加预设单词：cat, car, card, care, dog, do');
 }
 
@@ -114,6 +139,7 @@ function reset() {
   message.value = t('Trie cleared!', 'Trie 已清空！');
   clearLog();
   inputWord.value = '';
+  history.reset();
 }
 
 async function presetPrefixSharing() {
@@ -347,6 +373,7 @@ const edges = computed(() => edgesFromLayout(treeLayout.value));
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

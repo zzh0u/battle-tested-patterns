@@ -3,7 +3,9 @@ import { ref, reactive, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -43,6 +45,29 @@ const message = ref(t(
 ));
 let presetRunning = false;
 
+/* ── Time-travel history ── */
+type IteratorSnapshot = PipelineState;
+
+const vizHistory = useVizHistory<IteratorSnapshot>(
+  { sourceIdx: -1, filterPassed: [], filterRejected: [], mapResults: [], taken: [], collected: [], elementsProcessed: 0, done: false },
+  {
+    getMessage: () => message.value,
+    onRestore(snap, msg) {
+      presetRunning = false;
+      state.sourceIdx = snap.sourceIdx;
+      state.filterPassed = snap.filterPassed;
+      state.filterRejected = snap.filterRejected;
+      state.mapResults = snap.mapResults;
+      state.taken = snap.taken;
+      state.collected = snap.collected;
+      state.elementsProcessed = snap.elementsProcessed;
+      state.done = snap.done;
+      activeStage.value = null;
+      activeValue.value = null;
+      animating.value = false; if (msg !== undefined) message.value = msg; },
+  },
+);
+
 const hasNext = computed(() => !state.done && state.sourceIdx < SOURCE.length - 1);
 
 async function pullNext() {
@@ -56,6 +81,7 @@ async function pullNext() {
     );
     activeStage.value = null;
     activeValue.value = null;
+    vizHistory.commit({ ...state }, `done (${state.taken.length}/${TAKE_COUNT})`);
     return;
   }
 
@@ -135,6 +161,7 @@ async function pullNext() {
   activeStage.value = null;
   activeValue.value = null;
   animating.value = false;
+  vizHistory.commit({ ...state }, `step ${state.elementsProcessed}`);
 }
 
 function reset() {
@@ -153,6 +180,7 @@ function reset() {
   presetRunning = false;
   message.value = t('Reset. Click "Pull Next" to start pulling elements lazily.', '已重置。点击"拉取下一个"开始惰性拉取元素。');
   clearLog();
+  vizHistory.reset();
 }
 
 function stageActive(name: string): boolean {
@@ -359,6 +387,7 @@ async function presetStepByStep() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="vizHistory" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

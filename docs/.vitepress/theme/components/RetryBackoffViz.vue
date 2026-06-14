@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -29,6 +31,23 @@ const message = ref(t(
 ));
 const finalOutcome = ref<'idle' | 'success' | 'exhausted'>('idle');
 let presetRunning = false;
+
+interface RetryBackoffSnapshot {
+  attempts: Attempt[];
+  finalOutcome: string;
+}
+
+const history = useVizHistory<RetryBackoffSnapshot>(
+  { attempts: [], finalOutcome: 'idle' },
+  {
+    getMessage: () => message.value,
+    onRestore(state, msg) {
+      presetRunning = false;
+      attempts.value = state.attempts;
+      finalOutcome.value = state.finalOutcome as 'idle' | 'success' | 'exhausted';
+      running.value = false; if (msg !== undefined) message.value = msg; },
+  },
+);
 
 const maxPossibleDelay = computed(() => {
   let total = 0;
@@ -99,6 +118,7 @@ async function startRequest() {
         `第 ${i + 1} 次尝试成功！${i > 0 ? `经过 ${i} 次重试后恢复。AWS SDK 和 gRPC 使用完全相同的退避策略。` : '首次尝试即成功 — 无需退避。'}`
       );
       log(t(`attempt #${i + 1} succeeded`, `第 ${i + 1} 次尝试成功`), 'success');
+      history.commit({ attempts: [...attempts.value], finalOutcome: finalOutcome.value }, `attempt #${i + 1} succeeded`);
       running.value = false;
       return;
     }
@@ -113,6 +133,7 @@ async function startRequest() {
       );
       log(t(`all ${MAX_RETRIES} retries exhausted`, `全部 ${MAX_RETRIES} 次重试耗尽`), 'error');
     }
+    history.commit({ attempts: [...attempts.value], finalOutcome: finalOutcome.value }, `attempt #${i + 1} failed`);
   }
 
   running.value = false;
@@ -125,6 +146,7 @@ function reset() {
   finalOutcome.value = 'idle';
   presetRunning = false;
   clearLog();
+  history.reset();
   message.value = t(
     'Configure failure rate and click "Send Request" — or pick a scenario below',
     '配置失败率并点击"发送请求" — 或选择下方场景'
@@ -363,6 +385,7 @@ async function presetNoBackoff() {
     <div class="viz-status" aria-live="polite" :style="{ borderLeft: `3px solid ${statusBorderColor}` }">
       {{ message }}
     </div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

@@ -3,7 +3,9 @@ import { ref, computed, reactive } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -84,6 +86,24 @@ const message = ref(
 
 const history = reactive<{ obj: string; method: string; impl: string; output: string }[]>([]);
 
+interface VTableSnapshot {
+  className: string;
+  method: string;
+}
+
+const vizHistory = useVizHistory<VTableSnapshot>({ className: 'Dog', method: 'speak()' }, {
+  getMessage: () => message.value,
+  onRestore(snapshot, msg) {
+    presetRunning = false;
+    selectedClassName.value = snapshot.className;
+    selectedMethod.value = snapshot.method as MethodName;
+    dispatching.value = false;
+    activeStep.value = 0;
+    dispatchResult.value = '';
+    dispatchOutput.value = '';
+    history.splice(0); if (msg !== undefined) message.value = msg; },
+});
+
 function getClassDef(name: string): ClassDef {
   return classes.find(c => c.name === name)!;
 }
@@ -154,6 +174,8 @@ async function callMethod() {
     history.splice(0, history.length - 6);
   }
 
+  vizHistory.commit({ className: selectedClassName.value, method: selectedMethod.value }, `${objLabel}.${selectedMethod.value}`);
+
   await delay(1500);
   if (isAborted()) return;
 
@@ -172,6 +194,7 @@ function reset() {
   selectedMethod.value = 'speak()';
   history.splice(0);
   clearLog();
+  vizHistory.reset();
   message.value = t(
     'Select an object and method, then click "Call Method" to see vtable dispatch',
     '选择对象和方法，然后点击「调用方法」查看 vtable 分派',
@@ -498,6 +521,7 @@ async function presetSameMethodDifferentImpl() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="vizHistory" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -22,6 +24,18 @@ const message = ref(t(
 const highlightPath = ref<{ nodeIdx: number; level: number }[]>([]);
 const searchTarget = ref<number | null>(null);
 let presetRunning = false;
+
+const history = useVizHistory<SkipNode[]>(
+  [],
+  {
+    getMessage: () => message.value,
+    onRestore(snapshot, msg) {
+      presetRunning = false;
+      nodes.value = snapshot;
+      highlightPath.value = [];
+      searchTarget.value = null; if (msg !== undefined) message.value = msg; },
+  },
+);
 
 const MAX_LEVEL = 4;
 const NODE_W = 36;
@@ -77,6 +91,7 @@ async function insert(val?: number) {
     `已插入 ${v}，${levels} 层。高层 = 快速通道，跳过节点实现 O(log n) 搜索。`
   );
   log(message.value, 'info');
+  history.commit(nodes.value, `insert ${v}`);
   await delay(500);
   if (isAborted()) return;
   highlightPath.value = [];
@@ -159,6 +174,7 @@ function reset() {
   presetRunning = false;
   message.value = t('Skip list cleared!', 'Skip List 已清空！');
   clearLog();
+  history.reset();
 }
 
 async function presetBuildAndSearch() {
@@ -401,6 +417,7 @@ async function presetLevelTraversal() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

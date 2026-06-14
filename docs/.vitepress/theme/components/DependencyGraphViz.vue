@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -42,6 +44,30 @@ const message = ref(t(
 ));
 const sorting = ref(false);
 let presetRunning = false;
+
+interface DGSnapshot {
+  nodes: GNode[];
+  edges: GEdge[];
+  sortedOrder: string[];
+}
+
+const history = useVizHistory<DGSnapshot>(
+  { nodes: nodes.value, edges: edges.value, sortedOrder: sortedOrder.value },
+  {
+    getMessage: () => message.value,
+    onRestore(snap, msg) {
+      presetRunning = false;
+      nodes.value = snap.nodes;
+      edges.value = snap.edges;
+      sortedOrder.value = snap.sortedOrder;
+      highlightNode.value = '';
+      sorting.value = false; if (msg !== undefined) message.value = msg; },
+  },
+);
+
+function commitSnapshot(label: string) {
+  history.commit({ nodes: nodes.value, edges: edges.value, sortedOrder: sortedOrder.value }, label);
+}
 
 function getNode(id: string) {
   return nodes.value.find(n => n.id === id)!;
@@ -108,6 +134,7 @@ async function topoSort() {
   }
   highlightNode.value = '';
   sorting.value = false;
+  commitSnapshot('topoSort');
 }
 
 function addEdge() {
@@ -127,6 +154,7 @@ function addEdge() {
     `Added edge ${from} → ${to}. This might create a cycle — run topo sort to find out!`,
     `已添加边 ${from} → ${to}。这可能创建环 — 运行拓扑排序来确认！`
   );
+  commitSnapshot(`addEdge ${from}→${to}`);
 }
 
 function addNode() {
@@ -144,6 +172,7 @@ function addNode() {
   });
   sortedOrder.value = [];
   message.value = t(`Added node ${nextChar} — add edges to create dependencies`, `已添加节点 ${nextChar} — 添加边来创建依赖`);
+  commitSnapshot(`addNode ${nextChar}`);
 }
 
 function reset() {
@@ -166,6 +195,7 @@ function reset() {
   presetRunning = false;
   message.value = t('Graph reset', '图已重置');
   clearLog();
+  history.reset();
 }
 
 async function presetDiamondDep() {
@@ -201,6 +231,7 @@ async function presetCycleDetection() {
   if (!presetRunning || isAborted()) return;
   edges.value.push({ from: 'D', to: 'A' });
   sortedOrder.value = [];
+  commitSnapshot('preset: add cycle edge D→A');
   message.value = t(
     'Cycle created: A→B→D→A. Now running topo sort — it will detect the cycle because not all nodes reach in-degree 0.',
     '环已创建：A→B→D→A。现在运行拓扑排序 — 它将检测到环，因为不是所有节点都能达到入度 0。'
@@ -233,6 +264,7 @@ async function presetLinearChain() {
     { from: 'D', to: 'E' },
   ];
   sortedOrder.value = [];
+  commitSnapshot('preset: linear chain');
   message.value = t(
     'Linear chain: A→B→C→D→E. Only one valid order. No parallelism possible — this is the worst case for build performance. Critical path = total time.',
     '线性链：A→B→C→D→E。只有一个有效排序。无法并行 — 这是构建性能的最差情况。关键路径 = 总时间。'
@@ -335,6 +367,7 @@ const sortedIdx = computed(() => {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

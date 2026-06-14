@@ -3,7 +3,9 @@ import { ref, computed, watch } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -12,6 +14,15 @@ const { entries: logEntries, log, clear: clearLog } = useVizLog();
 let presetRunning = false;
 
 type Tag = 'Number' | 'String' | 'Bool' | 'None';
+
+const vizHistory = useVizHistory<Tag>('Number', {
+  getMessage: () => message.value,
+  onRestore(snapshot, msg) {
+    presetRunning = false;
+    currentTag.value = snapshot;
+    matchHighlight.value = null;
+    showMatchResult.value = false; if (msg !== undefined) message.value = msg; },
+});
 
 interface TaggedValue {
   tag: Tag;
@@ -77,6 +88,7 @@ function setTag(tag: Tag) {
   showMatchResult.value = false;
   matchHighlight.value = null;
   message.value = t(`Variable set to ${tag}(${values[tag].display}). Tag byte = ${tagMeta[tag].byte}.`, `变量设置为 ${tag}(${values[tag].display})。标签字节 = ${tagMeta[tag].byte}。`);
+  vizHistory.commit(tag, `set ${tag}`);
 }
 
 function runMatch() {
@@ -85,6 +97,7 @@ function runMatch() {
   matchResultText.value = matchOutputs[currentTag.value];
   message.value = t(`match dispatched to ${currentTag.value} branch -> ${matchResultText.value}`, `match 分派到 ${currentTag.value} 分支 -> ${matchResultText.value}`);
   log(t(`match ${currentTag.value} → ${matchResultText.value}`, `match ${currentTag.value} → ${matchResultText.value}`), 'info');
+  vizHistory.commit(currentTag.value, `match ${currentTag.value}`);
 }
 
 watch(currentTag, () => {
@@ -100,6 +113,7 @@ function reset() {
   showMatchResult.value = false;
   matchResultText.value = '';
   clearLog();
+  vizHistory.reset();
   message.value = t('Click a type button to set the variable. Watch the tag and value change together.', '点击类型按钮设置变量。观察标签和值一起变化。');
 }
 
@@ -143,6 +157,10 @@ async function presetMemoryLayout() {
   if (!presetRunning || isAborted()) return;
   for (const tag of allTags) {
     setTag(tag);
+    log(t(
+      `${tag}: tag byte ${tagMeta[tag].byte} — ${tagMeta[tag].description}`,
+      `${tag}：标签字节 ${tagMeta[tag].byte} — ${tagMeta[tag].description}`
+    ), 'info');
     await delay(1200);
     if (!presetRunning || isAborted()) return;
   }
@@ -298,6 +316,7 @@ async function presetExhaustiveness() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="vizHistory" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

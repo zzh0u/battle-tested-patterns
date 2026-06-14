@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -42,6 +44,16 @@ const message = ref(t(
 ));
 let presetRunning = false;
 
+interface LSMSnapshot { memtable: KV[]; level0: SSTable[]; level1: SSTable[]; }
+const history = useVizHistory<LSMSnapshot>(
+  { memtable: [], level0: [], level1: [] },
+  { getMessage: () => message.value,
+ onRestore: (s, msg) => { presetRunning = false; clearAll(); flushing.value = false; compacting.value = false; memtable.value = s.memtable; level0.value = s.level0; level1.value = s.level1; searchPath.value = []; searchResult.value = null; highlightLevel.value = null; highlightKey.value = null; if (msg !== undefined) message.value = msg; } },
+);
+function commitSnapshot(label: string) {
+  history.commit({ memtable: [...memtable.value], level0: [...level0.value], level1: [...level1.value] }, label);
+}
+
 const memtableSorted = computed(() => {
   return [...memtable.value].sort((a, b) => a.key.localeCompare(b.key));
 });
@@ -72,6 +84,8 @@ async function write() {
     `Wrote "${k}=${v}" to memtable (${memtable.value.length}/${MEMTABLE_CAPACITY}). Writes are always O(log n) to the in-memory sorted structure.`,
     `已写入 "${k}=${v}" 到 Memtable（${memtable.value.length}/${MEMTABLE_CAPACITY}）。写入总是 O(log n) 到内存排序结构。`
   );
+  log(t(`put ${k}=${v} → memtable (${memtable.value.length}/${MEMTABLE_CAPACITY})`, `写入 ${k}=${v} → Memtable（${memtable.value.length}/${MEMTABLE_CAPACITY}）`), 'info');
+  commitSnapshot(`put ${k}=${v}`);
 
   if (memtable.value.length >= MEMTABLE_CAPACITY) {
     await delay(400);
@@ -99,6 +113,7 @@ async function flush() {
     `已刷盘！在 Level 0 创建 SSTable #${sst.id}，含 ${sst.entries.length} 条记录。SSTable 是不可变的 — 一旦写入，永不修改。`
   );
   log(message.value, 'info');
+  commitSnapshot(`flush SSTable #${sst.id}`);
 }
 
 async function compact() {
@@ -143,6 +158,7 @@ async function compact() {
     `压缩完成！将 ${l0Count} 个 L0 SSTable 合并为 Level 1 SSTable #${sst.id}（${merged.length} 条记录）。新值覆盖旧值 — 更新和删除就是这样工作的。`
   );
   log(message.value, 'success');
+  commitSnapshot(`compact to L1 SSTable #${sst.id}`);
 }
 
 async function read() {
@@ -169,6 +185,7 @@ async function read() {
       `Found "${k}=${memEntry.value}" in Memtable (fastest path!). Reads check memtable first — this is why recent writes are fast.`,
       `在 Memtable 中找到 "${k}=${memEntry.value}"（最快路径！）。读取首先检查 memtable — 这就是最近写入快速的原因。`
     );
+    log(t(`read "${k}" → "${memEntry.value}" (Memtable)`, `读取 "${k}" → "${memEntry.value}"（Memtable）`), 'success');
     return;
   }
 
@@ -184,6 +201,7 @@ async function read() {
     if (entry) {
       searchResult.value = { found: true, value: entry.value, level: `L0 SSTable #${sst.id}` };
       message.value = t(`Found "${k}=${entry.value}" in L0 SSTable #${sst.id}`, `在 L0 SSTable #${sst.id} 中找到 "${k}=${entry.value}"`);
+      log(t(`read "${k}" → "${entry.value}" (L0 SSTable #${sst.id})`, `读取 "${k}" → "${entry.value}"（L0 SSTable #${sst.id}）`), 'success');
       return;
     }
   }
@@ -199,6 +217,7 @@ async function read() {
     if (entry) {
       searchResult.value = { found: true, value: entry.value, level: `L1 SSTable #${sst.id}` };
       message.value = t(`Found "${k}=${entry.value}" in L1 SSTable #${sst.id}`, `在 L1 SSTable #${sst.id} 中找到 "${k}=${entry.value}"`);
+      log(t(`read "${k}" → "${entry.value}" (L1 SSTable #${sst.id})`, `读取 "${k}" → "${entry.value}"（L1 SSTable #${sst.id}）`), 'success');
       return;
     }
   }
@@ -209,6 +228,7 @@ async function read() {
     `Key "${k}" not found. Searched ${searchPath.value.length} level(s). Bloom filters (used by RocksDB) skip SSTables that definitely don't contain the key.`,
     `未找到键 "${k}"。已搜索 ${searchPath.value.length} 个层级。布隆过滤器（RocksDB 使用）跳过肯定不包含该键的 SSTable。`
   );
+  log(t(`read "${k}" → not found (searched ${searchPath.value.length} level(s))`, `读取 "${k}" → 未找到（已搜索 ${searchPath.value.length} 个层级）`), 'warning');
 }
 
 function reset() {
@@ -229,6 +249,7 @@ function reset() {
   presetRunning = false;
   message.value = t('Reset. Write key-value pairs to begin.', '已重置。写入键值对以开始。');
   clearLog();
+  history.reset();
 }
 
 function isLevelHighlighted(levelId: string): boolean {
@@ -500,6 +521,7 @@ async function presetUpdateOverwrite() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

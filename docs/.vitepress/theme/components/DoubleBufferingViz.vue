@@ -3,7 +3,9 @@ import { ref } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, safeInterval, safeTimeout, clearAll, speed, isAborted } = useVizTimers();
@@ -81,6 +83,29 @@ const message = ref(t(
 ));
 let presetRunning = false;
 
+interface Snapshot {
+  frontBuffer: BufferData;
+  backBuffer: BufferData;
+  frameCount: number;
+  nextFrame: number;
+}
+
+const history = useVizHistory<Snapshot>(
+  { frontBuffer: emptyBuffer(), backBuffer: emptyBuffer(), frameCount: 0, nextFrame: 1 },
+  {
+    getMessage: () => message.value,
+    onRestore(s, msg) {
+      presetRunning = false;
+      clearAll();
+      frontBuffer.value = s.frontBuffer;
+      backBuffer.value = s.backBuffer;
+      frameCount.value = s.frameCount;
+      nextFrame.value = s.nextFrame;
+      swapping.value = false;
+      autoMode.value = false; if (msg !== undefined) message.value = msg; },
+  },
+);
+
 function drawFrame() {
   const frame = nextFrame.value++;
   backBuffer.value = generateFrame(frame);
@@ -90,6 +115,7 @@ function drawFrame() {
     `帧 #${frameCount.value} 已绘制到后端缓冲区 — 用户不可见。前端缓冲区继续显示上一帧，零撕裂。`
   );
   log(message.value, 'info');
+  history.commit({ frontBuffer: frontBuffer.value, backBuffer: backBuffer.value, frameCount: frameCount.value, nextFrame: nextFrame.value }, `Draw frame #${frameCount.value}`);
 }
 
 function swapBuffers() {
@@ -106,6 +132,7 @@ function swapBuffers() {
       `缓冲区已交换 — O(1) 指针交换，非复制。这就是 OpenGL 使用 glSwapBuffers() 和 React 交换 fiber 树的原因。`
     );
     log(message.value, 'success');
+    history.commit({ frontBuffer: frontBuffer.value, backBuffer: backBuffer.value, frameCount: frameCount.value, nextFrame: nextFrame.value }, 'Swap buffers');
   }, 300);
 }
 
@@ -137,6 +164,7 @@ function reset() {
   presetRunning = false;
   message.value = t('Reset! Draw a frame to start.', '已重置！绘制帧以开始。');
   clearLog();
+  history.reset();
 }
 
 async function presetTearDemo() {
@@ -323,6 +351,7 @@ async function presetReactCommit() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

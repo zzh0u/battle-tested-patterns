@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -27,6 +29,23 @@ const message = ref(t(
 ));
 const lastTransition = ref<string>('');
 let presetRunning = false;
+
+type VizSnapshot = {
+  currentState: State;
+  transitions: { from: string; event: string; to: string }[];
+};
+
+const vizHistory = useVizHistory<VizSnapshot>(
+  { currentState: 'idle', transitions: [] },
+  {
+    getMessage: () => message.value,
+    onRestore(snap, msg) {
+      presetRunning = false;
+      currentState.value = snap.currentState;
+      history.value = snap.transitions as typeof history.value;
+      lastTransition.value = ''; if (msg !== undefined) message.value = msg; },
+  },
+);
 
 const statePositions: Record<State, { x: number; y: number }> = {
   idle: { x: 80, y: 80 },
@@ -99,6 +118,7 @@ function triggerEvent(event: Event) {
   if (history.value.length > 10) {
     history.value = history.value.slice(-10);
   }
+  vizHistory.commit({ currentState: currentState.value, transitions: history.value }, `${from} → ${nextState}`);
 }
 
 function reset() {
@@ -109,6 +129,7 @@ function reset() {
   presetRunning = false;
   message.value = t('State machine reset to IDLE', '状态机已重置为 IDLE');
   clearLog();
+  vizHistory.reset();
 }
 
 async function presetHappyPath() {
@@ -314,6 +335,7 @@ function edgeLabelPos(from: State, to: State, curve: number): { x: number; y: nu
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="vizHistory" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

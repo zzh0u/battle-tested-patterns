@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { safeTimeout, clearAll, delay, speed, isAborted } = useVizTimers();
@@ -34,6 +36,30 @@ const recovering = ref(false);
 const replayedCount = ref(0);
 const totalEntries = ref(0);
 const highlightedEntries = ref<Set<number>>(new Set());
+
+interface CpSnapshot {
+  stateValue: number;
+  log: LogEntry[];
+  checkpoints: Checkpoint[];
+  crashed: boolean;
+}
+
+const vizHistory = useVizHistory<CpSnapshot>(
+  { stateValue: 0, log: [], checkpoints: [], crashed: false },
+  {
+    getMessage: () => message.value,
+    onRestore(snapshot, msg) {
+      presetRunning = false;
+      clearAll();
+      recovering.value = false;
+      stateValue.value = snapshot.stateValue;
+      log.value = snapshot.log;
+      checkpoints.value = snapshot.checkpoints;
+      crashed.value = snapshot.crashed;
+      highlightedEntries.value = new Set(); if (msg !== undefined) message.value = msg; },
+  }
+);
+
 const message = ref(t(
   'Perform operations to build a WAL, then checkpoint to save snapshots — or pick a scenario below',
   '执行操作以构建 WAL，然后通过 Checkpoint 保存快照 — 或选择下方场景'
@@ -80,6 +106,7 @@ function applyOp(op: typeof ops[0]) {
     `Op ${op.label}: ${before} -> ${stateValue.value} (entry #${entry.id}). Each operation is logged sequentially — the WAL is the source of truth, not the in-memory state.`,
     `操作 ${op.label}：${before} -> ${stateValue.value}（条目 #${entry.id}）。每个操作按顺序记录 — WAL 是真相来源，而非内存状态。`
   );
+  vizHistory.commit({ stateValue: stateValue.value, log: log.value, checkpoints: checkpoints.value, crashed: crashed.value }, `op ${op.label}`);
 }
 
 function checkpoint() {
@@ -99,6 +126,7 @@ function checkpoint() {
     `Checkpoint #${cp.id} saved at state=${cp.stateValue}. Entries before this can be garbage collected. PostgreSQL's CHECKPOINT command does exactly this.`,
     `Checkpoint #${cp.id} 已保存，state=${cp.stateValue}。此前的条目可被垃圾回收。PostgreSQL 的 CHECKPOINT 命令正是这样做的。`
   );
+  vizHistory.commit({ stateValue: stateValue.value, log: log.value, checkpoints: checkpoints.value, crashed: crashed.value }, `checkpoint #${cp.id}`);
 }
 
 function crash() {
@@ -110,6 +138,7 @@ function crash() {
     'CRASH! In-memory state lost. But the WAL on disk is intact — recovery will restore from last checkpoint + replay. This is ARIES recovery protocol used by all major databases.',
     'CRASH！内存状态丢失。但磁盘上的 WAL 完好无损 — 恢复将从最后检查点 + 重放还原。这是所有主流数据库使用的 ARIES 恢复协议。'
   );
+  vizHistory.commit({ stateValue: stateValue.value, log: log.value, checkpoints: checkpoints.value, crashed: crashed.value }, 'crash');
 }
 
 function recover() {
@@ -123,6 +152,7 @@ function recover() {
     crashed.value = false;
     stateValue.value = 0;
     log.value = [];
+    vizHistory.commit({ stateValue: stateValue.value, log: log.value, checkpoints: checkpoints.value, crashed: crashed.value }, 'recover (data lost)');
     return;
   }
 
@@ -149,6 +179,7 @@ function recover() {
         `Recovery complete! Replayed ${replayedCount.value} of ${totalEntries.value} entries. Checkpoint saved ${totalEntries.value - replayedCount.value} replays — the larger the WAL, the more checkpoints save.`,
         `恢复完成！重放了 ${totalEntries.value} 条中的 ${replayedCount.value} 条。检查点节省了 ${totalEntries.value - replayedCount.value} 次重放 — WAL 越大，检查点节省越多。`
       );
+      vizHistory.commit({ stateValue: stateValue.value, log: log.value, checkpoints: checkpoints.value, crashed: crashed.value }, 'recover');
       return;
     }
     const entry = entriesAfterCp[replayIdx];
@@ -179,6 +210,7 @@ function reset() {
   nextEntryId = 1;
   nextCpId = 1;
   presetRunning = false;
+  vizHistory.reset();
   message.value = t('Reset. Perform operations to build a WAL', '已重置。执行操作以构建 WAL');
   clearLog();
 }
@@ -201,21 +233,27 @@ async function presetCrashRecovery() {
   await delay(800);
   if (!presetRunning || isAborted()) return;
   applyOp(ops[0]); // +3
+  vizLog(t('op +3 → state=3', '操作 +3 → state=3'), 'info');
   await delay(500);
   if (!presetRunning || isAborted()) return;
   applyOp(ops[1]); // +7
+  vizLog(t('op +7 → state=10', '操作 +7 → state=10'), 'info');
   await delay(500);
   if (!presetRunning || isAborted()) return;
   checkpoint();
+  vizLog(t('checkpoint saved (state=10)', '检查点已保存 (state=10)'), 'info');
   await delay(800);
   if (!presetRunning || isAborted()) return;
   applyOp(ops[2]); // *2
+  vizLog(t('op *2 → state=20', '操作 *2 → state=20'), 'info');
   await delay(500);
   if (!presetRunning || isAborted()) return;
   applyOp(ops[3]); // -5
+  vizLog(t('op -5 → state=15', '操作 -5 → state=15'), 'info');
   await delay(800);
   if (!presetRunning || isAborted()) return;
   crash();
+  vizLog(t('CRASH! state corrupted', '崩溃！状态损坏'), 'warning');
   await delay(1500);
   if (!presetRunning || isAborted()) return;
   recover();
@@ -237,12 +275,15 @@ async function presetNoCheckpoint() {
   await delay(800);
   if (!presetRunning || isAborted()) return;
   applyOp(ops[0]);
+  vizLog(t('op +3 → state=3', '操作 +3 → state=3'), 'info');
   await delay(400);
   if (!presetRunning || isAborted()) return;
   applyOp(ops[1]);
+  vizLog(t('op +7 → state=10', '操作 +7 → state=10'), 'info');
   await delay(400);
   if (!presetRunning || isAborted()) return;
   applyOp(ops[2]);
+  vizLog(t('op *2 → state=20', '操作 *2 → state=20'), 'info');
   await delay(600);
   if (!presetRunning || isAborted()) return;
   message.value = t(
@@ -252,6 +293,7 @@ async function presetNoCheckpoint() {
   await delay(1000);
   if (!presetRunning || isAborted()) return;
   crash();
+  vizLog(t('CRASH! no checkpoint to recover from', '崩溃！无检查点可恢复'), 'warning');
   await delay(1500);
   if (!presetRunning || isAborted()) return;
   recover();
@@ -272,19 +314,19 @@ async function presetFrequentCheckpoints() {
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
-  applyOp(ops[0]); await delay(400);
+  applyOp(ops[0]); vizLog(t('op +3', '操作 +3'), 'info'); await delay(400);
   if (!presetRunning || isAborted()) return;
-  applyOp(ops[1]); await delay(400);
+  applyOp(ops[1]); vizLog(t('op +7', '操作 +7'), 'info'); await delay(400);
   if (!presetRunning || isAborted()) return;
-  checkpoint(); await delay(600);
+  checkpoint(); vizLog(t('checkpoint #1 saved', '检查点 #1 已保存'), 'info'); await delay(600);
   if (!presetRunning || isAborted()) return;
-  applyOp(ops[2]); await delay(400);
+  applyOp(ops[2]); vizLog(t('op *2', '操作 *2'), 'info'); await delay(400);
   if (!presetRunning || isAborted()) return;
-  applyOp(ops[3]); await delay(400);
+  applyOp(ops[3]); vizLog(t('op -5', '操作 -5'), 'info'); await delay(400);
   if (!presetRunning || isAborted()) return;
-  checkpoint(); await delay(600);
+  checkpoint(); vizLog(t('checkpoint #2 saved', '检查点 #2 已保存'), 'info'); await delay(600);
   if (!presetRunning || isAborted()) return;
-  applyOp(ops[0]); await delay(400);
+  applyOp(ops[0]); vizLog(t('op +3 (after CP#2)', '操作 +3（CP#2 后）'), 'info'); await delay(400);
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'Only 1 entry after last checkpoint. If we crash now, recovery replays just 1 op instead of 5. Tradeoff: more checkpoint I/O vs. faster recovery.',
@@ -400,6 +442,7 @@ async function presetFrequentCheckpoints() {
     </div>
 
     <div class="viz-status" aria-live="polite" :class="{ 'cp-status--crash': crashed }">{{ message }}</div>
+    <VizPlaybackBar :history="vizHistory" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

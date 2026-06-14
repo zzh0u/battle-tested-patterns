@@ -3,7 +3,9 @@ import { ref } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLogPanel from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -33,6 +35,25 @@ const crashed = ref(false);
 const lastAction = ref('');
 let presetRunning = false;
 
+interface WALSnapshot {
+  log: LogEntry[];
+  table: TableRow[];
+  crashed: boolean;
+}
+
+const history = useVizHistory<WALSnapshot>(
+  { log: log.value, table: table.value, crashed: crashed.value },
+  {
+    getMessage: () => message.value,
+    onRestore(state, msg) {
+      presetRunning = false;
+      log.value = state.log;
+      table.value = state.table;
+      crashed.value = state.crashed;
+      lastAction.value = ''; if (msg !== undefined) message.value = msg; },
+  },
+);
+
 function writeOp(key: string, value: string) {
   if (crashed.value) {
     message.value = t('System crashed! Click "Recover" to replay the WAL', '系统已崩溃！点击"恢复"重放 WAL');
@@ -51,6 +72,7 @@ function writeOp(key: string, value: string) {
     `WAL：已记录 SET ${key}=${value} (LSN ${entry.lsn})。顺序写入磁盘 — O(1) 追加，非随机 I/O。数据在刷写前就已持久化。`
   );
   vizLog(t(`SET ${key}=${value} (LSN ${entry.lsn})`, `SET ${key}=${value} (LSN ${entry.lsn})`), 'info');
+  history.commit({ log: log.value, table: table.value, crashed: crashed.value }, `write ${key}=${value}`);
 }
 
 function flush() {
@@ -80,6 +102,7 @@ function flush() {
     `已刷写 ${unflushed.length} 条记录到表。这就是"检查点" — 之后，WAL 记录可以被垃圾回收。`
   );
   vizLog(t(`flushed ${unflushed.length} entries (checkpoint)`, `刷写 ${unflushed.length} 条记录（检查点）`), 'success');
+  history.commit({ log: log.value, table: table.value, crashed: crashed.value }, 'flush');
 }
 
 function simulateCrash() {
@@ -98,6 +121,7 @@ function simulateCrash() {
     `崩溃！${unflushed.length} 条未刷写记录从表中丢失 — 但磁盘上的 WAL 完好无损。核心洞察：WAL 因为是磁盘上的追加写入而能在崩溃中存活。`
   );
   vizLog(t(`CRASH! ${unflushed.length} unflushed entries lost from table`, `崩溃！${unflushed.length} 条未刷写记录从表中丢失`), 'error');
+  history.commit({ log: log.value, table: table.value, crashed: crashed.value }, 'crash');
 }
 
 function recover() {
@@ -120,6 +144,7 @@ function recover() {
     `已恢复！重放了 ${unflushed.length} 条 WAL 记录 — 数据完全还原。PostgreSQL、SQLite 和 etcd 都使用完全相同的恢复过程。`
   );
   vizLog(t(`recovered: replayed ${unflushed.length} WAL entries`, `已恢复：重放 ${unflushed.length} 条 WAL 记录`), 'success');
+  history.commit({ log: log.value, table: table.value, crashed: crashed.value }, 'recover');
 }
 
 function reset() {
@@ -131,6 +156,7 @@ function reset() {
   lastAction.value = '';
   presetRunning = false;
   clearLog();
+  history.reset();
   message.value = t('Reset — start writing operations', '已重置 — 开始写入操作');
 }
 
@@ -311,6 +337,7 @@ async function presetBatchFlush() {
     </div>
 
     <div class="viz-status" aria-live="polite" :class="{ 'wal-crash-status': crashed }">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLogPanel :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

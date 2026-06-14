@@ -3,7 +3,9 @@ import { ref, computed, reactive } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll: clearTimers, speed, isAborted } = useVizTimers();
@@ -58,6 +60,22 @@ const arenas = ref<Arena[]>([
 ]);
 
 const activeArenaIndex = ref(0);
+
+interface ArenaSnapshot {
+  arenas: Arena[];
+  activeArenaIndex: number;
+}
+
+const vizHistory = useVizHistory<ArenaSnapshot>(
+  { arenas: arenas.value, activeArenaIndex: activeArenaIndex.value },
+  {
+    getMessage: () => message.value,
+    onRestore(snapshot, msg) {
+      presetRunning = false;
+      arenas.value = snapshot.arenas;
+      activeArenaIndex.value = snapshot.activeArenaIndex; if (msg !== undefined) message.value = msg; },
+  }
+);
 
 interface HistoryEntry {
   action: 'alloc' | 'reset' | 'new-arena';
@@ -144,6 +162,7 @@ function allocate() {
     `已分配 "${alloc.label}" (${size} 个单元) 在偏移量 ${alloc.offset} — 指针移至 ${arena.pointer}。O(1) 分配：只需递增指针，无需遍历空闲链表。`
   );
   log(message.value, 'info');
+  vizHistory.commit({ arenas: arenas.value, activeArenaIndex: activeArenaIndex.value }, `alloc ${alloc.label}`);
 }
 
 function resetArena(index: number) {
@@ -162,6 +181,7 @@ function resetArena(index: number) {
     `Arena #${arena.id} 已重置 — 所有内存 O(1) 释放。没有逐对象析构调用。这就是 arena 分配比 malloc/free 快 10-100 倍的原因。`
   );
   log(message.value, 'warning');
+  vizHistory.commit({ arenas: arenas.value, activeArenaIndex: activeArenaIndex.value }, `free arena #${arena.id}`);
 }
 
 function resetAll() {
@@ -174,6 +194,7 @@ function resetAll() {
   globalColorIdx = 0;
   history.length = 0;
   presetRunning = false;
+  vizHistory.reset();
 
   message.value = t(
     'All arenas reset — fresh start with a single empty arena',
@@ -203,6 +224,7 @@ function addArena() {
     `新 Arena #${newArena.id} 已创建（链式）。当一个 arena 满时，链接新的 — 类似 Go 的 arena 分配器或 Rust 的 bumpalo crate。`
   );
   log(message.value, 'success');
+  vizHistory.commit({ arenas: arenas.value, activeArenaIndex: activeArenaIndex.value }, `new arena #${newArena.id}`);
 }
 
 function slotAllocation(arena: Arena, index: number): Allocation | null {
@@ -406,6 +428,7 @@ async function presetMixedSizes() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="vizHistory" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
 
     <!-- Arena Tabs -->

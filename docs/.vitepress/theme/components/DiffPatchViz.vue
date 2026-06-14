@@ -3,7 +3,9 @@ import { ref } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -30,6 +32,47 @@ const message = ref(t(
 const hasDiff = ref(false);
 const patched = ref(false);
 let presetRunning = false;
+
+interface DPSnapshot {
+  originalLines: string[];
+  modifiedLines: string[];
+  diffResult: DiffLine[];
+  hasDiff: boolean;
+  patched: boolean;
+}
+
+const history = useVizHistory<DPSnapshot>(
+  {
+    originalLines: originalLines.value,
+    modifiedLines: modifiedLines.value,
+    diffResult: diffResult.value,
+    hasDiff: hasDiff.value,
+    patched: patched.value,
+  },
+  {
+    getMessage: () => message.value,
+    onRestore(snap, msg) {
+      presetRunning = false;
+      originalLines.value = snap.originalLines;
+      modifiedLines.value = snap.modifiedLines;
+      diffResult.value = snap.diffResult;
+      hasDiff.value = snap.hasDiff;
+      patched.value = snap.patched; if (msg !== undefined) message.value = msg; },
+  },
+);
+
+function commitSnapshot(label: string) {
+  history.commit(
+    {
+      originalLines: originalLines.value,
+      modifiedLines: modifiedLines.value,
+      diffResult: diffResult.value,
+      hasDiff: hasDiff.value,
+      patched: patched.value,
+    },
+    label,
+  );
+}
 
 const insertions = [
   '  // validate input',
@@ -122,6 +165,7 @@ function computeDiff() {
     `通过 LCS（最长公共子序列）计算差异：+${adds} 新增，-${dels} 删除，${keeps} 未变。时间复杂度：O(m×n)，m=${m}，n=${n}。`
   );
   log(message.value, 'success');
+  commitSnapshot('computeDiff');
 }
 
 function patch() {
@@ -136,6 +180,7 @@ function patch() {
     'Patch 已应用 — 原始文件已与修改后一致。生产环境中传输 patch 而非完整文件。Git 使用此原理存储增量（packfiles）。'
   );
   log(message.value, 'success');
+  commitSnapshot('applyPatch');
 }
 
 function reset() {
@@ -153,6 +198,7 @@ function reset() {
   presetRunning = false;
   message.value = t('Reset to initial state', '已重置为初始状态');
   clearLog();
+  history.reset();
 }
 
 async function presetMinimalDiff() {
@@ -171,6 +217,7 @@ async function presetMinimalDiff() {
     '  return true;',
     '}',
   ];
+  commitSnapshot('preset: minimal change');
   await delay(600);
   if (!presetRunning || isAborted()) return;
   computeDiff();
@@ -200,6 +247,7 @@ async function presetInsertBlock() {
     '  return true;',
     '}',
   ];
+  commitSnapshot('preset: insert block');
   await delay(600);
   if (!presetRunning || isAborted()) return;
   computeDiff();
@@ -230,6 +278,7 @@ async function presetFullRewrite() {
     '  return msg;',
     '};',
   ];
+  commitSnapshot('preset: full rewrite');
   await delay(600);
   if (!presetRunning || isAborted()) return;
   computeDiff();
@@ -313,6 +362,7 @@ const diffPrefix = (type: string) => {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

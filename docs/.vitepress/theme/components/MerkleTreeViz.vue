@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -17,6 +19,16 @@ const message = ref(t(
   '4 个数据块的 Merkle Tree — 点击验证或篡改。Git、Bitcoin 和 IPFS 使用它在 O(log n) 时间内检测数据损坏。'
 ));
 let presetRunning = false;
+
+interface MerkleSnapshot { leaves: string[]; tampered: number | null; }
+const history = useVizHistory<MerkleSnapshot>(
+  { leaves: ['A', 'B', 'C', 'D'], tampered: null },
+  { getMessage: () => message.value,
+ onRestore: (s, msg) => { presetRunning = false; leaves.value = s.leaves; tampered.value = s.tampered; highlightPath.value = new Set(); if (msg !== undefined) message.value = msg; } },
+);
+function commitSnapshot(label: string) {
+  history.commit({ leaves: [...leaves.value], tampered: tampered.value }, label);
+}
 
 function simpleHash(s: string): string {
   let h = 0;
@@ -102,6 +114,7 @@ async function verifyLeaf(leafIdx: number) {
     `验证通过：根哈希匹配 — 数据 ${leaves.value[leafIdx]} 完整。这种"Merkle 证明"是轻客户端无需下载完整区块链即可验证 Bitcoin 交易的方式。`
   );
   log(message.value, 'success');
+  commitSnapshot(`verify ${leaves.value[leafIdx]}`);
   await delay(1200);
   if (isAborted()) return;
   highlightPath.value = new Set();
@@ -118,6 +131,7 @@ async function tamperLeaf() {
     `篡改数据 ${original} → ${leaves.value[idx]} — 根哈希已改变！到根的路径上每个节点都失效了。Git 就是这样检测损坏对象的。`
   );
   log(message.value, 'warning');
+  commitSnapshot(`tamper ${original} → ${leaves.value[idx]}`);
 }
 
 function reset() {
@@ -131,6 +145,7 @@ function reset() {
     'Merkle Tree 已重置 — 验证叶子或篡改数据'
   );
   clearLog();
+  history.reset();
 }
 
 async function presetVerifyAll() {
@@ -198,6 +213,7 @@ async function presetDiffSync() {
   if (!presetRunning || isAborted()) return;
   leaves.value[2] = 'C!';
   tampered.value = 5;
+  commitSnapshot('diff sync: tamper C');
   message.value = t('Block C changed → root hash changed. Compare children to narrow down.', 'Block C 改变 → 根哈希改变。比较子节点以缩小范围。');
   await delay(600);
   if (!presetRunning || isAborted()) return;
@@ -280,6 +296,7 @@ async function presetDiffSync() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>

@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 import { useVizTimers } from '../composables/useVizTimers';
 import { useVizLog } from '../composables/useVizLog';
+import { useVizHistory } from '../composables/useVizHistory';
 import VizLog from './VizLog.vue';
+import VizPlaybackBar from './VizPlaybackBar.vue';
 
 const { t } = useI18n();
 const { delay, clearAll, speed, isAborted } = useVizTimers();
@@ -26,6 +28,22 @@ const message = ref(t(
   '所有块空闲 — 输入标签后点击"分配"。Free List 驱动 malloc、游戏引擎和内核 slab 分配器。'
 ));
 let presetRunning = false;
+
+interface Snapshot {
+  blocks: Block[];
+  freeListOrder: number[];
+}
+
+const vizHistory = useVizHistory<Snapshot>(
+  { blocks: initBlocks(), freeListOrder: Array.from({ length: BLOCK_COUNT }, (_, i) => i) },
+  {
+    getMessage: () => message.value,
+    onRestore(s, msg) {
+      presetRunning = false;
+      blocks.value = s.blocks;
+      freeListOrder.value = s.freeListOrder; if (msg !== undefined) message.value = msg; },
+  },
+);
 
 function initBlocks(): Block[] {
   return Array.from({ length: BLOCK_COUNT }, (_, i) => ({
@@ -65,6 +83,7 @@ function allocate() {
     `已分配块 ${blockId} 为 "${label}" — O(1) 从头部弹出。新 head: ${newHead !== null ? newHead : 'null'}。LIFO 顺序意味着最近释放的块优先复用（缓存友好）。`
   );
   log(message.value, 'info');
+  vizHistory.commit({ blocks: blocks.value, freeListOrder: freeListOrder.value }, `Allocate block ${blockId}`);
 }
 
 function freeBlock(id: number) {
@@ -82,6 +101,7 @@ function freeBlock(id: number) {
     `已释放块 ${id}（"${oldLabel}"）— O(1) 插入头部。LIFO：块 ${id} 将被下次分配。jemalloc 和 tcmalloc 就是这样工作的。`
   );
   log(message.value, 'success');
+  vizHistory.commit({ blocks: blocks.value, freeListOrder: freeListOrder.value }, `Free block ${id}`);
 }
 
 function freeAll() {
@@ -102,6 +122,7 @@ function freeAll() {
     `Freed ${freedIds.length} block(s) — all returned to free list`,
     `已释放 ${freedIds.length} 个块 — 全部归还到 Free List`
   );
+  vizHistory.commit({ blocks: blocks.value, freeListOrder: freeListOrder.value }, `Free all (${freedIds.length})`);
 }
 
 function reset() {
@@ -116,6 +137,7 @@ function reset() {
     '重置完成 — Free List 恢复初始顺序 [0 → 1 → ... → 9 → null]'
   );
   clearLog();
+  vizHistory.reset();
 }
 
 function handleKeydown(e: KeyboardEvent) {
@@ -329,6 +351,7 @@ async function presetFragmentation() {
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
+    <VizPlaybackBar :history="vizHistory" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
 </template>
