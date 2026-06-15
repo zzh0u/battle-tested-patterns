@@ -29,10 +29,10 @@
   --viz-shadow-md: 0 2px 4px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.1);
 
   /* Motion — Apple HIG easing */
-  --viz-ease: cubic-bezier(0, 0, 0.58, 1.0);
+  --viz-ease: cubic-bezier(0, 0, 0.58, 1);
   --viz-ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --viz-duration: 250ms;
-  --viz-transition: 250ms cubic-bezier(0, 0, 0.58, 1.0);
+  --viz-transition: 250ms cubic-bezier(0, 0, 0.58, 1);
 
   margin: 1.5rem 0;
   padding: 1.25rem;
@@ -186,9 +186,15 @@
   animation: viz-slide-in 0.25s var(--viz-ease);
 }
 
-.viz-status--hit { border-left: 3px solid var(--viz-success); }
-.viz-status--miss { border-left: 3px solid var(--viz-danger); }
-.viz-status--evict { border-left: 3px solid var(--viz-warning); }
+.viz-status--hit {
+  border-left: 3px solid var(--viz-success);
+}
+.viz-status--miss {
+  border-left: 3px solid var(--viz-danger);
+}
+.viz-status--evict {
+  border-left: 3px solid var(--viz-warning);
+}
 
 /* Preset buttons row */
 .viz-presets {
@@ -236,18 +242,34 @@
 
 /* Shared keyframes */
 @keyframes viz-pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.12); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12);
+  }
 }
 
 @keyframes viz-slide-in {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes viz-fade {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
 }
 
 /* Responsive: Apple HIG touch targets on mobile */
@@ -296,7 +318,10 @@
   gap: 10px;
   padding: 24px 20px;
   color: var(--vp-c-text-1);
-  background: var(--vp-c-danger-soft-bg, color-mix(in srgb, var(--vp-c-red-1, #f00) 4%, transparent));
+  background: var(
+    --vp-c-danger-soft-bg,
+    color-mix(in srgb, var(--vp-c-red-1, #f00) 4%, transparent)
+  );
   border: 1px solid var(--vp-c-divider);
   border-radius: 8px;
 }
@@ -423,7 +448,7 @@
 }
 
 .viz-error-details {
-  font-family: 'SF Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: "SF Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 11.5px;
   line-height: 1.45;
   color: var(--viz-muted);
@@ -493,7 +518,7 @@ pre.mermaid:not([data-mermaid-status]) {
  * Dark mode: deep base with translucent white highlight for visible contrast.
  * The highlight band is narrow (10% width) to create a crisp "light sweep" effect. */
 pre.mermaid:not([data-mermaid-status])::after {
-  content: '';
+  content: "";
   visibility: visible;
   position: absolute;
   inset: 0;
@@ -524,8 +549,12 @@ pre.mermaid:not([data-mermaid-status])::after {
 }
 
 @keyframes mermaid-shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* Once rendered (SVG injected) or explicitly marked — show */
@@ -537,4 +566,150 @@ pre.mermaid[data-mermaid-status="error"] {
 
 pre.mermaid[data-mermaid-status]::after {
   display: none;
+}
+
+/* ── Back to Top (mobile floating button) ──────────────────────────────────
+   VitePress' default theme exposes a "return to top" affordance only in the
+   desktop aside/outline. On mobile there's no quick way back up a long pattern
+   page. This floating button fills that gap. Hidden ≥960px (where the aside
+   handles it) to avoid duplicate controls. Styled with the shared --viz tokens
+   for Apple-HIG consistency. */
+.back-to-top {
+  position: fixed;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 50%;
+  /* Frosted surface + brand-tinted arrow: legible in both themes without the
+     heavy "solid blue blob" look. The translucent bg picks up the page behind
+     it, and the subtle ring keeps it defined against dark backgrounds. */
+  background: var(--vp-c-bg-elv);
+  color: var(--vp-c-brand-1);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.08),
+    0 6px 16px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  backdrop-filter: saturate(180%) blur(12px);
+  transition:
+    transform 250ms cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    border-color 250ms cubic-bezier(0, 0, 0.58, 1),
+    background-color 250ms cubic-bezier(0, 0, 0.58, 1),
+    box-shadow 250ms cubic-bezier(0, 0, 0.58, 1);
+}
+
+/* Gate :hover behind `hover: hover` so it only fires on real pointer devices
+   (mouse). On touchscreens a tap leaves :hover "stuck" until you tap elsewhere,
+   which made the button keep its highlighted blue state after clicking. */
+@media (hover: hover) {
+  .back-to-top:hover {
+    border-color: var(--vp-c-brand-1);
+    background: var(--vp-c-brand-soft);
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.1),
+      0 10px 24px rgba(0, 0, 0, 0.16);
+  }
+}
+
+.back-to-top:active {
+  transform: scale(0.92);
+}
+
+.back-to-top:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+}
+
+.dark .back-to-top {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* Show on all viewports: VitePress only offers a "return to top" link inside
+   the mobile local-nav outline dropdown (VPLocalNavOutlineDropdown), and even
+   that is conditional. Desktop has no back-to-top affordance at all. Per NN/g
+   guidelines, long pages should offer a fixed bottom-right button across
+   breakpoints. */
+
+/* Enter/leave fade+rise — respects reduced-motion below. */
+.back-to-top-fade-enter-active,
+.back-to-top-fade-leave-active {
+  transition:
+    opacity 250ms ease,
+    transform 250ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.back-to-top-fade-enter-from,
+.back-to-top-fade-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back-to-top,
+  .back-to-top-fade-enter-active,
+  .back-to-top-fade-leave-active {
+    transition: opacity 150ms linear;
+  }
+  .back-to-top:active {
+    transform: none;
+  }
+  .back-to-top-fade-enter-from,
+  .back-to-top-fade-leave-to {
+    transform: none;
+  }
+}
+
+/* ── Mobile sticky navigation ──────────────────────────────────────────────
+   VitePress only pins the global nav (VPNav) on desktop (≥960px); on mobile it
+   is `position: relative` and scrolls away, leaving just the local-nav bar
+   (VPLocalNav). We want BOTH pinned on mobile so the brand/search/menu and the
+   page outline stay reachable. Implemented as a CSS override per VitePress'
+   "Extending the Default Theme" guidance, reusing the official --vp-nav-height
+   token so it tracks any theme change. */
+@media (max-width: 959px) {
+  /* VitePress ships these as <style scoped>, so its real selectors are
+     `.VPNav[data-v-xxxx]` (specificity 0,2,0). A bare `.VPNav` (0,1,0) here
+     loses the cascade and the override is silently dropped. We raise our
+     specificity to 0,2,0 via the `.Layout` ancestor so the mobile pin wins.
+     `position: fixed` also needs an explicit inset anchor (top/left/right),
+     since VitePress' mobile .VPNav is `position: relative` with no offsets. */
+  .Layout .VPNav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+
+  /* Push the local-nav below the now-fixed global nav so they stack instead of
+     overlapping. */
+  .Layout .VPLocalNav {
+    top: var(--vp-nav-height);
+  }
+
+  /* Offset page content so the now-fixed global nav doesn't cover the first
+     headings. Applies to all pages (the mobile sidebar is a drawer overlay and
+     doesn't affect layout flow, so has-sidebar pages need this too). */
+  .Layout .VPContent {
+    padding-top: var(--vp-nav-height);
+  }
+}
+
+/* Align the mobile menu backdrop with our 960px desktop layout breakpoint.
+   VitePress only hides .VPBackdrop at >=1280px, but our sidebar already expands
+   into the desktop layout at 960px. In the 960-1279px band the backdrop would
+   linger after a viewport widen, so hide it once we enter the desktop layout.
+   Pure presentation-layer alignment: no JS, no resize listener, no touching
+   VitePress' menu state. */
+@media (min-width: 960px) {
+  .Layout .VPBackdrop {
+    display: none;
+  }
 }

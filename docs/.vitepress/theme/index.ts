@@ -10,6 +10,7 @@ import DemoBadge from './components/DemoBadge.vue';
 import DifficultyBadge from './components/DifficultyBadge.vue';
 import CompositionFlow from './components/CompositionFlow.vue';
 import DecisionTree from './components/DecisionTree.vue';
+import BackToTop from './components/BackToTop.vue';
 import { initMermaidLoader } from './mermaid-loader';
 import { setupChunkErrorHandler } from './chunk-error-handler';
 import './custom.css';
@@ -91,6 +92,13 @@ function clientOnly(loader: () => Promise<any>, skeleton?: any, componentName?: 
 
 export default {
   extends: DefaultTheme,
+  // Inject the mobile back-to-top button into the layout bottom slot so it
+  // sits above all pages without touching individual markdown files.
+  Layout() {
+    return h(DefaultTheme.Layout, null, {
+      'layout-bottom': () => h(BackToTop),
+    });
+  },
   enhanceApp({ app, router }) {
     app.component('DemoBadge', DemoBadge);
     app.component('DifficultyBadge', DifficultyBadge);
