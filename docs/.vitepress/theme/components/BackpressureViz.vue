@@ -18,10 +18,12 @@ const consumed = ref(0);
 const dropped = ref(0);
 const producerRate = ref(3);
 const consumerRate = ref(1);
-const message = ref(t(
-  'Start producer & consumer to see backpressure — or pick a scenario below',
-  '启动生产者和消费者观察 Backpressure — 或选择下方场景'
-));
+const message = ref(
+  t(
+    'Start producer & consumer to see backpressure — or pick a scenario below',
+    '启动生产者和消费者观察 Backpressure — 或选择下方场景',
+  ),
+);
 const producerActive = ref(false);
 const consumerActive = ref(false);
 let nextItem = 1;
@@ -48,7 +50,9 @@ const history = useVizHistory<BackpressureSnapshot>(
       consumed.value = snap.consumed;
       dropped.value = snap.dropped;
       producerActive.value = false;
-      consumerActive.value = false; if (msg !== undefined) message.value = msg; },
+      consumerActive.value = false;
+      if (msg !== undefined) message.value = msg;
+    },
   },
 );
 
@@ -58,10 +62,18 @@ function producerTick() {
     dropped.value++;
     message.value = t(
       `BACKPRESSURE! Item #${nextItem} DROPPED — queue full at ${QUEUE_CAP}. In TCP, this triggers window shrinking; in RxJS, this drops or buffers.`,
-      `背压！项目 #${nextItem} 被丢弃 — 队列已满（${QUEUE_CAP}）。在 TCP 中，这会触发窗口收缩；在 RxJS 中，会丢弃或缓冲。`
+      `背压！项目 #${nextItem} 被丢弃 — 队列已满（${QUEUE_CAP}）。在 TCP 中，这会触发窗口收缩；在 RxJS 中，会丢弃或缓冲。`,
     );
     log(message.value, 'error');
-    history.commit({ queue: [...queue.value], produced: produced.value, consumed: consumed.value, dropped: dropped.value }, `drop #${nextItem}`);
+    history.commit(
+      {
+        queue: [...queue.value],
+        produced: produced.value,
+        consumed: consumed.value,
+        dropped: dropped.value,
+      },
+      `drop #${nextItem}`,
+    );
     nextItem++;
   } else {
     queue.value.push(nextItem);
@@ -70,14 +82,25 @@ function producerTick() {
     if (fill >= 80) {
       message.value = t(
         `Produced #${nextItem} — queue at ${fill}%! Approaching backpressure threshold.`,
-        `已生产 #${nextItem} — 队列 ${fill}%！即将触发背压阈值。`
+        `已生产 #${nextItem} — 队列 ${fill}%！即将触发背压阈值。`,
       );
       log(message.value, 'warning');
     } else {
-      message.value = t(`Produced #${nextItem} — queue at ${fill}%`, `已生产 #${nextItem} — 队列 ${fill}%`);
+      message.value = t(
+        `Produced #${nextItem} — queue at ${fill}%`,
+        `已生产 #${nextItem} — 队列 ${fill}%`,
+      );
       log(message.value, 'info');
     }
-    history.commit({ queue: [...queue.value], produced: produced.value, consumed: consumed.value, dropped: dropped.value }, `produce #${nextItem}`);
+    history.commit(
+      {
+        queue: [...queue.value],
+        produced: produced.value,
+        consumed: consumed.value,
+        dropped: dropped.value,
+      },
+      `produce #${nextItem}`,
+    );
     nextItem++;
   }
 }
@@ -89,7 +112,15 @@ function consumerTick() {
     consumed.value++;
     message.value = t(`Consumed #${item}`, `已消费 #${item}`);
     log(message.value, 'success');
-    history.commit({ queue: [...queue.value], produced: produced.value, consumed: consumed.value, dropped: dropped.value }, `consume #${item}`);
+    history.commit(
+      {
+        queue: [...queue.value],
+        produced: produced.value,
+        consumed: consumed.value,
+        dropped: dropped.value,
+      },
+      `consume #${item}`,
+    );
   }
 }
 
@@ -151,7 +182,7 @@ function presetOverload() {
   startConsumer();
   message.value = t(
     'Overload: producer 5x faster than consumer. Watch the queue fill up and items get dropped — this is why Node.js streams have highWaterMark.',
-    '过载：生产者比消费者快 5 倍。观察队列填满和项目被丢弃 — 这就是 Node.js streams 有 highWaterMark 的原因。'
+    '过载：生产者比消费者快 5 倍。观察队列填满和项目被丢弃 — 这就是 Node.js streams 有 highWaterMark 的原因。',
   );
   log(message.value, 'highlight');
 }
@@ -166,7 +197,7 @@ function presetBalanced() {
   startConsumer();
   message.value = t(
     'Balanced: producer and consumer at same rate. Queue stays stable — this is the ideal steady state.',
-    '平衡：生产者和消费者速率相同。队列保持稳定 — 这是理想的稳态。'
+    '平衡：生产者和消费者速率相同。队列保持稳定 — 这是理想的稳态。',
   );
   log(message.value, 'highlight');
 }
@@ -180,19 +211,22 @@ function presetBurst() {
   startProducer();
   message.value = t(
     'Burst: producer fills the buffer alone first. Consumer starts after 2s to drain. The queue absorbs the burst — this is why Kafka partitions act as shock absorbers.',
-    '突发：生产者先独自填充缓冲区。2 秒后消费者启动排空。队列吸收突发 — 这就是 Kafka 分区充当减震器的原因。'
+    '突发：生产者先独自填充缓冲区。2 秒后消费者启动排空。队列吸收突发 — 这就是 Kafka 分区充当减震器的原因。',
   );
   safeTimeout(() => {
     if (!presetRunning) return;
     startConsumer();
     message.value = t(
-      'Consumer started! Watch the queue drain. With rate 3/s vs 5/s producer, the consumer can\'t keep up — backpressure will eventually kick in.',
-      '消费者已启动！观察队列排空。消费速率 3/s vs 生产 5/s，消费者跟不上 — 背压最终会触发。'
+      "Consumer started! Watch the queue drain. With rate 3/s vs 5/s producer, the consumer can't keep up — backpressure will eventually kick in.",
+      '消费者已启动！观察队列排空。消费速率 3/s vs 生产 5/s，消费者跟不上 — 背压最终会触发。',
     );
-    log(t(
-      'The queue absorbs burst traffic as a shock absorber — but sustained rate mismatch will eventually cause drops.',
-      '队列作为减震器吸收突发流量 — 但持续的速率不匹配最终会导致丢弃。'
-    ), 'highlight');
+    log(
+      t(
+        'The queue absorbs burst traffic as a shock absorber — but sustained rate mismatch will eventually cause drops.',
+        '队列作为减震器吸收突发流量 — 但持续的速率不匹配最终会导致丢弃。',
+      ),
+      'highlight',
+    );
   }, 2000);
 }
 
@@ -210,7 +244,9 @@ function fillColor() {
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">{{ t('Interactive Backpressure', '交互式 Backpressure') }} · cap={{ QUEUE_CAP }}</div>
+    <div class="viz-title">
+      {{ t('Interactive Backpressure', '交互式 Backpressure') }} · cap={{ QUEUE_CAP }}
+    </div>
 
     <div class="bp-flow">
       <!-- Producer -->
@@ -223,7 +259,9 @@ function fillColor() {
 
       <!-- Queue -->
       <div class="bp-queue-wrap">
-        <div class="bp-queue-label">{{ t('Queue', '队列') }} ({{ queue.length }}/{{ QUEUE_CAP }})</div>
+        <div class="bp-queue-label">
+          {{ t('Queue', '队列') }} ({{ queue.length }}/{{ QUEUE_CAP }})
+        </div>
         <div class="bp-queue">
           <div
             v-for="i in QUEUE_CAP"
@@ -234,7 +272,10 @@ function fillColor() {
           ></div>
         </div>
         <div class="bp-queue-bar">
-          <div class="bp-queue-fill" :style="{ width: fillPercent() + '%', background: fillColor() }"></div>
+          <div
+            class="bp-queue-fill"
+            :style="{ width: fillPercent() + '%', background: fillColor() }"
+          ></div>
         </div>
       </div>
 
@@ -249,28 +290,52 @@ function fillColor() {
 
     <!-- Stats -->
     <div class="bp-stats">
-      <span class="bp-stat">{{ t('Produced:', '已生产:') }} <strong>{{ produced }}</strong></span>
-      <span class="bp-stat">{{ t('Consumed:', '已消费:') }} <strong>{{ consumed }}</strong></span>
-      <span class="bp-stat bp-stat-drop">{{ t('Dropped:', '已丢弃:') }} <strong>{{ dropped }}</strong></span>
+      <span class="bp-stat"
+        >{{ t('Produced:', '已生产:') }} <strong>{{ produced }}</strong></span
+      >
+      <span class="bp-stat"
+        >{{ t('Consumed:', '已消费:') }} <strong>{{ consumed }}</strong></span
+      >
+      <span class="bp-stat bp-stat-drop"
+        >{{ t('Dropped:', '已丢弃:') }} <strong>{{ dropped }}</strong></span
+      >
     </div>
 
     <!-- Rate controls -->
     <div class="bp-rates">
       <label class="bp-rate-label">
         <span class="viz-label">{{ t('Producer rate:', '生产速率：') }}</span>
-        <input type="range" min="1" max="5" step="1" v-model.number="producerRate" class="bp-rate-slider" />
+        <input
+          type="range"
+          min="1"
+          max="5"
+          step="1"
+          v-model.number="producerRate"
+          class="bp-rate-slider"
+        />
         <span class="bp-rate-val">{{ producerRate }}/s</span>
       </label>
       <label class="bp-rate-label">
         <span class="viz-label">{{ t('Consumer rate:', '消费速率：') }}</span>
-        <input type="range" min="1" max="5" step="1" v-model.number="consumerRate" class="bp-rate-slider" />
+        <input
+          type="range"
+          min="1"
+          max="5"
+          step="1"
+          v-model.number="consumerRate"
+          class="bp-rate-slider"
+        />
         <span class="bp-rate-val">{{ consumerRate }}/s</span>
       </label>
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="startProducer" :disabled="producerActive">{{ t('Start Producer', '启动生产者') }}</button>
-      <button class="viz-btn" @click="startConsumer" :disabled="consumerActive">{{ t('Start Consumer', '启动消费者') }}</button>
+      <button class="viz-btn viz-btn--primary" @click="startProducer" :disabled="producerActive">
+        {{ t('Start Producer', '启动生产者') }}
+      </button>
+      <button class="viz-btn" @click="startConsumer" :disabled="consumerActive">
+        {{ t('Start Consumer', '启动消费者') }}
+      </button>
       <button class="viz-btn" @click="stopAll">{{ t('Stop All', '全部停止') }}</button>
       <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
     </div>
@@ -320,8 +385,12 @@ function fillColor() {
   min-width: 70px;
 }
 
-.bp-producer { border-color: var(--viz-primary); }
-.bp-consumer { border-color: var(--viz-success); }
+.bp-producer {
+  border-color: var(--viz-primary);
+}
+.bp-consumer {
+  border-color: var(--viz-success);
+}
 
 .bp-actor-label {
   font-size: 0.7rem;
@@ -380,7 +449,9 @@ function fillColor() {
 .bp-queue-fill {
   height: 100%;
   border-radius: 2px;
-  transition: width 0.2s, background 0.2s;
+  transition:
+    width 0.2s,
+    background 0.2s;
 }
 
 .bp-stats {
@@ -427,7 +498,11 @@ function fillColor() {
 }
 
 @keyframes bp-pop {
-  from { transform: scaleY(0.5); }
-  to { transform: scaleY(1); }
+  from {
+    transform: scaleY(0.5);
+  }
+  to {
+    transform: scaleY(1);
+  }
 }
 </style>

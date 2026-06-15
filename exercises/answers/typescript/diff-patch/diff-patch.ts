@@ -3,7 +3,11 @@ type Op<T> =
   | { type: 'insert'; value: T }
   | { type: 'delete'; value: T };
 
-function diff<T>(oldList: T[], newList: T[], eq: (a: T, b: T) => boolean = (a, b) => a === b): Op<T>[] {
+function diff<T>(
+  oldList: T[],
+  newList: T[],
+  eq: (a: T, b: T) => boolean = (a, b) => a === b,
+): Op<T>[] {
   const ops: Op<T>[] = [];
   let oldIdx = 0;
   let newIdx = 0;

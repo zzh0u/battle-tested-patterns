@@ -3,7 +3,7 @@ import { join } from 'node:path';
 
 const ROOT = join(import.meta.dirname, '..');
 const DOCS_DIR = join(ROOT, 'docs');
-const ROOT_READMES = ['README.md', 'README.zh-CN.md'].map(f => join(ROOT, f));
+const ROOT_READMES = ['README.md', 'README.zh-CN.md'].map((f) => join(ROOT, f));
 const GITHUB_URL_RE = /https:\/\/github\.com\/[^\s)>\]]+/g;
 
 interface LinkResult {
@@ -52,10 +52,17 @@ function extractLinks(content: string): Array<{ url: string; isProductionProof: 
   return links;
 }
 
-async function checkUrl(url: string, retries = 2): Promise<{ status: number | 'error'; ok: boolean }> {
+async function checkUrl(
+  url: string,
+  retries = 2,
+): Promise<{ status: number | 'error'; ok: boolean }> {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const res = await fetch(url, { method: 'HEAD', redirect: 'follow', signal: AbortSignal.timeout(15_000) });
+      const res = await fetch(url, {
+        method: 'HEAD',
+        redirect: 'follow',
+        signal: AbortSignal.timeout(15_000),
+      });
       if (res.ok) return { status: res.status, ok: true };
       if (res.status >= 500 && attempt < retries) {
         await new Promise((r) => setTimeout(r, 3000 * (attempt + 1)));
@@ -77,7 +84,14 @@ async function main() {
   const isCI = process.argv.includes('--ci');
   const files = [
     ...findMarkdownFiles(DOCS_DIR),
-    ...ROOT_READMES.filter(f => { try { statSync(f); return true; } catch { return false; } }),
+    ...ROOT_READMES.filter((f) => {
+      try {
+        statSync(f);
+        return true;
+      } catch {
+        return false;
+      }
+    }),
   ];
 
   if (files.length === 0) {
@@ -103,7 +117,15 @@ async function main() {
       const isBranchLink = !isShaLink && /\/(blob|tree)\//.test(url);
 
       const { status, ok } = await checkUrl(url);
-      results.push({ file: file.replace(process.cwd() + '/', ''), url, status, ok, isProductionProof, hasLineNumber, isBranchLink });
+      results.push({
+        file: file.replace(process.cwd() + '/', ''),
+        url,
+        status,
+        ok,
+        isProductionProof,
+        hasLineNumber,
+        isBranchLink,
+      });
     }
   }
 
@@ -125,7 +147,9 @@ async function main() {
     console.log(`  ⚠️  [proof]  ${r.url} — missing line numbers`);
   }
   if (branchLinks.length) {
-    console.log(`\n  ℹ️  ${branchLinks.length} link(s) use branch names instead of SHA permalinks:`);
+    console.log(
+      `\n  ℹ️  ${branchLinks.length} link(s) use branch names instead of SHA permalinks:`,
+    );
     for (const r of branchLinks) {
       console.log(`     ${r.url}`);
     }
@@ -138,8 +162,10 @@ async function main() {
   console.log(`\n${results.length} unique links:`);
   console.log(`  ✅ ${validProofs.length} production proofs (precise)`);
   console.log(`  ✅ ${otherLinks.length} other links`);
-  if (impreciseProofs.length) console.log(`  ⚠️  ${impreciseProofs.length} production proofs without line numbers`);
-  if (branchLinks.length) console.log(`  ℹ️  ${branchLinks.length} branch-based links (convert before release)`);
+  if (impreciseProofs.length)
+    console.log(`  ⚠️  ${impreciseProofs.length} production proofs without line numbers`);
+  if (branchLinks.length)
+    console.log(`  ℹ️  ${branchLinks.length} branch-based links (convert before release)`);
   if (broken.length) console.log(`  ❌ ${broken.length} broken`);
 
   if (broken.length > 0) {

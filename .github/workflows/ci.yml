@@ -44,8 +44,8 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: actions/setup-go@v6
         with:
-          go-version: "1.23"
-          cache: false  # verify-code uses a temp module; no go.sum to cache
+          go-version: '1.23'
+          cache: false # verify-code uses a temp module; no go.sum to cache
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
@@ -80,7 +80,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-go@v6
         with:
-          go-version: "1.23"
+          go-version: '1.23'
           cache-dependency-path: exercises/go/go.mod
       - run: cd exercises/go && go test ./...
 
@@ -147,7 +147,18 @@ jobs:
   ci-pass:
     name: CI Pass
     if: always()
-    needs: [lint, verify-code, test-ts, test-rust, test-go, test-python, test-components, build, check-content]
+    needs:
+      [
+        lint,
+        verify-code,
+        test-ts,
+        test-rust,
+        test-go,
+        test-python,
+        test-components,
+        build,
+        check-content,
+      ]
     runs-on: ubuntu-latest
     steps:
       - name: Check all jobs passed

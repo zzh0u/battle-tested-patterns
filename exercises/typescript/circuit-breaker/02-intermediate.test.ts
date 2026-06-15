@@ -96,10 +96,7 @@ class MetricsCircuitBreaker {
     if (this.state !== 'CLOSED') return;
 
     const metrics = this.getMetrics();
-    if (
-      metrics.totalCalls >= this.minCalls &&
-      metrics.failureRate > this.failureRateThreshold
-    ) {
+    if (metrics.totalCalls >= this.minCalls && metrics.failureRate > this.failureRateThreshold) {
       this.state = 'OPEN';
       this.openedAt = Date.now();
     }
@@ -110,7 +107,9 @@ class MetricsCircuitBreaker {
 
 describe('Circuit Breaker - Intermediate: Metrics-based', () => {
   const succeed = async () => 'ok';
-  const fail = async () => { throw new Error('service down'); };
+  const fail = async () => {
+    throw new Error('service down');
+  };
 
   it('should stay CLOSED when failure rate is under threshold', async () => {
     // threshold = 60%, min 5 calls. 2 failures out of 5 = 40% < 60%

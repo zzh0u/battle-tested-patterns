@@ -39,9 +39,9 @@ class StateMachine {
 
 describe('State Machine - Basic: Finite State Transitions', () => {
   const trafficConfig: StateConfig = {
-    green:  { on: { TIMER: 'yellow' } },
+    green: { on: { TIMER: 'yellow' } },
     yellow: { on: { TIMER: 'red' } },
-    red:    { on: { TIMER: 'green' } },
+    red: { on: { TIMER: 'green' } },
   };
 
   it('should start in initial state', () => {
@@ -69,10 +69,10 @@ describe('State Machine - Basic: Finite State Transitions', () => {
 
   it('should enforce impossible transitions', () => {
     const fetchConfig: StateConfig = {
-      idle:    { on: { FETCH: 'loading' } },
+      idle: { on: { FETCH: 'loading' } },
       loading: { on: { RESOLVE: 'success', REJECT: 'error' } },
       success: { on: { RESET: 'idle' } },
-      error:   { on: { RETRY: 'loading' } },
+      error: { on: { RETRY: 'loading' } },
     };
 
     const sm = new StateMachine(fetchConfig, 'idle');

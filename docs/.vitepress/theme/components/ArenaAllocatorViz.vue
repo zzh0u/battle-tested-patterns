@@ -73,8 +73,10 @@ const vizHistory = useVizHistory<ArenaSnapshot>(
     onRestore(snapshot, msg) {
       presetRunning = false;
       arenas.value = snapshot.arenas;
-      activeArenaIndex.value = snapshot.activeArenaIndex; if (msg !== undefined) message.value = msg; },
-  }
+      activeArenaIndex.value = snapshot.activeArenaIndex;
+      if (msg !== undefined) message.value = msg;
+    },
+  },
 );
 
 interface HistoryEntry {
@@ -90,21 +92,17 @@ const history = reactive<HistoryEntry[]>([]);
 
 const message = ref(
   t(
-    'Arena allocator: bump a pointer forward to allocate, free everything at once. Used by compilers (LLVM), game engines (Unreal), and Go\'s escape analysis.',
-    'Arena 分配器：向前移动指针来分配，一次性释放所有内容。编译器（LLVM）、游戏引擎（Unreal）和 Go 的逃逸分析都使用此模式。'
-  )
+    "Arena allocator: bump a pointer forward to allocate, free everything at once. Used by compilers (LLVM), game engines (Unreal), and Go's escape analysis.",
+    'Arena 分配器：向前移动指针来分配，一次性释放所有内容。编译器（LLVM）、游戏引擎（Unreal）和 Go 的逃逸分析都使用此模式。',
+  ),
 );
 
 const activeArena = computed(() => arenas.value[activeArenaIndex.value]);
 
-const totalCapacity = computed(() =>
-  arenas.value.reduce((sum, a) => sum + a.capacity, 0)
-);
-const totalUsed = computed(() =>
-  arenas.value.reduce((sum, a) => sum + a.pointer, 0)
-);
+const totalCapacity = computed(() => arenas.value.reduce((sum, a) => sum + a.capacity, 0));
+const totalUsed = computed(() => arenas.value.reduce((sum, a) => sum + a.pointer, 0));
 const totalAllocations = computed(() =>
-  arenas.value.reduce((sum, a) => sum + a.allocations.length, 0)
+  arenas.value.reduce((sum, a) => sum + a.allocations.length, 0),
 );
 
 function nextColor(): string {
@@ -129,7 +127,7 @@ function allocate() {
   if (arena.pointer + size > arena.capacity) {
     message.value = t(
       `Cannot allocate ${size} unit(s) in Arena #${arena.id} — only ${arena.capacity - arena.pointer} free. Add a new arena (chaining) or reset.`,
-      `无法在 Arena #${arena.id} 中分配 ${size} 个单元 — 仅剩 ${arena.capacity - arena.pointer} 可用。添加新 Arena（链式）或重置。`
+      `无法在 Arena #${arena.id} 中分配 ${size} 个单元 — 仅剩 ${arena.capacity - arena.pointer} 可用。添加新 Arena（链式）或重置。`,
     );
     log(message.value, 'warning');
     return;
@@ -159,10 +157,13 @@ function allocate() {
 
   message.value = t(
     `Allocated "${alloc.label}" (${size} unit(s)) at offset ${alloc.offset} — pointer bumped to ${arena.pointer}. O(1) allocation: just increment a pointer, no free-list traversal.`,
-    `已分配 "${alloc.label}" (${size} 个单元) 在偏移量 ${alloc.offset} — 指针移至 ${arena.pointer}。O(1) 分配：只需递增指针，无需遍历空闲链表。`
+    `已分配 "${alloc.label}" (${size} 个单元) 在偏移量 ${alloc.offset} — 指针移至 ${arena.pointer}。O(1) 分配：只需递增指针，无需遍历空闲链表。`,
   );
   log(message.value, 'info');
-  vizHistory.commit({ arenas: arenas.value, activeArenaIndex: activeArenaIndex.value }, `alloc ${alloc.label}`);
+  vizHistory.commit(
+    { arenas: arenas.value, activeArenaIndex: activeArenaIndex.value },
+    `alloc ${alloc.label}`,
+  );
 }
 
 function resetArena(index: number) {
@@ -178,17 +179,18 @@ function resetArena(index: number) {
 
   message.value = t(
     `Arena #${arena.id} reset — all memory freed in O(1). No per-object destructor calls. This is why arena allocation is 10-100x faster than malloc/free.`,
-    `Arena #${arena.id} 已重置 — 所有内存 O(1) 释放。没有逐对象析构调用。这就是 arena 分配比 malloc/free 快 10-100 倍的原因。`
+    `Arena #${arena.id} 已重置 — 所有内存 O(1) 释放。没有逐对象析构调用。这就是 arena 分配比 malloc/free 快 10-100 倍的原因。`,
   );
   log(message.value, 'warning');
-  vizHistory.commit({ arenas: arenas.value, activeArenaIndex: activeArenaIndex.value }, `free arena #${arena.id}`);
+  vizHistory.commit(
+    { arenas: arenas.value, activeArenaIndex: activeArenaIndex.value },
+    `free arena #${arena.id}`,
+  );
 }
 
 function resetAll() {
   clearTimers();
-  arenas.value = [
-    { id: arenaIdCounter++, capacity: ARENA_CAPACITY, pointer: 0, allocations: [] },
-  ];
+  arenas.value = [{ id: arenaIdCounter++, capacity: ARENA_CAPACITY, pointer: 0, allocations: [] }];
   activeArenaIndex.value = 0;
   globalAllocId = 1;
   globalColorIdx = 0;
@@ -198,7 +200,7 @@ function resetAll() {
 
   message.value = t(
     'All arenas reset — fresh start with a single empty arena',
-    '所有 Arena 已重置 — 以单个空 Arena 重新开始'
+    '所有 Arena 已重置 — 以单个空 Arena 重新开始',
   );
   clearLog();
 }
@@ -221,18 +223,21 @@ function addArena() {
 
   message.value = t(
     `New Arena #${newArena.id} created (chained). When one arena fills up, chain a new one — like Go's arena allocator or Rust's bumpalo crate.`,
-    `新 Arena #${newArena.id} 已创建（链式）。当一个 arena 满时，链接新的 — 类似 Go 的 arena 分配器或 Rust 的 bumpalo crate。`
+    `新 Arena #${newArena.id} 已创建（链式）。当一个 arena 满时，链接新的 — 类似 Go 的 arena 分配器或 Rust 的 bumpalo crate。`,
   );
   log(message.value, 'success');
-  vizHistory.commit({ arenas: arenas.value, activeArenaIndex: activeArenaIndex.value }, `new arena #${newArena.id}`);
+  vizHistory.commit(
+    { arenas: arenas.value, activeArenaIndex: activeArenaIndex.value },
+    `new arena #${newArena.id}`,
+  );
 }
 
 function slotAllocation(arena: Arena, index: number): Allocation | null {
-  return arena.allocations.find(a => index >= a.offset && index < a.offset + a.size) || null;
+  return arena.allocations.find((a) => index >= a.offset && index < a.offset + a.size) || null;
 }
 
 function isFirstCellOfAlloc(arena: Arena, index: number): Allocation | null {
-  return arena.allocations.find(a => a.offset === index) || null;
+  return arena.allocations.find((a) => a.offset === index) || null;
 }
 
 function usagePercent(arena: Arena): number {
@@ -250,7 +255,7 @@ async function presetFillAndChain() {
   presetRunning = true;
   message.value = t(
     'Filling an arena to capacity, then chaining a new one. LLVM does this for AST nodes — each compilation phase gets its own arena, freed atomically when done.',
-    '将 arena 填满，然后链接新的。LLVM 对 AST 节点这样做 — 每个编译阶段有自己的 arena，完成后原子释放。'
+    '将 arena 填满，然后链接新的。LLVM 对 AST 节点这样做 — 每个编译阶段有自己的 arena，完成后原子释放。',
   );
   await delay(600);
   if (!presetRunning || isAborted()) return;
@@ -263,7 +268,7 @@ async function presetFillAndChain() {
   }
   message.value = t(
     'Arena full (32/32)! Adding a chained arena...',
-    'Arena 已满 (32/32)！添加链式 arena...'
+    'Arena 已满 (32/32)！添加链式 arena...',
   );
   await delay(600);
   if (!presetRunning || isAborted()) return;
@@ -277,13 +282,16 @@ async function presetFillAndChain() {
   allocate();
   message.value = t(
     'Chained arena working. When both phases are done, reset both arenas in O(1) each — no per-object cleanup.',
-    '链式 arena 正常工作。当两个阶段完成时，每个 arena O(1) 重置 — 无需逐对象清理。'
+    '链式 arena 正常工作。当两个阶段完成时，每个 arena O(1) 重置 — 无需逐对象清理。',
   );
   log(message.value, 'success');
-  log(t(
-    'Arena chaining enables unlimited allocation while preserving O(1) per-arena reset.',
-    'Arena 链式分配支持无限制分配，同时保持每个 arena O(1) 重置。'
-  ), 'highlight');
+  log(
+    t(
+      'Arena chaining enables unlimited allocation while preserving O(1) per-arena reset.',
+      'Arena 链式分配支持无限制分配，同时保持每个 arena O(1) 重置。',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -293,7 +301,7 @@ async function presetCompilerPhase() {
   presetRunning = true;
   message.value = t(
     'Compiler phase simulation: allocate AST nodes for parsing, then reset the entire arena when done. This is how Zig, Rust (rustc), and Go compilers manage memory.',
-    '编译器阶段模拟：为解析分配 AST 节点，完成后重置整个 arena。Zig、Rust (rustc) 和 Go 编译器就是这样管理内存的。'
+    '编译器阶段模拟：为解析分配 AST 节点，完成后重置整个 arena。Zig、Rust (rustc) 和 Go 编译器就是这样管理内存的。',
   );
   await delay(600);
   if (!presetRunning || isAborted()) return;
@@ -310,15 +318,18 @@ async function presetCompilerPhase() {
   }
   message.value = t(
     'Parse phase complete — 7 AST nodes allocated. Now resetting the arena. In a real compiler, this frees hundreds of thousands of nodes instantly.',
-    '解析阶段完成 — 7 个 AST 节点已分配。现在重置 arena。在真实编译器中，这会瞬间释放数十万个节点。'
+    '解析阶段完成 — 7 个 AST 节点已分配。现在重置 arena。在真实编译器中，这会瞬间释放数十万个节点。',
   );
   await delay(1200);
   if (!presetRunning || isAborted()) return;
   resetArena(0);
-  log(t(
-    'Arena-per-phase frees hundreds of thousands of objects in a single pointer reset.',
-    '每阶段 Arena 通过一次指针重置释放数十万个对象。'
-  ), 'highlight');
+  log(
+    t(
+      'Arena-per-phase frees hundreds of thousands of objects in a single pointer reset.',
+      '每阶段 Arena 通过一次指针重置释放数十万个对象。',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -328,7 +339,7 @@ async function presetMixedSizes() {
   presetRunning = true;
   message.value = t(
     'Mixed allocation sizes: unlike malloc, arena allocation has zero internal fragmentation — each object is placed contiguously after the last.',
-    '混合分配大小：与 malloc 不同，arena 分配零内部碎片 — 每个对象连续放置在上一个之后。'
+    '混合分配大小：与 malloc 不同，arena 分配零内部碎片 — 每个对象连续放置在上一个之后。',
   );
   await delay(600);
   if (!presetRunning || isAborted()) return;
@@ -343,7 +354,7 @@ async function presetMixedSizes() {
   }
   message.value = t(
     `${totalAllocations.value} allocations, ${totalUsed.value}/${totalCapacity.value} used. Zero fragmentation — every byte is utilized. malloc would have metadata overhead per allocation (16-32 bytes each on 64-bit).`,
-    `${totalAllocations.value} 次分配，${totalUsed.value}/${totalCapacity.value} 已使用。零碎片 — 每个字节都被利用。malloc 每次分配会有元数据开销（64 位系统每次 16-32 字节）。`
+    `${totalAllocations.value} 次分配，${totalUsed.value}/${totalCapacity.value} 已使用。零碎片 — 每个字节都被利用。malloc 每次分配会有元数据开销（64 位系统每次 16-32 字节）。`,
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -422,8 +433,12 @@ async function presetMixedSizes() {
 
     <div class="viz-presets">
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
-      <button class="viz-btn" @click="presetFillAndChain">{{ t('Fill & Chain', '填满链接') }}</button>
-      <button class="viz-btn" @click="presetCompilerPhase">{{ t('Compiler Phase', '编译阶段') }}</button>
+      <button class="viz-btn" @click="presetFillAndChain">
+        {{ t('Fill & Chain', '填满链接') }}
+      </button>
+      <button class="viz-btn" @click="presetCompilerPhase">
+        {{ t('Compiler Phase', '编译阶段') }}
+      </button>
       <button class="viz-btn" @click="presetMixedSizes">{{ t('Mixed Sizes', '混合大小') }}</button>
     </div>
 
@@ -460,8 +475,7 @@ async function presetMixedSizes() {
           </span>
         </span>
         <span class="arena-block-usage">
-          {{ arena.pointer }}/{{ arena.capacity }}
-          ({{ usagePercent(arena) }}%)
+          {{ arena.pointer }}/{{ arena.capacity }} ({{ usagePercent(arena) }}%)
         </span>
         <button
           class="arena-reset-btn"
@@ -495,15 +509,24 @@ async function presetMixedSizes() {
                 'arena-cell--filled': slotAllocation(arena, i - 1) !== null,
                 'arena-cell--alloc-start': isFirstCellOfAlloc(arena, i - 1) !== null,
               }"
-              :style="slotAllocation(arena, i - 1) ? { background: slotAllocation(arena, i - 1)!.color } : {}"
-              :title="slotAllocation(arena, i - 1)
-                ? `${slotAllocation(arena, i - 1)!.label} [${slotAllocation(arena, i - 1)!.offset}..${slotAllocation(arena, i - 1)!.offset + slotAllocation(arena, i - 1)!.size - 1}]`
-                : t(`Free (offset ${i - 1})`, `空闲 (偏移量 ${i - 1})`)"
+              :style="
+                slotAllocation(arena, i - 1)
+                  ? { background: slotAllocation(arena, i - 1)!.color }
+                  : {}
+              "
+              :title="
+                slotAllocation(arena, i - 1)
+                  ? `${slotAllocation(arena, i - 1)!.label} [${slotAllocation(arena, i - 1)!.offset}..${slotAllocation(arena, i - 1)!.offset + slotAllocation(arena, i - 1)!.size - 1}]`
+                  : t(`Free (offset ${i - 1})`, `空闲 (偏移量 ${i - 1})`)
+              "
             >
               <span
-                v-if="isFirstCellOfAlloc(arena, i - 1) && isFirstCellOfAlloc(arena, i - 1)!.size >= 2"
+                v-if="
+                  isFirstCellOfAlloc(arena, i - 1) && isFirstCellOfAlloc(arena, i - 1)!.size >= 2
+                "
                 class="arena-cell-label"
-              >{{ isFirstCellOfAlloc(arena, i - 1)!.label }}</span>
+                >{{ isFirstCellOfAlloc(arena, i - 1)!.label }}</span
+              >
             </div>
           </template>
         </div>
@@ -522,11 +545,7 @@ async function presetMixedSizes() {
 
       <!-- Allocation legend for this arena -->
       <div v-if="arena.allocations.length > 0" class="arena-legend">
-        <div
-          v-for="alloc in arena.allocations"
-          :key="alloc.id"
-          class="arena-legend-item"
-        >
+        <div v-for="alloc in arena.allocations" :key="alloc.id" class="arena-legend-item">
           <span class="arena-legend-swatch" :style="{ background: alloc.color }"></span>
           <span class="arena-legend-text">
             {{ alloc.label }} ({{ alloc.size }}) @{{ alloc.offset }}
@@ -550,7 +569,13 @@ async function presetMixedSizes() {
           <span class="arena-history-time">{{ formatTime(entry.timestamp) }}</span>
           <span v-if="entry.action === 'alloc'" class="arena-history-desc">
             <span class="arena-history-badge arena-history-badge--alloc">ALLOC</span>
-            "{{ entry.label }}" {{ t(`${entry.size} unit(s) at offset ${entry.offset}`, `${entry.size} 个单元在偏移量 ${entry.offset}`) }}
+            "{{ entry.label }}"
+            {{
+              t(
+                `${entry.size} unit(s) at offset ${entry.offset}`,
+                `${entry.size} 个单元在偏移量 ${entry.offset}`,
+              )
+            }}
             <span class="arena-history-arena">Arena #{{ entry.arenaId }}</span>
           </span>
           <span v-else-if="entry.action === 'reset'" class="arena-history-desc">
@@ -658,8 +683,12 @@ async function presetMixedSizes() {
   color: var(--viz-text);
 }
 
-.arena-stat--primary { color: var(--viz-primary); }
-.arena-stat--success { color: var(--viz-success); }
+.arena-stat--primary {
+  color: var(--viz-primary);
+}
+.arena-stat--success {
+  color: var(--viz-success);
+}
 
 /* --- Arena Tabs --- */
 .arena-tabs {
@@ -825,7 +854,7 @@ async function presetMixedSizes() {
 }
 
 .arena-cell--alloc-start {
-  border-left: 2px solid rgba(255,255,255,0.4);
+  border-left: 2px solid rgba(255, 255, 255, 0.4);
 }
 
 .arena-cell-label {
@@ -835,7 +864,7 @@ async function presetMixedSizes() {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   pointer-events: none;
   max-width: 100%;
   padding: 0 1px;
@@ -962,9 +991,15 @@ async function presetMixedSizes() {
   flex-shrink: 0;
 }
 
-.arena-history-badge--alloc { background: var(--viz-primary); }
-.arena-history-badge--reset { background: var(--viz-danger); }
-.arena-history-badge--new { background: var(--viz-success); }
+.arena-history-badge--alloc {
+  background: var(--viz-primary);
+}
+.arena-history-badge--reset {
+  background: var(--viz-danger);
+}
+.arena-history-badge--new {
+  background: var(--viz-success);
+}
 
 .arena-history-arena {
   font-size: 0.6rem;
@@ -972,8 +1007,14 @@ async function presetMixedSizes() {
 }
 
 @keyframes arena-fill {
-  from { opacity: 0; transform: scaleY(0.5); }
-  to { opacity: 1; transform: scaleY(1); }
+  from {
+    opacity: 0;
+    transform: scaleY(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
 }
 
 /* --- Mobile --- */

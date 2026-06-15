@@ -22,9 +22,20 @@ interface CacheEntry {
 const entries = ref<CacheEntry[]>([]);
 const history = useVizHistory<CacheEntry[]>([], {
   getMessage: () => message.value,
-  onRestore: (snap, msg) => { presetRunning = false; entries.value = snap; animKey.value = ''; animAction.value = ''; if (msg !== undefined) message.value = msg; },
+  onRestore: (snap, msg) => {
+    presetRunning = false;
+    entries.value = snap;
+    animKey.value = '';
+    animAction.value = '';
+    if (msg !== undefined) message.value = msg;
+  },
 });
-const message = ref(t('Try get("A") or put("A","1") — or pick a preset scenario below', '试试 get("A") 或 put("A","1") — 或选择下方的预设场景'));
+const message = ref(
+  t(
+    'Try get("A") or put("A","1") — or pick a preset scenario below',
+    '试试 get("A") 或 put("A","1") — 或选择下方的预设场景',
+  ),
+);
 const animKey = ref('');
 const animAction = ref<'hit' | 'miss' | 'evict' | 'insert' | ''>('');
 const inputKey = ref('');
@@ -35,10 +46,13 @@ let presetRunning = false;
 function put(key?: string, value?: string) {
   const k = key ?? inputKey.value.trim().toUpperCase();
   const v = value ?? inputValue.value.trim();
-  if (!k) { message.value = t('Enter a key first', '请先输入键'); return; }
+  if (!k) {
+    message.value = t('Enter a key first', '请先输入键');
+    return;
+  }
   const val = v || String(idCounter + 1);
 
-  const existIdx = entries.value.findIndex(e => e.key === k);
+  const existIdx = entries.value.findIndex((e) => e.key === k);
   if (existIdx >= 0) {
     entries.value.splice(existIdx, 1);
     entries.value.unshift({ key: k, value: val, id: ++idCounter });
@@ -46,7 +60,7 @@ function put(key?: string, value?: string) {
     animAction.value = 'hit';
     message.value = t(
       `put("${k}") → already exists — moved to MRU end. LRU assumes recent access predicts future access.`,
-      `put("${k}") → 已存在 — 移至 MRU 端。LRU 假设最近访问的数据未来更可能再次被访问。`
+      `put("${k}") → 已存在 — 移至 MRU 端。LRU 假设最近访问的数据未来更可能再次被访问。`,
     );
     log(message.value, 'success');
   } else {
@@ -56,30 +70,39 @@ function put(key?: string, value?: string) {
       animAction.value = 'evict';
       message.value = t(
         `put("${k}") → cache full! Evicted "${evicted.key}" (least recently used). This is O(1) with a hash map + doubly-linked list.`,
-        `put("${k}") → 缓存已满！淘汰 "${evicted.key}"（最近最少使用）。通过哈希表 + 双向链表实现 O(1)。`
+        `put("${k}") → 缓存已满！淘汰 "${evicted.key}"（最近最少使用）。通过哈希表 + 双向链表实现 O(1)。`,
       );
       log(message.value, 'warning');
     } else {
       message.value = t(
         `put("${k}", "${val}") → inserted at MRU position (front of list).`,
-        `put("${k}", "${val}") → 插入到 MRU 位置（链表头部）。`
+        `put("${k}", "${val}") → 插入到 MRU 位置（链表头部）。`,
       );
       log(message.value, 'info');
     }
     entries.value.unshift({ key: k, value: val, id: ++idCounter });
-    safeTimeout(() => { animKey.value = k; animAction.value = 'insert'; }, 50);
+    safeTimeout(() => {
+      animKey.value = k;
+      animAction.value = 'insert';
+    }, 50);
   }
   inputKey.value = '';
   inputValue.value = '';
-  safeTimeout(() => { animKey.value = ''; animAction.value = ''; }, 500);
+  safeTimeout(() => {
+    animKey.value = '';
+    animAction.value = '';
+  }, 500);
   history.commit([...entries.value], `put("${k}")`);
 }
 
 function get(key?: string) {
   const k = key ?? inputKey.value.trim().toUpperCase();
-  if (!k) { message.value = t('Enter a key first', '请先输入键'); return; }
+  if (!k) {
+    message.value = t('Enter a key first', '请先输入键');
+    return;
+  }
 
-  const idx = entries.value.findIndex(e => e.key === k);
+  const idx = entries.value.findIndex((e) => e.key === k);
   if (idx >= 0) {
     const entry = entries.value.splice(idx, 1)[0];
     entries.value.unshift(entry);
@@ -87,7 +110,7 @@ function get(key?: string) {
     animAction.value = 'hit';
     message.value = t(
       `get("${k}") → HIT! Moved to front — recently used items stay in cache longer.`,
-      `get("${k}") → 命中！移至头部 — 最近使用的项在缓存中保留更久。`
+      `get("${k}") → 命中！移至头部 — 最近使用的项在缓存中保留更久。`,
     );
     log(message.value, 'success');
   } else {
@@ -95,12 +118,15 @@ function get(key?: string) {
     animAction.value = 'miss';
     message.value = t(
       `get("${k}") → MISS! Not in cache. In production, this triggers a slower fetch from the backing store.`,
-      `get("${k}") → 未命中！不在缓存中。在生产中，这会触发一次较慢的后端存储查询。`
+      `get("${k}") → 未命中！不在缓存中。在生产中，这会触发一次较慢的后端存储查询。`,
     );
     log(message.value, 'error');
   }
   inputKey.value = '';
-  safeTimeout(() => { animKey.value = ''; animAction.value = ''; }, 500);
+  safeTimeout(() => {
+    animKey.value = '';
+    animAction.value = '';
+  }, 500);
   history.commit([...entries.value], `get("${k}")`);
 }
 
@@ -121,7 +147,7 @@ async function runPreset(steps: Array<{ op: 'put' | 'get'; key: string; val?: st
   presetRunning = true;
   for (const step of steps) {
     if (!presetRunning) return;
-    await new Promise<void>(r => safeTimeout(r, 800));
+    await new Promise<void>((r) => safeTimeout(r, 800));
     if (!presetRunning) return;
     if (step.op === 'put') put(step.key, step.val ?? step.key.toLowerCase());
     else get(step.key);
@@ -140,7 +166,13 @@ async function presetWebCache() {
     { op: 'put', key: 'E', val: 'page5' },
     { op: 'get', key: 'C' },
   ]);
-  log(t('LRU evicts the least-recently-used entry — O(1) via hash map + doubly linked list', 'LRU 淘汰最近最少使用的条目 — 通过哈希表 + 双向链表实现 O(1)'), 'highlight');
+  log(
+    t(
+      'LRU evicts the least-recently-used entry — O(1) via hash map + doubly linked list',
+      'LRU 淘汰最近最少使用的条目 — 通过哈希表 + 双向链表实现 O(1)',
+    ),
+    'highlight',
+  );
 }
 
 async function presetThrashing() {
@@ -154,7 +186,13 @@ async function presetThrashing() {
     { op: 'put', key: 'F', val: '6' },
     { op: 'get', key: 'B' },
   ]);
-  log(t('Thrashing: working set > cache size — every access evicts, hit rate collapses', '抖动：工作集 > 缓存大小 — 每次访问都淘汰，命中率崩塌'), 'highlight');
+  log(
+    t(
+      'Thrashing: working set > cache size — every access evicts, hit rate collapses',
+      '抖动：工作集 > 缓存大小 — 每次访问都淘汰，命中率崩塌',
+    ),
+    'highlight',
+  );
 }
 
 async function presetZipf() {
@@ -170,7 +208,13 @@ async function presetZipf() {
     { op: 'put', key: 'E', val: 'new' },
     { op: 'get', key: 'A' },
   ]);
-  log(t('Zipf distribution: hot keys stay cached, cold keys get evicted — real-world access patterns', 'Zipf 分布：热键留在缓存，冷键被淘汰 — 真实世界的访问模式'), 'highlight');
+  log(
+    t(
+      'Zipf distribution: hot keys stay cached, cold keys get evicted — real-world access patterns',
+      'Zipf 分布：热键留在缓存，冷键被淘汰 — 真实世界的访问模式',
+    ),
+    'highlight',
+  );
 }
 
 const emptySlots = computed(() => Math.max(0, CAPACITY - entries.value.length));
@@ -178,7 +222,11 @@ const emptySlots = computed(() => Math.max(0, CAPACITY - entries.value.length));
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">{{ t('Interactive LRU Cache', '交互式 LRU Cache') }} · {{ t('capacity', '容量') }}={{ CAPACITY }}</div>
+    <div class="viz-title">
+      {{ t('Interactive LRU Cache', '交互式 LRU Cache') }} · {{ t('capacity', '容量') }}={{
+        CAPACITY
+      }}
+    </div>
 
     <!-- Visual: Doubly Linked List -->
     <div class="lru-chain">
@@ -194,8 +242,20 @@ const emptySlots = computed(() => Math.max(0, CAPACITY - entries.value.length));
           <div class="lru-node-key">{{ entry.key }}</div>
           <div class="lru-node-val">{{ entry.value }}</div>
         </div>
-        <svg v-if="i < entries.length - 1 || emptySlots > 0" class="lru-arrow" viewBox="0 0 24 12" width="24" height="12" aria-hidden="true">
-          <path d="M0 6 L18 6 M14 2 L18 6 L14 10" stroke="var(--viz-muted)" stroke-width="1.5" fill="none"/>
+        <svg
+          v-if="i < entries.length - 1 || emptySlots > 0"
+          class="lru-arrow"
+          viewBox="0 0 24 12"
+          width="24"
+          height="12"
+          aria-hidden="true"
+        >
+          <path
+            d="M0 6 L18 6 M14 2 L18 6 L14 10"
+            stroke="var(--viz-muted)"
+            stroke-width="1.5"
+            fill="none"
+          />
         </svg>
       </template>
       <template v-for="j in emptySlots" :key="'empty-' + j">
@@ -203,8 +263,20 @@ const emptySlots = computed(() => Math.max(0, CAPACITY - entries.value.length));
           <div class="lru-node-key">-</div>
           <div class="lru-node-val">&nbsp;</div>
         </div>
-        <svg v-if="j < emptySlots" class="lru-arrow" viewBox="0 0 24 12" width="24" height="12" aria-hidden="true">
-          <path d="M0 6 L18 6 M14 2 L18 6 L14 10" stroke="var(--viz-border)" stroke-width="1.5" fill="none"/>
+        <svg
+          v-if="j < emptySlots"
+          class="lru-arrow"
+          viewBox="0 0 24 12"
+          width="24"
+          height="12"
+          aria-hidden="true"
+        >
+          <path
+            d="M0 6 L18 6 M14 2 L18 6 L14 10"
+            stroke="var(--viz-border)"
+            stroke-width="1.5"
+            fill="none"
+          />
         </svg>
       </template>
       <div class="lru-label lru-label--lru">LRU</div>
@@ -213,8 +285,20 @@ const emptySlots = computed(() => Math.max(0, CAPACITY - entries.value.length));
     <!-- Controls -->
     <div class="lru-control-row">
       <div class="lru-input-group">
-        <input v-model="inputKey" class="lru-input" :placeholder="t('Key', '键')" maxlength="3" @keyup.enter="put()" />
-        <input v-model="inputValue" class="lru-input" :placeholder="t('Val', '值')" maxlength="4" @keyup.enter="put()" />
+        <input
+          v-model="inputKey"
+          class="lru-input"
+          :placeholder="t('Key', '键')"
+          maxlength="3"
+          @keyup.enter="put()"
+        />
+        <input
+          v-model="inputValue"
+          class="lru-input"
+          :placeholder="t('Val', '值')"
+          maxlength="4"
+          @keyup.enter="put()"
+        />
       </div>
       <div class="viz-controls" style="margin-top: 0">
         <button class="viz-btn viz-btn--primary" @click="put()">Put</button>
@@ -231,14 +315,22 @@ const emptySlots = computed(() => Math.max(0, CAPACITY - entries.value.length));
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
       <button class="viz-btn" @click="presetWebCache">{{ t('Web Cache', 'Web 缓存') }}</button>
       <button class="viz-btn" @click="presetThrashing">{{ t('Thrashing', '缓存抖动') }}</button>
-      <button class="viz-btn" @click="presetZipf">{{ t('Zipf (Hot Keys)', 'Zipf（热键）') }}</button>
+      <button class="viz-btn" @click="presetZipf">
+        {{ t('Zipf (Hot Keys)', 'Zipf（热键）') }}
+      </button>
     </div>
 
-    <div class="viz-status" aria-live="polite" :class="{
-      'viz-status--hit': animAction === 'hit',
-      'viz-status--miss': animAction === 'miss',
-      'viz-status--evict': animAction === 'evict',
-    }">{{ message }}</div>
+    <div
+      class="viz-status"
+      aria-live="polite"
+      :class="{
+        'viz-status--hit': animAction === 'hit',
+        'viz-status--miss': animAction === 'miss',
+        'viz-status--evict': animAction === 'evict',
+      }"
+    >
+      {{ message }}
+    </div>
     <VizPlaybackBar :history="history" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
@@ -263,8 +355,12 @@ const emptySlots = computed(() => Math.max(0, CAPACITY - entries.value.length));
   padding: 0 0.25rem;
 }
 
-.lru-label--mru { color: var(--viz-success); }
-.lru-label--lru { color: var(--viz-danger); }
+.lru-label--mru {
+  color: var(--viz-success);
+}
+.lru-label--lru {
+  color: var(--viz-danger);
+}
 
 .lru-node {
   display: flex;

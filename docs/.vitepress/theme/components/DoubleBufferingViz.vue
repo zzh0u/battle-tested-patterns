@@ -77,10 +77,12 @@ const frameCount = ref(0);
 const nextFrame = ref(1);
 const swapping = ref(false);
 const autoMode = ref(false);
-const message = ref(t(
-  'Draw a frame in the back buffer, then swap to display — or pick a scenario below',
-  '在后端缓冲区绘制帧，然后交换以显示 — 或选择下方场景'
-));
+const message = ref(
+  t(
+    'Draw a frame in the back buffer, then swap to display — or pick a scenario below',
+    '在后端缓冲区绘制帧，然后交换以显示 — 或选择下方场景',
+  ),
+);
 let presetRunning = false;
 
 interface Snapshot {
@@ -102,7 +104,9 @@ const history = useVizHistory<Snapshot>(
       frameCount.value = s.frameCount;
       nextFrame.value = s.nextFrame;
       swapping.value = false;
-      autoMode.value = false; if (msg !== undefined) message.value = msg; },
+      autoMode.value = false;
+      if (msg !== undefined) message.value = msg;
+    },
   },
 );
 
@@ -112,10 +116,18 @@ function drawFrame() {
   frameCount.value++;
   message.value = t(
     `Frame #${frameCount.value} drawn in back buffer — invisible to the user. The front buffer keeps displaying the previous frame with zero tearing.`,
-    `帧 #${frameCount.value} 已绘制到后端缓冲区 — 用户不可见。前端缓冲区继续显示上一帧，零撕裂。`
+    `帧 #${frameCount.value} 已绘制到后端缓冲区 — 用户不可见。前端缓冲区继续显示上一帧，零撕裂。`,
   );
   log(message.value, 'info');
-  history.commit({ frontBuffer: frontBuffer.value, backBuffer: backBuffer.value, frameCount: frameCount.value, nextFrame: nextFrame.value }, `Draw frame #${frameCount.value}`);
+  history.commit(
+    {
+      frontBuffer: frontBuffer.value,
+      backBuffer: backBuffer.value,
+      frameCount: frameCount.value,
+      nextFrame: nextFrame.value,
+    },
+    `Draw frame #${frameCount.value}`,
+  );
 }
 
 function swapBuffers() {
@@ -129,10 +141,18 @@ function swapBuffers() {
     swapping.value = false;
     message.value = t(
       `Buffers swapped — O(1) pointer swap, not a copy. This is why OpenGL uses glSwapBuffers() and React swaps fiber trees.`,
-      `缓冲区已交换 — O(1) 指针交换，非复制。这就是 OpenGL 使用 glSwapBuffers() 和 React 交换 fiber 树的原因。`
+      `缓冲区已交换 — O(1) 指针交换，非复制。这就是 OpenGL 使用 glSwapBuffers() 和 React 交换 fiber 树的原因。`,
     );
     log(message.value, 'success');
-    history.commit({ frontBuffer: frontBuffer.value, backBuffer: backBuffer.value, frameCount: frameCount.value, nextFrame: nextFrame.value }, 'Swap buffers');
+    history.commit(
+      {
+        frontBuffer: frontBuffer.value,
+        backBuffer: backBuffer.value,
+        frameCount: frameCount.value,
+        nextFrame: nextFrame.value,
+      },
+      'Swap buffers',
+    );
   }, 300);
 }
 
@@ -141,7 +161,7 @@ function toggleAuto() {
   if (autoMode.value) {
     message.value = t(
       'Auto mode: continuous draw + swap loop. This is what a GPU does at 60 FPS — draw to back, swap to front, repeat.',
-      '自动模式：连续绘制 + 交换循环。这就是 GPU 以 60 FPS 运行的方式 — 绘制到后端，交换到前端，循环。'
+      '自动模式：连续绘制 + 交换循环。这就是 GPU 以 60 FPS 运行的方式 — 绘制到后端，交换到前端，循环。',
     );
     safeInterval(() => {
       drawFrame();
@@ -173,7 +193,7 @@ async function presetTearDemo() {
   presetRunning = true;
   message.value = t(
     'Without double buffering, drawing directly to the display causes "tearing" — the user sees a half-drawn frame. Watch the back buffer fill first...',
-    '没有双缓冲时，直接绘制到显示器会导致"撕裂" — 用户看到半绘制的帧。观察后端缓冲区先被填充...'
+    '没有双缓冲时，直接绘制到显示器会导致"撕裂" — 用户看到半绘制的帧。观察后端缓冲区先被填充...',
   );
   await delay(1000);
   if (!presetRunning || isAborted()) return;
@@ -182,7 +202,7 @@ async function presetTearDemo() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'Frame drawn in back buffer — user sees nothing yet. Now swapping atomically...',
-    '帧已绘制到后端缓冲区 — 用户什么都看不到。现在原子交换...'
+    '帧已绘制到后端缓冲区 — 用户什么都看不到。现在原子交换...',
   );
   await delay(600);
   if (!presetRunning || isAborted()) return;
@@ -196,8 +216,8 @@ async function presetTearDemo() {
   await delay(600);
   if (!presetRunning || isAborted()) return;
   message.value = t(
-    'Two frames rendered with zero tearing. The key: users never see incomplete state. React\'s concurrent mode uses the same principle — render to a hidden tree, then commit.',
-    '两帧渲染，零撕裂。关键：用户永远不会看到不完整状态。React 的并发模式使用相同原理 — 渲染到隐藏树，然后提交。'
+    "Two frames rendered with zero tearing. The key: users never see incomplete state. React's concurrent mode uses the same principle — render to a hidden tree, then commit.",
+    '两帧渲染，零撕裂。关键：用户永远不会看到不完整状态。React 的并发模式使用相同原理 — 渲染到隐藏树，然后提交。',
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -208,8 +228,8 @@ async function presetHighFPS() {
   reset();
   presetRunning = true;
   message.value = t(
-    'Simulating 5 rapid frames — each drawn then swapped. In real GPUs, VSYNC synchronizes the swap with the monitor\'s refresh rate to prevent tearing.',
-    '模拟 5 个快速帧 — 每帧绘制后交换。在真实 GPU 中，VSYNC 将交换与显示器刷新率同步以防止撕裂。'
+    "Simulating 5 rapid frames — each drawn then swapped. In real GPUs, VSYNC synchronizes the swap with the monitor's refresh rate to prevent tearing.",
+    '模拟 5 个快速帧 — 每帧绘制后交换。在真实 GPU 中，VSYNC 将交换与显示器刷新率同步以防止撕裂。',
   );
   await delay(800);
   for (let i = 0; i < 5; i++) {
@@ -223,7 +243,7 @@ async function presetHighFPS() {
   }
   message.value = t(
     `5 frames rendered at ${frameCount.value} total. Triple buffering adds a third buffer to reduce latency — used by modern game engines like Unreal.`,
-    `5 帧渲染完成，共 ${frameCount.value} 帧。三重缓冲添加第三个缓冲区以减少延迟 — 现代游戏引擎如 Unreal 使用此技术。`
+    `5 帧渲染完成，共 ${frameCount.value} 帧。三重缓冲添加第三个缓冲区以减少延迟 — 现代游戏引擎如 Unreal 使用此技术。`,
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -235,14 +255,14 @@ async function presetReactCommit() {
   presetRunning = true;
   message.value = t(
     'React\'s commit phase is double buffering: the "work-in-progress" fiber tree (back buffer) is built off-screen, then swapped with the "current" tree (front buffer) in one synchronous step.',
-    'React 的提交阶段就是双缓冲："工作中"的 fiber 树（后端缓冲区）在屏幕外构建，然后在一个同步步骤中与"当前"树（前端缓冲区）交换。'
+    'React 的提交阶段就是双缓冲："工作中"的 fiber 树（后端缓冲区）在屏幕外构建，然后在一个同步步骤中与"当前"树（前端缓冲区）交换。',
   );
   await delay(1200);
   if (!presetRunning || isAborted()) return;
   drawFrame();
   message.value = t(
     'Step 1: React builds the new fiber tree (back buffer). User sees the old UI.',
-    '步骤 1：React 构建新的 fiber 树（后端缓冲区）。用户看到旧 UI。'
+    '步骤 1：React 构建新的 fiber 树（后端缓冲区）。用户看到旧 UI。',
   );
   await delay(1000);
   if (!presetRunning || isAborted()) return;
@@ -251,7 +271,7 @@ async function presetReactCommit() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'Step 2: commitRoot() swaps current ↔ workInProgress — the DOM updates atomically. No intermediate states visible. This is React\'s "double buffering of fiber trees".',
-    '步骤 2：commitRoot() 交换 current ↔ workInProgress — DOM 原子更新。没有中间状态可见。这就是 React 的"fiber 树双缓冲"。'
+    '步骤 2：commitRoot() 交换 current ↔ workInProgress — DOM 原子更新。没有中间状态可见。这就是 React 的"fiber 树双缓冲"。',
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -327,13 +347,17 @@ async function presetReactCommit() {
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn" :disabled="autoMode" @click="drawFrame">{{ t('Draw Frame', '绘制帧') }}</button>
-      <button class="viz-btn viz-btn--primary" :disabled="autoMode || swapping" @click="swapBuffers">{{ t('Swap', '交换') }}</button>
+      <button class="viz-btn" :disabled="autoMode" @click="drawFrame">
+        {{ t('Draw Frame', '绘制帧') }}
+      </button>
       <button
-        class="viz-btn"
-        :class="{ 'db-btn--auto-active': autoMode }"
-        @click="toggleAuto"
+        class="viz-btn viz-btn--primary"
+        :disabled="autoMode || swapping"
+        @click="swapBuffers"
       >
+        {{ t('Swap', '交换') }}
+      </button>
+      <button class="viz-btn" :class="{ 'db-btn--auto-active': autoMode }" @click="toggleAuto">
         {{ autoMode ? t('Stop Auto', '停止自动') : t('Auto', '自动') }}
       </button>
       <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
@@ -347,7 +371,9 @@ async function presetReactCommit() {
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
       <button class="viz-btn" @click="presetTearDemo">{{ t('Zero Tearing', '零撕裂') }}</button>
       <button class="viz-btn" @click="presetHighFPS">{{ t('High FPS', '高帧率') }}</button>
-      <button class="viz-btn" @click="presetReactCommit">{{ t('React Commit', 'React 提交') }}</button>
+      <button class="viz-btn" @click="presetReactCommit">
+        {{ t('React Commit', 'React 提交') }}
+      </button>
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
@@ -375,7 +401,9 @@ async function presetReactCommit() {
   border: 2px solid var(--viz-border);
   border-radius: var(--viz-radius);
   background: var(--vp-c-bg);
-  transition: border-color var(--viz-transition), box-shadow 0.3s ease;
+  transition:
+    border-color var(--viz-transition),
+    box-shadow 0.3s ease;
   position: relative;
 }
 
@@ -420,7 +448,9 @@ async function presetReactCommit() {
   height: 28px;
   border-radius: var(--viz-radius-sm);
   background: var(--viz-cell-empty);
-  transition: background-color var(--viz-transition), transform 0.2s ease;
+  transition:
+    background-color var(--viz-transition),
+    transform 0.2s ease;
 }
 
 .db-cell--filled {
@@ -452,7 +482,9 @@ async function presetReactCommit() {
   align-items: center;
   justify-content: center;
   opacity: 0.6;
-  transition: opacity var(--viz-transition), transform 0.3s ease;
+  transition:
+    opacity var(--viz-transition),
+    transform 0.3s ease;
 }
 
 .db-swap-arrow--animating {
@@ -486,18 +518,34 @@ async function presetReactCommit() {
 }
 
 @keyframes db-cell-appear {
-  0% { transform: scale(0.7); opacity: 0.4; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.7);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @keyframes db-buffer-flash {
-  0%, 100% { box-shadow: none; }
-  50% { box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); }
+  0%,
+  100% {
+    box-shadow: none;
+  }
+  50% {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+  }
 }
 
 @keyframes db-arrow-pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.2); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
 }
 
 @media (max-width: 640px) {
@@ -520,7 +568,12 @@ async function presetReactCommit() {
 }
 
 @keyframes db-arrow-pulse-mobile {
-  0%, 100% { transform: rotate(90deg) scale(1); }
-  50% { transform: rotate(90deg) scale(1.2); }
+  0%,
+  100% {
+    transform: rotate(90deg) scale(1);
+  }
+  50% {
+    transform: rotate(90deg) scale(1.2);
+  }
 }
 </style>

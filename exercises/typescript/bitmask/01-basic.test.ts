@@ -10,10 +10,10 @@ import { describe, it, expect } from 'vitest';
  */
 
 const FLAGS = {
-  READ: 1 << 0,    // 0b0001
-  WRITE: 1 << 1,   // 0b0010
+  READ: 1 << 0, // 0b0001
+  WRITE: 1 << 1, // 0b0010
   EXECUTE: 1 << 2, // 0b0100
-  DELETE: 1 << 3,  // 0b1000
+  DELETE: 1 << 3, // 0b1000
 } as const;
 
 // TODO: Implement these functions

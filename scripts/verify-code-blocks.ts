@@ -19,14 +19,7 @@
  *   • TypeScript Twoslash — drive the compiler in-process, isolate blocks as modules
  *   • Go testable examples — many packages in one module, checked together
  */
-import {
-  readFileSync,
-  readdirSync,
-  statSync,
-  writeFileSync,
-  mkdirSync,
-  rmSync,
-} from 'node:fs';
+import { readFileSync, readdirSync, statSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
 import { join, basename } from 'node:path';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -465,7 +458,9 @@ async function hasToolchain(cmd: string, args: string[] = ['--version']): Promis
 async function main() {
   const docs = findPatternDocs(DOCS_DIR);
   console.log(`Found ${docs.length} pattern documents`);
-  console.log(`Mode: ${IS_CI ? 'CI (missing toolchains are FAILURES)' : 'local (missing toolchains are skipped)'}\n`);
+  console.log(
+    `Mode: ${IS_CI ? 'CI (missing toolchains are FAILURES)' : 'local (missing toolchains are skipped)'}\n`,
+  );
 
   rmSync(TMP_DIR, { recursive: true, force: true });
   mkdirSync(TMP_DIR, { recursive: true });
@@ -492,7 +487,9 @@ async function main() {
     process.exit(1);
   }
   for (const m of missing) {
-    console.log(`⚠️  ${m} not found — ${m === 'rustc' ? 'Rust' : m === 'go' ? 'Go' : 'Python'} blocks skipped locally\n`);
+    console.log(
+      `⚠️  ${m} not found — ${m === 'rustc' ? 'Rust' : m === 'go' ? 'Go' : 'Python'} blocks skipped locally\n`,
+    );
   }
 
   const results: BlockResult[] = [];
@@ -578,10 +575,7 @@ async function main() {
   if (skippedResults.length > 0) {
     const reasons = new Map<string, number>();
     for (const r of skippedResults) reasons.set(r.reason!, (reasons.get(r.reason!) ?? 0) + 1);
-    console.log(
-      '  skipped: ' +
-        [...reasons].map(([reason, n]) => `${n}×${reason}`).join(', '),
-    );
+    console.log('  skipped: ' + [...reasons].map(([reason, n]) => `${n}×${reason}`).join(', '));
   }
 
   if (failed.length > 0) {

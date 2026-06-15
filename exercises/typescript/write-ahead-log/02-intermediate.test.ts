@@ -121,7 +121,9 @@ describe('Write-Ahead Log - Intermediate: Checkpoint Recovery', () => {
   it('should recover nothing from empty WAL', () => {
     const wal = new CheckpointWAL();
     let count = 0;
-    const recovered = wal.recover(() => { count++; });
+    const recovered = wal.recover(() => {
+      count++;
+    });
 
     expect(recovered).toBe(0);
     expect(count).toBe(0);

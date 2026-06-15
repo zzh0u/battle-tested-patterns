@@ -20,15 +20,25 @@ function diff<T>(oldList: T[], newList: T[]): Op<T>[] {
 
   while (oi < oldList.length && ni < newList.length) {
     if (oldList[oi] === newList[ni]) {
-      ops.push({ type: 'keep', value: oldList[oi]! }); oi++; ni++;
+      ops.push({ type: 'keep', value: oldList[oi]! });
+      oi++;
+      ni++;
     } else if (!newList.slice(ni).includes(oldList[oi]!)) {
-      ops.push({ type: 'delete', value: oldList[oi]! }); oi++;
+      ops.push({ type: 'delete', value: oldList[oi]! });
+      oi++;
     } else {
-      ops.push({ type: 'insert', value: newList[ni]! }); ni++;
+      ops.push({ type: 'insert', value: newList[ni]! });
+      ni++;
     }
   }
-  while (oi < oldList.length) { ops.push({ type: 'delete', value: oldList[oi]! }); oi++; }
-  while (ni < newList.length) { ops.push({ type: 'insert', value: newList[ni]! }); ni++; }
+  while (oi < oldList.length) {
+    ops.push({ type: 'delete', value: oldList[oi]! });
+    oi++;
+  }
+  while (ni < newList.length) {
+    ops.push({ type: 'insert', value: newList[ni]! });
+    ni++;
+  }
 
   return ops;
 }
@@ -66,7 +76,13 @@ describe('Diff/Patch - Basic: List Diff', () => {
   });
 
   it('should handle empty lists', () => {
-    expect(diff([], [1, 2])).toEqual([{ type: 'insert', value: 1 }, { type: 'insert', value: 2 }]);
-    expect(diff([1, 2], [])).toEqual([{ type: 'delete', value: 1 }, { type: 'delete', value: 2 }]);
+    expect(diff([], [1, 2])).toEqual([
+      { type: 'insert', value: 1 },
+      { type: 'insert', value: 2 },
+    ]);
+    expect(diff([1, 2], [])).toEqual([
+      { type: 'delete', value: 1 },
+      { type: 'delete', value: 2 },
+    ]);
   });
 });

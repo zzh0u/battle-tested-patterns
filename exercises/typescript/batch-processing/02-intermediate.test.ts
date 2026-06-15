@@ -84,11 +84,7 @@ describe('Batch Processing - Intermediate: Timeout Flush', () => {
   it('should flush when maxSize is reached', () => {
     vi.useFakeTimers();
     const flushed: number[][] = [];
-    const bp = new TimeoutBatchProcessor<number>(
-      (items) => flushed.push([...items]),
-      3,
-      1000,
-    );
+    const bp = new TimeoutBatchProcessor<number>((items) => flushed.push([...items]), 3, 1000);
 
     bp.add(1);
     bp.add(2);
@@ -103,11 +99,7 @@ describe('Batch Processing - Intermediate: Timeout Flush', () => {
   it('should flush on timeout when maxSize not reached', () => {
     vi.useFakeTimers();
     const flushed: number[][] = [];
-    const bp = new TimeoutBatchProcessor<number>(
-      (items) => flushed.push([...items]),
-      10,
-      100,
-    );
+    const bp = new TimeoutBatchProcessor<number>((items) => flushed.push([...items]), 10, 100);
 
     bp.add(1);
     bp.add(2);
@@ -123,11 +115,7 @@ describe('Batch Processing - Intermediate: Timeout Flush', () => {
   it('should handle mixed triggers — size first, then timeout', () => {
     vi.useFakeTimers();
     const flushed: number[][] = [];
-    const bp = new TimeoutBatchProcessor<number>(
-      (items) => flushed.push([...items]),
-      2,
-      500,
-    );
+    const bp = new TimeoutBatchProcessor<number>((items) => flushed.push([...items]), 2, 500);
 
     // First batch: size trigger
     bp.add(1);
@@ -146,11 +134,7 @@ describe('Batch Processing - Intermediate: Timeout Flush', () => {
   it('should skip flush when queue is empty', () => {
     vi.useFakeTimers();
     const flushed: number[][] = [];
-    const bp = new TimeoutBatchProcessor<number>(
-      (items) => flushed.push([...items]),
-      5,
-      100,
-    );
+    const bp = new TimeoutBatchProcessor<number>((items) => flushed.push([...items]), 5, 100);
 
     bp.flush(); // explicit flush on empty queue
     expect(flushed).toHaveLength(0);
@@ -161,11 +145,7 @@ describe('Batch Processing - Intermediate: Timeout Flush', () => {
   it('should handle concurrent adds within same timeout window', () => {
     vi.useFakeTimers();
     const flushed: string[][] = [];
-    const bp = new TimeoutBatchProcessor<string>(
-      (items) => flushed.push([...items]),
-      10,
-      200,
-    );
+    const bp = new TimeoutBatchProcessor<string>((items) => flushed.push([...items]), 10, 200);
 
     bp.add('a');
     vi.advanceTimersByTime(50);

@@ -5,9 +5,14 @@ import { useVizHistory } from '../../.vitepress/theme/composables/useVizHistory'
 
 function withSetup<T>(fn: () => T) {
   let result!: T;
-  const wrapper = mount(defineComponent({
-    setup() { result = fn(); return () => null; },
-  }));
+  const wrapper = mount(
+    defineComponent({
+      setup() {
+        result = fn();
+        return () => null;
+      },
+    }),
+  );
   return { result, unmount: () => wrapper.unmount() };
 }
 
@@ -190,9 +195,7 @@ describe('useVizHistory', () => {
   describe('onRestore callback boundaries', () => {
     it('commit does NOT trigger onRestore (no circular loop)', () => {
       const onRestore = vi.fn();
-      const { result } = withSetup(() =>
-        useVizHistory<number>(0, { onRestore }),
-      );
+      const { result } = withSetup(() => useVizHistory<number>(0, { onRestore }));
       result.commit(1, 'a');
       result.commit(2, 'b');
       result.commit(3, 'c');
@@ -201,9 +204,7 @@ describe('useVizHistory', () => {
 
     it('reset does NOT trigger onRestore', () => {
       const onRestore = vi.fn();
-      const { result } = withSetup(() =>
-        useVizHistory<number>(0, { onRestore }),
-      );
+      const { result } = withSetup(() => useVizHistory<number>(0, { onRestore }));
       result.commit(1);
       result.commit(2);
       result.reset();
@@ -212,9 +213,7 @@ describe('useVizHistory', () => {
 
     it('undo triggers onRestore with correct state', () => {
       const onRestore = vi.fn();
-      const { result } = withSetup(() =>
-        useVizHistory<number>(0, { onRestore }),
-      );
+      const { result } = withSetup(() => useVizHistory<number>(0, { onRestore }));
       result.commit(10);
       result.commit(20);
       result.undo(); // back to 10
@@ -225,9 +224,7 @@ describe('useVizHistory', () => {
 
     it('redo triggers onRestore with correct state', () => {
       const onRestore = vi.fn();
-      const { result } = withSetup(() =>
-        useVizHistory<number>(0, { onRestore }),
-      );
+      const { result } = withSetup(() => useVizHistory<number>(0, { onRestore }));
       result.commit(10);
       result.commit(20);
       result.undo(); // triggers once
@@ -239,9 +236,7 @@ describe('useVizHistory', () => {
 
     it('goto triggers onRestore', () => {
       const onRestore = vi.fn();
-      const { result } = withSetup(() =>
-        useVizHistory<number>(0, { onRestore }),
-      );
+      const { result } = withSetup(() => useVizHistory<number>(0, { onRestore }));
       result.commit(1);
       result.commit(2);
       result.commit(3);
@@ -252,9 +247,7 @@ describe('useVizHistory', () => {
 
     it('goto with invalid index does NOT trigger onRestore', () => {
       const onRestore = vi.fn();
-      const { result } = withSetup(() =>
-        useVizHistory<number>(0, { onRestore }),
-      );
+      const { result } = withSetup(() => useVizHistory<number>(0, { onRestore }));
       result.commit(1);
       result.goto(-1);
       result.goto(99);
@@ -263,9 +256,7 @@ describe('useVizHistory', () => {
 
     it('play triggers onRestore for each step', () => {
       const onRestore = vi.fn();
-      const { result, unmount } = withSetup(() =>
-        useVizHistory<number>(0, { onRestore }),
-      );
+      const { result, unmount } = withSetup(() => useVizHistory<number>(0, { onRestore }));
       result.commit(1);
       result.commit(2);
       result.commit(3);
@@ -285,9 +276,7 @@ describe('useVizHistory', () => {
 
     it('reset after commit then immediate commit works correctly', () => {
       const onRestore = vi.fn();
-      const { result } = withSetup(() =>
-        useVizHistory<number>(0, { onRestore }),
-      );
+      const { result } = withSetup(() => useVizHistory<number>(0, { onRestore }));
       result.commit(1);
       result.commit(2);
       result.reset();
@@ -300,9 +289,7 @@ describe('useVizHistory', () => {
 
     it('rapid consecutive commits do not lose entries', () => {
       const onRestore = vi.fn();
-      const { result } = withSetup(() =>
-        useVizHistory<number>(0, { onRestore }),
-      );
+      const { result } = withSetup(() => useVizHistory<number>(0, { onRestore }));
       for (let i = 1; i <= 50; i++) result.commit(i);
       expect(result.totalSteps.value).toBe(51); // initial + 50
       expect(result.currentIndex.value).toBe(50);
@@ -318,7 +305,9 @@ describe('useVizHistory', () => {
       let restored: number[] | null = null;
       const { result } = withSetup(() =>
         useVizHistory<number[]>([], {
-          onRestore: (s) => { restored = s; },
+          onRestore: (s) => {
+            restored = s;
+          },
         }),
       );
       result.commit([1, 2, 3]);
@@ -332,9 +321,7 @@ describe('useVizHistory', () => {
 
     it('play restart from end triggers onRestore for index 0', () => {
       const onRestore = vi.fn();
-      const { result, unmount } = withSetup(() =>
-        useVizHistory<number>(0, { onRestore }),
-      );
+      const { result, unmount } = withSetup(() => useVizHistory<number>(0, { onRestore }));
       result.commit(1);
       result.commit(2);
       // At end (index 2), play should restart from 0
@@ -374,13 +361,16 @@ describe('useVizHistory', () => {
           onRestore: (s, m) => seen.push([s, m]),
         }),
       );
-      msg = 'm1'; result.commit(1);
-      msg = 'm2'; result.commit(2);
-      msg = 'm3'; result.commit(3);
+      msg = 'm1';
+      result.commit(1);
+      msg = 'm2';
+      result.commit(2);
+      msg = 'm3';
+      result.commit(3);
 
       result.goto(1); // → state 1 / m1
       result.goto(0); // → state 0 / initial snapshot has NO message (TDZ-safe)
-      result.redo();  // → state 1 / m1
+      result.redo(); // → state 1 / m1
       expect(seen).toEqual([
         [1, 'm1'],
         [0, undefined],
@@ -394,7 +384,8 @@ describe('useVizHistory', () => {
       const { result } = withSetup(() =>
         useVizHistory<number>(0, { onRestore, getMessage: () => msg }),
       );
-      msg = 'changed'; result.commit(1);
+      msg = 'changed';
+      result.commit(1);
       // The construction-time initial snapshot intentionally has NO message
       // (getMessage() is not called during setup to avoid declaration-order TDZ
       // in components where the message ref is declared after useVizHistory()).
@@ -403,18 +394,18 @@ describe('useVizHistory', () => {
 
       // reset() runs after setup, so it safely re-captures the current message
       // for the fresh initial snapshot.
-      msg = 'after reset'; result.reset();
+      msg = 'after reset';
+      result.reset();
       onRestore.mockClear();
-      msg = 'changed again'; result.commit(9);
+      msg = 'changed again';
+      result.commit(9);
       result.undo();
       expect(onRestore).toHaveBeenLastCalledWith(0, 'after reset');
     });
 
     it('message is omitted (undefined) when getMessage is not provided', () => {
       const onRestore = vi.fn();
-      const { result } = withSetup(() =>
-        useVizHistory<number>(0, { onRestore }),
-      );
+      const { result } = withSetup(() => useVizHistory<number>(0, { onRestore }));
       result.commit(1);
       result.undo();
       expect(onRestore).toHaveBeenLastCalledWith(0, undefined);

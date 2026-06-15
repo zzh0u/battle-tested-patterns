@@ -4,7 +4,11 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <div class="viz-container viz-skeleton" role="status" :aria-label="t('Loading visualization', '加载可视化中')">
+  <div
+    class="viz-container viz-skeleton"
+    role="status"
+    :aria-label="t('Loading visualization', '加载可视化中')"
+  >
     <div class="viz-skel-title"></div>
 
     <div class="heap-skel-tree">
@@ -49,11 +53,17 @@ const { t } = useI18n();
 
 <style scoped>
 @keyframes viz-shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
-.viz-skeleton { animation: none; }
+.viz-skeleton {
+  animation: none;
+}
 
 .viz-skel-title,
 .viz-skel-btn,
@@ -124,8 +134,12 @@ const { t } = useI18n();
   height: 30px;
 }
 
-.viz-skel-btn--danger { width: 56px; }
-.viz-skel-btn--short { width: 56px; }
+.viz-skel-btn--danger {
+  width: 56px;
+}
+.viz-skel-btn--short {
+  width: 56px;
+}
 
 .heap-skel-slider {
   width: 100px;

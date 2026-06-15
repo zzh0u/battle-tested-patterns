@@ -3,7 +3,8 @@ import { mermaidMarkdownPlugin } from './plugins/mermaid-markdown-it';
 
 const SITE_URL = 'https://totoro-jam.github.io/battle-tested-patterns';
 const DEFAULT_TITLE = 'Battle-Tested Patterns — Code from React, Linux, Go & More';
-const DEFAULT_DESC = '46 production-proven patterns with interactive visualizations, precise source links, multi-language implementations, and exercises.';
+const DEFAULT_DESC =
+  '46 production-proven patterns with interactive visualizations, precise source links, multi-language implementations, and exercises.';
 const OG_IMAGE = `${SITE_URL}/og-image.png`;
 
 export default defineConfig({
@@ -28,9 +29,7 @@ export default defineConfig({
 
   transformHead({ pageData }) {
     const head: HeadConfig[] = [];
-    const title = pageData.title
-      ? `${pageData.title} | Battle-Tested Patterns`
-      : DEFAULT_TITLE;
+    const title = pageData.title ? `${pageData.title} | Battle-Tested Patterns` : DEFAULT_TITLE;
     const desc = pageData.frontmatter.description || DEFAULT_DESC;
     const url = `${SITE_URL}/${pageData.relativePath.replace(/index\.md$/, '').replace(/\.md$/, '')}`;
 
@@ -43,10 +42,37 @@ export default defineConfig({
     const isZh = pageData.relativePath.startsWith('zh/');
     const enPath = isZh ? pageData.relativePath.replace(/^zh\//, '') : pageData.relativePath;
     const zhPath = isZh ? pageData.relativePath : `zh/${pageData.relativePath}`;
-    head.push(['link', { rel: 'canonical', href: `${SITE_URL}/${enPath.replace(/index\.md$/, '').replace(/\.md$/, '')}` }]);
-    head.push(['link', { rel: 'alternate', hreflang: 'en', href: `${SITE_URL}/${enPath.replace(/index\.md$/, '').replace(/\.md$/, '')}` }]);
-    head.push(['link', { rel: 'alternate', hreflang: 'zh', href: `${SITE_URL}/${zhPath.replace(/index\.md$/, '').replace(/\.md$/, '')}` }]);
-    head.push(['link', { rel: 'alternate', hreflang: 'x-default', href: `${SITE_URL}/${enPath.replace(/index\.md$/, '').replace(/\.md$/, '')}` }]);
+    head.push([
+      'link',
+      {
+        rel: 'canonical',
+        href: `${SITE_URL}/${enPath.replace(/index\.md$/, '').replace(/\.md$/, '')}`,
+      },
+    ]);
+    head.push([
+      'link',
+      {
+        rel: 'alternate',
+        hreflang: 'en',
+        href: `${SITE_URL}/${enPath.replace(/index\.md$/, '').replace(/\.md$/, '')}`,
+      },
+    ]);
+    head.push([
+      'link',
+      {
+        rel: 'alternate',
+        hreflang: 'zh',
+        href: `${SITE_URL}/${zhPath.replace(/index\.md$/, '').replace(/\.md$/, '')}`,
+      },
+    ]);
+    head.push([
+      'link',
+      {
+        rel: 'alternate',
+        hreflang: 'x-default',
+        href: `${SITE_URL}/${enPath.replace(/index\.md$/, '').replace(/\.md$/, '')}`,
+      },
+    ]);
 
     const isPattern = /^(zh\/)?patterns\/[^/]+\/index\.md$/.test(pageData.relativePath);
     const isHome = pageData.relativePath === 'index.md' || pageData.relativePath === 'zh/index.md';
@@ -63,13 +89,26 @@ export default defineConfig({
       };
       head.push(['script', { type: 'application/ld+json' }, JSON.stringify(ld)]);
     } else if (isPattern) {
-      const slug = pageData.relativePath.replace(/^zh\//, '').replace(/^patterns\//, '').replace(/\/index\.md$/, '');
+      const slug = pageData.relativePath
+        .replace(/^zh\//, '')
+        .replace(/^patterns\//, '')
+        .replace(/\/index\.md$/, '');
       const breadcrumbs = {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: isZh ? '首页' : 'Home', item: isZh ? `${SITE_URL}/zh/` : `${SITE_URL}/` },
-          { '@type': 'ListItem', position: 2, name: isZh ? '模式' : 'Patterns', item: isZh ? `${SITE_URL}/zh/patterns/` : `${SITE_URL}/patterns/` },
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: isZh ? '首页' : 'Home',
+            item: isZh ? `${SITE_URL}/zh/` : `${SITE_URL}/`,
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: isZh ? '模式' : 'Patterns',
+            item: isZh ? `${SITE_URL}/zh/patterns/` : `${SITE_URL}/patterns/`,
+          },
           { '@type': 'ListItem', position: 3, name: pageData.title },
         ],
       };
@@ -82,7 +121,9 @@ export default defineConfig({
         author: { '@type': 'Person', name: 'Totoro-jam' },
         publisher: { '@type': 'Organization', name: 'Battle-Tested Patterns' },
         inLanguage: isZh ? 'zh-CN' : 'en',
-        ...(pageData.lastUpdated ? { dateModified: new Date(pageData.lastUpdated).toISOString() } : {}),
+        ...(pageData.lastUpdated
+          ? { dateModified: new Date(pageData.lastUpdated).toISOString() }
+          : {}),
       };
       head.push(['script', { type: 'application/ld+json' }, JSON.stringify(breadcrumbs)]);
       head.push(['script', { type: 'application/ld+json' }, JSON.stringify(article)]);
@@ -104,11 +145,25 @@ export default defineConfig({
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ['meta', { name: 'twitter:image', content: OG_IMAGE }],
     ['meta', { name: 'author', content: 'Totoro-jam' }],
-    ['meta', { name: 'keywords', content: 'programming patterns, design patterns, interactive visualizations, system design, data structures, concurrency patterns, algorithms, React, Linux, Go, Rust, TypeScript, Python, Redis, PostgreSQL, Kafka, production code, computer science, software engineering' }],
+    [
+      'meta',
+      {
+        name: 'keywords',
+        content:
+          'programming patterns, design patterns, interactive visualizations, system design, data structures, concurrency patterns, algorithms, React, Linux, Go, Rust, TypeScript, Python, Redis, PostgreSQL, Kafka, production code, computer science, software engineering',
+      },
+    ],
     // Privacy-friendly analytics (Umami Cloud, no cookies, no PII). The
     // website-id is a public identifier, not a secret. Loaded with `defer` so
     // a failed fetch never blocks page rendering.
-    ['script', { defer: '', src: 'https://cloud.umami.is/script.js', 'data-website-id': 'b5a7c694-8975-4f11-a9c9-5982bf2a4248' }],
+    [
+      'script',
+      {
+        defer: '',
+        src: 'https://cloud.umami.is/script.js',
+        'data-website-id': 'b5a7c694-8975-4f11-a9c9-5982bf2a4248',
+      },
+    ],
   ],
 
   locales: {
@@ -150,9 +205,7 @@ export default defineConfig({
             },
             {
               text: 'Community',
-              items: [
-                { text: 'How to Contribute', link: '/guide/how-to-contribute' },
-              ],
+              items: [{ text: 'How to Contribute', link: '/guide/how-to-contribute' }],
             },
           ],
           '/patterns/': [
@@ -290,9 +343,7 @@ export default defineConfig({
             },
             {
               text: '社区',
-              items: [
-                { text: '如何贡献', link: '/zh/guide/how-to-contribute' },
-              ],
+              items: [{ text: '如何贡献', link: '/zh/guide/how-to-contribute' }],
             },
           ],
           '/zh/patterns/': [
@@ -321,7 +372,10 @@ export default defineConfig({
                 { text: 'Actor 模型 (Actor Model)', link: '/zh/patterns/actor-model/' },
                 { text: '工作窃取 (Work Stealing)', link: '/zh/patterns/work-stealing/' },
                 { text: 'MVCC 多版本并发控制 (MVCC)', link: '/zh/patterns/mvcc/' },
-                { text: '协作调度 (Cooperative Scheduling)', link: '/zh/patterns/cooperative-scheduling/' },
+                {
+                  text: '协作调度 (Cooperative Scheduling)',
+                  link: '/zh/patterns/cooperative-scheduling/',
+                },
                 { text: '双缓冲 (Double Buffering)', link: '/zh/patterns/double-buffering/' },
                 { text: '背压 (Backpressure)', link: '/zh/patterns/backpressure/' },
                 { text: '事件循环 (Event Loop)', link: '/zh/patterns/event-loop/' },
@@ -337,9 +391,15 @@ export default defineConfig({
                 { text: '指数退避重试 (Retry with Backoff)', link: '/zh/patterns/retry-backoff/' },
                 { text: '预写日志 (Write-Ahead Log)', link: '/zh/patterns/write-ahead-log/' },
                 { text: '批处理 (Batch Processing)', link: '/zh/patterns/batch-processing/' },
-                { text: '一致性哈希 (Consistent Hashing)', link: '/zh/patterns/consistent-hashing/' },
+                {
+                  text: '一致性哈希 (Consistent Hashing)',
+                  link: '/zh/patterns/consistent-hashing/',
+                },
                 { text: '依赖图 (Dependency Graph)', link: '/zh/patterns/dependency-graph/' },
-                { text: '中间件 / 管道链 (Middleware / Pipeline Chain)', link: '/zh/patterns/middleware-chain/' },
+                {
+                  text: '中间件 / 管道链 (Middleware / Pipeline Chain)',
+                  link: '/zh/patterns/middleware-chain/',
+                },
                 { text: '注册表 (Registry)', link: '/zh/patterns/registry/' },
                 { text: '脏标记 (Dirty Flag)', link: '/zh/patterns/dirty-flag/' },
                 { text: 'LSM 树 (Log-Structured Merge Tree)', link: '/zh/patterns/lsm-tree/' },
@@ -425,12 +485,11 @@ export default defineConfig({
   lastUpdated: true,
 
   themeConfig: {
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/Totoro-jam/battle-tested-patterns' },
-    ],
+    socialLinks: [{ icon: 'github', link: 'https://github.com/Totoro-jam/battle-tested-patterns' }],
     notFound: {
       title: 'Page Not Found',
-      quote: 'Looks like you wandered off the path. But don\'t worry — 46 battle-tested patterns are waiting for you.',
+      quote:
+        "Looks like you wandered off the path. But don't worry — 46 battle-tested patterns are waiting for you.",
       linkLabel: 'Go to home page',
       linkText: 'Take me home',
     },
@@ -449,7 +508,10 @@ export default defineConfig({
                   .filter((s: any) => s.isWordLike)
                   .map((s: any) => s.segment.toLowerCase());
               }
-              return text.split(/[\s-]+/).filter(Boolean).map(w => w.toLowerCase());
+              return text
+                .split(/[\s-]+/)
+                .filter(Boolean)
+                .map((w) => w.toLowerCase());
             },
           },
           searchOptions: {

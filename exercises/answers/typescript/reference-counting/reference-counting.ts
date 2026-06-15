@@ -37,7 +37,9 @@ class RefCounted<T> {
     }
   }
 
-  refCount(): number { return this.inner.count; }
+  refCount(): number {
+    return this.inner.count;
+  }
 
   value(): T {
     if (!this.owned) throw new Error('Reference has been dropped');

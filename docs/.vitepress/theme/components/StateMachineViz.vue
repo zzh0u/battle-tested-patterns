@@ -23,10 +23,12 @@ const transitions: Record<State, Partial<Record<Event, State>>> = {
 
 const currentState = ref<State>('idle');
 const history = ref<{ from: State; event: Event; to: State }[]>([]);
-const message = ref(t(
-  'Click an event button to trigger a state transition — or pick a scenario to see real-world patterns',
-  '点击事件按钮触发状态转换 — 或选择场景查看实际模式'
-));
+const message = ref(
+  t(
+    'Click an event button to trigger a state transition — or pick a scenario to see real-world patterns',
+    '点击事件按钮触发状态转换 — 或选择场景查看实际模式',
+  ),
+);
 const lastTransition = ref<string>('');
 let presetRunning = false;
 
@@ -43,7 +45,9 @@ const vizHistory = useVizHistory<VizSnapshot>(
       presetRunning = false;
       currentState.value = snap.currentState;
       history.value = snap.transitions as typeof history.value;
-      lastTransition.value = ''; if (msg !== undefined) message.value = msg; },
+      lastTransition.value = '';
+      if (msg !== undefined) message.value = msg;
+    },
   },
 );
 
@@ -73,7 +77,7 @@ function triggerEvent(event: Event) {
   if (!nextState) {
     message.value = t(
       `Cannot trigger ${event} from ${currentState.value.toUpperCase()} — invalid transitions are impossible by design, not caught at runtime.`,
-      `无法从 ${currentState.value.toUpperCase()} 触发 ${event} — 无效转换在设计上就不可能发生，而非运行时捕获。`
+      `无法从 ${currentState.value.toUpperCase()} 触发 ${event} — 无效转换在设计上就不可能发生，而非运行时捕获。`,
     );
     log(message.value, 'warning');
     return;
@@ -109,16 +113,21 @@ function triggerEvent(event: Event) {
 
   const key = `${from}-${event}-${nextState}`;
   const explanation = explanations[key];
-  message.value = explanation ? t(explanation.en, explanation.zh) : t(
-    `${from.toUpperCase()} —[${event}]→ ${nextState.toUpperCase()}`,
-    `${from.toUpperCase()} —[${event}]→ ${nextState.toUpperCase()}`
-  );
+  message.value = explanation
+    ? t(explanation.en, explanation.zh)
+    : t(
+        `${from.toUpperCase()} —[${event}]→ ${nextState.toUpperCase()}`,
+        `${from.toUpperCase()} —[${event}]→ ${nextState.toUpperCase()}`,
+      );
   log(message.value, 'success');
 
   if (history.value.length > 10) {
     history.value = history.value.slice(-10);
   }
-  vizHistory.commit({ currentState: currentState.value, transitions: history.value }, `${from} → ${nextState}`);
+  vizHistory.commit(
+    { currentState: currentState.value, transitions: history.value },
+    `${from} → ${nextState}`,
+  );
 }
 
 function reset() {
@@ -137,9 +146,27 @@ async function presetHappyPath() {
   reset();
   presetRunning = true;
   const steps: { event: Event; msg: { en: string; zh: string } }[] = [
-    { event: 'FETCH', msg: { en: 'User clicks "Load Data" — transition to LOADING.', zh: '用户点击"加载数据" — 转换到 LOADING。' } },
-    { event: 'RESOLVE', msg: { en: 'API returns 200 OK — transition to SUCCESS. Data is displayed.', zh: 'API 返回 200 OK — 转换到 SUCCESS。数据已显示。' } },
-    { event: 'RESET', msg: { en: 'User navigates away or clicks refresh — back to IDLE. Ready for next request.', zh: '用户导航离开或点击刷新 — 回到 IDLE。准备好处理下一个请求。' } },
+    {
+      event: 'FETCH',
+      msg: {
+        en: 'User clicks "Load Data" — transition to LOADING.',
+        zh: '用户点击"加载数据" — 转换到 LOADING。',
+      },
+    },
+    {
+      event: 'RESOLVE',
+      msg: {
+        en: 'API returns 200 OK — transition to SUCCESS. Data is displayed.',
+        zh: 'API 返回 200 OK — 转换到 SUCCESS。数据已显示。',
+      },
+    },
+    {
+      event: 'RESET',
+      msg: {
+        en: 'User navigates away or clicks refresh — back to IDLE. Ready for next request.',
+        zh: '用户导航离开或点击刷新 — 回到 IDLE。准备好处理下一个请求。',
+      },
+    },
   ];
   for (const step of steps) {
     if (!presetRunning || isAborted()) return;
@@ -152,7 +179,7 @@ async function presetHappyPath() {
   }
   message.value = t(
     'Happy path complete! The state machine guarantees this exact sequence. Compare with boolean flags: isLoading, isError, isSuccess — 8 possible combinations, most invalid.',
-    '正常路径完成！状态机保证了这个精确序列。对比布尔标志：isLoading、isError、isSuccess — 8 种可能组合，大多数无效。'
+    '正常路径完成！状态机保证了这个精确序列。对比布尔标志：isLoading、isError、isSuccess — 8 种可能组合，大多数无效。',
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -163,12 +190,42 @@ async function presetErrorRecovery() {
   reset();
   presetRunning = true;
   const steps: { event: Event; msg: { en: string; zh: string } }[] = [
-    { event: 'FETCH', msg: { en: 'First attempt — FETCH triggered.', zh: '第一次尝试 — 触发 FETCH。' } },
-    { event: 'REJECT', msg: { en: 'Network error! API returns 500 — transition to ERROR.', zh: '网络错误！API 返回 500 — 转换到 ERROR。' } },
-    { event: 'RETRY', msg: { en: 'User clicks "Retry" — back to LOADING. Second attempt.', zh: '用户点击"重试" — 回到 LOADING。第二次尝试。' } },
-    { event: 'REJECT', msg: { en: 'Still failing! Another 500. Back to ERROR.', zh: '仍然失败！又一个 500。回到 ERROR。' } },
-    { event: 'RETRY', msg: { en: 'Third attempt — RETRY again.', zh: '第三次尝试 — 再次 RETRY。' } },
-    { event: 'RESOLVE', msg: { en: 'Success on third try! The retry loop is built into the state machine — no ad-hoc counter needed.', zh: '第三次成功！重试循环内置在状态机中 — 无需临时计数器。' } },
+    {
+      event: 'FETCH',
+      msg: { en: 'First attempt — FETCH triggered.', zh: '第一次尝试 — 触发 FETCH。' },
+    },
+    {
+      event: 'REJECT',
+      msg: {
+        en: 'Network error! API returns 500 — transition to ERROR.',
+        zh: '网络错误！API 返回 500 — 转换到 ERROR。',
+      },
+    },
+    {
+      event: 'RETRY',
+      msg: {
+        en: 'User clicks "Retry" — back to LOADING. Second attempt.',
+        zh: '用户点击"重试" — 回到 LOADING。第二次尝试。',
+      },
+    },
+    {
+      event: 'REJECT',
+      msg: {
+        en: 'Still failing! Another 500. Back to ERROR.',
+        zh: '仍然失败！又一个 500。回到 ERROR。',
+      },
+    },
+    {
+      event: 'RETRY',
+      msg: { en: 'Third attempt — RETRY again.', zh: '第三次尝试 — 再次 RETRY。' },
+    },
+    {
+      event: 'RESOLVE',
+      msg: {
+        en: 'Success on third try! The retry loop is built into the state machine — no ad-hoc counter needed.',
+        zh: '第三次成功！重试循环内置在状态机中 — 无需临时计数器。',
+      },
+    },
     { event: 'RESET', msg: { en: 'Done. Back to IDLE.', zh: '完成。回到 IDLE。' } },
   ];
   for (const step of steps) {
@@ -182,7 +239,7 @@ async function presetErrorRecovery() {
   }
   message.value = t(
     'Error recovery complete! XState and Robot use this exact pattern. The ERROR→RETRY→LOADING loop is explicit — no "impossible state" bugs.',
-    '错误恢复完成！XState 和 Robot 使用完全相同的模式。ERROR→RETRY→LOADING 循环是显式的 — 没有"不可能状态"的 bug。'
+    '错误恢复完成！XState 和 Robot 使用完全相同的模式。ERROR→RETRY→LOADING 循环是显式的 — 没有"不可能状态"的 bug。',
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -193,12 +250,51 @@ async function presetImpossibleStates() {
   reset();
   presetRunning = true;
   const attempts: { event: Event; valid: boolean; msg: { en: string; zh: string } }[] = [
-    { event: 'RESOLVE', valid: false, msg: { en: 'Try RESOLVE from IDLE — blocked! You can\'t succeed without first loading.', zh: '尝试从 IDLE 触发 RESOLVE — 被阻止！你不能不加载就成功。' } },
-    { event: 'RETRY', valid: false, msg: { en: 'Try RETRY from IDLE — blocked! Nothing to retry.', zh: '尝试从 IDLE 触发 RETRY — 被阻止！没有什么可重试的。' } },
-    { event: 'FETCH', valid: true, msg: { en: 'FETCH from IDLE — valid! Now we\'re LOADING.', zh: 'IDLE 触发 FETCH — 有效！现在是 LOADING。' } },
-    { event: 'FETCH', valid: false, msg: { en: 'Try FETCH while LOADING — blocked! Prevents duplicate requests. With booleans, this bug is easy to introduce.', zh: '加载时尝试 FETCH — 被阻止！防止重复请求。使用布尔值时，这种 bug 很容易引入。' } },
-    { event: 'RESET', valid: false, msg: { en: 'Try RESET while LOADING — blocked! Can\'t cancel mid-flight in this model.', zh: '加载时尝试 RESET — 被阻止！在此模型中不能取消进行中的操作。' } },
-    { event: 'RESOLVE', valid: true, msg: { en: 'RESOLVE — valid! Done loading.', zh: 'RESOLVE — 有效！加载完成。' } },
+    {
+      event: 'RESOLVE',
+      valid: false,
+      msg: {
+        en: "Try RESOLVE from IDLE — blocked! You can't succeed without first loading.",
+        zh: '尝试从 IDLE 触发 RESOLVE — 被阻止！你不能不加载就成功。',
+      },
+    },
+    {
+      event: 'RETRY',
+      valid: false,
+      msg: {
+        en: 'Try RETRY from IDLE — blocked! Nothing to retry.',
+        zh: '尝试从 IDLE 触发 RETRY — 被阻止！没有什么可重试的。',
+      },
+    },
+    {
+      event: 'FETCH',
+      valid: true,
+      msg: {
+        en: "FETCH from IDLE — valid! Now we're LOADING.",
+        zh: 'IDLE 触发 FETCH — 有效！现在是 LOADING。',
+      },
+    },
+    {
+      event: 'FETCH',
+      valid: false,
+      msg: {
+        en: 'Try FETCH while LOADING — blocked! Prevents duplicate requests. With booleans, this bug is easy to introduce.',
+        zh: '加载时尝试 FETCH — 被阻止！防止重复请求。使用布尔值时，这种 bug 很容易引入。',
+      },
+    },
+    {
+      event: 'RESET',
+      valid: false,
+      msg: {
+        en: "Try RESET while LOADING — blocked! Can't cancel mid-flight in this model.",
+        zh: '加载时尝试 RESET — 被阻止！在此模型中不能取消进行中的操作。',
+      },
+    },
+    {
+      event: 'RESOLVE',
+      valid: true,
+      msg: { en: 'RESOLVE — valid! Done loading.', zh: 'RESOLVE — 有效！加载完成。' },
+    },
   ];
   for (const attempt of attempts) {
     if (!presetRunning || isAborted()) return;
@@ -213,7 +309,7 @@ async function presetImpossibleStates() {
   }
   message.value = t(
     'State machines make impossible states impossible. With 4 states and 5 events, only 5 transitions are valid out of 20 possible — 75% of bugs eliminated by design.',
-    '状态机使不可能的状态变得不可能。4 个状态和 5 个事件，20 种可能中只有 5 种转换有效 — 设计上消除了 75% 的 bug。'
+    '状态机使不可能的状态变得不可能。4 个状态和 5 个事件，20 种可能中只有 5 种转换有效 — 设计上消除了 75% 的 bug。',
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -249,7 +345,12 @@ function edgeLabelPos(from: State, to: State, curve: number): { x: number; y: nu
   <div class="viz-container">
     <div class="viz-title">{{ t('Interactive State Machine', '交互式状态机') }}</div>
 
-    <svg viewBox="0 0 380 280" class="sm-svg" role="img" :aria-label="t('State machine diagram', '状态机图')">
+    <svg
+      viewBox="0 0 380 280"
+      class="sm-svg"
+      role="img"
+      :aria-label="t('State machine diagram', '状态机图')"
+    >
       <defs>
         <marker id="sm-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
           <polygon points="0 0, 8 3, 0 6" fill="var(--viz-border)" />
@@ -264,9 +365,17 @@ function edgeLabelPos(from: State, to: State, curve: number): { x: number; y: nu
         <path
           :d="edgePath(edge.from as State, edge.to as State, edge.curve)"
           fill="none"
-          :stroke="lastTransition === `${edge.from}-${edge.event}-${edge.to}` ? 'var(--viz-warning)' : 'var(--viz-border)'"
+          :stroke="
+            lastTransition === `${edge.from}-${edge.event}-${edge.to}`
+              ? 'var(--viz-warning)'
+              : 'var(--viz-border)'
+          "
           :stroke-width="lastTransition === `${edge.from}-${edge.event}-${edge.to}` ? 2.5 : 1.5"
-          :marker-end="lastTransition === `${edge.from}-${edge.event}-${edge.to}` ? 'url(#sm-arrow-hl)' : 'url(#sm-arrow)'"
+          :marker-end="
+            lastTransition === `${edge.from}-${edge.event}-${edge.to}`
+              ? 'url(#sm-arrow-hl)'
+              : 'url(#sm-arrow)'
+          "
         />
         <text
           :x="edgeLabelPos(edge.from as State, edge.to as State, edge.curve).x"
@@ -276,11 +385,17 @@ function edgeLabelPos(from: State, to: State, curve: number): { x: number; y: nu
           font-size="9"
           font-family="var(--vp-font-family-mono)"
           font-weight="600"
-        >{{ edge.event }}</text>
+        >
+          {{ edge.event }}
+        </text>
       </g>
 
       <!-- State nodes -->
-      <g v-for="(pos, state) in statePositions" :key="state" :transform="`translate(${pos.x}, ${pos.y})`">
+      <g
+        v-for="(pos, state) in statePositions"
+        :key="state"
+        :transform="`translate(${pos.x}, ${pos.y})`"
+      >
         <circle
           r="30"
           :fill="currentState === state ? stateColors[state as State] : 'var(--vp-c-bg)'"
@@ -295,18 +410,18 @@ function edgeLabelPos(from: State, to: State, curve: number): { x: number; y: nu
           font-size="11"
           font-weight="700"
           font-family="var(--vp-font-family-mono)"
-        >{{ (state as string).toUpperCase() }}</text>
+        >
+          {{ (state as string).toUpperCase() }}
+        </text>
       </g>
     </svg>
 
     <!-- Event history -->
     <div v-if="history.length > 0" class="sm-history">
       <span class="viz-label">{{ t('Log:', '日志：') }}&nbsp;</span>
-      <span
-        v-for="(h, i) in history.slice(-6)"
-        :key="i"
-        class="sm-history-item"
-      >{{ h.event }}</span>
+      <span v-for="(h, i) in history.slice(-6)" :key="i" class="sm-history-item">{{
+        h.event
+      }}</span>
     </div>
 
     <div class="viz-controls">
@@ -319,7 +434,9 @@ function edgeLabelPos(from: State, to: State, curve: number): { x: number; y: nu
         }"
         :disabled="!availableEvents.includes(event)"
         @click="triggerEvent(event)"
-      >{{ event }}</button>
+      >
+        {{ event }}
+      </button>
       <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
       <div class="viz-speed">
         <input type="range" min="0.5" max="3" step="0.5" v-model.number="speed" />
@@ -330,8 +447,12 @@ function edgeLabelPos(from: State, to: State, curve: number): { x: number; y: nu
     <div class="viz-presets">
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
       <button class="viz-btn" @click="presetHappyPath">{{ t('Happy Path', '正常路径') }}</button>
-      <button class="viz-btn" @click="presetErrorRecovery">{{ t('Error Recovery', '错误恢复') }}</button>
-      <button class="viz-btn" @click="presetImpossibleStates">{{ t('Impossible States', '不可能状态') }}</button>
+      <button class="viz-btn" @click="presetErrorRecovery">
+        {{ t('Error Recovery', '错误恢复') }}
+      </button>
+      <button class="viz-btn" @click="presetImpossibleStates">
+        {{ t('Impossible States', '不可能状态') }}
+      </button>
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>

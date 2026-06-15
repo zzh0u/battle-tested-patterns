@@ -36,7 +36,7 @@ function checkBidirectionalRelations(): void {
   for (const pf of patterns) {
     const content = readFileSync(pf.enPath, 'utf-8');
     const sections = extractSections(content);
-    const relatedSection = sections.find(s => s.heading === 'Related Patterns');
+    const relatedSection = sections.find((s) => s.heading === 'Related Patterns');
     if (!relatedSection) continue;
 
     const related = new Set<string>();
@@ -59,7 +59,7 @@ function checkBidirectionalRelations(): void {
     for (const target of related) {
       const targetRelations = relationsMap.get(target);
       if (targetRelations && !targetRelations.has(slug)) {
-        const pf = patterns.find(p => p.slug === slug)!;
+        const pf = patterns.find((p) => p.slug === slug)!;
         report({
           file: pf.enPath,
           severity: 'warning',
@@ -115,7 +115,7 @@ function checkSidebarConsistency(): void {
   }
 
   // Check sidebar doesn't reference non-existent patterns
-  const patternSlugs = new Set(patterns.map(p => p.slug));
+  const patternSlugs = new Set(patterns.map((p) => p.slug));
   for (const slug of sidebarSlugs) {
     if (!patternSlugs.has(slug)) {
       report({
@@ -128,7 +128,9 @@ function checkSidebarConsistency(): void {
   }
 
   if (verbose) {
-    console.log(`  ✓ R2: ${patterns.length} patterns checked against sidebar (${sidebarSlugs.size} sidebar entries)`);
+    console.log(
+      `  ✓ R2: ${patterns.length} patterns checked against sidebar (${sidebarSlugs.size} sidebar entries)`,
+    );
   }
 }
 

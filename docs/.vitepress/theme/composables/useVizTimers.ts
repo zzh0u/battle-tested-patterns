@@ -33,7 +33,11 @@ export function useVizTimers() {
 
   function safeInterval(fn: () => void, ms: number): ReturnType<typeof setInterval> {
     const tid = setInterval(() => {
-      if (aborted) { clearInterval(tid); pendingTimers.delete(tid); return; }
+      if (aborted) {
+        clearInterval(tid);
+        pendingTimers.delete(tid);
+        return;
+      }
       fn();
     }, ms / speed.value);
     pendingTimers.add(tid);
@@ -48,7 +52,9 @@ export function useVizTimers() {
     pendingTimers.clear();
   }
 
-  function isAborted(): boolean { return aborted; }
+  function isAborted(): boolean {
+    return aborted;
+  }
 
   return { delay, safeTimeout, safeInterval, clearAll, speed, isAborted };
 }

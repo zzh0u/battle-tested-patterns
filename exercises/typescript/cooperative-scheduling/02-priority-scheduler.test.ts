@@ -26,7 +26,8 @@ class PriorityScheduler {
 
   /** Process tasks until done or yielded */
   workLoop(shouldYield: () => boolean): { done: boolean; completedIds: string[] } {
-    while (this.queue.length > 0) { // TODO: implement
+    while (this.queue.length > 0) {
+      // TODO: implement
       if (shouldYield()) {
         return { done: false, completedIds: [...this.completed] };
       }
@@ -50,9 +51,30 @@ describe('Cooperative Scheduling - Intermediate: Priority Scheduler', () => {
   it('should process tasks in priority order', () => {
     const s = new PriorityScheduler();
     const order: string[] = [];
-    s.schedule({ id: 'low', priority: 3, work: () => { order.push('low'); return true; } });
-    s.schedule({ id: 'high', priority: 1, work: () => { order.push('high'); return true; } });
-    s.schedule({ id: 'med', priority: 2, work: () => { order.push('med'); return true; } });
+    s.schedule({
+      id: 'low',
+      priority: 3,
+      work: () => {
+        order.push('low');
+        return true;
+      },
+    });
+    s.schedule({
+      id: 'high',
+      priority: 1,
+      work: () => {
+        order.push('high');
+        return true;
+      },
+    });
+    s.schedule({
+      id: 'med',
+      priority: 2,
+      work: () => {
+        order.push('med');
+        return true;
+      },
+    });
     s.workLoop(() => false);
     expect(order).toEqual(['high', 'med', 'low']);
   });
@@ -84,7 +106,14 @@ describe('Cooperative Scheduling - Intermediate: Priority Scheduler', () => {
   it('should handle multi-step tasks', () => {
     const s = new PriorityScheduler();
     let steps = 0;
-    s.schedule({ id: 'multi', priority: 1, work: () => { steps++; return steps >= 3; } });
+    s.schedule({
+      id: 'multi',
+      priority: 1,
+      work: () => {
+        steps++;
+        return steps >= 3;
+      },
+    });
     s.workLoop(() => false);
     expect(steps).toBe(3);
   });

@@ -15,22 +15,39 @@ type Op<T> =
 
 function diff<T>(oldList: T[], newList: T[]): Op<T>[] {
   const ops: Op<T>[] = []; // TODO: implement (same as 01-basic)
-  let oi = 0, ni = 0;
+  let oi = 0,
+    ni = 0;
   while (oi < oldList.length && ni < newList.length) {
-    if (oldList[oi] === newList[ni]) { ops.push({ type: 'keep', value: oldList[oi]! }); oi++; ni++; }
-    else if (!newList.slice(ni).includes(oldList[oi]!)) { ops.push({ type: 'delete', value: oldList[oi]! }); oi++; }
-    else { ops.push({ type: 'insert', value: newList[ni]! }); ni++; }
+    if (oldList[oi] === newList[ni]) {
+      ops.push({ type: 'keep', value: oldList[oi]! });
+      oi++;
+      ni++;
+    } else if (!newList.slice(ni).includes(oldList[oi]!)) {
+      ops.push({ type: 'delete', value: oldList[oi]! });
+      oi++;
+    } else {
+      ops.push({ type: 'insert', value: newList[ni]! });
+      ni++;
+    }
   }
-  while (oi < oldList.length) { ops.push({ type: 'delete', value: oldList[oi]! }); oi++; }
-  while (ni < newList.length) { ops.push({ type: 'insert', value: newList[ni]! }); ni++; }
+  while (oi < oldList.length) {
+    ops.push({ type: 'delete', value: oldList[oi]! });
+    oi++;
+  }
+  while (ni < newList.length) {
+    ops.push({ type: 'insert', value: newList[ni]! });
+    ni++;
+  }
   return ops;
 }
 
 /** Apply patch operations to produce the new list */
 function patch<T>(ops: Op<T>[]): T[] {
   return ops // TODO: implement (hint: filter out deletes, map to values)
-    .filter((op): op is Extract<Op<T>, { type: 'keep' | 'insert' }> =>
-      op.type === 'keep' || op.type === 'insert')
+    .filter(
+      (op): op is Extract<Op<T>, { type: 'keep' | 'insert' }> =>
+        op.type === 'keep' || op.type === 'insert',
+    )
     .map((op) => op.value);
 }
 

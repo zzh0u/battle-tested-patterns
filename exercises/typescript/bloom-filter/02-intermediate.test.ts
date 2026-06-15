@@ -31,9 +31,7 @@ class SpellChecker {
   constructor(expectedWords: number, falsePositiveRate = 0.05) {
     // TODO: implement — calculate optimal size and hash count
     // Optimal bit array size: m = -(n * ln(p)) / (ln(2)^2)
-    this.size = Math.ceil(
-      -(expectedWords * Math.log(falsePositiveRate)) / (Math.log(2) ** 2),
-    );
+    this.size = Math.ceil(-(expectedWords * Math.log(falsePositiveRate)) / Math.log(2) ** 2);
     // Optimal hash count: k = (m/n) * ln(2)
     const k = Math.ceil((this.size / expectedWords) * Math.log(2));
     this.seeds = Array.from({ length: k }, (_, i) => 31 * (i + 1) + 7);
@@ -69,10 +67,26 @@ class SpellChecker {
 
 describe('Bloom Filter - Intermediate: Spell Checker', () => {
   const dictionary = [
-    'apple', 'banana', 'cherry', 'date', 'elderberry',
-    'fig', 'grape', 'honeydew', 'kiwi', 'lemon',
-    'mango', 'nectarine', 'orange', 'papaya', 'quince',
-    'raspberry', 'strawberry', 'tangerine', 'watermelon', 'blueberry',
+    'apple',
+    'banana',
+    'cherry',
+    'date',
+    'elderberry',
+    'fig',
+    'grape',
+    'honeydew',
+    'kiwi',
+    'lemon',
+    'mango',
+    'nectarine',
+    'orange',
+    'papaya',
+    'quince',
+    'raspberry',
+    'strawberry',
+    'tangerine',
+    'watermelon',
+    'blueberry',
   ];
 
   it('should recognize all dictionary words', () => {

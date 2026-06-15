@@ -188,15 +188,19 @@ export function useVizHistory<T>(
   // (undo/redo/goto/play) and call onRestore with the cloned snapshot.
   // This eliminates the manual watch + skipWatch boilerplate in each component.
   if (onRestore) {
-    watch(index, (newIdx) => {
-      if (skipRestore) return;
-      const entry = history.value[newIdx];
-      if (entry) {
-        skipRestore = true;
-        onRestore(clone(entry.state), entry.message);
-        skipRestore = false;
-      }
-    }, { flush: 'sync' });
+    watch(
+      index,
+      (newIdx) => {
+        if (skipRestore) return;
+        const entry = history.value[newIdx];
+        if (entry) {
+          skipRestore = true;
+          onRestore(clone(entry.state), entry.message);
+          skipRestore = false;
+        }
+      },
+      { flush: 'sync' },
+    );
   }
 
   onUnmounted(() => {

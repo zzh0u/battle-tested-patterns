@@ -39,14 +39,14 @@ function fileExists(path: string): boolean {
 
 function dirHasTestFiles(dir: string, ext: string): boolean {
   if (!statSync(dir, { throwIfNoEntry: false })?.isDirectory()) return false;
-  return readdirSync(dir).some(f => f.endsWith(ext));
+  return readdirSync(dir).some((f) => f.endsWith(ext));
 }
 
 function isStubFile(path: string): boolean {
   if (!fileExists(path)) return true;
   const content = readFileSync(path, 'utf-8');
   // A stub file is very short or contains TODO markers
-  const lines = content.split('\n').filter(l => l.trim().length > 0);
+  const lines = content.split('\n').filter((l) => l.trim().length > 0);
   if (lines.length < 5) return true;
   if (/\/\/\s*TODO|#\s*TODO|\/\*\s*TODO/.test(content)) return true;
   return false;
@@ -144,9 +144,7 @@ function main(): void {
   console.log('check-exercises: Verifying teaching loop completeness...\n');
 
   const patterns = discoverPatterns();
-  const filtered = filterPattern
-    ? patterns.filter(p => p.slug === filterPattern)
-    : patterns;
+  const filtered = filterPattern ? patterns.filter((p) => p.slug === filterPattern) : patterns;
 
   if (filtered.length === 0) {
     console.error(`No patterns found${filterPattern ? ` matching "${filterPattern}"` : ''}`);

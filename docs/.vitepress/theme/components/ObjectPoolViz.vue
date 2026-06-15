@@ -46,10 +46,12 @@ function createPool(size: number): PoolObject[] {
 
 const pool = ref<PoolObject[]>(createPool(INITIAL_POOL_SIZE));
 const purposeInput = ref('');
-const message = ref(t(
-  'Pool ready — click "Acquire" to check out an object. Used by database connection pools (HikariCP, pgBouncer), thread pools (Java ExecutorService), and HTTP client pools.',
-  'Object Pool 就绪 — 点击"获取"来签出对象。数据库连接池 (HikariCP、pgBouncer)、线程池 (Java ExecutorService) 和 HTTP 客户端池都使用此模式。'
-));
+const message = ref(
+  t(
+    'Pool ready — click "Acquire" to check out an object. Used by database connection pools (HikariCP, pgBouncer), thread pools (Java ExecutorService), and HTTP client pools.',
+    'Object Pool 就绪 — 点击"获取"来签出对象。数据库连接池 (HikariCP、pgBouncer)、线程池 (Java ExecutorService) 和 HTTP 客户端池都使用此模式。',
+  ),
+);
 
 const totalAcquires = ref(0);
 const totalReleases = ref(0);
@@ -66,7 +68,13 @@ interface ObjectPoolSnapshot {
 
 function snapshotPool(): ObjectPoolSnapshot {
   return {
-    pool: pool.value.map(o => ({ id: o.id, name: o.name, state: o.state, purpose: o.purpose, remaining: o.remaining })),
+    pool: pool.value.map((o) => ({
+      id: o.id,
+      name: o.name,
+      state: o.state,
+      purpose: o.purpose,
+      remaining: o.remaining,
+    })),
     totalAcquires: totalAcquires.value,
     totalReleases: totalReleases.value,
     poolHits: poolHits.value,
@@ -76,7 +84,13 @@ function snapshotPool(): ObjectPoolSnapshot {
 
 const history = useVizHistory<ObjectPoolSnapshot>(
   {
-    pool: createPool(INITIAL_POOL_SIZE).map(o => ({ id: o.id, name: o.name, state: o.state, purpose: o.purpose, remaining: o.remaining })),
+    pool: createPool(INITIAL_POOL_SIZE).map((o) => ({
+      id: o.id,
+      name: o.name,
+      state: o.state,
+      purpose: o.purpose,
+      remaining: o.remaining,
+    })),
     totalAcquires: 0,
     totalReleases: 0,
     poolHits: 0,
@@ -93,7 +107,7 @@ const history = useVizHistory<ObjectPoolSnapshot>(
           obj.timerId = undefined;
         }
       }
-      pool.value = state.pool.map(o => ({
+      pool.value = state.pool.map((o) => ({
         id: o.id,
         name: o.name,
         state: o.state as PoolObject['state'],
@@ -104,20 +118,25 @@ const history = useVizHistory<ObjectPoolSnapshot>(
       totalAcquires.value = state.totalAcquires;
       totalReleases.value = state.totalReleases;
       poolHits.value = state.poolHits;
-      poolMisses.value = state.poolMisses; if (msg !== undefined) message.value = msg; },
+      poolMisses.value = state.poolMisses;
+      if (msg !== undefined) message.value = msg;
+    },
   },
 );
 
-const inUseCount = computed(() =>
-  pool.value.filter((o) => o.state === 'in-use').length,
-);
-const availableCount = computed(() =>
-  pool.value.filter((o) => o.state === 'available').length,
-);
+const inUseCount = computed(() => pool.value.filter((o) => o.state === 'in-use').length);
+const availableCount = computed(() => pool.value.filter((o) => o.state === 'available').length);
 const poolSize = computed(() => pool.value.length);
 const isExhausted = computed(() => availableCount.value === 0);
 
-const defaultPurposes = ['HTTP conn', 'DB conn', 'Worker thread', 'File handle', 'Socket', 'gRPC channel'];
+const defaultPurposes = [
+  'HTTP conn',
+  'DB conn',
+  'Worker thread',
+  'File handle',
+  'Socket',
+  'gRPC channel',
+];
 let purposeIndex = 0;
 
 function getNextPurpose(): string {
@@ -232,8 +251,8 @@ async function presetHighLoad() {
   reset();
   presetRunning = true;
   message.value = t(
-    'High load: acquiring all 5 objects rapidly. Watch the pool exhaust — this is what happens when HikariCP\'s maximumPoolSize is too small for your traffic.',
-    '高负载：快速获取全部 5 个对象。观察池耗尽 — 当 HikariCP 的 maximumPoolSize 对流量来说太小时就会发生这种情况。'
+    "High load: acquiring all 5 objects rapidly. Watch the pool exhaust — this is what happens when HikariCP's maximumPoolSize is too small for your traffic.",
+    '高负载：快速获取全部 5 个对象。观察池耗尽 — 当 HikariCP 的 maximumPoolSize 对流量来说太小时就会发生这种情况。',
   );
   await delay(600);
   if (!presetRunning || isAborted()) return;
@@ -247,7 +266,7 @@ async function presetHighLoad() {
   acquire();
   message.value = t(
     'Pool exhausted! The 6th request failed. Options: grow the pool (dynamic sizing), queue the request (bounded waiting), or reject fast (fail-open). HikariCP uses connectionTimeout to decide when to give up.',
-    '池耗尽！第 6 个请求失败。选项：扩容（动态调整）、排队请求（有界等待）或快速拒绝（快速失败）。HikariCP 使用 connectionTimeout 决定何时放弃。'
+    '池耗尽！第 6 个请求失败。选项：扩容（动态调整）、排队请求（有界等待）或快速拒绝（快速失败）。HikariCP 使用 connectionTimeout 决定何时放弃。',
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -259,7 +278,7 @@ async function presetAcquireRelease() {
   presetRunning = true;
   message.value = t(
     'Acquire-release cycle: acquire 3 objects, return 2, acquire 2 more. The returned objects are reused — no allocation cost. This is the core value proposition of object pooling.',
-    '获取-归还循环：获取 3 个对象，归还 2 个，再获取 2 个。归还的对象被重用 — 无分配成本。这是对象池的核心价值主张。'
+    '获取-归还循环：获取 3 个对象，归还 2 个，再获取 2 个。归还的对象被重用 — 无分配成本。这是对象池的核心价值主张。',
   );
   await delay(600);
   if (!presetRunning || isAborted()) return;
@@ -270,7 +289,7 @@ async function presetAcquireRelease() {
   }
   await delay(500);
   if (!presetRunning || isAborted()) return;
-  const inUse = pool.value.filter(o => o.state === 'in-use');
+  const inUse = pool.value.filter((o) => o.state === 'in-use');
   if (inUse.length >= 2) {
     returnObject(inUse[0]);
     await delay(300);
@@ -287,7 +306,7 @@ async function presetAcquireRelease() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'Objects were reused — no new allocation needed. In JDBC pools, creating a new connection takes 5-50ms (TCP + TLS + auth). Reuse takes <0.1ms. That is 50-500x faster.',
-    '对象被重用 — 无需新分配。在 JDBC 池中，创建新连接需 5-50ms (TCP + TLS + auth)。重用只需 <0.1ms。快 50-500 倍。'
+    '对象被重用 — 无需新分配。在 JDBC 池中，创建新连接需 5-50ms (TCP + TLS + auth)。重用只需 <0.1ms。快 50-500 倍。',
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -298,8 +317,8 @@ async function presetDynamicGrowth() {
   reset();
   presetRunning = true;
   message.value = t(
-    'Dynamic growth: exhaust the pool, then grow it. This models HikariCP\'s minimumIdle vs maximumPoolSize — start small, grow on demand, shrink when idle.',
-    '动态增长：耗尽池，然后扩容。这模拟了 HikariCP 的 minimumIdle 与 maximumPoolSize — 小规模开始，按需增长，空闲时收缩。'
+    "Dynamic growth: exhaust the pool, then grow it. This models HikariCP's minimumIdle vs maximumPoolSize — start small, grow on demand, shrink when idle.",
+    '动态增长：耗尽池，然后扩容。这模拟了 HikariCP 的 minimumIdle 与 maximumPoolSize — 小规模开始，按需增长，空闲时收缩。',
   );
   await delay(600);
   if (!presetRunning || isAborted()) return;
@@ -317,8 +336,8 @@ async function presetDynamicGrowth() {
   await delay(300);
   if (!presetRunning || isAborted()) return;
   message.value = t(
-    'Pool grew from 5 to 7. The new object was acquired immediately. But beware: unbounded growth causes resource exhaustion. pgBouncer caps at max_client_conn; Go\'s database/sql has SetMaxOpenConns.',
-    '池从 5 增长到 7。新对象立即被获取。但注意：无限增长会导致资源耗尽。pgBouncer 限制 max_client_conn；Go 的 database/sql 有 SetMaxOpenConns。'
+    "Pool grew from 5 to 7. The new object was acquired immediately. But beware: unbounded growth causes resource exhaustion. pgBouncer caps at max_client_conn; Go's database/sql has SetMaxOpenConns.",
+    '池从 5 增长到 7。新对象立即被获取。但注意：无限增长会导致资源耗尽。pgBouncer 限制 max_client_conn；Go 的 database/sql 有 SetMaxOpenConns。',
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -392,10 +411,7 @@ async function presetDynamicGrowth() {
         <div class="op-card-content">
           <div class="op-card-header">
             <span class="op-card-name">{{ obj.name }}</span>
-            <span
-              class="op-card-badge"
-              :style="{ background: stateColor(obj.state) }"
-            >
+            <span class="op-card-badge" :style="{ background: stateColor(obj.state) }">
               {{ obj.state === 'in-use' ? t('IN USE', '使用中') : t('IDLE', '空闲') }}
             </span>
           </div>
@@ -433,7 +449,9 @@ async function presetDynamicGrowth() {
       <button class="viz-btn viz-btn--primary" @click="acquire">{{ t('Acquire', '获取') }}</button>
     </div>
     <div class="viz-controls">
-      <button class="viz-btn" @click="growPool">{{ t(`Grow Pool +${GROW_AMOUNT}`, `扩容 +${GROW_AMOUNT}`) }}</button>
+      <button class="viz-btn" @click="growPool">
+        {{ t(`Grow Pool +${GROW_AMOUNT}`, `扩容 +${GROW_AMOUNT}`) }}
+      </button>
       <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
       <div class="viz-speed">
         <input type="range" min="0.5" max="3" step="0.5" v-model.number="speed" />
@@ -444,8 +462,12 @@ async function presetDynamicGrowth() {
     <div class="viz-presets">
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
       <button class="viz-btn" @click="presetHighLoad">{{ t('High Load', '高负载') }}</button>
-      <button class="viz-btn" @click="presetAcquireRelease">{{ t('Acquire & Release', '获取归还') }}</button>
-      <button class="viz-btn" @click="presetDynamicGrowth">{{ t('Dynamic Growth', '动态增长') }}</button>
+      <button class="viz-btn" @click="presetAcquireRelease">
+        {{ t('Acquire & Release', '获取归还') }}
+      </button>
+      <button class="viz-btn" @click="presetDynamicGrowth">
+        {{ t('Dynamic Growth', '动态增长') }}
+      </button>
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
@@ -510,9 +532,15 @@ async function presetDynamicGrowth() {
   color: var(--viz-text);
 }
 
-.op-stat--primary { color: var(--viz-primary); }
-.op-stat--success { color: var(--viz-success); }
-.op-stat--danger { color: var(--viz-danger); }
+.op-stat--primary {
+  color: var(--viz-primary);
+}
+.op-stat--success {
+  color: var(--viz-success);
+}
+.op-stat--danger {
+  color: var(--viz-danger);
+}
 
 .op-pool {
   display: grid;

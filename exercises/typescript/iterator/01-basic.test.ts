@@ -11,7 +11,9 @@ class Iter<T> {
   constructor(private source: () => Generator<T>) {}
 
   static from<T>(items: T[]): Iter<T> {
-    return new Iter(function* () { yield* items; }); // TODO: implement
+    return new Iter(function* () {
+      yield* items;
+    }); // TODO: implement
   }
 
   map<U>(fn: (x: T) => U): Iter<U> {
@@ -32,7 +34,10 @@ class Iter<T> {
     const source = this.source; // TODO: implement
     return new Iter(function* () {
       let i = 0;
-      for (const item of source()) { if (i++ >= n) break; yield item; }
+      for (const item of source()) {
+        if (i++ >= n) break;
+        yield item;
+      }
     });
   }
 
@@ -55,11 +60,19 @@ describe('Iterator - Basic: Lazy Sequence', () => {
   });
 
   it('should map lazily', () => {
-    expect(Iter.from([1, 2, 3]).map((x) => x * 10).collect()).toEqual([10, 20, 30]);
+    expect(
+      Iter.from([1, 2, 3])
+        .map((x) => x * 10)
+        .collect(),
+    ).toEqual([10, 20, 30]);
   });
 
   it('should filter lazily', () => {
-    expect(Iter.from([1, 2, 3, 4, 5]).filter((x) => x % 2 === 0).collect()).toEqual([2, 4]);
+    expect(
+      Iter.from([1, 2, 3, 4, 5])
+        .filter((x) => x % 2 === 0)
+        .collect(),
+    ).toEqual([2, 4]);
   });
 
   it('should chain map + filter', () => {
@@ -80,6 +93,10 @@ describe('Iterator - Basic: Lazy Sequence', () => {
   });
 
   it('should handle empty source', () => {
-    expect(Iter.from([]).map((x: number) => x * 2).collect()).toEqual([]);
+    expect(
+      Iter.from([])
+        .map((x: number) => x * 2)
+        .collect(),
+    ).toEqual([]);
   });
 });

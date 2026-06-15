@@ -39,9 +39,15 @@ class RingBuffer<T> {
     return this.count > 0 ? this.buffer[this.head] : undefined;
   }
 
-  get size(): number { return this.count; }
-  get isFull(): boolean { return this.count === this.capacity; }
-  get isEmpty(): boolean { return this.count === 0; }
+  get size(): number {
+    return this.count;
+  }
+  get isFull(): boolean {
+    return this.count === this.capacity;
+  }
+  get isEmpty(): boolean {
+    return this.count === 0;
+  }
 }
 
 // ─── Tests (do not modify below this line) ───────────────────────
@@ -49,7 +55,9 @@ class RingBuffer<T> {
 describe('Ring Buffer - Basic: Circular Queue', () => {
   it('should enqueue and dequeue in FIFO order', () => {
     const rb = new RingBuffer<number>(4);
-    rb.enqueue(1); rb.enqueue(2); rb.enqueue(3);
+    rb.enqueue(1);
+    rb.enqueue(2);
+    rb.enqueue(3);
     expect(rb.dequeue()).toBe(1);
     expect(rb.dequeue()).toBe(2);
     expect(rb.dequeue()).toBe(3);
@@ -71,9 +79,13 @@ describe('Ring Buffer - Basic: Circular Queue', () => {
 
   it('should wrap around correctly', () => {
     const rb = new RingBuffer<number>(3);
-    rb.enqueue(1); rb.enqueue(2); rb.enqueue(3);
-    rb.dequeue(); rb.dequeue();
-    rb.enqueue(4); rb.enqueue(5);
+    rb.enqueue(1);
+    rb.enqueue(2);
+    rb.enqueue(3);
+    rb.dequeue();
+    rb.dequeue();
+    rb.enqueue(4);
+    rb.enqueue(5);
     expect(rb.dequeue()).toBe(3);
     expect(rb.dequeue()).toBe(4);
     expect(rb.dequeue()).toBe(5);
@@ -82,12 +94,18 @@ describe('Ring Buffer - Basic: Circular Queue', () => {
   it('should track size correctly through wrap-around', () => {
     const rb = new RingBuffer<number>(2);
     expect(rb.size).toBe(0);
-    rb.enqueue(1); expect(rb.size).toBe(1);
-    rb.enqueue(2); expect(rb.size).toBe(2);
-    rb.dequeue();  expect(rb.size).toBe(1);
-    rb.enqueue(3); expect(rb.size).toBe(2);
-    rb.dequeue();  expect(rb.size).toBe(1);
-    rb.dequeue();  expect(rb.size).toBe(0);
+    rb.enqueue(1);
+    expect(rb.size).toBe(1);
+    rb.enqueue(2);
+    expect(rb.size).toBe(2);
+    rb.dequeue();
+    expect(rb.size).toBe(1);
+    rb.enqueue(3);
+    expect(rb.size).toBe(2);
+    rb.dequeue();
+    expect(rb.size).toBe(1);
+    rb.dequeue();
+    expect(rb.size).toBe(0);
   });
 
   it('should peek without removing', () => {

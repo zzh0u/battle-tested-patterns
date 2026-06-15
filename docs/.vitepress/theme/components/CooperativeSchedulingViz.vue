@@ -24,10 +24,12 @@ const ballY = ref(0);
 const ballDir = ref(1);
 const ballAnimating = ref(true);
 const timeline = ref<Array<{ type: 'work' | 'yield' | 'idle'; chunk: number }>>([]);
-const message = ref(t(
-  'Toggle mode and click "Start Long Task" — or pick a scenario to compare blocking vs cooperative',
-  '切换模式并点击"启动长任务" — 或选择场景对比阻塞与协作调度'
-));
+const message = ref(
+  t(
+    'Toggle mode and click "Start Long Task" — or pick a scenario to compare blocking vs cooperative',
+    '切换模式并点击"启动长任务" — 或选择场景对比阻塞与协作调度',
+  ),
+);
 let presetRunning = false;
 
 interface CsSnapshot {
@@ -45,19 +47,30 @@ const vizHistory = useVizHistory<CsSnapshot>(
       clearAll();
       cooperative.value = snapshot.cooperative;
       progress.value = snapshot.progress;
-      timeline.value = snapshot.timeline as Array<{ type: 'work' | 'yield' | 'idle'; chunk: number }>;
+      timeline.value = snapshot.timeline as Array<{
+        type: 'work' | 'yield' | 'idle';
+        chunk: number;
+      }>;
       running.value = false;
       blocked.value = false;
-      yieldGap.value = false; if (msg !== undefined) message.value = msg; },
-  }
+      yieldGap.value = false;
+      if (msg !== undefined) message.value = msg;
+    },
+  },
 );
 
 function startBallAnimation() {
   safeInterval(() => {
     if (!ballAnimating.value) return;
     ballY.value += ballDir.value * 3;
-    if (ballY.value >= 40) { ballY.value = 40; ballDir.value = -1; }
-    if (ballY.value <= 0) { ballY.value = 0; ballDir.value = 1; }
+    if (ballY.value >= 40) {
+      ballY.value = 40;
+      ballDir.value = -1;
+    }
+    if (ballY.value <= 0) {
+      ballY.value = 0;
+      ballDir.value = 1;
+    }
   }, 30);
 }
 
@@ -83,7 +96,7 @@ function runBlocking() {
   ballAnimating.value = false;
   message.value = t(
     'BLOCKING: Main thread is frozen! UI cannot update (ball stops). This is what happens with long synchronous loops in JavaScript.',
-    '阻塞中：主线程被冻结！UI 无法更新（球停止）。这就是 JavaScript 中长同步循环会发生的情况。'
+    '阻塞中：主线程被冻结！UI 无法更新（球停止）。这就是 JavaScript 中长同步循环会发生的情况。',
   );
   log(message.value, 'error');
 
@@ -95,10 +108,13 @@ function runBlocking() {
       running.value = false;
       message.value = t(
         `Done! All ${TOTAL_UNITS} units processed in one blocking run. UI was frozen the entire time — a 200ms task would cause visible jank in a 60fps app.`,
-        `完成！所有 ${TOTAL_UNITS} 个单元在一次阻塞运行中处理完毕。UI 全程冻结 — 200ms 的任务会在 60fps 应用中造成明显卡顿。`
+        `完成！所有 ${TOTAL_UNITS} 个单元在一次阻塞运行中处理完毕。UI 全程冻结 — 200ms 的任务会在 60fps 应用中造成明显卡顿。`,
       );
       log(message.value, 'warning');
-      vizHistory.commit({ cooperative: cooperative.value, progress: progress.value, timeline: timeline.value }, 'blocking done');
+      vizHistory.commit(
+        { cooperative: cooperative.value, progress: progress.value, timeline: timeline.value },
+        'blocking done',
+      );
       return;
     }
     done++;
@@ -120,7 +136,7 @@ function runCooperative(startUnit: number) {
 
   message.value = t(
     `Chunk ${chunkNum + 1}: processing units ${startUnit + 1}-${chunkEnd}. The "yield" gap lets the browser paint, handle events, and run requestAnimationFrame.`,
-    `分块 ${chunkNum + 1}：正在处理第 ${startUnit + 1}-${chunkEnd} 个单元。"让出"间隙让浏览器绘制、处理事件和运行 requestAnimationFrame。`
+    `分块 ${chunkNum + 1}：正在处理第 ${startUnit + 1}-${chunkEnd} 个单元。"让出"间隙让浏览器绘制、处理事件和运行 requestAnimationFrame。`,
   );
   log(message.value, 'info');
 
@@ -131,20 +147,26 @@ function runCooperative(startUnit: number) {
         ballAnimating.value = true;
         message.value = t(
           `Done! ${TOTAL_UNITS} units in ${Math.ceil(TOTAL_UNITS / CHUNK_SIZE)} chunks. UI stayed responsive throughout! React's fiber scheduler uses this exact pattern — work in 5ms chunks, then yield to the browser.`,
-          `完成！${TOTAL_UNITS} 个单元分 ${Math.ceil(TOTAL_UNITS / CHUNK_SIZE)} 块处理。UI 全程保持响应！React 的 fiber 调度器使用完全相同的模式 — 每次工作 5ms，然后让出给浏览器。`
+          `完成！${TOTAL_UNITS} 个单元分 ${Math.ceil(TOTAL_UNITS / CHUNK_SIZE)} 块处理。UI 全程保持响应！React 的 fiber 调度器使用完全相同的模式 — 每次工作 5ms，然后让出给浏览器。`,
         );
         log(message.value, 'success');
-        vizHistory.commit({ cooperative: cooperative.value, progress: progress.value, timeline: timeline.value }, 'cooperative done');
+        vizHistory.commit(
+          { cooperative: cooperative.value, progress: progress.value, timeline: timeline.value },
+          'cooperative done',
+        );
         return;
       }
       yieldGap.value = true;
       ballAnimating.value = true;
       timeline.value = [...timeline.value, { type: 'yield', chunk: chunkNum }];
       message.value = t(
-        'Yielding... UI can update (ball bounces). This is like React\'s shouldYield() — check if the browser needs the main thread back.',
-        '让出中...UI 可以更新（球在跳动）。这类似 React 的 shouldYield() — 检查浏览器是否需要回收主线程。'
+        "Yielding... UI can update (ball bounces). This is like React's shouldYield() — check if the browser needs the main thread back.",
+        '让出中...UI 可以更新（球在跳动）。这类似 React 的 shouldYield() — 检查浏览器是否需要回收主线程。',
       );
-      vizHistory.commit({ cooperative: cooperative.value, progress: progress.value, timeline: timeline.value }, `yield chunk ${chunkNum + 1}`);
+      vizHistory.commit(
+        { cooperative: cooperative.value, progress: progress.value, timeline: timeline.value },
+        `yield chunk ${chunkNum + 1}`,
+      );
       safeTimeout(() => {
         yieldGap.value = false;
         runCooperative(done);
@@ -177,8 +199,14 @@ function reset() {
 watch(cooperative, () => {
   if (!running.value) {
     message.value = cooperative.value
-      ? t('Cooperative mode: work split into chunks of 4, yielding between each. Used by React Fiber, scheduler.postTask(), and requestIdleCallback().', '协作模式：工作分为 4 个一组，每组间让出控制权。React Fiber、scheduler.postTask() 和 requestIdleCallback() 使用此模式。')
-      : t('Blocking mode: all 20 units run without yielding. Simulates a long synchronous task on the main thread.', '阻塞模式：20 个单元不间断运行。模拟主线程上的长同步任务。');
+      ? t(
+          'Cooperative mode: work split into chunks of 4, yielding between each. Used by React Fiber, scheduler.postTask(), and requestIdleCallback().',
+          '协作模式：工作分为 4 个一组，每组间让出控制权。React Fiber、scheduler.postTask() 和 requestIdleCallback() 使用此模式。',
+        )
+      : t(
+          'Blocking mode: all 20 units run without yielding. Simulates a long synchronous task on the main thread.',
+          '阻塞模式：20 个单元不间断运行。模拟主线程上的长同步任务。',
+        );
   }
 });
 
@@ -188,8 +216,8 @@ async function presetSideBySide() {
   presetRunning = true;
   clearLog();
   message.value = t(
-    'First: blocking mode — watch the ball freeze. Then: cooperative mode — ball stays smooth. This is the core insight behind React\'s concurrent rendering.',
-    '首先：阻塞模式 — 观察球冻结。然后：协作模式 — 球保持流畅。这是 React 并发渲染的核心洞察。'
+    "First: blocking mode — watch the ball freeze. Then: cooperative mode — ball stays smooth. This is the core insight behind React's concurrent rendering.",
+    '首先：阻塞模式 — 观察球冻结。然后：协作模式 — 球保持流畅。这是 React 并发渲染的核心洞察。',
   );
   log(message.value, 'highlight');
   await delay(1000);
@@ -197,19 +225,23 @@ async function presetSideBySide() {
   cooperative.value = false;
   startTask();
 
-  const waitForDone = () => new Promise<void>((resolve) => {
-    const check = () => {
-      if (!running.value) { resolve(); return; }
+  const waitForDone = () =>
+    new Promise<void>((resolve) => {
+      const check = () => {
+        if (!running.value) {
+          resolve();
+          return;
+        }
+        safeTimeout(check, 100);
+      };
       safeTimeout(check, 100);
-    };
-    safeTimeout(check, 100);
-  });
+    });
   await waitForDone();
   if (!presetRunning || isAborted()) return;
 
   message.value = t(
     'Blocking done — UI was frozen. Now switching to cooperative mode...',
-    '阻塞完成 — UI 已冻结。现在切换到协作模式...'
+    '阻塞完成 — UI 已冻结。现在切换到协作模式...',
   );
   await delay(1200);
   if (!presetRunning || isAborted()) return;
@@ -228,7 +260,7 @@ async function presetReactFiber() {
   clearLog();
   message.value = t(
     'React Fiber simulation: work is split into "units of work". After each chunk, React calls shouldYield() to check if the browser needs the thread. If yes, it pauses and resumes later.',
-    'React Fiber 模拟：工作被分成"工作单元"。每块完成后，React 调用 shouldYield() 检查浏览器是否需要线程。如果是，暂停并稍后恢复。'
+    'React Fiber 模拟：工作被分成"工作单元"。每块完成后，React 调用 shouldYield() 检查浏览器是否需要线程。如果是，暂停并稍后恢复。',
   );
   log(message.value, 'highlight');
   await delay(800);
@@ -244,8 +276,8 @@ async function presetInputLatency() {
   cooperative.value = false;
   clearLog();
   message.value = t(
-    'Input latency demo: in blocking mode, user clicks and keystrokes are queued until the task finishes. Google\'s INP (Interaction to Next Paint) metric penalizes this — tasks > 50ms hurt your Core Web Vitals score.',
-    '输入延迟演示：阻塞模式下，用户的点击和按键被排队直到任务完成。Google 的 INP（下次绘制的交互）指标会对此惩罚 — 超过 50ms 的任务会影响 Core Web Vitals 分数。'
+    "Input latency demo: in blocking mode, user clicks and keystrokes are queued until the task finishes. Google's INP (Interaction to Next Paint) metric penalizes this — tasks > 50ms hurt your Core Web Vitals score.",
+    '输入延迟演示：阻塞模式下，用户的点击和按键被排队直到任务完成。Google 的 INP（下次绘制的交互）指标会对此惩罚 — 超过 50ms 的任务会影响 Core Web Vitals 分数。',
   );
   log(message.value, 'highlight');
   await delay(800);
@@ -265,7 +297,9 @@ const chunkColors = [
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">{{ t('Interactive Cooperative Scheduling', '交互式 Cooperative Scheduling') }}</div>
+    <div class="viz-title">
+      {{ t('Interactive Cooperative Scheduling', '交互式 Cooperative Scheduling') }}
+    </div>
 
     <div class="cs-top-row">
       <!-- Mode toggle -->
@@ -278,7 +312,9 @@ const chunkColors = [
         >
           <span class="cs-toggle-knob"></span>
         </button>
-        <span class="cs-toggle-label">{{ cooperative ? t('Cooperative', '协作') : t('Blocking', '阻塞') }}</span>
+        <span class="cs-toggle-label">{{
+          cooperative ? t('Cooperative', '协作') : t('Blocking', '阻塞')
+        }}</span>
       </div>
 
       <!-- Bouncing ball -->
@@ -291,7 +327,10 @@ const chunkColors = [
             :style="{ transform: `translateY(${ballY}px)` }"
           ></div>
         </div>
-        <div class="cs-ball-status" :class="blocked && !cooperative ? 'cs-ball-status--blocked' : 'cs-ball-status--ok'">
+        <div
+          class="cs-ball-status"
+          :class="blocked && !cooperative ? 'cs-ball-status--blocked' : 'cs-ball-status--ok'"
+        >
           {{ blocked && !cooperative ? t('FROZEN', '冻结') : t('SMOOTH', '流畅') }}
         </div>
       </div>
@@ -310,7 +349,7 @@ const chunkColors = [
             'cs-progress-fill--blocked': blocked && !cooperative,
             'cs-progress-fill--cooperative': cooperative,
           }"
-          :style="{ width: (progress / TOTAL_UNITS * 100) + '%' }"
+          :style="{ width: (progress / TOTAL_UNITS) * 100 + '%' }"
         ></div>
       </div>
     </div>
@@ -327,31 +366,44 @@ const chunkColors = [
             'cs-timeline-unit--work': entry.type === 'work',
             'cs-timeline-unit--yield': entry.type === 'yield',
           }"
-          :style="entry.type === 'work' ? {
-            background: cooperative ? chunkColors[entry.chunk % chunkColors.length] : 'var(--viz-danger)',
-          } : {}"
+          :style="
+            entry.type === 'work'
+              ? {
+                  background: cooperative
+                    ? chunkColors[entry.chunk % chunkColors.length]
+                    : 'var(--viz-danger)',
+                }
+              : {}
+          "
         >
           <span v-if="entry.type === 'yield'" class="cs-yield-label">UI</span>
         </div>
-        <div v-if="timeline.length === 0" class="cs-timeline-empty">{{ t('waiting...', '等待中...') }}</div>
+        <div v-if="timeline.length === 0" class="cs-timeline-empty">
+          {{ t('waiting...', '等待中...') }}
+        </div>
       </div>
       <div class="cs-timeline-legend">
         <span v-if="!cooperative" class="cs-legend-item">
-          <span class="cs-legend-dot" style="background: var(--viz-danger)"></span> {{ t('Blocking work', '阻塞工作') }}
+          <span class="cs-legend-dot" style="background: var(--viz-danger)"></span>
+          {{ t('Blocking work', '阻塞工作') }}
         </span>
         <template v-else>
           <span class="cs-legend-item">
-            <span class="cs-legend-dot" style="background: var(--viz-primary)"></span> {{ t('Work chunk', '工作块') }}
+            <span class="cs-legend-dot" style="background: var(--viz-primary)"></span>
+            {{ t('Work chunk', '工作块') }}
           </span>
           <span class="cs-legend-item">
-            <span class="cs-legend-dot cs-legend-dot--yield"></span> {{ t('Yield (UI runs)', '让出（UI 运行）') }}
+            <span class="cs-legend-dot cs-legend-dot--yield"></span>
+            {{ t('Yield (UI runs)', '让出（UI 运行）') }}
           </span>
         </template>
       </div>
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="startTask" :disabled="running">{{ t('Start Long Task', '启动长任务') }}</button>
+      <button class="viz-btn viz-btn--primary" @click="startTask" :disabled="running">
+        {{ t('Start Long Task', '启动长任务') }}
+      </button>
       <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
       <div class="viz-speed">
         <input type="range" min="0.5" max="3" step="0.5" v-model.number="speed" />
@@ -361,9 +413,15 @@ const chunkColors = [
 
     <div class="viz-presets">
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
-      <button class="viz-btn" @click="presetSideBySide">{{ t('Block → Coop', '阻塞 → 协作') }}</button>
-      <button class="viz-btn" @click="presetReactFiber">{{ t('React Fiber', 'React Fiber') }}</button>
-      <button class="viz-btn" @click="presetInputLatency">{{ t('Input Latency', '输入延迟') }}</button>
+      <button class="viz-btn" @click="presetSideBySide">
+        {{ t('Block → Coop', '阻塞 → 协作') }}
+      </button>
+      <button class="viz-btn" @click="presetReactFiber">
+        {{ t('React Fiber', 'React Fiber') }}
+      </button>
+      <button class="viz-btn" @click="presetInputLatency">
+        {{ t('Input Latency', '输入延迟') }}
+      </button>
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
@@ -477,8 +535,12 @@ const chunkColors = [
   letter-spacing: 0.04em;
 }
 
-.cs-ball-status--ok { color: var(--viz-success); }
-.cs-ball-status--blocked { color: var(--viz-danger); }
+.cs-ball-status--ok {
+  color: var(--viz-success);
+}
+.cs-ball-status--blocked {
+  color: var(--viz-danger);
+}
 
 /* Progress */
 .cs-progress-section {
@@ -609,8 +671,14 @@ const chunkColors = [
 }
 
 @keyframes cs-unit-appear {
-  from { opacity: 0; transform: scaleY(0.5); }
-  to { opacity: 1; transform: scaleY(1); }
+  from {
+    opacity: 0;
+    transform: scaleY(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
 }
 
 @media (max-width: 640px) {

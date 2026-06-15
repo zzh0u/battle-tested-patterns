@@ -66,7 +66,10 @@ describe('Flyweight - Basic: String Interner', () => {
   it('should save memory by reusing instances', () => {
     const interner = new Interner<string>();
     let created = 0;
-    const factory = () => { created++; return 'shared'; };
+    const factory = () => {
+      created++;
+      return 'shared';
+    };
 
     interner.intern('key', factory);
     interner.intern('key', factory);

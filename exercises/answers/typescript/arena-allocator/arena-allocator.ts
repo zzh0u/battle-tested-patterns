@@ -23,8 +23,14 @@ class Arena {
     return this.view.getUint32(offset);
   }
 
-  reset(): void { this.offset = 0; }
+  reset(): void {
+    this.offset = 0;
+  }
 
-  get used(): number { return this.offset; }
-  get capacity(): number { return this.buffer.byteLength; }
+  get used(): number {
+    return this.offset;
+  }
+  get capacity(): number {
+    return this.buffer.byteLength;
+  }
 }

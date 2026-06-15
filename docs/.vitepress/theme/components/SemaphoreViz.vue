@@ -20,7 +20,12 @@ interface Worker {
 
 const MAX_PERMITS = ref(3);
 const workers = ref<Worker[]>([]);
-const message = ref(t('Click "Acquire" to spawn a worker that claims a permit', '点击"获取"生成一个申请许可的工作线程'));
+const message = ref(
+  t(
+    'Click "Acquire" to spawn a worker that claims a permit',
+    '点击"获取"生成一个申请许可的工作线程',
+  ),
+);
 let nextId = 1;
 let presetRunning = false;
 
@@ -38,18 +43,14 @@ const vizHistory = useVizHistory<WorkerSnapshot[]>([], {
     presetRunning = false;
     clearAll();
     // Restored workers are frozen snapshots — no timers running
-    workers.value = snapshot.map(w => ({ ...w })); if (msg !== undefined) message.value = msg; },
+    workers.value = snapshot.map((w) => ({ ...w }));
+    if (msg !== undefined) message.value = msg;
+  },
 });
 
-const activeWorkers = computed(() =>
-  workers.value.filter((w) => w.state === 'active'),
-);
-const waitingWorkers = computed(() =>
-  workers.value.filter((w) => w.state === 'waiting'),
-);
-const availablePermits = computed(
-  () => MAX_PERMITS.value - activeWorkers.value.length,
-);
+const activeWorkers = computed(() => workers.value.filter((w) => w.state === 'active'));
+const waitingWorkers = computed(() => workers.value.filter((w) => w.state === 'waiting'));
+const availablePermits = computed(() => MAX_PERMITS.value - activeWorkers.value.length);
 
 const permits = computed(() => {
   const slots: { taken: boolean; workerId: number | null }[] = [];
@@ -80,7 +81,10 @@ function tryPromoteWaiting() {
   const dur = randomDuration();
   next.totalMs = dur;
   next.remainingMs = dur;
-  message.value = t(`Worker #${next.id} acquired permit ${slot + 1} from queue`, `工作线程 #${next.id} 从队列获取了许可 ${slot + 1}`);
+  message.value = t(
+    `Worker #${next.id} acquired permit ${slot + 1} from queue`,
+    `工作线程 #${next.id} 从队列获取了许可 ${slot + 1}`,
+  );
   startWorkerTimer(next);
 }
 
@@ -105,12 +109,21 @@ function startWorkerTimer(w: Worker) {
 }
 
 function releaseWorker(w: Worker) {
-  message.value = t(`Worker #${w.id} released permit ${w.permitIndex + 1}`, `工作线程 #${w.id} 释放了许可 ${w.permitIndex + 1}`);
-  log(t(`W#${w.id} released permit ${w.permitIndex + 1}`, `W#${w.id} 释放许可 ${w.permitIndex + 1}`), 'success');
+  message.value = t(
+    `Worker #${w.id} released permit ${w.permitIndex + 1}`,
+    `工作线程 #${w.id} 释放了许可 ${w.permitIndex + 1}`,
+  );
+  log(
+    t(`W#${w.id} released permit ${w.permitIndex + 1}`, `W#${w.id} 释放许可 ${w.permitIndex + 1}`),
+    'success',
+  );
   w.state = 'done';
   workers.value = workers.value.filter((x) => x.id !== w.id);
   tryPromoteWaiting();
-  vizHistory.commit(workers.value.map(x => ({ ...x })), `release #${w.id}`);
+  vizHistory.commit(
+    workers.value.map((x) => ({ ...x })),
+    `release #${w.id}`,
+  );
 }
 
 function acquire() {
@@ -126,10 +139,16 @@ function acquire() {
       remainingMs: dur,
     };
     workers.value.push(w);
-    message.value = t(`Worker #${id} acquired permit ${slot + 1}`, `工作线程 #${id} 获取了许可 ${slot + 1}`);
+    message.value = t(
+      `Worker #${id} acquired permit ${slot + 1}`,
+      `工作线程 #${id} 获取了许可 ${slot + 1}`,
+    );
     log(t(`W#${id} acquired permit ${slot + 1}`, `W#${id} 获取许可 ${slot + 1}`), 'info');
     startWorkerTimer(w);
-    vizHistory.commit(workers.value.map(x => ({ ...x })), `acquire #${id}`);
+    vizHistory.commit(
+      workers.value.map((x) => ({ ...x })),
+      `acquire #${id}`,
+    );
   } else {
     const w: Worker = {
       id,
@@ -139,9 +158,15 @@ function acquire() {
       remainingMs: 0,
     };
     workers.value.push(w);
-    message.value = t(`No permits available — Worker #${id} is waiting in queue`, `无可用许可 — 工作线程 #${id} 正在队列中等待`);
+    message.value = t(
+      `No permits available — Worker #${id} is waiting in queue`,
+      `无可用许可 — 工作线程 #${id} 正在队列中等待`,
+    );
     log(t(`W#${id} waiting (no permits)`, `W#${id} 等待中（无许可）`), 'warning');
-    vizHistory.commit(workers.value.map(x => ({ ...x })), `wait #${id}`);
+    vizHistory.commit(
+      workers.value.map((x) => ({ ...x })),
+      `wait #${id}`,
+    );
   }
 }
 
@@ -173,7 +198,7 @@ async function presetSaturation() {
   MAX_PERMITS.value = 3;
 
   message.value = t(
-    'Full saturation: all permits claimed, new workers queue. This is PostgreSQL\'s max_connections (default 100) — connection 101 waits in the pg_stat_activity queue until one finishes.',
+    "Full saturation: all permits claimed, new workers queue. This is PostgreSQL's max_connections (default 100) — connection 101 waits in the pg_stat_activity queue until one finishes.",
     '完全饱和：所有许可已占用，新工作线程排队。这就是 PostgreSQL 的 max_connections（默认 100）— 第 101 个连接在 pg_stat_activity 队列中等待直到有连接释放。',
   );
 
@@ -195,10 +220,13 @@ async function presetSaturation() {
   if (!presetRunning || isAborted()) return;
 
   message.value = t(
-    'Workers queued. In Java, Semaphore.tryAcquire(timeout) lets callers give up after waiting too long. Go\'s semaphore in sema.go uses a treap-based wait queue for O(log n) priority ordering.',
+    "Workers queued. In Java, Semaphore.tryAcquire(timeout) lets callers give up after waiting too long. Go's semaphore in sema.go uses a treap-based wait queue for O(log n) priority ordering.",
     '工作线程已排队。Java 中 Semaphore.tryAcquire(timeout) 允许调用者等待超时后放弃。Go 的 sema.go 使用基于 treap 的等待队列实现 O(log n) 优先级排序。',
   );
-  log(t('Saturation: excess workers queue until permits free', '饱和：多余工作线程排队等待许可释放'), 'highlight');
+  log(
+    t('Saturation: excess workers queue until permits free', '饱和：多余工作线程排队等待许可释放'),
+    'highlight',
+  );
 
   presetRunning = false;
 }
@@ -233,10 +261,13 @@ async function presetQueueDrain() {
   if (!presetRunning || isAborted()) return;
 
   message.value = t(
-    'All queued workers eventually got permits. If drain rate < arrival rate, the queue grows unbounded — that\'s why Nginx has worker_connections and Java has LinkedBlockingQueue(capacity).',
+    "All queued workers eventually got permits. If drain rate < arrival rate, the queue grows unbounded — that's why Nginx has worker_connections and Java has LinkedBlockingQueue(capacity).",
     '所有排队的工作线程最终都获得了许可。如果排空速率 < 到达速率，队列将无限增长 — 这就是为什么 Nginx 有 worker_connections，Java 有 LinkedBlockingQueue(capacity)。',
   );
-  log(t('Queue drained: all waiters eventually served', '队列排空：所有等待者最终被服务'), 'highlight');
+  log(
+    t('Queue drained: all waiters eventually served', '队列排空：所有等待者最终被服务'),
+    'highlight',
+  );
 
   presetRunning = false;
 }
@@ -301,18 +332,18 @@ async function presetMutex() {
       >
         <!-- Semaphore box -->
         <rect
-          x="120" y="10"
-          width="160" height="50"
+          x="120"
+          y="10"
+          width="160"
+          height="50"
           rx="8"
           fill="var(--vp-c-bg)"
           stroke="var(--viz-border)"
           stroke-width="1.5"
         />
-        <text
-          x="200" y="28"
-          text-anchor="middle"
-          class="sem-svg-label"
-        >{{ t('Semaphore', 'Semaphore') }} ({{ MAX_PERMITS }})</text>
+        <text x="200" y="28" text-anchor="middle" class="sem-svg-label">
+          {{ t('Semaphore', 'Semaphore') }} ({{ MAX_PERMITS }})
+        </text>
 
         <!-- Permit circles -->
         <g v-for="(p, i) in permits" :key="'p' + i">
@@ -331,21 +362,22 @@ async function presetMutex() {
             y="50"
             text-anchor="middle"
             class="sem-svg-id"
-          >#{{ p.workerId }}</text>
+          >
+            #{{ p.workerId }}
+          </text>
         </g>
 
         <!-- Active workers area -->
-        <text
-          x="200" y="86"
-          text-anchor="middle"
-          class="sem-svg-section"
-        >{{ t('Active Workers', '活跃工作线程') }}</text>
+        <text x="200" y="86" text-anchor="middle" class="sem-svg-section">
+          {{ t('Active Workers', '活跃工作线程') }}
+        </text>
 
         <g v-for="(w, i) in activeWorkers" :key="'a' + w.id">
           <rect
             :x="200 + (i - (activeWorkers.length - 1) / 2) * 80 - 32"
             y="94"
-            width="64" height="36"
+            width="64"
+            height="36"
             rx="6"
             fill="var(--vp-c-bg)"
             stroke="var(--viz-primary)"
@@ -357,12 +389,15 @@ async function presetMutex() {
             y="109"
             text-anchor="middle"
             class="sem-svg-worker"
-          >#{{ w.id }}</text>
+          >
+            #{{ w.id }}
+          </text>
           <!-- progress bar background -->
           <rect
             :x="200 + (i - (activeWorkers.length - 1) / 2) * 80 - 24"
             y="116"
-            width="48" height="4"
+            width="48"
+            height="4"
             rx="2"
             fill="var(--viz-cell-empty)"
           />
@@ -370,7 +405,7 @@ async function presetMutex() {
           <rect
             :x="200 + (i - (activeWorkers.length - 1) / 2) * 80 - 24"
             y="116"
-            :width="48 * progressPercent(w) / 100"
+            :width="(48 * progressPercent(w)) / 100"
             height="4"
             rx="2"
             fill="var(--viz-primary)"
@@ -379,30 +414,34 @@ async function presetMutex() {
 
         <text
           v-if="activeWorkers.length === 0"
-          x="200" y="116"
+          x="200"
+          y="116"
           text-anchor="middle"
           class="sem-svg-empty"
-        >{{ t('none', '无') }}</text>
+        >
+          {{ t('none', '无') }}
+        </text>
 
         <!-- Waiting queue area -->
         <line
-          x1="40" :y1="142"
-          x2="360" :y2="142"
+          x1="40"
+          :y1="142"
+          x2="360"
+          :y2="142"
           stroke="var(--viz-border)"
           stroke-width="1"
           stroke-dasharray="4 3"
         />
-        <text
-          x="200" :y="160"
-          text-anchor="middle"
-          class="sem-svg-section"
-        >{{ t('Waiting Queue', '等待队列') }}</text>
+        <text x="200" :y="160" text-anchor="middle" class="sem-svg-section">
+          {{ t('Waiting Queue', '等待队列') }}
+        </text>
 
         <g v-for="(w, i) in waitingWorkers" :key="'w' + w.id">
           <rect
             :x="148"
             :y="168 + i * 34"
-            width="104" height="28"
+            width="104"
+            height="28"
             rx="6"
             fill="var(--vp-c-bg)"
             stroke="var(--viz-warning)"
@@ -415,15 +454,20 @@ async function presetMutex() {
             :y="186 + i * 34"
             text-anchor="middle"
             class="sem-svg-worker sem-svg-waiting"
-          >#{{ w.id }} {{ t('waiting...', '等待中...') }}</text>
+          >
+            #{{ w.id }} {{ t('waiting...', '等待中...') }}
+          </text>
         </g>
 
         <text
           v-if="waitingWorkers.length === 0"
-          x="200" :y="182"
+          x="200"
+          :y="182"
           text-anchor="middle"
           class="sem-svg-empty"
-        >{{ t('empty', '空') }}</text>
+        >
+          {{ t('empty', '空') }}
+        </text>
       </svg>
     </div>
 
@@ -564,7 +608,8 @@ async function presetMutex() {
 }
 
 @keyframes sem-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {

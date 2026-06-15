@@ -24,7 +24,12 @@ let nextId = 0;
 const CAPACITY = 12;
 
 const store = ref<Entry[]>(createInitial());
-const message = ref(t('A key-value store using tombstone deletion. Write, delete, read, and compact.', '使用墓碑删除的键值存储。写入、删除、读取和压缩。'));
+const message = ref(
+  t(
+    'A key-value store using tombstone deletion. Write, delete, read, and compact.',
+    '使用墓碑删除的键值存储。写入、删除、读取和压缩。',
+  ),
+);
 const writeKey = ref('');
 const writeValue = ref('');
 const readKey = ref('');
@@ -38,8 +43,10 @@ const vizHistory = useVizHistory<Entry[]>([], {
     presetRunning = false;
     clearAll();
     compacting.value = false;
-    store.value = snapshot.map(e => ({ ...e }));
-    flashId.value = -1; if (msg !== undefined) message.value = msg; },
+    store.value = snapshot.map((e) => ({ ...e }));
+    flashId.value = -1;
+    if (msg !== undefined) message.value = msg;
+  },
 });
 
 function createInitial(): Entry[] {
@@ -102,19 +109,30 @@ function doWrite() {
   if (existing) {
     existing.value = value;
     flashId.value = existing.id;
-    message.value = t(`Updated "${key}" = "${value}" (overwrite).`, `已更新 "${key}" = "${value}"（覆写）。`);
+    message.value = t(
+      `Updated "${key}" = "${value}" (overwrite).`,
+      `已更新 "${key}" = "${value}"（覆写）。`,
+    );
     log(message.value, 'info');
     writeKey.value = '';
     writeValue.value = '';
-    safeTimeout(() => { flashId.value = -1; }, 600);
-    vizHistory.commit(store.value.map(e => ({ ...e })), `write ${key}`);
+    safeTimeout(() => {
+      flashId.value = -1;
+    }, 600);
+    vizHistory.commit(
+      store.value.map((e) => ({ ...e })),
+      `write ${key}`,
+    );
     return;
   }
 
   // Find first free slot
   const freeSlot = store.value.find((e) => e.status === 'free');
   if (!freeSlot) {
-    message.value = t('Store is full! Compact to reclaim tombstoned slots.', '存储已满！压缩以回收已标记删除的槽位。');
+    message.value = t(
+      'Store is full! Compact to reclaim tombstoned slots.',
+      '存储已满！压缩以回收已标记删除的槽位。',
+    );
     return;
   }
 
@@ -122,25 +140,41 @@ function doWrite() {
   freeSlot.value = value;
   freeSlot.status = 'active';
   flashId.value = freeSlot.id;
-  message.value = t(`Wrote "${key}" = "${value}". ${stats.value.free - 1} free slot(s) remaining.`, `已写入 "${key}" = "${value}"。剩余 ${stats.value.free - 1} 个空闲槽位。`);
+  message.value = t(
+    `Wrote "${key}" = "${value}". ${stats.value.free - 1} free slot(s) remaining.`,
+    `已写入 "${key}" = "${value}"。剩余 ${stats.value.free - 1} 个空闲槽位。`,
+  );
   log(message.value, 'success');
   writeKey.value = '';
   writeValue.value = '';
-  safeTimeout(() => { flashId.value = -1; }, 600);
-  vizHistory.commit(store.value.map(e => ({ ...e })), `write ${key}`);
+  safeTimeout(() => {
+    flashId.value = -1;
+  }, 600);
+  vizHistory.commit(
+    store.value.map((e) => ({ ...e })),
+    `write ${key}`,
+  );
 }
 
 function doDelete(entry: Entry) {
   if (entry.status !== 'active') return;
   entry.status = 'tombstoned';
   flashId.value = entry.id;
-  message.value = t(`Tombstoned "${entry.key}". Data remains but is marked deleted. Compact to reclaim.`, `已标记删除 "${entry.key}"。数据仍在但已标记为删除。压缩以回收。`);
+  message.value = t(
+    `Tombstoned "${entry.key}". Data remains but is marked deleted. Compact to reclaim.`,
+    `已标记删除 "${entry.key}"。数据仍在但已标记为删除。压缩以回收。`,
+  );
   log(message.value, 'warning');
   if (readResult.value) {
     readResult.value = null;
   }
-  safeTimeout(() => { flashId.value = -1; }, 600);
-  vizHistory.commit(store.value.map(e => ({ ...e })), `delete ${entry.key}`);
+  safeTimeout(() => {
+    flashId.value = -1;
+  }, 600);
+  vizHistory.commit(
+    store.value.map((e) => ({ ...e })),
+    `delete ${entry.key}`,
+  );
 }
 
 function doRead() {
@@ -150,23 +184,38 @@ function doRead() {
     return;
   }
 
-  const entry = store.value.find((e) => e.key === key && (e.status === 'active' || e.status === 'tombstoned'));
+  const entry = store.value.find(
+    (e) => e.key === key && (e.status === 'active' || e.status === 'tombstoned'),
+  );
   if (!entry) {
     readResult.value = { found: false };
-    message.value = t(`Read "${key}": NOT FOUND (key does not exist).`, `读取 "${key}"：未找到（键不存在）。`);
+    message.value = t(
+      `Read "${key}": NOT FOUND (key does not exist).`,
+      `读取 "${key}"：未找到（键不存在）。`,
+    );
     log(message.value, 'error');
   } else if (entry.status === 'tombstoned') {
     readResult.value = { found: false, tombstoned: true };
     flashId.value = entry.id;
-    message.value = t(`Read "${key}": NOT FOUND (tombstoned). Data exists but is logically deleted.`, `读取 "${key}"：未找到（已标记删除）。数据存在但已逻辑删除。`);
+    message.value = t(
+      `Read "${key}": NOT FOUND (tombstoned). Data exists but is logically deleted.`,
+      `读取 "${key}"：未找到（已标记删除）。数据存在但已逻辑删除。`,
+    );
     log(message.value, 'warning');
-    safeTimeout(() => { flashId.value = -1; }, 600);
+    safeTimeout(() => {
+      flashId.value = -1;
+    }, 600);
   } else {
     readResult.value = { found: true, value: entry.value };
     flashId.value = entry.id;
-    message.value = t(`Read "${key}": FOUND -> "${entry.value}"`, `读取 "${key}"：找到 -> "${entry.value}"`);
+    message.value = t(
+      `Read "${key}": FOUND -> "${entry.value}"`,
+      `读取 "${key}"：找到 -> "${entry.value}"`,
+    );
     log(message.value, 'success');
-    safeTimeout(() => { flashId.value = -1; }, 600);
+    safeTimeout(() => {
+      flashId.value = -1;
+    }, 600);
   }
   readKey.value = '';
 }
@@ -177,12 +226,18 @@ async function doCompact() {
 
   const tombstoned = store.value.filter((e) => e.status === 'tombstoned');
   if (tombstoned.length === 0) {
-    message.value = t('Nothing to compact. No tombstoned entries.', '无需压缩。没有已标记删除的条目。');
+    message.value = t(
+      'Nothing to compact. No tombstoned entries.',
+      '无需压缩。没有已标记删除的条目。',
+    );
     compacting.value = false;
     return;
   }
 
-  message.value = t(`Compacting... removing ${tombstoned.length} tombstoned entry(s).`, `压缩中...移除 ${tombstoned.length} 个已标记删除的条目。`);
+  message.value = t(
+    `Compacting... removing ${tombstoned.length} tombstoned entry(s).`,
+    `压缩中...移除 ${tombstoned.length} 个已标记删除的条目。`,
+  );
 
   // Animate each tombstoned entry removal
   for (const entry of tombstoned) {
@@ -205,9 +260,15 @@ async function doCompact() {
 
   flashId.value = -1;
   compacting.value = false;
-  message.value = t(`Compaction done. Reclaimed ${tombstoned.length} slot(s). Active entries shifted left.`, `压缩完成。回收了 ${tombstoned.length} 个槽位。活跃条目已左移。`);
+  message.value = t(
+    `Compaction done. Reclaimed ${tombstoned.length} slot(s). Active entries shifted left.`,
+    `压缩完成。回收了 ${tombstoned.length} 个槽位。活跃条目已左移。`,
+  );
   log(message.value, 'highlight');
-  vizHistory.commit(store.value.map(e => ({ ...e })), 'compact');
+  vizHistory.commit(
+    store.value.map((e) => ({ ...e })),
+    'compact',
+  );
 }
 
 function reset() {
@@ -221,7 +282,10 @@ function reset() {
   readResult.value = null;
   flashId.value = -1;
   compacting.value = false;
-  message.value = t('Store reset. Write, delete, read, and compact to explore tombstone deletion.', '存储已重置。写入、删除、读取和压缩以探索墓碑删除。');
+  message.value = t(
+    'Store reset. Write, delete, read, and compact to explore tombstone deletion.',
+    '存储已重置。写入、删除、读取和压缩以探索墓碑删除。',
+  );
   clearLog();
   vizHistory.reset();
 }
@@ -233,7 +297,9 @@ function programmaticWrite(key: string, value: string) {
   if (existing) {
     existing.value = value;
     flashId.value = existing.id;
-    safeTimeout(() => { flashId.value = -1; }, 600);
+    safeTimeout(() => {
+      flashId.value = -1;
+    }, 600);
     return;
   }
   const freeSlot = store.value.find((e) => e.status === 'free');
@@ -242,7 +308,9 @@ function programmaticWrite(key: string, value: string) {
   freeSlot.value = value;
   freeSlot.status = 'active';
   flashId.value = freeSlot.id;
-  safeTimeout(() => { flashId.value = -1; }, 600);
+  safeTimeout(() => {
+    flashId.value = -1;
+  }, 600);
 }
 
 function programmaticDelete(key: string) {
@@ -250,21 +318,29 @@ function programmaticDelete(key: string) {
   if (!entry) return;
   entry.status = 'tombstoned';
   flashId.value = entry.id;
-  safeTimeout(() => { flashId.value = -1; }, 600);
+  safeTimeout(() => {
+    flashId.value = -1;
+  }, 600);
 }
 
 function programmaticRead(key: string) {
-  const entry = store.value.find((e) => e.key === key && (e.status === 'active' || e.status === 'tombstoned'));
+  const entry = store.value.find(
+    (e) => e.key === key && (e.status === 'active' || e.status === 'tombstoned'),
+  );
   if (!entry) {
     readResult.value = { found: false };
   } else if (entry.status === 'tombstoned') {
     readResult.value = { found: false, tombstoned: true };
     flashId.value = entry.id;
-    safeTimeout(() => { flashId.value = -1; }, 600);
+    safeTimeout(() => {
+      flashId.value = -1;
+    }, 600);
   } else {
     readResult.value = { found: true, value: entry.value };
     flashId.value = entry.id;
-    safeTimeout(() => { flashId.value = -1; }, 600);
+    safeTimeout(() => {
+      flashId.value = -1;
+    }, 600);
   }
 }
 
@@ -275,10 +351,13 @@ async function presetWriteDeleteCompact() {
 
   message.value = t(
     'Write-delete-compact cycle: the core lifecycle of tombstone-based storage. Cassandra writes tombstones on DELETE, then removes them during compaction after gc_grace_seconds (default 10 days).',
-    '写-删-压缩循环：基于墓碑存储的核心生命周期。Cassandra 在 DELETE 时写入墓碑，然后在 gc_grace_seconds（默认 10 天）后的压缩中移除它们。'
+    '写-删-压缩循环：基于墓碑存储的核心生命周期。Cassandra 在 DELETE 时写入墓碑，然后在 gc_grace_seconds（默认 10 天）后的压缩中移除它们。',
   );
   log(message.value, 'highlight');
-  vizHistory.commit(store.value.map(e => ({ ...e })), 'preset:intro');
+  vizHistory.commit(
+    store.value.map((e) => ({ ...e })),
+    'preset:intro',
+  );
 
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -287,43 +366,70 @@ async function presetWriteDeleteCompact() {
   programmaticWrite('order:1', 'pending');
   message.value = t('Writing order:1 = "pending"...', '写入 order:1 = "pending"...');
   log(message.value, 'info');
-  vizHistory.commit(store.value.map(e => ({ ...e })), 'write order:1');
+  vizHistory.commit(
+    store.value.map((e) => ({ ...e })),
+    'write order:1',
+  );
   await delay(600);
   if (!presetRunning || isAborted()) return;
 
   programmaticWrite('order:2', 'shipped');
   message.value = t('Writing order:2 = "shipped"...', '写入 order:2 = "shipped"...');
   log(message.value, 'info');
-  vizHistory.commit(store.value.map(e => ({ ...e })), 'write order:2');
+  vizHistory.commit(
+    store.value.map((e) => ({ ...e })),
+    'write order:2',
+  );
   await delay(600);
   if (!presetRunning || isAborted()) return;
 
   programmaticWrite('order:3', 'delivered');
   message.value = t('Writing order:3 = "delivered"...', '写入 order:3 = "delivered"...');
   log(message.value, 'info');
-  vizHistory.commit(store.value.map(e => ({ ...e })), 'write order:3');
+  vizHistory.commit(
+    store.value.map((e) => ({ ...e })),
+    'write order:3',
+  );
   await delay(800);
   if (!presetRunning || isAborted()) return;
 
   // Delete 2
   programmaticDelete('order:1');
-  message.value = t('Deleting order:1 — tombstone placed. Data still occupies the slot.', '删除 order:1 — 放置墓碑。数据仍占用槽位。');
+  message.value = t(
+    'Deleting order:1 — tombstone placed. Data still occupies the slot.',
+    '删除 order:1 — 放置墓碑。数据仍占用槽位。',
+  );
   log(message.value, 'warning');
-  vizHistory.commit(store.value.map(e => ({ ...e })), 'delete order:1');
+  vizHistory.commit(
+    store.value.map((e) => ({ ...e })),
+    'delete order:1',
+  );
   await delay(700);
   if (!presetRunning || isAborted()) return;
 
   programmaticDelete('order:2');
-  message.value = t('Deleting order:2 — another tombstone. 2 slots wasted until compaction.', '删除 order:2 — 又一个墓碑。在压缩之前浪费 2 个槽位。');
+  message.value = t(
+    'Deleting order:2 — another tombstone. 2 slots wasted until compaction.',
+    '删除 order:2 — 又一个墓碑。在压缩之前浪费 2 个槽位。',
+  );
   log(message.value, 'warning');
-  vizHistory.commit(store.value.map(e => ({ ...e })), 'delete order:2');
+  vizHistory.commit(
+    store.value.map((e) => ({ ...e })),
+    'delete order:2',
+  );
   await delay(800);
   if (!presetRunning || isAborted()) return;
 
   // Compact
-  message.value = t('Starting compaction to reclaim tombstoned slots...', '开始压缩以回收墓碑槽位...');
+  message.value = t(
+    'Starting compaction to reclaim tombstoned slots...',
+    '开始压缩以回收墓碑槽位...',
+  );
   log(message.value, 'highlight');
-  vizHistory.commit(store.value.map(e => ({ ...e })), 'compact:start');
+  vizHistory.commit(
+    store.value.map((e) => ({ ...e })),
+    'compact:start',
+  );
   await delay(400);
   if (!presetRunning || isAborted()) return;
   await doCompact();
@@ -334,7 +440,7 @@ async function presetWriteDeleteCompact() {
 
   message.value = t(
     'Compaction reclaimed 2 slots. In LSM trees (RocksDB, LevelDB), compaction merges tombstones with live data — without it, read amplification grows because every read must check if a tombstone shadows the value.',
-    '压缩回收了 2 个槽位。在 LSM 树（RocksDB、LevelDB）中，压缩将墓碑与活跃数据合并——如果没有压缩，读放大会增长，因为每次读取都必须检查墓碑是否遮蔽了值。'
+    '压缩回收了 2 个槽位。在 LSM 树（RocksDB、LevelDB）中，压缩将墓碑与活跃数据合并——如果没有压缩，读放大会增长，因为每次读取都必须检查墓碑是否遮蔽了值。',
   );
   presetRunning = false;
 }
@@ -346,7 +452,7 @@ async function presetSpaceAmplification() {
 
   message.value = t(
     'Space amplification: filling most slots, then deleting all but 2 to show wasted space. In RocksDB, space_amp = total_size / live_data_size.',
-    '空间放大：填满大部分槽位，然后删除除 2 个外的所有条目以展示浪费的空间。在 RocksDB 中，space_amp = total_size / live_data_size。'
+    '空间放大：填满大部分槽位，然后删除除 2 个外的所有条目以展示浪费的空间。在 RocksDB 中，space_amp = total_size / live_data_size。',
   );
 
   await delay(800);
@@ -370,12 +476,17 @@ async function presetSpaceAmplification() {
     if (!presetRunning || isAborted()) return;
   }
 
-  message.value = t('Store is full with 12 entries. Now deleting 10 of them...', '存储已满，共 12 个条目。现在删除其中 10 个...');
+  message.value = t(
+    'Store is full with 12 entries. Now deleting 10 of them...',
+    '存储已满，共 12 个条目。现在删除其中 10 个...',
+  );
   await delay(800);
   if (!presetRunning || isAborted()) return;
 
   // Delete all except user:1 and user:2 (keep 2 alive)
-  const toDelete = store.value.filter((e) => e.status === 'active' && e.key !== 'user:1' && e.key !== 'user:2');
+  const toDelete = store.value.filter(
+    (e) => e.status === 'active' && e.key !== 'user:1' && e.key !== 'user:2',
+  );
   for (const entry of toDelete) {
     programmaticDelete(entry.key);
     await delay(200);
@@ -387,7 +498,7 @@ async function presetSpaceAmplification() {
 
   message.value = t(
     'Space amplification: 10 tombstoned entries waste 83% of capacity. In RocksDB, space_amp = total_size / live_data_size. SSDs use TRIM to reclaim tombstoned blocks. Without compaction, storage cost grows linearly with total writes, not live data.',
-    '空间放大：10 个墓碑条目浪费了 83% 的容量。在 RocksDB 中，space_amp = total_size / live_data_size。SSD 使用 TRIM 回收墓碑块。如果没有压缩，存储成本随总写入量线性增长，而非活跃数据量。'
+    '空间放大：10 个墓碑条目浪费了 83% 的容量。在 RocksDB 中，space_amp = total_size / live_data_size。SSD 使用 TRIM 回收墓碑块。如果没有压缩，存储成本随总写入量线性增长，而非活跃数据量。',
   );
   presetRunning = false;
 }
@@ -399,7 +510,7 @@ async function presetReadThroughTombstone() {
 
   message.value = t(
     'Read-through-tombstone: demonstrating how deleted keys are still found during scan but return NOT FOUND.',
-    '读穿墓碑：演示已删除的键在扫描时仍被找到但返回"未找到"。'
+    '读穿墓碑：演示已删除的键在扫描时仍被找到但返回"未找到"。',
   );
 
   await delay(800);
@@ -413,26 +524,35 @@ async function presetReadThroughTombstone() {
 
   // Read it — should be found
   programmaticRead('session:42');
-  message.value = t('Reading session:42 — FOUND: "active". The key exists and is live.', '读取 session:42 — 找到："active"。键存在且为活跃状态。');
+  message.value = t(
+    'Reading session:42 — FOUND: "active". The key exists and is live.',
+    '读取 session:42 — 找到："active"。键存在且为活跃状态。',
+  );
   await delay(800);
   if (!presetRunning || isAborted()) return;
 
   // Delete it
   readResult.value = null;
   programmaticDelete('session:42');
-  message.value = t('Deleting session:42 — tombstone placed. The slot is still occupied.', '删除 session:42 — 放置墓碑。槽位仍被占用。');
+  message.value = t(
+    'Deleting session:42 — tombstone placed. The slot is still occupied.',
+    '删除 session:42 — 放置墓碑。槽位仍被占用。',
+  );
   await delay(800);
   if (!presetRunning || isAborted()) return;
 
   // Read it again — tombstoned
   programmaticRead('session:42');
-  message.value = t('Reading session:42 — NOT FOUND (tombstoned). The entry is found in storage but the tombstone marks it deleted.', '读取 session:42 — 未找到（已标记删除）。条目在存储中被找到但墓碑将其标记为已删除。');
+  message.value = t(
+    'Reading session:42 — NOT FOUND (tombstoned). The entry is found in storage but the tombstone marks it deleted.',
+    '读取 session:42 — 未找到（已标记删除）。条目在存储中被找到但墓碑将其标记为已删除。',
+  );
   await delay(1000);
   if (!presetRunning || isAborted()) return;
 
   message.value = t(
     'Read-through-tombstone: the deleted key still occupies space and is found during scan — but returns NOT FOUND. In distributed systems (Dynamo, Cassandra), tombstones must propagate to all replicas before removal, or deleted data reappears — the "zombie resurrection" problem.',
-    '读穿墓碑：已删除的键仍占用空间，在扫描时被找到——但返回"未找到"。在分布式系统（Dynamo、Cassandra）中，墓碑必须传播到所有副本后才能移除，否则已删除的数据会重新出现——即"僵尸复活"问题。'
+    '读穿墓碑：已删除的键仍占用空间，在扫描时被找到——但返回"未找到"。在分布式系统（Dynamo、Cassandra）中，墓碑必须传播到所有副本后才能移除，否则已删除的数据会重新出现——即"僵尸复活"问题。',
   );
   presetRunning = false;
 }
@@ -447,11 +567,11 @@ async function presetReadThroughTombstone() {
       <div class="ts-usage-bar">
         <div
           class="ts-usage-fill ts-usage-fill--active"
-          :style="{ width: (stats.active / stats.total * 100) + '%' }"
+          :style="{ width: (stats.active / stats.total) * 100 + '%' }"
         ></div>
         <div
           class="ts-usage-fill ts-usage-fill--tombstoned"
-          :style="{ width: (stats.tombstoned / stats.total * 100) + '%' }"
+          :style="{ width: (stats.tombstoned / stats.total) * 100 + '%' }"
         ></div>
       </div>
       <div class="ts-usage-stats">
@@ -495,7 +615,9 @@ async function presetReadThroughTombstone() {
               class="ts-delete-btn"
               :title="t('Delete (tombstone)', '删除（墓碑标记）')"
               @click="doDelete(entry)"
-            >x</button>
+            >
+              x
+            </button>
           </div>
           <div class="ts-cell-value">
             <template v-if="entry.status === 'tombstoned'">
@@ -506,8 +628,12 @@ async function presetReadThroughTombstone() {
             </template>
           </div>
           <div class="ts-cell-status">
-            <span v-if="entry.status === 'active'" class="ts-badge ts-badge--active">{{ t('active', '活跃') }}</span>
-            <span v-else class="ts-badge ts-badge--tombstoned">{{ t('tombstoned', '已标记删除') }}</span>
+            <span v-if="entry.status === 'active'" class="ts-badge ts-badge--active">{{
+              t('active', '活跃')
+            }}</span>
+            <span v-else class="ts-badge ts-badge--tombstoned">{{
+              t('tombstoned', '已标记删除')
+            }}</span>
           </div>
         </template>
       </div>
@@ -533,7 +659,9 @@ async function presetReadThroughTombstone() {
             maxlength="12"
             @keyup.enter="doWrite"
           />
-          <button class="viz-btn viz-btn--primary ts-btn-sm" @click="doWrite">{{ t('Write', '写入') }}</button>
+          <button class="viz-btn viz-btn--primary ts-btn-sm" @click="doWrite">
+            {{ t('Write', '写入') }}
+          </button>
         </div>
       </div>
 
@@ -551,10 +679,14 @@ async function presetReadThroughTombstone() {
           <button class="viz-btn ts-btn-sm" @click="doRead">{{ t('Read', '读取') }}</button>
         </div>
         <!-- Read result -->
-        <div v-if="readResult" class="ts-read-result" :class="{
-          'ts-read-result--found': readResult.found,
-          'ts-read-result--miss': !readResult.found,
-        }">
+        <div
+          v-if="readResult"
+          class="ts-read-result"
+          :class="{
+            'ts-read-result--found': readResult.found,
+            'ts-read-result--miss': !readResult.found,
+          }"
+        >
           <template v-if="readResult.found">
             {{ t('FOUND:', '找到：') }} "{{ readResult.value }}"
           </template>
@@ -574,7 +706,11 @@ async function presetReadThroughTombstone() {
         :disabled="compacting || stats.tombstoned === 0"
         @click="doCompact"
       >
-        {{ compacting ? t('Compacting...', '压缩中...') : t(`Compact (reclaim ${stats.tombstoned})`, `压缩（回收 ${stats.tombstoned}）`) }}
+        {{
+          compacting
+            ? t('Compacting...', '压缩中...')
+            : t(`Compact (reclaim ${stats.tombstoned})`, `压缩（回收 ${stats.tombstoned}）`)
+        }}
       </button>
       <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
       <div class="viz-speed">
@@ -585,9 +721,15 @@ async function presetReadThroughTombstone() {
 
     <div class="viz-presets">
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
-      <button class="viz-btn" @click="presetWriteDeleteCompact">{{ t('Write-Delete-Compact', '写删压缩') }}</button>
-      <button class="viz-btn" @click="presetSpaceAmplification">{{ t('Space Bloat', '空间膨胀') }}</button>
-      <button class="viz-btn" @click="presetReadThroughTombstone">{{ t('Read Tombstone', '读取墓碑') }}</button>
+      <button class="viz-btn" @click="presetWriteDeleteCompact">
+        {{ t('Write-Delete-Compact', '写删压缩') }}
+      </button>
+      <button class="viz-btn" @click="presetSpaceAmplification">
+        {{ t('Space Bloat', '空间膨胀') }}
+      </button>
+      <button class="viz-btn" @click="presetReadThroughTombstone">
+        {{ t('Read Tombstone', '读取墓碑') }}
+      </button>
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
@@ -650,9 +792,16 @@ async function presetReadThroughTombstone() {
   border-radius: 2px;
 }
 
-.ts-stat-dot--active { background: var(--viz-success); }
-.ts-stat-dot--tombstoned { background: var(--viz-danger); opacity: 0.6; }
-.ts-stat-dot--free { background: var(--viz-border); }
+.ts-stat-dot--active {
+  background: var(--viz-success);
+}
+.ts-stat-dot--tombstoned {
+  background: var(--viz-danger);
+  opacity: 0.6;
+}
+.ts-stat-dot--free {
+  background: var(--viz-border);
+}
 
 /* Store grid */
 .ts-grid {
@@ -864,8 +1013,14 @@ async function presetReadThroughTombstone() {
 }
 
 @keyframes ts-fade-in {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 640px) {

@@ -63,14 +63,21 @@ function scrollToDemo() {
 }
 
 @keyframes demo-bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(2px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(2px);
+  }
 }
 </style>
 
 <style>
 .viz-highlight {
-  box-shadow: 0 0 0 3px var(--vp-c-brand-soft), 0 0 12px var(--vp-c-brand-soft);
+  box-shadow:
+    0 0 0 3px var(--vp-c-brand-soft),
+    0 0 12px var(--vp-c-brand-soft);
   transition: box-shadow var(--viz-transition);
 }
 </style>

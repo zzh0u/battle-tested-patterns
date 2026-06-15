@@ -245,7 +245,9 @@ export function report(d: Diagnostic): void {
 
   // GitHub Actions annotation format
   if (process.env.CI) {
-    console.log(`::${d.severity} file=${sanitizeAnnotation(relFile)}${lineStr}::${sanitizeAnnotation(d.rule)}: ${sanitizeAnnotation(d.message)}`);
+    console.log(
+      `::${d.severity} file=${sanitizeAnnotation(relFile)}${lineStr}::${sanitizeAnnotation(d.rule)}: ${sanitizeAnnotation(d.message)}`,
+    );
   } else {
     console.log(`  ${prefix} [${d.rule}] ${relFile}${d.line ? `:${d.line}` : ''} — ${d.message}`);
   }
@@ -262,8 +264,8 @@ export function getDiagnostics(): Diagnostic[] {
  * Print summary and return exit code.
  */
 export function summarize(scriptName: string): number {
-  const errors = diagnostics.filter(d => d.severity === 'error');
-  const warnings = diagnostics.filter(d => d.severity === 'warning');
+  const errors = diagnostics.filter((d) => d.severity === 'error');
+  const warnings = diagnostics.filter((d) => d.severity === 'warning');
 
   console.log('');
   if (errors.length === 0 && warnings.length === 0) {

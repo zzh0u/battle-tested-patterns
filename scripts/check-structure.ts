@@ -83,17 +83,27 @@ function checkPatternStructure(pf: PatternFile): void {
     } else {
       for (const field of ['title', 'description', 'difficulty']) {
         if (!fm.fields.has(field)) {
-          report({ file: path, severity: 'error', message: `Missing frontmatter field: ${field}`, rule: 'S1' });
+          report({
+            file: path,
+            severity: 'error',
+            message: `Missing frontmatter field: ${field}`,
+            rule: 'S1',
+          });
         }
       }
     }
 
     // S2: Required sections
     const sections = extractSections(content);
-    const headings = new Set(sections.map(s => s.heading));
+    const headings = new Set(sections.map((s) => s.heading));
     for (const required of requiredSections) {
       if (!headings.has(required)) {
-        report({ file: path, severity: 'error', message: `Missing required section: "${required}"`, rule: 'S2' });
+        report({
+          file: path,
+          severity: 'error',
+          message: `Missing required section: "${required}"`,
+          rule: 'S2',
+        });
       }
     }
 
@@ -104,9 +114,9 @@ function checkPatternStructure(pf: PatternFile): void {
     while ((groupMatch = codeGroupRe.exec(content)) !== null) {
       groupIdx++;
       const groupContent = groupMatch[1]!;
-      const tabLabels = [...groupContent.matchAll(/```\w+\s+\[(\w+)\]/g)].map(m => m[1]!);
-      const present = LANG_ORDER.filter(l => tabLabels.includes(l));
-      const actual = tabLabels.filter(l => LANG_ORDER.includes(l));
+      const tabLabels = [...groupContent.matchAll(/```\w+\s+\[(\w+)\]/g)].map((m) => m[1]!);
+      const present = LANG_ORDER.filter((l) => tabLabels.includes(l));
+      const actual = tabLabels.filter((l) => LANG_ORDER.includes(l));
       if (actual.length > 0 && JSON.stringify(actual) !== JSON.stringify(present)) {
         report({
           file: path,
@@ -118,9 +128,7 @@ function checkPatternStructure(pf: PatternFile): void {
     }
 
     // S4: Property Table in Core Idea (warning)
-    const coreIdea = sections.find(s =>
-      s.heading === 'Core Idea' || s.heading === '核心思想'
-    );
+    const coreIdea = sections.find((s) => s.heading === 'Core Idea' || s.heading === '核心思想');
     if (coreIdea) {
       const hasTable = /\|.*\|.*\|/.test(coreIdea.content) && /\|[-:]+\|/.test(coreIdea.content);
       if (!hasTable) {
@@ -134,12 +142,12 @@ function checkPatternStructure(pf: PatternFile): void {
     }
 
     // S5 & S6: Production Proof link quality
-    const proofSection = sections.find(s =>
-      s.heading === 'Production Proof' || s.heading === '生产验证'
+    const proofSection = sections.find(
+      (s) => s.heading === 'Production Proof' || s.heading === '生产验证',
     );
     if (proofSection) {
       const links = extractGitHubLinks(proofSection.content, proofSection.startLine);
-      const linksWithL = links.filter(l => l.hasLineNumber && !l.isL1Only);
+      const linksWithL = links.filter((l) => l.hasLineNumber && !l.isL1Only);
       if (linksWithL.length < 2) {
         report({
           file: path,
@@ -149,7 +157,7 @@ function checkPatternStructure(pf: PatternFile): void {
         });
       }
       // S6: #L1 links
-      const l1Links = links.filter(l => l.isL1Only);
+      const l1Links = links.filter((l) => l.isL1Only);
       for (const l of l1Links) {
         report({
           file: path,
@@ -162,8 +170,8 @@ function checkPatternStructure(pf: PatternFile): void {
     }
 
     // S7: Challenge Questions format (warning)
-    const challengeSection = sections.find(s =>
-      s.heading === 'Challenge Questions' || s.heading === '挑战问题'
+    const challengeSection = sections.find(
+      (s) => s.heading === 'Challenge Questions' || s.heading === '挑战问题',
     );
     if (challengeSection) {
       const detailsCount = (challengeSection.content.match(/^::: details/gm) || []).length;
@@ -224,7 +232,12 @@ function checkGuideFrontmatter(): void {
       }
       for (const field of ['title', 'description']) {
         if (!fm.fields.has(field)) {
-          report({ file, severity: 'error', message: `Missing frontmatter field: ${field}`, rule: 'S1b' });
+          report({
+            file,
+            severity: 'error',
+            message: `Missing frontmatter field: ${field}`,
+            rule: 'S1b',
+          });
         }
       }
     }
@@ -237,9 +250,7 @@ function main(): void {
   console.log('check-structure: Verifying document structure completeness...\n');
 
   const patterns = discoverPatterns();
-  const filtered = filterPattern
-    ? patterns.filter(p => p.slug === filterPattern)
-    : patterns;
+  const filtered = filterPattern ? patterns.filter((p) => p.slug === filterPattern) : patterns;
 
   if (filtered.length === 0) {
     console.error(`No patterns found${filterPattern ? ` matching "${filterPattern}"` : ''}`);

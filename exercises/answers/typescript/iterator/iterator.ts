@@ -2,7 +2,9 @@ class Iter<T> {
   constructor(private source: () => Generator<T>) {}
 
   static from<T>(items: T[]): Iter<T> {
-    return new Iter(function* () { yield* items; });
+    return new Iter(function* () {
+      yield* items;
+    });
   }
 
   map<U>(fn: (x: T) => U): Iter<U> {

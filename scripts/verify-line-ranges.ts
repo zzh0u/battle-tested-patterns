@@ -66,13 +66,12 @@ const isCI = args.includes('--ci');
 const noCache = args.includes('--no-cache');
 const verbose = args.includes('--verbose');
 const sectionAll = args.includes('--section') && args[args.indexOf('--section') + 1] === 'all';
-const patternFilter = args.includes('--pattern')
-  ? args[args.indexOf('--pattern') + 1]
-  : undefined;
+const patternFilter = args.includes('--pattern') ? args[args.indexOf('--pattern') + 1] : undefined;
 
 // ─── Link Parsing ───────────────────────────────────────────────────────────
 
-const SHA_LINK_RE = /https:\/\/github\.com\/([^/]+)\/([^/]+)\/blob\/([\da-f]{40})\/([^#\s)]+)#L(\d+)(?:-L(\d+))?/g;
+const SHA_LINK_RE =
+  /https:\/\/github\.com\/([^/]+)\/([^/]+)\/blob\/([\da-f]{40})\/([^#\s)]+)#L(\d+)(?:-L(\d+))?/g;
 
 function parseProductionProofLinks(
   content: string,
@@ -151,7 +150,7 @@ function generateKeywords(link: ParsedLink): string[] {
   keywords.push(camel);
 
   // PascalCase (e.g., "CircuitBreaker")
-  const pascal = words.map(w => w[0]!.toUpperCase() + w.slice(1)).join('');
+  const pascal = words.map((w) => w[0]!.toUpperCase() + w.slice(1)).join('');
   keywords.push(pascal);
 
   // snake_case (e.g., "circuit_breaker")
@@ -161,7 +160,11 @@ function generateKeywords(link: ParsedLink): string[] {
   keywords.push(words.join('_').toUpperCase());
 
   // File name without extension (e.g., "gobreaker" from "gobreaker.go")
-  const fileName = link.filePath.split('/').pop()?.replace(/\.\w+$/, '') ?? '';
+  const fileName =
+    link.filePath
+      .split('/')
+      .pop()
+      ?.replace(/\.\w+$/, '') ?? '';
   if (fileName.length >= 3) keywords.push(fileName);
 
   // Context identifiers from the Usage column (e.g., "HystrixCircuitBreakerImpl")
@@ -170,7 +173,7 @@ function generateKeywords(link: ParsedLink): string[] {
   }
 
   // Deduplicate and filter short ones
-  return [...new Set(keywords)].filter(k => k.length >= 3);
+  return [...new Set(keywords)].filter((k) => k.length >= 3);
 }
 
 // ─── File Fetching ──────────────────────────────────────────────────────────
@@ -227,8 +230,11 @@ async function verifyLink(link: ParsedLink): Promise<VerifyResult> {
   }
 
   // L2: Keyword presence in the referenced range
-  const rangeContent = lines.slice(link.startLine - 1, link.endLine).join('\n').toLowerCase();
-  const found = keywords.filter(k => rangeContent.includes(k.toLowerCase()));
+  const rangeContent = lines
+    .slice(link.startLine - 1, link.endLine)
+    .join('\n')
+    .toLowerCase();
+  const found = keywords.filter((k) => rangeContent.includes(k.toLowerCase()));
 
   if (found.length === 0) {
     return {
@@ -275,14 +281,18 @@ function cacheKey(link: ParsedLink): string {
 
 // ─── Batch Execution ────────────────────────────────────────────────────────
 
-async function runBatch<T, R>(items: T[], fn: (item: T) => Promise<R>, concurrency: number): Promise<R[]> {
+async function runBatch<T, R>(
+  items: T[],
+  fn: (item: T) => Promise<R>,
+  concurrency: number,
+): Promise<R[]> {
   const results: R[] = [];
   for (let i = 0; i < items.length; i += concurrency) {
     const batch = items.slice(i, i + concurrency);
     const batchResults = await Promise.all(batch.map(fn));
     results.push(...batchResults);
     if (i + concurrency < items.length) {
-      await new Promise(r => setTimeout(r, DELAY_MS));
+      await new Promise((r) => setTimeout(r, DELAY_MS));
     }
   }
   return results;
@@ -359,26 +369,32 @@ async function main() {
   const results = [...cachedResults, ...freshResults];
 
   // Output
-  const passes = results.filter(r => r.status === 'pass');
-  const warns = results.filter(r => r.status === 'warn');
-  const fails = results.filter(r => r.status === 'fail');
-  const errors = results.filter(r => r.status === 'error');
+  const passes = results.filter((r) => r.status === 'pass');
+  const warns = results.filter((r) => r.status === 'warn');
+  const fails = results.filter((r) => r.status === 'fail');
+  const errors = results.filter((r) => r.status === 'error');
 
   if (verbose) {
     for (const r of passes) {
       const file = r.link.filePath.split('/').pop();
-      console.log(`  ✅ [${r.link.section}] ${r.link.patternSlug} → ${file} L${r.link.startLine}-L${r.link.endLine} (${r.totalLines} lines) — ${r.message}`);
+      console.log(
+        `  ✅ [${r.link.section}] ${r.link.patternSlug} → ${file} L${r.link.startLine}-L${r.link.endLine} (${r.totalLines} lines) — ${r.message}`,
+      );
     }
   }
 
   for (const r of warns) {
     const file = r.link.filePath.split('/').pop();
-    console.log(`  ⚠️  [${r.link.section}] ${r.link.patternSlug} → ${file} L${r.link.startLine}-L${r.link.endLine} — ${r.message}`);
+    console.log(
+      `  ⚠️  [${r.link.section}] ${r.link.patternSlug} → ${file} L${r.link.startLine}-L${r.link.endLine} — ${r.message}`,
+    );
   }
 
   for (const r of fails) {
     const file = r.link.filePath.split('/').pop();
-    console.log(`  ❌ [${r.link.section}] ${r.link.patternSlug} → ${file} L${r.link.startLine}-L${r.link.endLine} — ${r.message}`);
+    console.log(
+      `  ❌ [${r.link.section}] ${r.link.patternSlug} → ${file} L${r.link.startLine}-L${r.link.endLine} — ${r.message}`,
+    );
   }
 
   for (const r of errors) {
@@ -389,7 +405,8 @@ async function main() {
   // Summary
   console.log(`\n${results.length} links verified:`);
   console.log(`  ✅ ${passes.length} pass`);
-  if (warns.length) console.log(`  ⚠️  ${warns.length} warn (keywords not found — review recommended)`);
+  if (warns.length)
+    console.log(`  ⚠️  ${warns.length} warn (keywords not found — review recommended)`);
   if (fails.length) console.log(`  ❌ ${fails.length} fail (line range out of bounds)`);
   if (errors.length) console.log(`  ❌ ${errors.length} error (fetch failed)`);
 

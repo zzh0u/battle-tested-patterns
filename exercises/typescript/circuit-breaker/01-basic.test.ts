@@ -79,7 +79,9 @@ describe('Circuit Breaker - Basic', () => {
 
   it('should open after threshold failures', async () => {
     const cb = new CircuitBreaker(3, 1000);
-    const fail = async () => { throw new Error('fail'); };
+    const fail = async () => {
+      throw new Error('fail');
+    };
 
     for (let i = 0; i < 3; i++) {
       await expect(cb.call(fail)).rejects.toThrow('fail');
@@ -89,7 +91,9 @@ describe('Circuit Breaker - Basic', () => {
 
   it('should fail fast when OPEN', async () => {
     const cb = new CircuitBreaker(2, 5000);
-    const fail = async () => { throw new Error('fail'); };
+    const fail = async () => {
+      throw new Error('fail');
+    };
 
     await expect(cb.call(fail)).rejects.toThrow('fail');
     await expect(cb.call(fail)).rejects.toThrow('fail');
@@ -100,7 +104,9 @@ describe('Circuit Breaker - Basic', () => {
 
   it('should transition to HALF_OPEN after timeout', async () => {
     const cb = new CircuitBreaker(2, 50);
-    const fail = async () => { throw new Error('fail'); };
+    const fail = async () => {
+      throw new Error('fail');
+    };
 
     await expect(cb.call(fail)).rejects.toThrow();
     await expect(cb.call(fail)).rejects.toThrow();
@@ -112,7 +118,9 @@ describe('Circuit Breaker - Basic', () => {
 
   it('should close on successful probe in HALF_OPEN', async () => {
     const cb = new CircuitBreaker(2, 50);
-    const fail = async () => { throw new Error('fail'); };
+    const fail = async () => {
+      throw new Error('fail');
+    };
 
     await expect(cb.call(fail)).rejects.toThrow();
     await expect(cb.call(fail)).rejects.toThrow();
@@ -127,7 +135,9 @@ describe('Circuit Breaker - Basic', () => {
 
   it('should reopen on failed probe in HALF_OPEN', async () => {
     const cb = new CircuitBreaker(2, 50);
-    const fail = async () => { throw new Error('fail'); };
+    const fail = async () => {
+      throw new Error('fail');
+    };
 
     await expect(cb.call(fail)).rejects.toThrow();
     await expect(cb.call(fail)).rejects.toThrow();

@@ -38,7 +38,8 @@ function makeEvalVisitor(): ExprVisitor<number> {
   return {
     visitNumber: (value) => value,
     visitAdd: (left, right) => visit(left, makeEvalVisitor()) + visit(right, makeEvalVisitor()),
-    visitMultiply: (left, right) => visit(left, makeEvalVisitor()) * visit(right, makeEvalVisitor()),
+    visitMultiply: (left, right) =>
+      visit(left, makeEvalVisitor()) * visit(right, makeEvalVisitor()),
   };
 }
 

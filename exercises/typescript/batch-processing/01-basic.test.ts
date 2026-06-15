@@ -34,8 +34,12 @@ class SyncBatchProcessor<T, R> {
     return results;
   }
 
-  get pending(): number { return this.queue.length; }
-  get allResults(): R[] { return [...this.results]; }
+  get pending(): number {
+    return this.queue.length;
+  }
+  get allResults(): R[] {
+    return [...this.results];
+  }
 }
 
 // ─── Tests (do not modify below this line) ───────────────────────
@@ -67,8 +71,10 @@ describe('Batch Processing - Basic: Size-Based Flush', () => {
 
   it('should track all results', () => {
     const bp = new SyncBatchProcessor((items: number[]) => items, 2);
-    bp.add(1); bp.add(2); // flush
-    bp.add(3); bp.add(4); // flush
+    bp.add(1);
+    bp.add(2); // flush
+    bp.add(3);
+    bp.add(4); // flush
     expect(bp.allResults).toEqual([1, 2, 3, 4]);
   });
 

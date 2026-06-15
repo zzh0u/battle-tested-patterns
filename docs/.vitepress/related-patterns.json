@@ -3,7 +3,10 @@
     "en": [
       ["tagged-union", "Both encode type information in compact integer representations"],
       ["dirty-flag", "Dirty flags are often stored as bitmask bits"],
-      ["double-buffering", "React uses bitmask flags on each Fiber node to track work in its double-buffered tree"]
+      [
+        "double-buffering",
+        "React uses bitmask flags on each Fiber node to track work in its double-buffered tree"
+      ]
     ],
     "zh": [
       ["tagged-union", "两者都将类型信息编码为紧凑的整数表示"],
@@ -13,10 +16,22 @@
   },
   "min-heap": {
     "en": [
-      ["merge-iterator", "K-way merge uses a min-heap to select the smallest element across streams"],
-      ["cooperative-scheduling", "React's scheduler uses a min-heap to pick the highest-priority task"],
-      ["event-loop", "Timer queues in event loops often use min-heaps for earliest-deadline scheduling"],
-      ["b-plus-tree", "Alternative ordered structure — B+ trees optimize for disk, heaps for priority access"]
+      [
+        "merge-iterator",
+        "K-way merge uses a min-heap to select the smallest element across streams"
+      ],
+      [
+        "cooperative-scheduling",
+        "React's scheduler uses a min-heap to pick the highest-priority task"
+      ],
+      [
+        "event-loop",
+        "Timer queues in event loops often use min-heaps for earliest-deadline scheduling"
+      ],
+      [
+        "b-plus-tree",
+        "Alternative ordered structure — B+ trees optimize for disk, heaps for priority access"
+      ]
     ],
     "zh": [
       ["merge-iterator", "K 路合并使用最小堆从多个流中选取最小元素"],
@@ -29,7 +44,10 @@
     "en": [
       ["backpressure", "Bounded ring buffers naturally create backpressure when full"],
       ["event-loop", "Event loops use ring buffers for I/O event queues"],
-      ["double-buffering", "Both avoid allocation — ring buffers reuse slots, double buffering swaps pointers"],
+      [
+        "double-buffering",
+        "Both avoid allocation — ring buffers reuse slots, double buffering swaps pointers"
+      ],
       ["batch-processing", "Ring buffers accumulate events for batch consumption"]
     ],
     "zh": [
@@ -43,7 +61,10 @@
     "en": [
       ["bloom-filter", "Bloom filters pre-filter before expensive trie lookups"],
       ["registry", "Tries can implement registries with prefix-based routing"],
-      ["skip-list", "Alternative sorted lookup — skip lists are ordered by value, tries by key characters"]
+      [
+        "skip-list",
+        "Alternative sorted lookup — skip lists are ordered by value, tries by key characters"
+      ]
     ],
     "zh": [
       ["bloom-filter", "布隆过滤器在昂贵的 Trie 查找前做预过滤"],
@@ -54,9 +75,18 @@
   "skip-list": {
     "en": [
       ["lsm-tree", "LSM trees use skip lists as their in-memory sorted buffer (memtable)"],
-      ["b-plus-tree", "B+ trees guarantee O(log n); skip lists achieve it probabilistically with simpler code"],
-      ["bloom-filter", "Both are probabilistic — bloom filters for membership, skip lists for ordering"],
-      ["free-list", "Skip list nodes need allocation management; free lists provide O(1) alloc for fixed-size nodes"]
+      [
+        "b-plus-tree",
+        "B+ trees guarantee O(log n); skip lists achieve it probabilistically with simpler code"
+      ],
+      [
+        "bloom-filter",
+        "Both are probabilistic — bloom filters for membership, skip lists for ordering"
+      ],
+      [
+        "free-list",
+        "Skip list nodes need allocation management; free lists provide O(1) alloc for fixed-size nodes"
+      ]
     ],
     "zh": [
       ["lsm-tree", "LSM 树使用跳表作为内存中的有序缓冲区（memtable）"],
@@ -67,9 +97,15 @@
   },
   "bloom-filter": {
     "en": [
-      ["lsm-tree", "LSM trees attach bloom filters to each SSTable to avoid unnecessary disk reads"],
+      [
+        "lsm-tree",
+        "LSM trees attach bloom filters to each SSTable to avoid unnecessary disk reads"
+      ],
       ["trie", "Bloom filter pre-screens before expensive trie traversal"],
-      ["lru-cache", "Both speed up lookups — bloom filters eliminate negatives, LRU caches store positives"]
+      [
+        "lru-cache",
+        "Both speed up lookups — bloom filters eliminate negatives, LRU caches store positives"
+      ]
     ],
     "zh": [
       ["lsm-tree", "LSM 树为每个 SSTable 附加布隆过滤器以避免不必要的磁盘读取"],
@@ -79,9 +115,18 @@
   },
   "lru-cache": {
     "en": [
-      ["free-list", "LRU eviction frees nodes; free lists recycle them without calling the allocator"],
-      ["flyweight", "Both reduce memory — LRU limits cache size, flyweight shares identical objects"],
-      ["consistent-hashing", "Distributed caches use consistent hashing to route keys to the right LRU instance"],
+      [
+        "free-list",
+        "LRU eviction frees nodes; free lists recycle them without calling the allocator"
+      ],
+      [
+        "flyweight",
+        "Both reduce memory — LRU limits cache size, flyweight shares identical objects"
+      ],
+      [
+        "consistent-hashing",
+        "Distributed caches use consistent hashing to route keys to the right LRU instance"
+      ],
       ["tombstone", "Tombstones mark deleted cache entries in distributed LRU caches"]
     ],
     "zh": [
@@ -94,8 +139,14 @@
   "b-plus-tree": {
     "en": [
       ["skip-list", "Simpler probabilistic alternative with comparable O(log n) performance"],
-      ["lsm-tree", "LSM trees buffer writes for speed; B+ trees optimize reads with balanced structure"],
-      ["merkle-tree", "Both are tree structures — Merkle for integrity verification, B+ for ordered storage"],
+      [
+        "lsm-tree",
+        "LSM trees buffer writes for speed; B+ trees optimize reads with balanced structure"
+      ],
+      [
+        "merkle-tree",
+        "Both are tree structures — Merkle for integrity verification, B+ for ordered storage"
+      ],
       ["merge-iterator", "B+ tree range scans use iterator patterns similar to merge iterators"]
     ],
     "zh": [
@@ -107,8 +158,14 @@
   },
   "tagged-union": {
     "en": [
-      ["vtable", "Both enable runtime polymorphism — tagged unions via switch, vtables via function pointers"],
-      ["bitmask", "Bitmask flags can serve as type tags in lightweight tagged union implementations"],
+      [
+        "vtable",
+        "Both enable runtime polymorphism — tagged unions via switch, vtables via function pointers"
+      ],
+      [
+        "bitmask",
+        "Bitmask flags can serve as type tags in lightweight tagged union implementations"
+      ],
       ["visitor", "Visitors dispatch on node types, which are often represented as tagged unions"]
     ],
     "zh": [
@@ -119,8 +176,14 @@
   },
   "merkle-tree": {
     "en": [
-      ["copy-on-write", "Merkle trees enable efficient copy-on-write — only rehash the changed path"],
-      ["write-ahead-log", "WAL records changes; Merkle trees verify the resulting state is consistent"],
+      [
+        "copy-on-write",
+        "Merkle trees enable efficient copy-on-write — only rehash the changed path"
+      ],
+      [
+        "write-ahead-log",
+        "WAL records changes; Merkle trees verify the resulting state is consistent"
+      ],
       ["checkpointing", "Merkle roots serve as integrity proofs for checkpoint snapshots"],
       ["b-plus-tree", "Both are tree structures — Merkle for verification, B+ for ordered access"]
     ],
@@ -135,7 +198,10 @@
     "en": [
       ["min-heap", "The min-heap is the core data structure powering K-way merge"],
       ["lsm-tree", "LSM compaction merges multiple sorted SSTables using merge iterators"],
-      ["iterator", "Merge iterator is a composition of the iterator pattern across multiple sources"],
+      [
+        "iterator",
+        "Merge iterator is a composition of the iterator pattern across multiple sources"
+      ],
       ["skip-list", "Skip lists provide the sorted input streams that merge iterators consume"]
     ],
     "zh": [
@@ -147,7 +213,10 @@
   },
   "semaphore": {
     "en": [
-      ["rate-limiter", "Rate limiters control throughput over time; semaphores control concurrent access count"],
+      [
+        "rate-limiter",
+        "Rate limiters control throughput over time; semaphores control concurrent access count"
+      ],
       ["backpressure", "Semaphores implement backpressure by blocking when the limit is reached"],
       ["object-pool", "Pool size is effectively a semaphore — acquire an object, release when done"]
     ],
@@ -159,9 +228,18 @@
   },
   "actor-model": {
     "en": [
-      ["observer", "Actors communicate via messages, similar to observer's publish/subscribe pattern"],
-      ["event-loop", "Each actor processes its mailbox sequentially, like a single-threaded event loop"],
-      ["state-machine", "Actor behavior often follows a state machine pattern for its internal logic"]
+      [
+        "observer",
+        "Actors communicate via messages, similar to observer's publish/subscribe pattern"
+      ],
+      [
+        "event-loop",
+        "Each actor processes its mailbox sequentially, like a single-threaded event loop"
+      ],
+      [
+        "state-machine",
+        "Actor behavior often follows a state machine pattern for its internal logic"
+      ]
     ],
     "zh": [
       ["observer", "Actor 通过消息通信，类似观察者的发布/订阅模式"],
@@ -171,9 +249,15 @@
   },
   "work-stealing": {
     "en": [
-      ["cooperative-scheduling", "Work stealing distributes tasks across threads; cooperative scheduling yields within a thread"],
+      [
+        "cooperative-scheduling",
+        "Work stealing distributes tasks across threads; cooperative scheduling yields within a thread"
+      ],
       ["object-pool", "Worker threads use per-thread object pools to avoid contention"],
-      ["free-list", "Per-thread free lists complement work stealing by providing lock-free allocation"]
+      [
+        "free-list",
+        "Per-thread free lists complement work stealing by providing lock-free allocation"
+      ]
     ],
     "zh": [
       ["cooperative-scheduling", "工作窃取在线程间分配任务；协作调度在线程内让出"],
@@ -197,8 +281,14 @@
   },
   "cooperative-scheduling": {
     "en": [
-      ["event-loop", "Event loops rely on cooperative scheduling — long tasks must yield to keep I/O flowing"],
-      ["work-stealing", "Cooperative scheduling works within a thread; work stealing distributes across threads"],
+      [
+        "event-loop",
+        "Event loops rely on cooperative scheduling — long tasks must yield to keep I/O flowing"
+      ],
+      [
+        "work-stealing",
+        "Cooperative scheduling works within a thread; work stealing distributes across threads"
+      ],
       ["min-heap", "React's scheduler uses a min-heap to select which cooperative task runs next"]
     ],
     "zh": [
@@ -209,7 +299,10 @@
   },
   "double-buffering": {
     "en": [
-      ["copy-on-write", "Both defer mutation costs — double buffering swaps whole copies, CoW copies on write"],
+      [
+        "copy-on-write",
+        "Both defer mutation costs — double buffering swaps whole copies, CoW copies on write"
+      ],
       ["ring-buffer", "Ring buffers can be seen as multi-slot generalizations of double buffering"],
       ["dirty-flag", "Dirty flags track which buffer has changed and needs to be swapped"]
     ],
@@ -222,7 +315,10 @@
   "backpressure": {
     "en": [
       ["ring-buffer", "Bounded ring buffers are a common mechanism for implementing backpressure"],
-      ["rate-limiter", "Rate limiting controls intake speed; backpressure signals the producer to slow down"],
+      [
+        "rate-limiter",
+        "Rate limiting controls intake speed; backpressure signals the producer to slow down"
+      ],
       ["semaphore", "Semaphores can implement backpressure by limiting outstanding work"],
       ["batch-processing", "Batching smooths bursty input, complementing backpressure mechanisms"]
     ],
@@ -235,7 +331,10 @@
   },
   "event-loop": {
     "en": [
-      ["cooperative-scheduling", "Event loops require cooperative scheduling — handlers must not block"],
+      [
+        "cooperative-scheduling",
+        "Event loops require cooperative scheduling — handlers must not block"
+      ],
       ["observer", "Event loops dispatch events to registered observers/callbacks"],
       ["ring-buffer", "Event queues are typically implemented as ring buffers"],
       ["actor-model", "Each actor is essentially a single-threaded event loop over its mailbox"]
@@ -263,7 +362,10 @@
     "en": [
       ["retry-backoff", "Circuit breaker prevents retries when the service is known to be down"],
       ["state-machine", "Circuit breaker is a state machine: closed -> open -> half-open"],
-      ["rate-limiter", "Both protect services — rate limiter controls throughput, circuit breaker stops failures"]
+      [
+        "rate-limiter",
+        "Both protect services — rate limiter controls throughput, circuit breaker stops failures"
+      ]
     ],
     "zh": [
       ["retry-backoff", "熔断器在服务已知不可用时阻止重试"],
@@ -275,7 +377,10 @@
     "en": [
       ["semaphore", "Semaphore limits concurrency; rate limiter limits throughput over time"],
       ["backpressure", "Rate limiting is a form of backpressure applied at system boundaries"],
-      ["circuit-breaker", "Circuit breaker stops all traffic on failure; rate limiter controls healthy traffic volume"]
+      [
+        "circuit-breaker",
+        "Circuit breaker stops all traffic on failure; rate limiter controls healthy traffic volume"
+      ]
     ],
     "zh": [
       ["semaphore", "信号量限制并发；限流器限制时间维度的吞吐量"],
@@ -297,7 +402,10 @@
   },
   "write-ahead-log": {
     "en": [
-      ["checkpointing", "Checkpoints truncate the WAL — recover from checkpoint + replay remaining log"],
+      [
+        "checkpointing",
+        "Checkpoints truncate the WAL — recover from checkpoint + replay remaining log"
+      ],
       ["lsm-tree", "LSM trees use WAL to ensure memtable writes survive crashes before flushing"],
       ["merkle-tree", "Merkle trees verify the state that WAL helps reconstruct after recovery"],
       ["logical-clock", "WAL entries are sequenced by logical clock for ordering guarantees"]
@@ -324,7 +432,10 @@
   "consistent-hashing": {
     "en": [
       ["registry", "Registry discovers services; consistent hashing routes to them"],
-      ["lru-cache", "Distributed LRU caches use consistent hashing to route keys to the right node"],
+      [
+        "lru-cache",
+        "Distributed LRU caches use consistent hashing to route keys to the right node"
+      ],
       ["rate-limiter", "Per-node rate limiting in consistent hashing clusters"]
     ],
     "zh": [
@@ -337,7 +448,10 @@
     "en": [
       ["visitor", "Tree traversal over dependency graphs dispatches to type-specific handlers"],
       ["iterator", "Topological iteration produces a lazy sequence of nodes in dependency order"],
-      ["dirty-flag", "Dirty propagation follows dependency edges to mark downstream nodes for recomputation"]
+      [
+        "dirty-flag",
+        "Dirty propagation follows dependency edges to mark downstream nodes for recomputation"
+      ]
     ],
     "zh": [
       ["visitor", "依赖图上的树遍历分发到类型特定的处理器"],
@@ -348,8 +462,14 @@
   "middleware-chain": {
     "en": [
       ["iterator", "Middleware chain iterates through handlers like an iterator over a sequence"],
-      ["observer", "Middleware can observe and modify requests/responses flowing through the pipeline"],
-      ["vtable", "Each middleware is a function pointer implementing a common interface, like a vtable entry"]
+      [
+        "observer",
+        "Middleware can observe and modify requests/responses flowing through the pipeline"
+      ],
+      [
+        "vtable",
+        "Each middleware is a function pointer implementing a common interface, like a vtable entry"
+      ]
     ],
     "zh": [
       ["iterator", "中间件链像迭代器遍历序列一样遍历处理器"],
@@ -371,9 +491,15 @@
   },
   "dirty-flag": {
     "en": [
-      ["observer", "Observer notifies when state changes; dirty flag defers the reaction until needed"],
+      [
+        "observer",
+        "Observer notifies when state changes; dirty flag defers the reaction until needed"
+      ],
       ["bitmask", "Dirty flags are efficiently stored as bits in a bitmask"],
-      ["dependency-graph", "Dirty propagation follows dependency graph edges to mark downstream nodes"]
+      [
+        "dependency-graph",
+        "Dirty propagation follows dependency graph edges to mark downstream nodes"
+      ]
     ],
     "zh": [
       ["observer", "观察者在状态变更时通知；脏标记将反应延迟到需要时"],
@@ -386,8 +512,14 @@
       ["skip-list", "Skip lists serve as the in-memory sorted buffer (memtable) in LSM trees"],
       ["bloom-filter", "Bloom filters on each SSTable avoid unnecessary disk reads during lookups"],
       ["merge-iterator", "Compaction merges multiple sorted SSTables using merge iterators"],
-      ["write-ahead-log", "WAL ensures memtable writes survive crashes before flushing to SSTables"],
-      ["tombstone", "LSM trees use tombstones to mark deletions that are cleaned up during compaction"]
+      [
+        "write-ahead-log",
+        "WAL ensures memtable writes survive crashes before flushing to SSTables"
+      ],
+      [
+        "tombstone",
+        "LSM trees use tombstones to mark deletions that are cleaned up during compaction"
+      ]
     ],
     "zh": [
       ["skip-list", "跳表充当 LSM 树中的内存有序缓冲区（memtable）"],
@@ -399,7 +531,10 @@
   },
   "checkpointing": {
     "en": [
-      ["write-ahead-log", "Checkpoints truncate the WAL — recovery replays only from the latest checkpoint"],
+      [
+        "write-ahead-log",
+        "Checkpoints truncate the WAL — recovery replays only from the latest checkpoint"
+      ],
       ["copy-on-write", "Copy-on-write enables consistent snapshots without stopping writes"],
       ["logical-clock", "Checkpoints are associated with logical clock positions for consistency"]
     ],
@@ -412,7 +547,10 @@
   "object-pool": {
     "en": [
       ["free-list", "Free lists manage the pool's internal allocation of slots"],
-      ["arena-allocator", "Arena allocators batch-allocate for pool objects; both avoid per-object malloc"],
+      [
+        "arena-allocator",
+        "Arena allocators batch-allocate for pool objects; both avoid per-object malloc"
+      ],
       ["semaphore", "Pool size acts as a semaphore limiting concurrent object usage"]
     ],
     "zh": [
@@ -423,8 +561,14 @@
   },
   "flyweight": {
     "en": [
-      ["interning", "Interning is the mechanism that implements flyweight — deduplicate identical values"],
-      ["copy-on-write", "Both share data — flyweight shares immutable objects, CoW shares until mutation"],
+      [
+        "interning",
+        "Interning is the mechanism that implements flyweight — deduplicate identical values"
+      ],
+      [
+        "copy-on-write",
+        "Both share data — flyweight shares immutable objects, CoW shares until mutation"
+      ],
       ["lru-cache", "LRU caches can store flyweight instances, evicting least-used shared objects"]
     ],
     "zh": [
@@ -436,8 +580,14 @@
   "arena-allocator": {
     "en": [
       ["free-list", "Free lists recycle individual objects; arenas bulk-free all at once"],
-      ["object-pool", "Object pools pre-allocate; arenas bump-allocate — both reduce malloc overhead"],
-      ["reference-counting", "Arenas avoid per-object reference counting by freeing everything at scope end"]
+      [
+        "object-pool",
+        "Object pools pre-allocate; arenas bump-allocate — both reduce malloc overhead"
+      ],
+      [
+        "reference-counting",
+        "Arenas avoid per-object reference counting by freeing everything at scope end"
+      ]
     ],
     "zh": [
       ["free-list", "空闲链表回收单个对象；Arena 一次性批量释放"],
@@ -449,7 +599,10 @@
     "en": [
       ["arena-allocator", "Arena bulk-frees; free lists recycle individual slots for O(1) reuse"],
       ["object-pool", "Object pools use free lists internally to track available objects"],
-      ["ring-buffer", "Both provide O(1) slot management — ring buffers via modular index, free lists via linked chain"]
+      [
+        "ring-buffer",
+        "Both provide O(1) slot management — ring buffers via modular index, free lists via linked chain"
+      ]
     ],
     "zh": [
       ["arena-allocator", "Arena 批量释放；空闲链表回收单个槽位实现 O(1) 复用"],
@@ -459,10 +612,19 @@
   },
   "copy-on-write": {
     "en": [
-      ["double-buffering", "Both defer costs — CoW copies on write, double buffering prepares a second copy"],
+      [
+        "double-buffering",
+        "Both defer costs — CoW copies on write, double buffering prepares a second copy"
+      ],
       ["flyweight", "Flyweight shares immutable data; CoW shares mutable data until modification"],
-      ["merkle-tree", "Merkle trees enable efficient CoW — only rehash the path from changed node to root"],
-      ["reference-counting", "Reference counting tracks CoW sharing — copy when ref count > 1 and writing"]
+      [
+        "merkle-tree",
+        "Merkle trees enable efficient CoW — only rehash the path from changed node to root"
+      ],
+      [
+        "reference-counting",
+        "Reference counting tracks CoW sharing — copy when ref count > 1 and writing"
+      ]
     ],
     "zh": [
       ["double-buffering", "两者都延迟成本——CoW 在写入时复制，双缓冲准备第二份副本"],
@@ -474,7 +636,10 @@
   "reference-counting": {
     "en": [
       ["copy-on-write", "Reference counting determines when a CoW value needs to be copied"],
-      ["object-pool", "Pools provide an alternative to reference counting — return objects instead of freeing"],
+      [
+        "object-pool",
+        "Pools provide an alternative to reference counting — return objects instead of freeing"
+      ],
       ["tombstone", "Tombstones defer cleanup like reference counting defers deallocation"]
     ],
     "zh": [
@@ -497,7 +662,10 @@
   },
   "interning": {
     "en": [
-      ["flyweight", "Interning is the mechanism behind flyweight — deduplicate identical immutable values"],
+      [
+        "flyweight",
+        "Interning is the mechanism behind flyweight — deduplicate identical immutable values"
+      ],
       ["lru-cache", "Intern tables can use LRU eviction to bound memory usage"],
       ["bloom-filter", "Bloom filters can pre-check before expensive intern table lookups"]
     ],
@@ -510,7 +678,10 @@
   "state-machine": {
     "en": [
       ["actor-model", "Actors often use state machines to manage their internal behavior"],
-      ["circuit-breaker", "Circuit breaker is a classic state machine: closed -> open -> half-open"],
+      [
+        "circuit-breaker",
+        "Circuit breaker is a classic state machine: closed -> open -> half-open"
+      ],
       ["visitor", "Visitors can dispatch differently based on state machine's current state"]
     ],
     "zh": [
@@ -521,7 +692,10 @@
   },
   "observer": {
     "en": [
-      ["event-loop", "Event loops dispatch events to observers registered for specific event types"],
+      [
+        "event-loop",
+        "Event loops dispatch events to observers registered for specific event types"
+      ],
       ["dirty-flag", "Observer triggers notification; dirty flag defers the expensive reaction"],
       ["middleware-chain", "Middleware observes and transforms data flowing through a pipeline"]
     ],
@@ -534,7 +708,10 @@
   "iterator": {
     "en": [
       ["merge-iterator", "Merge iterator composes multiple iterators into one sorted output"],
-      ["visitor", "Both traverse data structures — iterators yield elements, visitors dispatch callbacks"],
+      [
+        "visitor",
+        "Both traverse data structures — iterators yield elements, visitors dispatch callbacks"
+      ],
       ["middleware-chain", "Middleware chains iterate through handler sequences"]
     ],
     "zh": [
@@ -545,9 +722,15 @@
   },
   "diff-patch": {
     "en": [
-      ["copy-on-write", "Diff/patch computes what changed; CoW defers the actual copying until needed"],
+      [
+        "copy-on-write",
+        "Diff/patch computes what changed; CoW defers the actual copying until needed"
+      ],
       ["merkle-tree", "Merkle trees identify which subtrees changed, narrowing where to diff"],
-      ["double-buffering", "React diffs the current tree against the work-in-progress double buffer"]
+      [
+        "double-buffering",
+        "React diffs the current tree against the work-in-progress double buffer"
+      ]
     ],
     "zh": [
       ["copy-on-write", "差异/补丁计算变更内容；CoW 将实际复制延迟到需要时"],
@@ -557,9 +740,15 @@
   },
   "vtable": {
     "en": [
-      ["tagged-union", "Both enable polymorphism — vtable via indirection, tagged union via switch"],
+      [
+        "tagged-union",
+        "Both enable polymorphism — vtable via indirection, tagged union via switch"
+      ],
       ["visitor", "Visitors dispatch on type, often via vtable-like function pointer lookups"],
-      ["middleware-chain", "Each middleware handler is a function pointer, forming a dynamic vtable"]
+      [
+        "middleware-chain",
+        "Each middleware handler is a function pointer, forming a dynamic vtable"
+      ]
     ],
     "zh": [
       ["tagged-union", "两者都实现多态——虚函数表通过间接调用，标签联合通过 switch"],
@@ -569,7 +758,10 @@
   },
   "visitor": {
     "en": [
-      ["iterator", "Both traverse structures — visitors dispatch callbacks, iterators yield elements"],
+      [
+        "iterator",
+        "Both traverse structures — visitors dispatch callbacks, iterators yield elements"
+      ],
       ["vtable", "Visitor's dispatch table is conceptually a vtable indexed by node type"],
       ["dependency-graph", "Visitors walk dependency graphs to process nodes in correct order"],
       ["tagged-union", "Visitor dispatch matches on tagged union's type tag"]

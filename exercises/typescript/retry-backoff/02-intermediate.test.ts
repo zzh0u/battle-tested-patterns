@@ -12,7 +12,7 @@ interface RetryCircuitConfig {
   maxRetries: number;
   baseDelay: number;
   failureThreshold: number; // consecutive failures before circuit opens
-  cooldownMs: number;       // how long the circuit stays open
+  cooldownMs: number; // how long the circuit stays open
 }
 
 interface CallResult<T> {
@@ -53,7 +53,8 @@ class RetryWithCircuitBreaker {
   }
 
   async call<T>(fn: () => Promise<T>): Promise<CallResult<T>> {
-    if (this.isCircuitOpen) { // TODO: implement
+    if (this.isCircuitOpen) {
+      // TODO: implement
       throw new Error('Circuit is open');
     }
 
@@ -115,12 +116,16 @@ describe('Retry with Backoff - Intermediate: Retry with Circuit Breaker', () => 
 
     // First call: 2 failures (initial + 1 retry) — circuit still closed
     await expect(
-      breaker.call(async () => { throw new Error('fail'); }),
+      breaker.call(async () => {
+        throw new Error('fail');
+      }),
     ).rejects.toThrow('fail');
 
     // Second call: 1 more failure hits threshold (3 total) — circuit opens
     await expect(
-      breaker.call(async () => { throw new Error('fail'); }),
+      breaker.call(async () => {
+        throw new Error('fail');
+      }),
     ).rejects.toThrow('Circuit is open');
 
     expect(breaker.isCircuitOpen).toBe(true);
@@ -135,13 +140,19 @@ describe('Retry with Backoff - Intermediate: Retry with Circuit Breaker', () => 
     });
 
     // 2 failures to open circuit
-    await expect(breaker.call(async () => { throw new Error('f1'); })).rejects.toThrow();
-    await expect(breaker.call(async () => { throw new Error('f2'); })).rejects.toThrow();
+    await expect(
+      breaker.call(async () => {
+        throw new Error('f1');
+      }),
+    ).rejects.toThrow();
+    await expect(
+      breaker.call(async () => {
+        throw new Error('f2');
+      }),
+    ).rejects.toThrow();
 
     // Even a function that would succeed gets blocked
-    await expect(
-      breaker.call(async () => 'should not run'),
-    ).rejects.toThrow('Circuit is open');
+    await expect(breaker.call(async () => 'should not run')).rejects.toThrow('Circuit is open');
   });
 
   it('should reset circuit after cooldown and successful call', async () => {
@@ -153,8 +164,16 @@ describe('Retry with Backoff - Intermediate: Retry with Circuit Breaker', () => 
     });
 
     // Open the circuit
-    await expect(breaker.call(async () => { throw new Error('f'); })).rejects.toThrow();
-    await expect(breaker.call(async () => { throw new Error('f'); })).rejects.toThrow();
+    await expect(
+      breaker.call(async () => {
+        throw new Error('f');
+      }),
+    ).rejects.toThrow();
+    await expect(
+      breaker.call(async () => {
+        throw new Error('f');
+      }),
+    ).rejects.toThrow();
     expect(breaker.isCircuitOpen).toBe(true);
 
     // Wait for cooldown

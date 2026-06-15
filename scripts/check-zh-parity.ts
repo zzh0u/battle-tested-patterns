@@ -45,9 +45,8 @@ function extractMermaidBlocks(content: string): string[] {
 
 function countMermaidParticipants(block: string): number {
   // Count participants, actors, nodes in various diagram types
-  const participantLines = block.split('\n').filter(line =>
-    /^\s*(participant|actor|subgraph)\s/.test(line) ||
-    /^\s*\w+[[({|]/.test(line) // flowchart nodes
+  const participantLines = block.split('\n').filter(
+    (line) => /^\s*(participant|actor|subgraph)\s/.test(line) || /^\s*\w+[[({|]/.test(line), // flowchart nodes
   );
   return participantLines.length;
 }
@@ -107,12 +106,12 @@ function checkParity(pf: PatternFile): void {
   const enSections = extractSections(enContent);
   const zhSections = extractSections(zhContent);
 
-  const enProof = enSections.find(s => s.heading === 'Production Proof');
-  const zhProof = zhSections.find(s => s.heading === '生产验证');
+  const enProof = enSections.find((s) => s.heading === 'Production Proof');
+  const zhProof = zhSections.find((s) => s.heading === '生产验证');
 
   if (enProof && zhProof) {
-    const enLinks = new Set(extractGitHubLinks(enProof.content).map(l => l.url));
-    const zhLinks = new Set(extractGitHubLinks(zhProof.content).map(l => l.url));
+    const enLinks = new Set(extractGitHubLinks(enProof.content).map((l) => l.url));
+    const zhLinks = new Set(extractGitHubLinks(zhProof.content).map((l) => l.url));
 
     for (const url of enLinks) {
       if (!zhLinks.has(url)) {
@@ -137,12 +136,12 @@ function checkParity(pf: PatternFile): void {
   }
 
   // P5: More Production Uses links
-  const enMore = enSections.find(s => s.heading === 'More Production Uses');
-  const zhMore = zhSections.find(s => s.heading === '更多生产案例');
+  const enMore = enSections.find((s) => s.heading === 'More Production Uses');
+  const zhMore = zhSections.find((s) => s.heading === '更多生产案例');
 
   if (enMore && zhMore) {
-    const enLinks = new Set(extractGitHubLinks(enMore.content).map(l => l.url));
-    const zhLinks = new Set(extractGitHubLinks(zhMore.content).map(l => l.url));
+    const enLinks = new Set(extractGitHubLinks(enMore.content).map((l) => l.url));
+    const zhLinks = new Set(extractGitHubLinks(zhMore.content).map((l) => l.url));
 
     for (const url of enLinks) {
       if (!zhLinks.has(url)) {
@@ -157,8 +156,8 @@ function checkParity(pf: PatternFile): void {
   }
 
   // P6: Related Patterns row count (warning)
-  const enRelated = enSections.find(s => s.heading === 'Related Patterns');
-  const zhRelated = zhSections.find(s => s.heading === '相关模式');
+  const enRelated = enSections.find((s) => s.heading === 'Related Patterns');
+  const zhRelated = zhSections.find((s) => s.heading === '相关模式');
 
   if (enRelated && zhRelated) {
     const enRows = (enRelated.content.match(/^\|[^-]/gm) || []).length;
@@ -203,9 +202,7 @@ function main(): void {
   console.log('check-zh-parity: Verifying EN/ZH content parity...\n');
 
   const patterns = discoverPatterns();
-  const filtered = filterPattern
-    ? patterns.filter(p => p.slug === filterPattern)
-    : patterns;
+  const filtered = filterPattern ? patterns.filter((p) => p.slug === filterPattern) : patterns;
 
   if (filtered.length === 0) {
     console.error(`No patterns found${filterPattern ? ` matching "${filterPattern}"` : ''}`);

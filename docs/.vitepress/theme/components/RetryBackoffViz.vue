@@ -25,10 +25,12 @@ const BASE_DELAY = 1000;
 const failureRate = ref(70);
 const running = ref(false);
 const attempts = ref<Attempt[]>([]);
-const message = ref(t(
-  'Configure failure rate and click "Send Request" — or pick a scenario below',
-  '配置失败率并点击"发送请求" — 或选择下方场景'
-));
+const message = ref(
+  t(
+    'Configure failure rate and click "Send Request" — or pick a scenario below',
+    '配置失败率并点击"发送请求" — 或选择下方场景',
+  ),
+);
 const finalOutcome = ref<'idle' | 'success' | 'exhausted'>('idle');
 let presetRunning = false;
 
@@ -45,7 +47,9 @@ const history = useVizHistory<RetryBackoffSnapshot>(
       presetRunning = false;
       attempts.value = state.attempts;
       finalOutcome.value = state.finalOutcome as 'idle' | 'success' | 'exhausted';
-      running.value = false; if (msg !== undefined) message.value = msg; },
+      running.value = false;
+      if (msg !== undefined) message.value = msg;
+    },
   },
 );
 
@@ -75,14 +79,13 @@ async function startRequest() {
   finalOutcome.value = 'idle';
   message.value = t(
     'Sending initial request... First attempt has zero delay — only retries back off.',
-    '正在发送初始请求... 首次尝试零延迟 — 仅重试时退避。'
+    '正在发送初始请求... 首次尝试零延迟 — 仅重试时退避。',
   );
 
   for (let i = 0; i < MAX_RETRIES; i++) {
     const attemptDelay = i === 0 ? 0 : BASE_DELAY * Math.pow(2, i - 1);
-    const { jitter, total: totalDelay } = i === 0
-      ? { jitter: 0, total: 0 }
-      : addJitter(attemptDelay);
+    const { jitter, total: totalDelay } =
+      i === 0 ? { jitter: 0, total: 0 } : addJitter(attemptDelay);
 
     const attempt: Attempt = {
       number: i + 1,
@@ -96,7 +99,7 @@ async function startRequest() {
     if (i > 0) {
       message.value = t(
         `Waiting ${totalDelay}ms before attempt #${i + 1} (${BASE_DELAY}ms × 2^${i - 1} = ${attemptDelay}ms ${jitter >= 0 ? '+' : ''}${jitter}ms jitter). Exponential backoff prevents thundering herd.`,
-        `等待 ${totalDelay}ms 后进行第 ${i + 1} 次尝试（${BASE_DELAY}ms × 2^${i - 1} = ${attemptDelay}ms ${jitter >= 0 ? '+' : ''}${jitter}ms 抖动）。指数退避防止惊群效应。`
+        `等待 ${totalDelay}ms 后进行第 ${i + 1} 次尝试（${BASE_DELAY}ms × 2^${i - 1} = ${attemptDelay}ms ${jitter >= 0 ? '+' : ''}${jitter}ms 抖动）。指数退避防止惊群效应。`,
       );
       const scaledDelay = Math.min(totalDelay / 2, 1500);
       await delay(scaledDelay);
@@ -104,7 +107,10 @@ async function startRequest() {
     }
 
     attempts.value[i].result = 'pending';
-    message.value = t(`Attempt #${i + 1} — sending request...`, `第 ${i + 1} 次尝试 — 正在发送请求...`);
+    message.value = t(
+      `Attempt #${i + 1} — sending request...`,
+      `第 ${i + 1} 次尝试 — 正在发送请求...`,
+    );
     await delay(300);
     if (!running.value || isAborted()) return;
 
@@ -115,10 +121,13 @@ async function startRequest() {
       finalOutcome.value = 'success';
       message.value = t(
         `Success on attempt #${i + 1}!${i > 0 ? ` Recovered after ${i} ${i === 1 ? 'retry' : 'retries'}. AWS SDKs and gRPC use this exact backoff strategy.` : ' First try succeeded — no backoff needed.'}`,
-        `第 ${i + 1} 次尝试成功！${i > 0 ? `经过 ${i} 次重试后恢复。AWS SDK 和 gRPC 使用完全相同的退避策略。` : '首次尝试即成功 — 无需退避。'}`
+        `第 ${i + 1} 次尝试成功！${i > 0 ? `经过 ${i} 次重试后恢复。AWS SDK 和 gRPC 使用完全相同的退避策略。` : '首次尝试即成功 — 无需退避。'}`,
       );
       log(t(`attempt #${i + 1} succeeded`, `第 ${i + 1} 次尝试成功`), 'success');
-      history.commit({ attempts: [...attempts.value], finalOutcome: finalOutcome.value }, `attempt #${i + 1} succeeded`);
+      history.commit(
+        { attempts: [...attempts.value], finalOutcome: finalOutcome.value },
+        `attempt #${i + 1} succeeded`,
+      );
       running.value = false;
       return;
     }
@@ -129,11 +138,14 @@ async function startRequest() {
       finalOutcome.value = 'exhausted';
       message.value = t(
         `All ${MAX_RETRIES} attempts failed — circuit breaker should open now. Total backoff time: ${timelineTotalMs.value}ms. Without a cap, exponential growth becomes dangerous.`,
-        `全部 ${MAX_RETRIES} 次尝试均失败 — 断路器应该开启。总退避时间：${timelineTotalMs.value}ms。没有上限时，指数增长会变得危险。`
+        `全部 ${MAX_RETRIES} 次尝试均失败 — 断路器应该开启。总退避时间：${timelineTotalMs.value}ms。没有上限时，指数增长会变得危险。`,
       );
       log(t(`all ${MAX_RETRIES} retries exhausted`, `全部 ${MAX_RETRIES} 次重试耗尽`), 'error');
     }
-    history.commit({ attempts: [...attempts.value], finalOutcome: finalOutcome.value }, `attempt #${i + 1} failed`);
+    history.commit(
+      { attempts: [...attempts.value], finalOutcome: finalOutcome.value },
+      `attempt #${i + 1} failed`,
+    );
   }
 
   running.value = false;
@@ -149,7 +161,7 @@ function reset() {
   history.reset();
   message.value = t(
     'Configure failure rate and click "Send Request" — or pick a scenario below',
-    '配置失败率并点击"发送请求" — 或选择下方场景'
+    '配置失败率并点击"发送请求" — 或选择下方场景',
   );
 }
 
@@ -170,27 +182,38 @@ function barWidth(attempt: Attempt): string {
 
 function barColor(result: Attempt['result']): string {
   switch (result) {
-    case 'success': return 'var(--viz-success)';
-    case 'fail': return 'var(--viz-danger)';
-    case 'waiting': return 'var(--viz-warning)';
-    case 'pending': return 'var(--viz-primary)';
+    case 'success':
+      return 'var(--viz-success)';
+    case 'fail':
+      return 'var(--viz-danger)';
+    case 'waiting':
+      return 'var(--viz-warning)';
+    case 'pending':
+      return 'var(--viz-primary)';
   }
 }
 
 function resultLabel(result: Attempt['result']): string {
   switch (result) {
-    case 'success': return t('OK', '成功');
-    case 'fail': return t('FAIL', '失败');
-    case 'waiting': return t('WAIT', '等待');
-    case 'pending': return '...';
+    case 'success':
+      return t('OK', '成功');
+    case 'fail':
+      return t('FAIL', '失败');
+    case 'waiting':
+      return t('WAIT', '等待');
+    case 'pending':
+      return '...';
   }
 }
 
 const statusBorderColor = computed(() => {
   switch (finalOutcome.value) {
-    case 'success': return 'var(--viz-success)';
-    case 'exhausted': return 'var(--viz-danger)';
-    default: return running.value ? 'var(--viz-warning)' : 'var(--viz-border)';
+    case 'success':
+      return 'var(--viz-success)';
+    case 'exhausted':
+      return 'var(--viz-danger)';
+    default:
+      return running.value ? 'var(--viz-warning)' : 'var(--viz-border)';
   }
 });
 
@@ -203,12 +226,18 @@ async function presetGuaranteedFail() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     '100% failure rate — all 5 attempts will fail. Watch the exponential delay growth: 1s → 2s → 4s → 8s. This is why you need a max backoff cap.',
-    '100% 失败率 — 全部 5 次尝试都会失败。观察指数延迟增长：1s → 2s → 4s → 8s。这就是为什么你需要最大退避上限。'
+    '100% 失败率 — 全部 5 次尝试都会失败。观察指数延迟增长：1s → 2s → 4s → 8s。这就是为什么你需要最大退避上限。',
   );
   await delay(600);
   if (!presetRunning || isAborted()) return;
   await startRequest();
-  log(t('Exponential backoff: 1s → 2s → 4s → 8s — always cap the max delay', '指数退避：1s → 2s → 4s → 8s — 始终设置最大延迟上限'), 'highlight');
+  log(
+    t(
+      'Exponential backoff: 1s → 2s → 4s → 8s — always cap the max delay',
+      '指数退避：1s → 2s → 4s → 8s — 始终设置最大延迟上限',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -221,12 +250,18 @@ async function presetFlaky() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     '50% failure rate — simulates a flaky network. Jitter randomizes retry timing so clients don\'t retry in sync — preventing the "thundering herd" that crashed early AWS services.',
-    '50% 失败率 — 模拟不稳定网络。抖动随机化重试时间，使客户端不会同步重试 — 防止早期 AWS 服务遭遇的"惊群效应"崩溃。'
+    '50% 失败率 — 模拟不稳定网络。抖动随机化重试时间，使客户端不会同步重试 — 防止早期 AWS 服务遭遇的"惊群效应"崩溃。',
   );
   await delay(600);
   if (!presetRunning || isAborted()) return;
   await startRequest();
-  log(t('Jitter prevents thundering herd — clients retry at random times', '抖动防止惊群效应 — 客户端在随机时间重试'), 'highlight');
+  log(
+    t(
+      'Jitter prevents thundering herd — clients retry at random times',
+      '抖动防止惊群效应 — 客户端在随机时间重试',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -239,12 +274,18 @@ async function presetNoBackoff() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'Watch the delay bars grow exponentially: each retry waits 2x longer. Without this, a failing server receives retry storms at full rate — making recovery impossible.',
-    '观察延迟条指数增长：每次重试等待时间翻倍。如果没有这个机制，故障服务器会以全速接收重试风暴 — 使恢复变得不可能。'
+    '观察延迟条指数增长：每次重试等待时间翻倍。如果没有这个机制，故障服务器会以全速接收重试风暴 — 使恢复变得不可能。',
   );
   await delay(600);
   if (!presetRunning || isAborted()) return;
   await startRequest();
-  log(t('Without backoff, retries hammer the server at full rate — recovery impossible', '没有退避，重试以全速冲击服务器 — 恢复不可能'), 'highlight');
+  log(
+    t(
+      'Without backoff, retries hammer the server at full rate — recovery impossible',
+      '没有退避，重试以全速冲击服务器 — 恢复不可能',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 </script>
@@ -294,10 +335,9 @@ async function presetNoBackoff() {
       >
         <div class="rb-attempt-header">
           <span class="rb-attempt-num">#{{ attempt.number }}</span>
-          <span
-            class="rb-attempt-badge"
-            :style="{ background: barColor(attempt.result) }"
-          >{{ resultLabel(attempt.result) }}</span>
+          <span class="rb-attempt-badge" :style="{ background: barColor(attempt.result) }">{{
+            resultLabel(attempt.result)
+          }}</span>
         </div>
 
         <!-- Delay bar -->
@@ -312,10 +352,15 @@ async function presetNoBackoff() {
         </div>
 
         <div class="rb-attempt-detail">
-          <span v-if="attempt.number === 1" class="viz-label">{{ t('No delay (first attempt)', '无延迟（首次尝试）') }}</span>
+          <span v-if="attempt.number === 1" class="viz-label">{{
+            t('No delay (first attempt)', '无延迟（首次尝试）')
+          }}</span>
           <span v-else class="viz-label">
             {{ attempt.delay }}ms
-            <span class="rb-jitter">{{ attempt.jitter >= 0 ? '+' : '' }}{{ attempt.jitter }}ms {{ t('jitter', '抖动') }}</span>
+            <span class="rb-jitter"
+              >{{ attempt.jitter >= 0 ? '+' : '' }}{{ attempt.jitter }}ms
+              {{ t('jitter', '抖动') }}</span
+            >
             = {{ attempt.totalDelay }}ms
           </span>
         </div>
@@ -324,8 +369,15 @@ async function presetNoBackoff() {
 
     <!-- Empty state -->
     <div v-else class="rb-empty">
-      <svg viewBox="0 0 280 80" class="rb-empty-svg" role="img" :aria-label="t('Retry timeline placeholder', '重试时间线占位')">
-        <text x="140" y="20" text-anchor="middle" fill="var(--viz-muted)" font-size="11">{{ t('Retry timeline will appear here', '重试时间线将在此显示') }}</text>
+      <svg
+        viewBox="0 0 280 80"
+        class="rb-empty-svg"
+        role="img"
+        :aria-label="t('Retry timeline placeholder', '重试时间线占位')"
+      >
+        <text x="140" y="20" text-anchor="middle" fill="var(--viz-muted)" font-size="11">
+          {{ t('Retry timeline will appear here', '重试时间线将在此显示') }}
+        </text>
         <g v-for="i in 5" :key="i">
           <rect
             :x="26 + (i - 1) * 50"
@@ -342,7 +394,9 @@ async function presetNoBackoff() {
             text-anchor="middle"
             fill="var(--viz-muted)"
             font-size="8"
-          >#{{ i }}</text>
+          >
+            #{{ i }}
+          </text>
         </g>
       </svg>
     </div>
@@ -353,7 +407,11 @@ async function presetNoBackoff() {
         {{ t('Total attempts:', '总尝试：') }} {{ attempts.length }} |
         {{ t('Total wait:', '总等待：') }} {{ timelineTotalMs }}ms |
         {{ t('Outcome:', '结果：') }}
-        <strong :style="{ color: finalOutcome === 'success' ? 'var(--viz-success)' : 'var(--viz-danger)' }">
+        <strong
+          :style="{
+            color: finalOutcome === 'success' ? 'var(--viz-success)' : 'var(--viz-danger)',
+          }"
+        >
           {{ finalOutcome === 'success' ? t('Succeeded', '成功') : t('Exhausted', '已耗尽') }}
         </strong>
       </span>
@@ -361,11 +419,7 @@ async function presetNoBackoff() {
 
     <!-- Controls -->
     <div class="viz-controls">
-      <button
-        class="viz-btn viz-btn--primary"
-        @click="startRequest"
-        :disabled="running"
-      >
+      <button class="viz-btn viz-btn--primary" @click="startRequest" :disabled="running">
         {{ running ? t('Running...', '运行中...') : t('Send Request', '发送请求') }}
       </button>
       <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
@@ -379,10 +433,16 @@ async function presetNoBackoff() {
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
       <button class="viz-btn" @click="presetGuaranteedFail">{{ t('All Fail', '全部失败') }}</button>
       <button class="viz-btn" @click="presetFlaky">{{ t('Flaky Network', '不稳定网络') }}</button>
-      <button class="viz-btn" @click="presetNoBackoff">{{ t('Exponential Growth', '指数增长') }}</button>
+      <button class="viz-btn" @click="presetNoBackoff">
+        {{ t('Exponential Growth', '指数增长') }}
+      </button>
     </div>
 
-    <div class="viz-status" aria-live="polite" :style="{ borderLeft: `3px solid ${statusBorderColor}` }">
+    <div
+      class="viz-status"
+      aria-live="polite"
+      :style="{ borderLeft: `3px solid ${statusBorderColor}` }"
+    >
       {{ message }}
     </div>
     <VizPlaybackBar :history="history" :speed="speed" />

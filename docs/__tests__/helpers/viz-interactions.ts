@@ -41,9 +41,7 @@ function isDisabled(el: Element): boolean {
  */
 export function findButtonByText(wrapper: AnyWrapper, label: Label): Btn | null {
   const wanted = labels(label).map((s) => s.trim());
-  const buttons = (wrapper.findAll('button') as Btn[]).filter(
-    (b) => !isDisabled(b.element),
-  );
+  const buttons = (wrapper.findAll('button') as Btn[]).filter((b) => !isDisabled(b.element));
   // Exact match pass.
   for (const w of wanted) {
     const exact = buttons.find((b) => b.text().trim() === w);
@@ -58,10 +56,7 @@ export function findButtonByText(wrapper: AnyWrapper, label: Label): Btn | null 
 }
 
 /** Find an enabled element by its accessible name (aria-label). Returns null if none. */
-export function findByAriaLabel(
-  wrapper: AnyWrapper,
-  label: Label,
-): DOMWrapper<Element> | null {
+export function findByAriaLabel(wrapper: AnyWrapper, label: Label): DOMWrapper<Element> | null {
   for (const w of labels(label)) {
     const el = wrapper.find(`[aria-label="${w}"]`);
     if (el.exists() && !isDisabled(el.element)) return el;
@@ -103,14 +98,9 @@ export function hasButton(wrapper: AnyWrapper, label: Label): boolean {
  * group wrapper from `findAll(...)`), keeping the test's intent explicit while
  * still avoiding brittle global DOM-index math.
  */
-export function findButtonInScope(
-  scope: DOMWrapper<Element>,
-  label: Label,
-): Btn | null {
+export function findButtonInScope(scope: DOMWrapper<Element>, label: Label): Btn | null {
   const wanted = labels(label).map((s) => s.trim());
-  const buttons = (scope.findAll('button') as Btn[]).filter(
-    (b) => !isDisabled(b.element),
-  );
+  const buttons = (scope.findAll('button') as Btn[]).filter((b) => !isDisabled(b.element));
   for (const w of wanted) {
     const exact = buttons.find((b) => b.text().trim() === w);
     if (exact) return exact;
@@ -123,10 +113,7 @@ export function findButtonInScope(
 }
 
 /** Click a button located by visible text within a scope element. Throws if missing. */
-export async function clickButtonInScope(
-  scope: DOMWrapper<Element>,
-  label: Label,
-): Promise<void> {
+export async function clickButtonInScope(scope: DOMWrapper<Element>, label: Label): Promise<void> {
   const btn = findButtonInScope(scope, label);
   if (!btn) {
     const available = scope
@@ -149,14 +136,7 @@ export async function clickButtonInScope(
 // "Reset All"/"全部重置" (CircuitBreaker, ArenaAllocator) or "Clear All"/"全部清除"
 // (BitmaskViz). Exact-match passes run before contains-match (see
 // findButtonByText) so "Reset" never grabs an unrelated "Timeout Reset".
-export const RESET_LABELS = [
-  'Reset All',
-  'Reset',
-  'Clear All',
-  '全部重置',
-  '重置',
-  '全部清除',
-];
+export const RESET_LABELS = ['Reset All', 'Reset', 'Clear All', '全部重置', '重置', '全部清除'];
 
 /** Click the reset control (located by label, never by .viz-btn--danger). */
 export async function clickReset(wrapper: AnyWrapper): Promise<boolean> {
@@ -181,9 +161,7 @@ export function playbackVisible(wrapper: AnyWrapper): boolean {
 }
 
 /** Read the playback counter "{idx+1}/{total}" → { idx, total } (1-based idx as shown). */
-export function playbackCounter(
-  wrapper: AnyWrapper,
-): { idx: number; total: number } | null {
+export function playbackCounter(wrapper: AnyWrapper): { idx: number; total: number } | null {
   const el = wrapper.find('.viz-playback__counter');
   if (!el.exists()) return null;
   const [a, b] = el.text().split('/');
@@ -198,10 +176,14 @@ async function clickPlayback(wrapper: AnyWrapper, label: Label): Promise<boolean
   return true;
 }
 
-export const playbackStepBack = (w: AnyWrapper) => clickPlayback(w, PLAYBACK.stepBack as unknown as string[]);
-export const playbackStepForward = (w: AnyWrapper) => clickPlayback(w, PLAYBACK.stepForward as unknown as string[]);
-export const playbackSkipStart = (w: AnyWrapper) => clickPlayback(w, PLAYBACK.skipStart as unknown as string[]);
-export const playbackSkipEnd = (w: AnyWrapper) => clickPlayback(w, PLAYBACK.skipEnd as unknown as string[]);
+export const playbackStepBack = (w: AnyWrapper) =>
+  clickPlayback(w, PLAYBACK.stepBack as unknown as string[]);
+export const playbackStepForward = (w: AnyWrapper) =>
+  clickPlayback(w, PLAYBACK.stepForward as unknown as string[]);
+export const playbackSkipStart = (w: AnyWrapper) =>
+  clickPlayback(w, PLAYBACK.skipStart as unknown as string[]);
+export const playbackSkipEnd = (w: AnyWrapper) =>
+  clickPlayback(w, PLAYBACK.skipEnd as unknown as string[]);
 
 // ── Timer settling ───────────────────────────────────────────────────────────
 /** Advance fake timers in steps so chained safeTimeout/await delay() chains resolve. */

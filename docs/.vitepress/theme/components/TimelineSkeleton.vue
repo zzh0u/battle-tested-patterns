@@ -4,7 +4,11 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <div class="viz-container viz-skeleton tl-skel" role="status" :aria-label="t('Loading timeline', '加载时间线中')">
+  <div
+    class="viz-container viz-skeleton tl-skel"
+    role="status"
+    :aria-label="t('Loading timeline', '加载时间线中')"
+  >
     <div class="viz-skel-title"></div>
 
     <div class="tl-skel-stats">
@@ -15,7 +19,12 @@ const { t } = useI18n();
     </div>
 
     <div class="tl-skel-filters">
-      <div class="tl-skel-pill" v-for="i in 6" :key="i" :style="{ width: i === 1 ? '52px' : `${56 + (i % 3) * 16}px` }"></div>
+      <div
+        class="tl-skel-pill"
+        v-for="i in 6"
+        :key="i"
+        :style="{ width: i === 1 ? '52px' : `${56 + (i % 3) * 16}px` }"
+      ></div>
     </div>
 
     <div class="tl-skel-status"></div>
@@ -25,7 +34,12 @@ const { t } = useI18n();
       <div class="tl-skel-decade">
         <div class="tl-skel-decade-label"></div>
       </div>
-      <div v-for="i in 6" :key="i" class="tl-skel-entry" :class="i % 2 === 0 ? 'tl-skel-entry--left' : 'tl-skel-entry--right'">
+      <div
+        v-for="i in 6"
+        :key="i"
+        class="tl-skel-entry"
+        :class="i % 2 === 0 ? 'tl-skel-entry--left' : 'tl-skel-entry--right'"
+      >
         <div class="tl-skel-node"></div>
         <div class="tl-skel-card">
           <div class="tl-skel-card-year"></div>
@@ -36,7 +50,12 @@ const { t } = useI18n();
       <div class="tl-skel-decade">
         <div class="tl-skel-decade-label"></div>
       </div>
-      <div v-for="i in 4" :key="'b'+i" class="tl-skel-entry" :class="i % 2 === 0 ? 'tl-skel-entry--left' : 'tl-skel-entry--right'">
+      <div
+        v-for="i in 4"
+        :key="'b' + i"
+        class="tl-skel-entry"
+        :class="i % 2 === 0 ? 'tl-skel-entry--left' : 'tl-skel-entry--right'"
+      >
         <div class="tl-skel-node"></div>
         <div class="tl-skel-card">
           <div class="tl-skel-card-year"></div>
@@ -50,13 +69,22 @@ const { t } = useI18n();
 
 <style scoped>
 @keyframes viz-shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
-.viz-skeleton { animation: none; }
+.viz-skeleton {
+  animation: none;
+}
 
-.tl-skel { max-width: 720px; margin: 0 auto; }
+.tl-skel {
+  max-width: 720px;
+  margin: 0 auto;
+}
 
 .viz-skel-title,
 .tl-skel-stat-value,
@@ -166,7 +194,9 @@ const { t } = useI18n();
   min-height: 56px;
 }
 
-.tl-skel-entry--left { flex-direction: row-reverse; }
+.tl-skel-entry--left {
+  flex-direction: row-reverse;
+}
 
 .tl-skel-node {
   position: absolute;
@@ -219,12 +249,23 @@ const { t } = useI18n();
 }
 
 @media (max-width: 640px) {
-  .tl-skel-line { left: 16px; }
-  .tl-skel-decade { justify-content: flex-start; padding-left: 16px; }
-  .tl-skel-decade-label { transform: none; }
-  .tl-skel-node { left: 16px; }
+  .tl-skel-line {
+    left: 16px;
+  }
+  .tl-skel-decade {
+    justify-content: flex-start;
+    padding-left: 16px;
+  }
+  .tl-skel-decade-label {
+    transform: none;
+  }
+  .tl-skel-node {
+    left: 16px;
+  }
   .tl-skel-entry,
-  .tl-skel-entry--left { flex-direction: row; }
+  .tl-skel-entry--left {
+    flex-direction: row;
+  }
   .tl-skel-entry--left .tl-skel-card,
   .tl-skel-entry--right .tl-skel-card {
     margin-left: 38px;

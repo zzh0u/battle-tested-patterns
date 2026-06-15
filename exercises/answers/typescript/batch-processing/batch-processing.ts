@@ -20,7 +20,10 @@ class BatchProcessor<T, R> {
   }
 
   private async flush(): Promise<void> {
-    if (this.timer) { clearTimeout(this.timer); this.timer = null; }
+    if (this.timer) {
+      clearTimeout(this.timer);
+      this.timer = null;
+    }
     const batch = this.queue.splice(0);
     if (batch.length === 0) return;
     const results = await this.processBatch(batch.map((b) => b.item));

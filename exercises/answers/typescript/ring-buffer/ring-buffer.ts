@@ -31,7 +31,13 @@ class RingBuffer<T> {
     return this.count > 0 ? this.buffer[this.head] : undefined;
   }
 
-  get size(): number { return this.count; }
-  get isFull(): boolean { return this.count === this.capacity; }
-  get isEmpty(): boolean { return this.count === 0; }
+  get size(): number {
+    return this.count;
+  }
+  get isFull(): boolean {
+    return this.count === this.capacity;
+  }
+  get isEmpty(): boolean {
+    return this.count === 0;
+  }
 }

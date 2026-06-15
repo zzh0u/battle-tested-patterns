@@ -20,7 +20,7 @@ import { execSync } from 'node:child_process';
 const ROOT = join(import.meta.dirname, '..');
 const TMP_DIR = join(ROOT, 'tmp');
 const DOCS_DIR = join(ROOT, 'docs');
-const ROOT_READMES = ['README.md', 'README.zh-CN.md'].map(f => join(ROOT, f));
+const ROOT_READMES = ['README.md', 'README.zh-CN.md'].map((f) => join(ROOT, f));
 const DRY_RUN = process.argv.includes('--dry-run');
 const VERIFY_ONLY = process.argv.includes('--verify-only');
 
@@ -38,12 +38,23 @@ function resolveToken(): string {
 }
 
 // Match: https://github.com/{owner}/{repo}/(blob|tree)/{branch}/{path}
-const GITHUB_REF_URL_RE = /https:\/\/github\.com\/([^/]+)\/([^/]+)\/(blob|tree)\/([^/]+)\/([\w\-./]+(?:#[^\s)>\]]*)?)/g;
+const GITHUB_REF_URL_RE =
+  /https:\/\/github\.com\/([^/]+)\/([^/]+)\/(blob|tree)\/([^/]+)\/([\w\-./]+(?:#[^\s)>\]]*)?)/g;
 
 // Known branch names (not SHAs)
 const BRANCH_NAMES = new Set([
-  'main', 'master', 'dev', 'develop', 'trunk', 'unstable',
-  'v1.x', 'v2.x', 'v3.x', 'next', 'canary', 'release',
+  'main',
+  'master',
+  'dev',
+  'develop',
+  'trunk',
+  'unstable',
+  'v1.x',
+  'v2.x',
+  'v3.x',
+  'next',
+  'canary',
+  'release',
 ]);
 
 function isBranch(ref: string): boolean {
@@ -76,13 +87,19 @@ interface RepoRef {
 
 const shaCache = new Map<string, string>();
 
-async function resolveSHA(owner: string, repo: string, branch: string, token: string, retries = 2): Promise<string | null> {
+async function resolveSHA(
+  owner: string,
+  repo: string,
+  branch: string,
+  token: string,
+  retries = 2,
+): Promise<string | null> {
   const key = `${owner}/${repo}@${branch}`;
   if (shaCache.has(key)) return shaCache.get(key)!;
 
   const url = `https://api.github.com/repos/${owner}/${repo}/commits/${branch}`;
   const headers: Record<string, string> = {
-    'Accept': 'application/vnd.github.sha',
+    Accept: 'application/vnd.github.sha',
     'User-Agent': 'battle-tested-patterns-link-converter',
   };
   if (token) {
@@ -97,7 +114,7 @@ async function resolveSHA(owner: string, repo: string, branch: string, token: st
         const reset = Number(res.headers.get('x-ratelimit-reset')) * 1000;
         const wait = Math.min(Math.max(reset - Date.now(), 1000), 60_000);
         console.log(`  Rate limited. Waiting ${Math.ceil(wait / 1000)}s...`);
-        await new Promise(r => setTimeout(r, wait));
+        await new Promise((r) => setTimeout(r, wait));
         if (retries > 0) {
           return resolveSHA(owner, repo, branch, token, retries - 1); // Retry
         }
@@ -140,9 +157,24 @@ function extractBranchUrls(files: string[]): UrlMatch[] {
     let m: RegExpExecArray | null;
     const re = new RegExp(GITHUB_REF_URL_RE.source, 'g');
     while ((m = re.exec(content)) !== null) {
-      const [fullUrl, owner, repo, type, branch, path] = m as unknown as [string, string, string, string, string, string];
+      const [fullUrl, owner, repo, type, branch, path] = m as unknown as [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+      ];
       if (isBranch(branch)) {
-        matches.push({ file, fullUrl, owner: owner!, repo: repo!, type: type!, branch: branch!, path: path! });
+        matches.push({
+          file,
+          fullUrl,
+          owner: owner!,
+          repo: repo!,
+          type: type!,
+          branch: branch!,
+          path: path!,
+        });
       }
     }
   }
@@ -167,19 +199,30 @@ async function main() {
 
   const files = [
     ...findMarkdownFiles(DOCS_DIR),
-    ...ROOT_READMES.filter(f => { try { statSync(f); return true; } catch { return false; } }),
+    ...ROOT_READMES.filter((f) => {
+      try {
+        statSync(f);
+        return true;
+      } catch {
+        return false;
+      }
+    }),
   ];
   console.log(`\nScanning ${files.length} markdown files...\n`);
 
   const matches = extractBranchUrls(files);
-  const uniqueUrls = [...new Set(matches.map(m => m.fullUrl))];
+  const uniqueUrls = [...new Set(matches.map((m) => m.fullUrl))];
   console.log(`Found ${uniqueUrls.length} unique branch-based URLs`);
 
   if (VERIFY_ONLY) {
     console.log('\n--verify-only mode: checking existing URLs...');
     let broken = 0;
     for (const url of uniqueUrls.slice(0, 10)) {
-      const res = await fetch(url, { method: 'HEAD', redirect: 'follow', signal: AbortSignal.timeout(15_000) });
+      const res = await fetch(url, {
+        method: 'HEAD',
+        redirect: 'follow',
+        signal: AbortSignal.timeout(15_000),
+      });
       const status = res.ok ? '✓' : '✗';
       if (!res.ok) broken++;
       console.log(`  ${status} ${res.status} ${url.substring(0, 80)}...`);
@@ -201,7 +244,8 @@ async function main() {
 
   // Resolve SHAs
   const shaMap = new Map<string, string>();
-  let resolved = 0, failed = 0;
+  let resolved = 0,
+    failed = 0;
   for (const [key, ref] of repoRefs) {
     const sha = await resolveSHA(ref.owner, ref.repo, ref.branch, token);
     if (sha) {
@@ -216,7 +260,9 @@ async function main() {
   console.log(`\nResolved: ${resolved}, Failed: ${failed}`);
 
   if (failed > 0) {
-    console.warn(`\n⚠ ${failed} repo/branch combinations could not be resolved. Those URLs will be skipped.`);
+    console.warn(
+      `\n⚠ ${failed} repo/branch combinations could not be resolved. Those URLs will be skipped.`,
+    );
   }
 
   // Build replacement map

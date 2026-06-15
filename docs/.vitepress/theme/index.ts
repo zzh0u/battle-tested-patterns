@@ -82,10 +82,15 @@ function clientOnly(loader: () => Promise<any>, skeleton?: any, componentName?: 
     name: 'VizClientOnly',
     setup() {
       const mounted = ref(false);
-      onMounted(() => { mounted.value = true; });
-      return () => h(VizErrorBoundary, { name: componentName, component: mounted.value ? AsyncComp : null }, () =>
-        mounted.value ? null : h(loadingComp)
-      );
+      onMounted(() => {
+        mounted.value = true;
+      });
+      return () =>
+        h(
+          VizErrorBoundary,
+          { name: componentName, component: mounted.value ? AsyncComp : null },
+          () => (mounted.value ? null : h(loadingComp)),
+        );
     },
   });
 }
@@ -104,18 +109,24 @@ export default {
     app.component('DifficultyBadge', DifficultyBadge);
 
     // Wrap synchronous interactive components with ErrorBoundary
-    app.component('CompositionFlow', defineComponent({
-      name: 'CompositionFlowGuarded',
-      setup() {
-        return () => h(ErrorBoundary, { name: 'CompositionFlow', component: CompositionFlow });
-      },
-    }));
-    app.component('DecisionTree', defineComponent({
-      name: 'DecisionTreeGuarded',
-      setup() {
-        return () => h(ErrorBoundary, { name: 'DecisionTree', component: DecisionTree });
-      },
-    }));
+    app.component(
+      'CompositionFlow',
+      defineComponent({
+        name: 'CompositionFlowGuarded',
+        setup() {
+          return () => h(ErrorBoundary, { name: 'CompositionFlow', component: CompositionFlow });
+        },
+      }),
+    );
+    app.component(
+      'DecisionTree',
+      defineComponent({
+        name: 'DecisionTreeGuarded',
+        setup() {
+          return () => h(ErrorBoundary, { name: 'DecisionTree', component: DecisionTree });
+        },
+      }),
+    );
 
     // Viz components: async loading + VizErrorBoundary + skeleton
     for (const [name, loader] of Object.entries(vizComponents)) {

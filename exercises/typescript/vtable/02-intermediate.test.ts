@@ -30,7 +30,9 @@ function createMemoryPlugin(): StoragePlugin {
     name: 'memory',
     ops: {
       read: (key) => store.get(key),
-      write: (key, value) => { store.set(key, value); },
+      write: (key, value) => {
+        store.set(key, value);
+      },
       remove: (key) => store.delete(key),
       list: () => [...store.keys()],
     },
@@ -47,7 +49,8 @@ function createPrefixedPlugin(inner: StoragePlugin, prefix: string): StoragePlug
       write: (key, value) => inner.ops.write(prefix + key, value),
       remove: (key) => inner.ops.remove(prefix + key),
       list: () =>
-        inner.ops.list()
+        inner.ops
+          .list()
           .filter((k) => k.startsWith(prefix))
           .map((k) => k.slice(prefix.length)),
     },

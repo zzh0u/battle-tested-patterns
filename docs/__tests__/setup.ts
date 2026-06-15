@@ -11,7 +11,9 @@ global.IntersectionObserver = class {
   root = null;
   rootMargin = '';
   thresholds: number[] = [];
-  takeRecords() { return []; }
+  takeRecords() {
+    return [];
+  }
 } as any;
 
 // jsdom does not implement SVG layout, so SVGElement.getBBox() is missing.

@@ -37,7 +37,9 @@ class Memtable {
     return this.entries.get(key);
   }
 
-  get size(): number { return this._size; }
+  get size(): number {
+    return this._size;
+  }
 
   flush(): KVEntry[] {
     // TODO: return sorted entries and clear memtable
@@ -89,7 +91,8 @@ class LSMTree {
   }
 
   private binarySearch(run: SortedRun, key: string): KVEntry | undefined {
-    let lo = 0, hi = run.length - 1;
+    let lo = 0,
+      hi = run.length - 1;
     while (lo <= hi) {
       const mid = (lo + hi) >> 1;
       const cmp = run[mid]!.key.localeCompare(key);
@@ -105,7 +108,9 @@ class LSMTree {
     this.runs.unshift(run);
   }
 
-  get runCount(): number { return this.runs.length; }
+  get runCount(): number {
+    return this.runs.length;
+  }
 }
 
 // ─── Tests (do not modify below this line) ───────────────────────

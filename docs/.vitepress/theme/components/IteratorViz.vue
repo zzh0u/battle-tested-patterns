@@ -39,17 +39,28 @@ const state = reactive<PipelineState>({
 const activeStage = ref<string | null>(null);
 const activeValue = ref<number | null>(null);
 const animating = ref(false);
-const message = ref(t(
-  'Click "Pull Next" to pull one element through the lazy pipeline — this is how Rust iterators, Java Streams, and Python generators work',
-  '点击"拉取下一个"将一个元素拉过惰性管道 — Rust 迭代器、Java Streams 和 Python 生成器就是这样工作的'
-));
+const message = ref(
+  t(
+    'Click "Pull Next" to pull one element through the lazy pipeline — this is how Rust iterators, Java Streams, and Python generators work',
+    '点击"拉取下一个"将一个元素拉过惰性管道 — Rust 迭代器、Java Streams 和 Python 生成器就是这样工作的',
+  ),
+);
 let presetRunning = false;
 
 /* ── Time-travel history ── */
 type IteratorSnapshot = PipelineState;
 
 const vizHistory = useVizHistory<IteratorSnapshot>(
-  { sourceIdx: -1, filterPassed: [], filterRejected: [], mapResults: [], taken: [], collected: [], elementsProcessed: 0, done: false },
+  {
+    sourceIdx: -1,
+    filterPassed: [],
+    filterRejected: [],
+    mapResults: [],
+    taken: [],
+    collected: [],
+    elementsProcessed: 0,
+    done: false,
+  },
   {
     getMessage: () => message.value,
     onRestore(snap, msg) {
@@ -64,7 +75,9 @@ const vizHistory = useVizHistory<IteratorSnapshot>(
       state.done = snap.done;
       activeStage.value = null;
       activeValue.value = null;
-      animating.value = false; if (msg !== undefined) message.value = msg; },
+      animating.value = false;
+      if (msg !== undefined) message.value = msg;
+    },
   },
 );
 
@@ -77,7 +90,7 @@ async function pullNext() {
     state.done = true;
     message.value = t(
       `Take(${TAKE_COUNT}) satisfied! Pipeline complete. Only ${state.elementsProcessed} of ${SOURCE.length} source elements were touched — laziness saved ${SOURCE.length - state.elementsProcessed} evaluations.`,
-      `Take(${TAKE_COUNT}) 已满足！管道完成。仅访问了 ${SOURCE.length} 个源元素中的 ${state.elementsProcessed} 个 — 惰性求值节省了 ${SOURCE.length - state.elementsProcessed} 次计算。`
+      `Take(${TAKE_COUNT}) 已满足！管道完成。仅访问了 ${SOURCE.length} 个源元素中的 ${state.elementsProcessed} 个 — 惰性求值节省了 ${SOURCE.length - state.elementsProcessed} 次计算。`,
     );
     activeStage.value = null;
     activeValue.value = null;
@@ -108,7 +121,7 @@ async function pullNext() {
       activeStage.value = 'filter-reject';
       message.value = t(
         `Filter: ${val} is even -> rejected. Pulling next from source. No downstream work wasted.`,
-        `Filter：${val} 是偶数 -> 已过滤。从 Source 拉取下一个。不浪费下游工作。`
+        `Filter：${val} 是偶数 -> 已过滤。从 Source 拉取下一个。不浪费下游工作。`,
       );
       await delay(300);
       if (isAborted()) return;
@@ -129,14 +142,20 @@ async function pullNext() {
     state.mapResults = [...state.mapResults, mapped];
 
     activeStage.value = 'take';
-    message.value = t(`Take(${TAKE_COUNT}): collected ${state.taken.length + 1} of ${TAKE_COUNT}`, `Take(${TAKE_COUNT})：已收集 ${state.taken.length + 1}/${TAKE_COUNT}`);
+    message.value = t(
+      `Take(${TAKE_COUNT}): collected ${state.taken.length + 1} of ${TAKE_COUNT}`,
+      `Take(${TAKE_COUNT})：已收集 ${state.taken.length + 1}/${TAKE_COUNT}`,
+    );
     await delay(300);
     if (isAborted()) return;
     state.taken = [...state.taken, mapped];
 
     activeStage.value = 'collect';
     state.collected = [...state.collected, mapped];
-    message.value = t(`Collected: [${state.collected.join(', ')}]`, `已收集：[${state.collected.join(', ')}]`);
+    message.value = t(
+      `Collected: [${state.collected.join(', ')}]`,
+      `已收集：[${state.collected.join(', ')}]`,
+    );
     await delay(300);
     if (isAborted()) return;
 
@@ -147,14 +166,14 @@ async function pullNext() {
     state.done = true;
     message.value = t(
       `Pipeline complete! Result: [${state.collected.join(', ')}]. Processed ${state.elementsProcessed} of ${SOURCE.length} elements. This is pull-based evaluation — Rust's .iter().filter().map().take().collect() chain.`,
-      `管道完成！结果：[${state.collected.join(', ')}]。处理了 ${SOURCE.length} 个元素中的 ${state.elementsProcessed} 个。这是基于拉取的求值 — Rust 的 .iter().filter().map().take().collect() 链。`
+      `管道完成！结果：[${state.collected.join(', ')}]。处理了 ${SOURCE.length} 个元素中的 ${state.elementsProcessed} 个。这是基于拉取的求值 — Rust 的 .iter().filter().map().take().collect() 链。`,
     );
     log(message.value, 'success');
   } else if (state.sourceIdx >= SOURCE.length - 1 && state.taken.length < TAKE_COUNT) {
     state.done = true;
     message.value = t(
       `Source exhausted. Got [${state.collected.join(', ')}] (${state.taken.length} of ${TAKE_COUNT} requested)`,
-      `Source 已耗尽。获得 [${state.collected.join(', ')}]（请求 ${TAKE_COUNT} 个，实际 ${state.taken.length} 个）`
+      `Source 已耗尽。获得 [${state.collected.join(', ')}]（请求 ${TAKE_COUNT} 个，实际 ${state.taken.length} 个）`,
     );
   }
 
@@ -178,7 +197,10 @@ function reset() {
   activeValue.value = null;
   animating.value = false;
   presetRunning = false;
-  message.value = t('Reset. Click "Pull Next" to start pulling elements lazily.', '已重置。点击"拉取下一个"开始惰性拉取元素。');
+  message.value = t(
+    'Reset. Click "Pull Next" to start pulling elements lazily.',
+    '已重置。点击"拉取下一个"开始惰性拉取元素。',
+  );
   clearLog();
   vizHistory.reset();
 }
@@ -199,7 +221,7 @@ async function presetFullRun() {
   presetRunning = true;
   message.value = t(
     'Auto-run: pulling all 3 elements through the pipeline. Watch how even elements are rejected early — no map() call wasted on them.',
-    '自动运行：拉取全部 3 个元素通过管道。观察偶数元素如何被提前过滤 — 不在它们上浪费 map() 调用。'
+    '自动运行：拉取全部 3 个元素通过管道。观察偶数元素如何被提前过滤 — 不在它们上浪费 map() 调用。',
   );
   await delay(600);
   if (!presetRunning || isAborted()) return;
@@ -208,10 +230,13 @@ async function presetFullRun() {
     await pullNext();
     await delay(300);
   }
-  log(t(
-    'Lazy evaluation skips even-number map() calls entirely — work is only done for elements that pass the filter.',
-    '惰性求值完全跳过偶数的 map() 调用 — 仅对通过过滤器的元素执行工作。'
-  ), 'highlight');
+  log(
+    t(
+      'Lazy evaluation skips even-number map() calls entirely — work is only done for elements that pass the filter.',
+      '惰性求值完全跳过偶数的 map() 调用 — 仅对通过过滤器的元素执行工作。',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -221,7 +246,7 @@ async function presetShortCircuit() {
   presetRunning = true;
   message.value = t(
     'Short-circuit demo: Take(3) stops the pipeline after 3 results. Elements 6-10 are never touched. This is why .find() on a lazy iterator is O(k), not O(n).',
-    '短路演示：Take(3) 在 3 个结果后停止管道。元素 6-10 永远不会被访问。这就是惰性迭代器上的 .find() 是 O(k) 而非 O(n) 的原因。'
+    '短路演示：Take(3) 在 3 个结果后停止管道。元素 6-10 永远不会被访问。这就是惰性迭代器上的 .find() 是 O(k) 而非 O(n) 的原因。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -234,7 +259,7 @@ async function presetShortCircuit() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     `Done! ${state.elementsProcessed} elements processed, ${SOURCE.length - state.elementsProcessed} never touched. An eager pipeline would process all ${SOURCE.length} first, then take 3 — wasting ${SOURCE.length - state.elementsProcessed} map() calls.`,
-    `完成！${state.elementsProcessed} 个元素被处理，${SOURCE.length - state.elementsProcessed} 个未被访问。急切管道会先处理全部 ${SOURCE.length} 个，再取 3 个 — 浪费 ${SOURCE.length - state.elementsProcessed} 次 map() 调用。`
+    `完成！${state.elementsProcessed} 个元素被处理，${SOURCE.length - state.elementsProcessed} 个未被访问。急切管道会先处理全部 ${SOURCE.length} 个，再取 3 个 — 浪费 ${SOURCE.length - state.elementsProcessed} 次 map() 调用。`,
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -246,7 +271,7 @@ async function presetStepByStep() {
   presetRunning = true;
   message.value = t(
     'Step-by-step: pull just one element, pause to observe. Each pull triggers source -> filter -> map -> take -> collect for one item. This is the iterator protocol: next() returns one value at a time.',
-    '逐步：只拉取一个元素，暂停观察。每次拉取触发一个元素的 source -> filter -> map -> take -> collect。这就是迭代器协议：next() 每次返回一个值。'
+    '逐步：只拉取一个元素，暂停观察。每次拉取触发一个元素的 source -> filter -> map -> take -> collect。这就是迭代器协议：next() 每次返回一个值。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -255,19 +280,24 @@ async function presetStepByStep() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     `First result collected. Notice: source processed ${state.elementsProcessed} element(s) to get 1 output (even numbers were filtered). Click "Pull Next" to continue manually.`,
-    `第一个结果已收集。注意：源处理了 ${state.elementsProcessed} 个元素才得到 1 个输出（偶数被过滤了）。点击"拉取下一个"手动继续。`
+    `第一个结果已收集。注意：源处理了 ${state.elementsProcessed} 个元素才得到 1 个输出（偶数被过滤了）。点击"拉取下一个"手动继续。`,
   );
-  log(t(
-    'Pull-based iteration processes one element at a time through the full pipeline before pulling the next.',
-    '基于拉取的迭代每次将一个元素通过完整管道处理后再拉取下一个。'
-  ), 'highlight');
+  log(
+    t(
+      'Pull-based iteration processes one element at a time through the full pipeline before pulling the next.',
+      '基于拉取的迭代每次将一个元素通过完整管道处理后再拉取下一个。',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 </script>
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">{{ t('Interactive Lazy Iterator Pipeline', '交互式惰性 Iterator 管道') }}</div>
+    <div class="viz-title">
+      {{ t('Interactive Lazy Iterator Pipeline', '交互式惰性 Iterator 管道') }}
+    </div>
 
     <!-- Stats bar -->
     <div class="it-stats">
@@ -284,7 +314,9 @@ async function presetStepByStep() {
         <span class="viz-label">{{ t('Collected', '已收集') }}</span>
       </div>
       <div class="it-stat">
-        <span class="it-stat-value it-stat-value--saved">{{ SOURCE.length - state.elementsProcessed }}</span>
+        <span class="it-stat-value it-stat-value--saved">{{
+          SOURCE.length - state.elementsProcessed
+        }}</span>
         <span class="viz-label">{{ t('Never Touched', '未访问') }}</span>
       </div>
     </div>
@@ -300,63 +332,128 @@ async function presetStepByStep() {
             class="it-item"
             :class="{
               'it-item--active': sourceState(i) === 'active',
-              'it-item--consumed': sourceState(i) === 'consumed' && !(activeStage === 'source' && i === state.sourceIdx),
+              'it-item--consumed':
+                sourceState(i) === 'consumed' &&
+                !(activeStage === 'source' && i === state.sourceIdx),
               'it-item--waiting': sourceState(i) === 'waiting',
             }"
-          >{{ n }}</span>
+            >{{ n }}</span
+          >
         </div>
       </div>
 
-      <div class="it-arrow" :class="{ 'it-arrow--active': stageActive('filter') || stageActive('source') }">
+      <div
+        class="it-arrow"
+        :class="{ 'it-arrow--active': stageActive('filter') || stageActive('source') }"
+      >
         <svg width="24" height="20" viewBox="0 0 24 20" aria-hidden="true">
-          <path d="M2 10 L18 10 M14 5 L20 10 L14 15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path
+            d="M2 10 L18 10 M14 5 L20 10 L14 15"
+            stroke="currentColor"
+            stroke-width="2"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
       </div>
 
-      <div class="it-stage" :class="{ 'it-stage--active': stageActive('filter'), 'it-stage--reject': stageActive('filter-reject') }">
+      <div
+        class="it-stage"
+        :class="{
+          'it-stage--active': stageActive('filter'),
+          'it-stage--reject': stageActive('filter-reject'),
+        }"
+      >
         <div class="it-stage-header">Filter <span class="it-stage-desc">(isOdd)</span></div>
         <div class="it-stage-items">
-          <span v-for="n in state.filterPassed" :key="'fp' + n" class="it-item it-item--passed">{{ n }}</span>
-          <span v-for="n in state.filterRejected" :key="'fr' + n" class="it-item it-item--rejected">{{ n }}</span>
-          <span v-if="state.filterPassed.length === 0 && state.filterRejected.length === 0" class="it-item it-item--empty">-</span>
+          <span v-for="n in state.filterPassed" :key="'fp' + n" class="it-item it-item--passed">{{
+            n
+          }}</span>
+          <span
+            v-for="n in state.filterRejected"
+            :key="'fr' + n"
+            class="it-item it-item--rejected"
+            >{{ n }}</span
+          >
+          <span
+            v-if="state.filterPassed.length === 0 && state.filterRejected.length === 0"
+            class="it-item it-item--empty"
+            >-</span
+          >
         </div>
       </div>
 
       <div class="it-arrow" :class="{ 'it-arrow--active': stageActive('map') }">
         <svg width="24" height="20" viewBox="0 0 24 20" aria-hidden="true">
-          <path d="M2 10 L18 10 M14 5 L20 10 L14 15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path
+            d="M2 10 L18 10 M14 5 L20 10 L14 15"
+            stroke="currentColor"
+            stroke-width="2"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
       </div>
 
       <div class="it-stage" :class="{ 'it-stage--active': stageActive('map') }">
         <div class="it-stage-header">Map <span class="it-stage-desc">(*10)</span></div>
         <div class="it-stage-items">
-          <span v-for="n in state.mapResults" :key="'m' + n" class="it-item it-item--mapped">{{ n }}</span>
+          <span v-for="n in state.mapResults" :key="'m' + n" class="it-item it-item--mapped">{{
+            n
+          }}</span>
           <span v-if="state.mapResults.length === 0" class="it-item it-item--empty">-</span>
         </div>
       </div>
 
       <div class="it-arrow" :class="{ 'it-arrow--active': stageActive('take') }">
         <svg width="24" height="20" viewBox="0 0 24 20" aria-hidden="true">
-          <path d="M2 10 L18 10 M14 5 L20 10 L14 15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path
+            d="M2 10 L18 10 M14 5 L20 10 L14 15"
+            stroke="currentColor"
+            stroke-width="2"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
       </div>
 
       <div class="it-stage" :class="{ 'it-stage--active': stageActive('take') }">
-        <div class="it-stage-header">Take <span class="it-stage-desc">({{ TAKE_COUNT }})</span></div>
+        <div class="it-stage-header">
+          Take <span class="it-stage-desc">({{ TAKE_COUNT }})</span>
+        </div>
         <div class="it-stage-items">
-          <span v-for="n in state.taken" :key="'t' + n" class="it-item it-item--taken">{{ n }}</span>
-          <span v-for="i in (TAKE_COUNT - state.taken.length)" :key="'te' + i" class="it-item it-item--slot">?</span>
+          <span v-for="n in state.taken" :key="'t' + n" class="it-item it-item--taken">{{
+            n
+          }}</span>
+          <span
+            v-for="i in TAKE_COUNT - state.taken.length"
+            :key="'te' + i"
+            class="it-item it-item--slot"
+            >?</span
+          >
         </div>
       </div>
 
       <div class="it-arrow" :class="{ 'it-arrow--active': stageActive('collect') }">
         <svg width="24" height="20" viewBox="0 0 24 20" aria-hidden="true">
-          <path d="M2 10 L18 10 M14 5 L20 10 L14 15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path
+            d="M2 10 L18 10 M14 5 L20 10 L14 15"
+            stroke="currentColor"
+            stroke-width="2"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
       </div>
 
-      <div class="it-stage it-stage--collect" :class="{ 'it-stage--active': stageActive('collect') }">
+      <div
+        class="it-stage it-stage--collect"
+        :class="{ 'it-stage--active': stageActive('collect') }"
+      >
         <div class="it-stage-header">Collect</div>
         <div class="it-stage-items">
           <span class="it-collected">[{{ state.collected.join(', ') || '...' }}]</span>
@@ -371,7 +468,13 @@ async function presetStepByStep() {
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="pullNext" :disabled="state.done || animating">{{ t('Pull Next', '拉取下一个') }}</button>
+      <button
+        class="viz-btn viz-btn--primary"
+        @click="pullNext"
+        :disabled="state.done || animating"
+      >
+        {{ t('Pull Next', '拉取下一个') }}
+      </button>
       <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
       <div class="viz-speed">
         <input type="range" min="0.5" max="3" step="0.5" v-model.number="speed" />
@@ -415,8 +518,12 @@ async function presetStepByStep() {
   color: var(--viz-text);
 }
 
-.it-stat-value--success { color: var(--viz-success); }
-.it-stat-value--saved { color: var(--viz-muted); }
+.it-stat-value--success {
+  color: var(--viz-success);
+}
+.it-stat-value--saved {
+  color: var(--viz-muted);
+}
 
 .it-pipeline {
   display: flex;

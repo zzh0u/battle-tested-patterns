@@ -24,10 +24,12 @@ const processes = ref<Process[]>([
   { name: 'P3', color: 'var(--viz-warning)', clock: 0, events: [] },
 ]);
 
-const message = ref(t(
-  'Perform local events and send messages between processes — Lamport clocks establish causal ordering in distributed systems like DynamoDB and Cassandra',
-  '执行本地事件并在进程间发送消息 — Lamport 时钟在 DynamoDB 和 Cassandra 等分布式系统中建立因果顺序'
-));
+const message = ref(
+  t(
+    'Perform local events and send messages between processes — Lamport clocks establish causal ordering in distributed systems like DynamoDB and Cassandra',
+    '执行本地事件并在进程间发送消息 — Lamport 时钟在 DynamoDB 和 Cassandra 等分布式系统中建立因果顺序',
+  ),
+);
 const pendingMessages = ref<{ from: number; clock: number }[]>([]);
 let presetRunning = false;
 
@@ -50,7 +52,9 @@ const vizHistory = useVizHistory<Snapshot>(
     onRestore(s, msg) {
       presetRunning = false;
       processes.value = s.processes;
-      pendingMessages.value = s.pendingMessages; if (msg !== undefined) message.value = msg; },
+      pendingMessages.value = s.pendingMessages;
+      if (msg !== undefined) message.value = msg;
+    },
   },
 );
 
@@ -60,9 +64,12 @@ function localEvent(idx: number) {
   p.events = [...p.events, { type: 'local', clock: p.clock, label: 'local' }];
   message.value = t(
     `${p.name}: local event → clock = ${p.clock}. Rule: increment on every event. This timestamps the event for causal ordering.`,
-    `${p.name}：本地事件 → 时钟 = ${p.clock}。规则：每个事件递增。这为因果排序标记时间戳。`
+    `${p.name}：本地事件 → 时钟 = ${p.clock}。规则：每个事件递增。这为因果排序标记时间戳。`,
   );
-  vizHistory.commit({ processes: processes.value, pendingMessages: pendingMessages.value }, `${p.name} local event`);
+  vizHistory.commit(
+    { processes: processes.value, pendingMessages: pendingMessages.value },
+    `${p.name} local event`,
+  );
 }
 
 function sendMessage(fromIdx: number) {
@@ -72,9 +79,12 @@ function sendMessage(fromIdx: number) {
   pendingMessages.value = [...pendingMessages.value, { from: fromIdx, clock: from.clock }];
   message.value = t(
     `${from.name}: sent message (clock=${from.clock}) — click "Receive" on another process. The message carries the sender's timestamp.`,
-    `${from.name}：已发送消息 (clock=${from.clock}) — 在其他进程上点击"接收"。消息携带发送方的时间戳。`
+    `${from.name}：已发送消息 (clock=${from.clock}) — 在其他进程上点击"接收"。消息携带发送方的时间戳。`,
   );
-  vizHistory.commit({ processes: processes.value, pendingMessages: pendingMessages.value }, `${from.name} send`);
+  vizHistory.commit(
+    { processes: processes.value, pendingMessages: pendingMessages.value },
+    `${from.name} send`,
+  );
 }
 
 function receiveMessage(toIdx: number) {
@@ -84,7 +94,10 @@ function receiveMessage(toIdx: number) {
   }
   const msg = pendingMessages.value[0];
   if (msg.from === toIdx) {
-    message.value = t('Cannot receive your own message — pick a different process', '不能接收自己的消息 — 请选择其他进程');
+    message.value = t(
+      'Cannot receive your own message — pick a different process',
+      '不能接收自己的消息 — 请选择其他进程',
+    );
     return;
   }
   pendingMessages.value = pendingMessages.value.slice(1);
@@ -95,10 +108,13 @@ function receiveMessage(toIdx: number) {
   to.events = [...to.events, { type: 'recv', clock: to.clock, label: `recv(${msg.clock})` }];
   message.value = t(
     `${to.name}: received (sender clock=${msg.clock}) → max(${prevClock}, ${msg.clock}) + 1 = ${to.clock}. The max() ensures causal ordering: if A→B, then clock(A) < clock(B).`,
-    `${to.name}：已接收 (发送方 clock=${msg.clock}) → max(${prevClock}, ${msg.clock}) + 1 = ${to.clock}。max() 确保因果顺序：如果 A→B，则 clock(A) < clock(B)。`
+    `${to.name}：已接收 (发送方 clock=${msg.clock}) → max(${prevClock}, ${msg.clock}) + 1 = ${to.clock}。max() 确保因果顺序：如果 A→B，则 clock(A) < clock(B)。`,
   );
   log(message.value, 'success');
-  vizHistory.commit({ processes: processes.value, pendingMessages: pendingMessages.value }, `${to.name} receive`);
+  vizHistory.commit(
+    { processes: processes.value, pendingMessages: pendingMessages.value },
+    `${to.name} receive`,
+  );
 }
 
 function reset() {
@@ -110,7 +126,10 @@ function reset() {
   ];
   pendingMessages.value = [];
   presetRunning = false;
-  message.value = t('Reset — perform events to see Lamport clocks', '已重置 — 执行事件以查看 Lamport 时钟');
+  message.value = t(
+    'Reset — perform events to see Lamport clocks',
+    '已重置 — 执行事件以查看 Lamport 时钟',
+  );
   clearLog();
   vizHistory.reset();
 }
@@ -121,25 +140,31 @@ async function presetCausalChain() {
   presetRunning = true;
   message.value = t(
     'Causal chain: P1 does work, sends to P2, P2 does work, sends to P3. Each receive merges clocks — this is how "happens-before" ordering works in distributed databases.',
-    '因果链：P1 工作，发送给 P2，P2 工作，发送给 P3。每次接收合并时钟 — 这就是分布式数据库中"先于"排序的工作方式。'
+    '因果链：P1 工作，发送给 P2，P2 工作，发送给 P3。每次接收合并时钟 — 这就是分布式数据库中"先于"排序的工作方式。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
-  localEvent(0); await delay(400);
+  localEvent(0);
+  await delay(400);
   if (!presetRunning || isAborted()) return;
-  sendMessage(0); await delay(500);
+  sendMessage(0);
+  await delay(500);
   if (!presetRunning || isAborted()) return;
-  receiveMessage(1); await delay(500);
+  receiveMessage(1);
+  await delay(500);
   if (!presetRunning || isAborted()) return;
-  localEvent(1); await delay(400);
+  localEvent(1);
+  await delay(400);
   if (!presetRunning || isAborted()) return;
-  sendMessage(1); await delay(500);
+  sendMessage(1);
+  await delay(500);
   if (!presetRunning || isAborted()) return;
-  receiveMessage(2); await delay(500);
+  receiveMessage(2);
+  await delay(500);
   if (!presetRunning || isAborted()) return;
   message.value = t(
-    'Causal chain complete: P1 send(2)→P2 recv(3)→P2 send(5)→P3 recv(6). Each receive\'s clock is strictly greater than the send — this guarantees if A caused B, clock(A) < clock(B). Used by Spanner, CockroachDB, and TiDB.',
-    '因果链完成：P1 send(2)→P2 recv(3)→P2 send(5)→P3 recv(6)。每次接收的时钟严格大于发送 — 保证如果 A 导致了 B，则 clock(A) < clock(B)。Spanner、CockroachDB 和 TiDB 使用此原理。'
+    "Causal chain complete: P1 send(2)→P2 recv(3)→P2 send(5)→P3 recv(6). Each receive's clock is strictly greater than the send — this guarantees if A caused B, clock(A) < clock(B). Used by Spanner, CockroachDB, and TiDB.",
+    '因果链完成：P1 send(2)→P2 recv(3)→P2 send(5)→P3 recv(6)。每次接收的时钟严格大于发送 — 保证如果 A 导致了 B，则 clock(A) < clock(B)。Spanner、CockroachDB 和 TiDB 使用此原理。',
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -151,23 +176,33 @@ async function presetConcurrentEvents() {
   presetRunning = true;
   message.value = t(
     'Concurrent events: P1, P2, P3 all do local events independently. Their clocks advance separately — these events are concurrent (no causal relationship). Lamport clocks cannot distinguish concurrent events from causally related ones.',
-    '并发事件：P1、P2、P3 各自独立做本地事件。它们的时钟分别推进 — 这些事件是并发的（无因果关系）。Lamport 时钟无法区分并发事件和因果相关事件。'
+    '并发事件：P1、P2、P3 各自独立做本地事件。它们的时钟分别推进 — 这些事件是并发的（无因果关系）。Lamport 时钟无法区分并发事件和因果相关事件。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
-  localEvent(0); log(t('P1 local event', 'P1 本地事件'), 'info'); await delay(300);
+  localEvent(0);
+  log(t('P1 local event', 'P1 本地事件'), 'info');
+  await delay(300);
   if (!presetRunning || isAborted()) return;
-  localEvent(1); log(t('P2 local event', 'P2 本地事件'), 'info'); await delay(300);
+  localEvent(1);
+  log(t('P2 local event', 'P2 本地事件'), 'info');
+  await delay(300);
   if (!presetRunning || isAborted()) return;
-  localEvent(2); log(t('P3 local event', 'P3 本地事件'), 'info'); await delay(300);
+  localEvent(2);
+  log(t('P3 local event', 'P3 本地事件'), 'info');
+  await delay(300);
   if (!presetRunning || isAborted()) return;
-  localEvent(0); log(t('P1 local event #2', 'P1 本地事件 #2'), 'info'); await delay(300);
+  localEvent(0);
+  log(t('P1 local event #2', 'P1 本地事件 #2'), 'info');
+  await delay(300);
   if (!presetRunning || isAborted()) return;
-  localEvent(2); log(t('P3 local event #2', 'P3 本地事件 #2'), 'info'); await delay(500);
+  localEvent(2);
+  log(t('P3 local event #2', 'P3 本地事件 #2'), 'info');
+  await delay(500);
   if (!presetRunning || isAborted()) return;
   message.value = t(
-    'All three processes have clock=1 or clock=2 — same value but no causal link. This is Lamport clocks\' limitation: equal timestamps don\'t mean simultaneous. Vector clocks (used by DynamoDB) solve this by tracking per-process counters.',
-    '三个进程的时钟都是 1 或 2 — 相同值但无因果关系。这是 Lamport 时钟的局限：相等的时间戳不意味着同时发生。向量时钟（DynamoDB 使用）通过跟踪每个进程的计数器解决此问题。'
+    "All three processes have clock=1 or clock=2 — same value but no causal link. This is Lamport clocks' limitation: equal timestamps don't mean simultaneous. Vector clocks (used by DynamoDB) solve this by tracking per-process counters.",
+    '三个进程的时钟都是 1 或 2 — 相同值但无因果关系。这是 Lamport 时钟的局限：相等的时间戳不意味着同时发生。向量时钟（DynamoDB 使用）通过跟踪每个进程的计数器解决此问题。',
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -178,8 +213,8 @@ async function presetClockSkew() {
   reset();
   presetRunning = true;
   message.value = t(
-    'Clock synchronization: P1 does 5 local events (clock=5), then sends to P2 (clock becomes 6 on send). P2\'s clock jumps to 7 — the max() rule synchronizes clocks across the system.',
-    '时钟同步：P1 做 5 个本地事件（clock=5），发送时 clock 变为 6。P2 的时钟跳到 7 — max() 规则在系统间同步时钟。'
+    "Clock synchronization: P1 does 5 local events (clock=5), then sends to P2 (clock becomes 6 on send). P2's clock jumps to 7 — the max() rule synchronizes clocks across the system.",
+    '时钟同步：P1 做 5 个本地事件（clock=5），发送时 clock 变为 6。P2 的时钟跳到 7 — max() 规则在系统间同步时钟。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -193,11 +228,12 @@ async function presetClockSkew() {
   log(t('P1 send → clock incremented', 'P1 发送 → 时钟递增'), 'info');
   await delay(500);
   if (!presetRunning || isAborted()) return;
-  receiveMessage(1); await delay(500);
+  receiveMessage(1);
+  await delay(500);
   if (!presetRunning || isAborted()) return;
   message.value = t(
-    'P2 jumped from 0 to 7: max(0, 6) + 1 = 7. The send incremented P1\'s clock to 6, and the message carries that value. This ensures P2\'s future events are ordered after P1\'s message.',
-    'P2 从 0 跳到 7：max(0, 6) + 1 = 7。发送时 P1 的时钟递增到 6，消息携带该值。这确保 P2 的未来事件排在 P1 的消息之后。'
+    "P2 jumped from 0 to 7: max(0, 6) + 1 = 7. The send incremented P1's clock to 6, and the message carries that value. This ensures P2's future events are ordered after P1's message.",
+    'P2 从 0 跳到 7：max(0, 6) + 1 = 7。发送时 P1 的时钟递增到 6，消息携带该值。这确保 P2 的未来事件排在 P1 的消息之后。',
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -235,13 +271,25 @@ async function presetClockSkew() {
         <div class="lc-actions">
           <button class="viz-btn lc-btn" @click="localEvent(i)">{{ t('Local', '本地') }}</button>
           <button class="viz-btn lc-btn" @click="sendMessage(i)">{{ t('Send', '发送') }}</button>
-          <button class="viz-btn lc-btn" @click="receiveMessage(i)">{{ t('Receive', '接收') }}</button>
+          <button class="viz-btn lc-btn" @click="receiveMessage(i)">
+            {{ t('Receive', '接收') }}
+          </button>
         </div>
       </div>
     </div>
 
     <div v-if="pendingMessages.length > 0" class="lc-pending">
-      {{ t('Pending messages:', '待处理消息：') }} {{ pendingMessages.map(m => t(`from ${processes[m.from].name}(${m.clock})`, `来自 ${processes[m.from].name}(${m.clock})`)).join(', ') }}
+      {{ t('Pending messages:', '待处理消息：') }}
+      {{
+        pendingMessages
+          .map((m) =>
+            t(
+              `from ${processes[m.from].name}(${m.clock})`,
+              `来自 ${processes[m.from].name}(${m.clock})`,
+            ),
+          )
+          .join(', ')
+      }}
     </div>
 
     <div class="viz-controls">
@@ -273,7 +321,9 @@ async function presetClockSkew() {
 }
 
 @media (max-width: 640px) {
-  .lc-processes { flex-direction: column; }
+  .lc-processes {
+    flex-direction: column;
+  }
 }
 
 .lc-process {

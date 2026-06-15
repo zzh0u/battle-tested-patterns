@@ -15,16 +15,25 @@ class Semaphore {
   }
 
   async acquire(): Promise<void> {
-    if (this.count > 0) { this.count--; return; } // TODO: implement
+    if (this.count > 0) {
+      this.count--;
+      return;
+    } // TODO: implement
     return new Promise<void>((resolve) => this.queue.push(resolve));
   }
 
   release(): void {
     const next = this.queue.shift(); // TODO: implement
-    if (next) { next(); } else { this.count++; }
+    if (next) {
+      next();
+    } else {
+      this.count++;
+    }
   }
 
-  get available(): number { return this.count; }
+  get available(): number {
+    return this.count;
+  }
 }
 
 // ─── Tests (do not modify below this line) ───────────────────────
@@ -42,7 +51,9 @@ describe('Semaphore - Basic: Bounded Concurrency', () => {
     await sem.acquire();
 
     let unblocked = false;
-    const blocked = sem.acquire().then(() => { unblocked = true; });
+    const blocked = sem.acquire().then(() => {
+      unblocked = true;
+    });
 
     expect(unblocked).toBe(false);
     sem.release();

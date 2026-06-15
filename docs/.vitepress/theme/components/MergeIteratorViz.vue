@@ -18,10 +18,12 @@ interface Iterator {
 }
 
 const output = ref<number[]>([]);
-const message = ref(t(
-  'Press "Next" to pick the minimum head and advance — this is the k-way merge used by LSM-tree compaction, external sort, and merge sort',
-  '按"下一个"选择最小的头元素并推进 — 这是 LSM 树压缩、外部排序和归并排序使用的 k 路合并'
-));
+const message = ref(
+  t(
+    'Press "Next" to pick the minimum head and advance — this is the k-way merge used by LSM-tree compaction, external sort, and merge sort',
+    '按"下一个"选择最小的头元素并推进 — 这是 LSM 树压缩、外部排序和归并排序使用的 k 路合并',
+  ),
+);
 const highlightIdx = ref(-1);
 const pickedValue = ref<number | null>(null);
 const done = ref(false);
@@ -38,7 +40,7 @@ const iterators = ref<Iterator[]>(
     label: `Iter ${i + 1}`,
     items: [...items],
     pos: 0,
-  }))
+  })),
 );
 
 interface Snapshot {
@@ -49,7 +51,11 @@ interface Snapshot {
 
 const vizHistory = useVizHistory<Snapshot>(
   {
-    iterators: initialData.map((items, i) => ({ label: `Iter ${i + 1}`, items: [...items], pos: 0 })),
+    iterators: initialData.map((items, i) => ({
+      label: `Iter ${i + 1}`,
+      items: [...items],
+      pos: 0,
+    })),
     output: [],
     done: false,
   },
@@ -61,14 +67,14 @@ const vizHistory = useVizHistory<Snapshot>(
       output.value = s.output;
       done.value = s.done;
       highlightIdx.value = -1;
-      pickedValue.value = null; if (msg !== undefined) message.value = msg; },
+      pickedValue.value = null;
+      if (msg !== undefined) message.value = msg;
+    },
   },
 );
 
 const heads = computed(() =>
-  iterators.value.map((it) =>
-    it.pos < it.items.length ? it.items[it.pos] : null
-  )
+  iterators.value.map((it) => (it.pos < it.items.length ? it.items[it.pos] : null)),
 );
 
 function next() {
@@ -87,36 +93,42 @@ function next() {
     done.value = true;
     message.value = t(
       `Merge complete! All iterators exhausted. Output: [${output.value.join(', ')}]. Time: O(n log k) with a min-heap, where k = number of iterators.`,
-      `合并完成！所有迭代器已耗尽。输出：[${output.value.join(', ')}]。时间：O(n log k)，使用最小堆，k = 迭代器数量。`
+      `合并完成！所有迭代器已耗尽。输出：[${output.value.join(', ')}]。时间：O(n log k)，使用最小堆，k = 迭代器数量。`,
     );
     log(message.value, 'success');
     highlightIdx.value = -1;
     pickedValue.value = null;
-    vizHistory.commit({ iterators: iterators.value, output: output.value, done: done.value }, 'Merge complete');
+    vizHistory.commit(
+      { iterators: iterators.value, output: output.value, done: done.value },
+      'Merge complete',
+    );
     return;
   }
 
   highlightIdx.value = minIdx;
   pickedValue.value = minVal;
-  const activeHeadCount = heads.value.filter(h => h !== null).length;
+  const activeHeadCount = heads.value.filter((h) => h !== null).length;
   iterators.value[minIdx].pos++;
   output.value.push(minVal);
 
   const remaining = iterators.value.filter((it) => it.pos < it.items.length).length;
   message.value = t(
     `Picked ${minVal} from ${iterators.value[minIdx].label} (min of ${activeHeadCount} heads). ${remaining} iterator(s) still active.`,
-    `从 ${iterators.value[minIdx].label} 选取 ${minVal}（${activeHeadCount} 个头元素的最小值）。${remaining} 个迭代器仍活跃。`
+    `从 ${iterators.value[minIdx].label} 选取 ${minVal}（${activeHeadCount} 个头元素的最小值）。${remaining} 个迭代器仍活跃。`,
   );
 
   if (remaining === 0) {
     done.value = true;
     message.value = t(
       `Picked ${minVal}. Merge complete! Output: [${output.value.join(', ')}]. This is how RocksDB compaction, SQL ORDER BY with multiple indexes, and hadoop MapReduce shuffle work.`,
-      `选取 ${minVal}。合并完成！输出：[${output.value.join(', ')}]。RocksDB 压缩、SQL ORDER BY 多索引和 Hadoop MapReduce shuffle 就是这样工作的。`
+      `选取 ${minVal}。合并完成！输出：[${output.value.join(', ')}]。RocksDB 压缩、SQL ORDER BY 多索引和 Hadoop MapReduce shuffle 就是这样工作的。`,
     );
     log(message.value, 'success');
   }
-  vizHistory.commit({ iterators: iterators.value, output: output.value, done: done.value }, `Pick ${minVal}`);
+  vizHistory.commit(
+    { iterators: iterators.value, output: output.value, done: done.value },
+    `Pick ${minVal}`,
+  );
 }
 
 function reset() {
@@ -131,7 +143,10 @@ function reset() {
   pickedValue.value = null;
   done.value = false;
   presetRunning = false;
-  message.value = t('Press "Next" to pick the minimum head and advance', '按"下一个"选择最小的头元素并推进');
+  message.value = t(
+    'Press "Next" to pick the minimum head and advance',
+    '按"下一个"选择最小的头元素并推进',
+  );
   clearLog();
   vizHistory.reset();
 }
@@ -142,7 +157,7 @@ async function presetAutoRun() {
   presetRunning = true;
   message.value = t(
     'Auto-merging all 15 elements. Watch how the algorithm always picks the smallest head — a min-heap makes this O(log k) per pick instead of O(k).',
-    '自动合并全部 15 个元素。观察算法如何总是选择最小的头元素 — 最小堆使每次选取从 O(k) 变为 O(log k)。'
+    '自动合并全部 15 个元素。观察算法如何总是选择最小的头元素 — 最小堆使每次选取从 O(k) 变为 O(log k)。',
   );
   await delay(600);
   if (!presetRunning || isAborted()) return;
@@ -154,7 +169,13 @@ async function presetAutoRun() {
     }
     await delay(350);
   }
-  log(t('k-way merge: O(n log k) via min-heap — the core of LSM compaction', 'k 路归并：通过最小堆实现 O(n log k) — LSM 压缩的核心'), 'highlight');
+  log(
+    t(
+      'k-way merge: O(n log k) via min-heap — the core of LSM compaction',
+      'k 路归并：通过最小堆实现 O(n log k) — LSM 压缩的核心',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -171,7 +192,7 @@ async function presetUnbalanced() {
   done.value = false;
   message.value = t(
     'Unbalanced iterators: 2, 4, and 7 elements. The short iterator exhausts first. The algorithm handles this gracefully — exhausted iterators are simply skipped. LSM compaction often merges SSTables of very different sizes.',
-    '不均衡迭代器：2、4 和 7 个元素。短迭代器先耗尽。算法优雅处理 — 耗尽的迭代器直接跳过。LSM 压缩经常合并大小差异很大的 SSTable。'
+    '不均衡迭代器：2、4 和 7 个元素。短迭代器先耗尽。算法优雅处理 — 耗尽的迭代器直接跳过。LSM 压缩经常合并大小差异很大的 SSTable。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -183,7 +204,13 @@ async function presetUnbalanced() {
     }
     await delay(350);
   }
-  log(t('Graceful exhaustion: short iterators finish early, merge continues seamlessly', '优雅耗尽：短迭代器先结束，归并无缝继续'), 'highlight');
+  log(
+    t(
+      'Graceful exhaustion: short iterators finish early, merge continues seamlessly',
+      '优雅耗尽：短迭代器先结束，归并无缝继续',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -200,7 +227,7 @@ async function presetDuplicates() {
   done.value = false;
   message.value = t(
     'Duplicate keys: values 1, 3, 5 appear in multiple iterators. The merge produces duplicates — LSM compaction resolves this by keeping only the newest version. In SQL, UNION ALL preserves duplicates; UNION removes them.',
-    '重复键：值 1、3、5 出现在多个迭代器中。合并产生重复 — LSM 压缩通过只保留最新版本来解决。在 SQL 中，UNION ALL 保留重复；UNION 移除它们。'
+    '重复键：值 1、3、5 出现在多个迭代器中。合并产生重复 — LSM 压缩通过只保留最新版本来解决。在 SQL 中，UNION ALL 保留重复；UNION 移除它们。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -212,7 +239,13 @@ async function presetDuplicates() {
     }
     await delay(350);
   }
-  log(t('Duplicates preserved in merge — LSM resolves by keeping newest version', '归并保留重复 — LSM 通过保留最新版本解决'), 'highlight');
+  log(
+    t(
+      'Duplicates preserved in merge — LSM resolves by keeping newest version',
+      '归并保留重复 — LSM 通过保留最新版本解决',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 </script>
@@ -240,12 +273,12 @@ async function presetDuplicates() {
               'mi-cell--picked': j === it.pos - 1 && highlightIdx === idx && pickedValue === val,
               'mi-cell--min': j === it.pos && highlightIdx === idx,
             }"
-          >{{ val }}</div>
+          >
+            {{ val }}
+          </div>
         </div>
         <div class="mi-head-indicator">
-          <template v-if="it.pos < it.items.length">
-            head={{ it.items[it.pos] }}
-          </template>
+          <template v-if="it.pos < it.items.length"> head={{ it.items[it.pos] }} </template>
           <template v-else>
             <span class="mi-exhausted">{{ t('done', '完成') }}</span>
           </template>
@@ -255,7 +288,12 @@ async function presetDuplicates() {
 
     <div class="mi-merge-arrow">
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-        <path d="M12 4 L12 18 M8 14 L12 18 L16 14" stroke="var(--viz-primary)" stroke-width="2" fill="none"/>
+        <path
+          d="M12 4 L12 18 M8 14 L12 18 L16 14"
+          stroke="var(--viz-primary)"
+          stroke-width="2"
+          fill="none"
+        />
       </svg>
       <span>{{ t('merge (pick min)', '合并（选最小值）') }}</span>
     </div>
@@ -268,13 +306,17 @@ async function presetDuplicates() {
           :key="i"
           class="mi-cell mi-cell--output"
           :class="{ 'mi-cell--just-added': i === output.length - 1 }"
-        >{{ val }}</div>
+        >
+          {{ val }}
+        </div>
         <div v-if="output.length === 0" class="mi-cell mi-cell--empty">...</div>
       </div>
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" :disabled="done" @click="next">{{ t('Next', '下一个') }}</button>
+      <button class="viz-btn viz-btn--primary" :disabled="done" @click="next">
+        {{ t('Next', '下一个') }}
+      </button>
       <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
       <div class="viz-speed">
         <input type="range" min="0.5" max="3" step="0.5" v-model.number="speed" />

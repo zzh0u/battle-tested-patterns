@@ -16,15 +16,15 @@ const zhNames: Record<string, string> = {
   'Flyweight / Interning': '享元 / 驻留',
   'Copy-on-Write / Ref Counting': '写时复制 / 引用计数',
   'Actor Model': 'Actor 模型',
-  'MVCC': 'MVCC',
-  'Semaphore': '信号量',
+  MVCC: 'MVCC',
+  Semaphore: '信号量',
   'Work Stealing': '工作窃取',
   'Event Loop': '事件循环',
-  'Bitmask': '位掩码',
+  Bitmask: '位掩码',
   'Skip List': '跳表',
   'B+ Tree': 'B+ 树',
   'Ring Buffer': '环形缓冲区',
-  'Backpressure': '背压',
+  Backpressure: '背压',
   'Copy-on-Write': '写时复制',
   'Circuit Breaker': '熔断器',
   'Rate Limiter': '限流器',
@@ -36,7 +36,7 @@ const zhNames: Record<string, string> = {
 
 function pn(en: string | undefined): string {
   if (!en) return '';
-  return isZh.value ? (zhNames[en] || en) : en;
+  return isZh.value ? zhNames[en] || en : en;
 }
 
 interface Branch {
@@ -57,8 +57,17 @@ interface TreeGroup {
   roots: TreeNode[];
 }
 
-function q(en: string, zh: string): { en: string; zh: string } { return { en, zh }; }
-function leaf(labelEn: string, labelZh: string, pattern: string, path: string, noteEn?: string, noteZh?: string): Branch {
+function q(en: string, zh: string): { en: string; zh: string } {
+  return { en, zh };
+}
+function leaf(
+  labelEn: string,
+  labelZh: string,
+  pattern: string,
+  path: string,
+  noteEn?: string,
+  noteZh?: string,
+): Branch {
   const b: Branch = { label: q(labelEn, labelZh), pattern, path };
   if (noteEn) b.note = q(noteEn, noteZh || noteEn);
   return b;
@@ -69,75 +78,95 @@ function branch(labelEn: string, labelZh: string, sub: TreeNode): Branch {
 
 const trees: Record<string, TreeGroup> = {
   'which-cache': {
-    roots: [{
-      q: q('Need eviction?', '需要淘汰吗？'),
-      branches: [
-        branch('Yes', '是', {
-          q: q('Need O(1) ops?', '需要 O(1) 操作？'),
-          branches: [
-            leaf('Yes', '是', 'LRU Cache', '/patterns/lru-cache/'),
-            leaf('No', '否', 'B+ Tree with TTL', '/patterns/b-plus-tree/'),
-          ],
-        }),
-        branch('No', '否', {
-          q: q('Need probabilistic filter?', '需要概率性过滤？'),
-          branches: [
-            leaf('Yes', '是', 'Bloom Filter', '/patterns/bloom-filter/', 'Not a cache, but saves cache misses', '不是缓存，但能省缓存未命中'),
-            leaf('No', '否', 'Hash map', '', 'A hash map is fine', '普通哈希表就够了'),
-          ],
-        }),
-      ],
-    }],
+    roots: [
+      {
+        q: q('Need eviction?', '需要淘汰吗？'),
+        branches: [
+          branch('Yes', '是', {
+            q: q('Need O(1) ops?', '需要 O(1) 操作？'),
+            branches: [
+              leaf('Yes', '是', 'LRU Cache', '/patterns/lru-cache/'),
+              leaf('No', '否', 'B+ Tree with TTL', '/patterns/b-plus-tree/'),
+            ],
+          }),
+          branch('No', '否', {
+            q: q('Need probabilistic filter?', '需要概率性过滤？'),
+            branches: [
+              leaf(
+                'Yes',
+                '是',
+                'Bloom Filter',
+                '/patterns/bloom-filter/',
+                'Not a cache, but saves cache misses',
+                '不是缓存，但能省缓存未命中',
+              ),
+              leaf('No', '否', 'Hash map', '', 'A hash map is fine', '普通哈希表就够了'),
+            ],
+          }),
+        ],
+      },
+    ],
   },
 
   'which-memory': {
-    roots: [{
-      q: q('All objects same size?', '所有对象大小相同？'),
-      branches: [
-        leaf('Yes', '是', 'Object Pool / Free List', '/patterns/object-pool/'),
-        branch('No', '否', {
-          q: q('Phase-based lifetime?', '阶段性生命周期？'),
-          branches: [
-            leaf('Yes', '是', 'Arena Allocator', '/patterns/arena-allocator/'),
-            branch('No', '否', {
-              q: q('Shared immutable?', '共享不可变？'),
-              branches: [
-                leaf('Yes', '是', 'Flyweight / Interning', '/patterns/flyweight/'),
-                leaf('No', '否', 'Copy-on-Write / Ref Counting', '/patterns/copy-on-write/'),
-              ],
-            }),
-          ],
-        }),
-      ],
-    }],
+    roots: [
+      {
+        q: q('All objects same size?', '所有对象大小相同？'),
+        branches: [
+          leaf('Yes', '是', 'Object Pool / Free List', '/patterns/object-pool/'),
+          branch('No', '否', {
+            q: q('Phase-based lifetime?', '阶段性生命周期？'),
+            branches: [
+              leaf('Yes', '是', 'Arena Allocator', '/patterns/arena-allocator/'),
+              branch('No', '否', {
+                q: q('Shared immutable?', '共享不可变？'),
+                branches: [
+                  leaf('Yes', '是', 'Flyweight / Interning', '/patterns/flyweight/'),
+                  leaf('No', '否', 'Copy-on-Write / Ref Counting', '/patterns/copy-on-write/'),
+                ],
+              }),
+            ],
+          }),
+        ],
+      },
+    ],
   },
 
   'which-concurrency': {
-    roots: [{
-      q: q('Shared state?', '共享状态？'),
-      branches: [
-        leaf('No', '否', 'Actor Model', '/patterns/actor-model/', 'Message passing', '消息传递'),
-        branch('Yes', '是', {
-          q: q('Read-heavy?', '读多？'),
-          branches: [
-            leaf('Yes', '是', 'MVCC', '/patterns/mvcc/', 'Readers never block', '读者永不阻塞'),
-            branch('No', '否', {
-              q: q('Need limit on concurrency?', '需要限制并发数？'),
-              branches: [
-                leaf('Yes', '是', 'Semaphore', '/patterns/semaphore/'),
-                branch('No', '否', {
-                  q: q('Need to split work?', '需要分配工作？'),
-                  branches: [
-                    leaf('Yes', '是', 'Work Stealing', '/patterns/work-stealing/'),
-                    leaf('No', '否', 'Event Loop', '/patterns/event-loop/', 'Single-thread I/O', '单线程 I/O'),
-                  ],
-                }),
-              ],
-            }),
-          ],
-        }),
-      ],
-    }],
+    roots: [
+      {
+        q: q('Shared state?', '共享状态？'),
+        branches: [
+          leaf('No', '否', 'Actor Model', '/patterns/actor-model/', 'Message passing', '消息传递'),
+          branch('Yes', '是', {
+            q: q('Read-heavy?', '读多？'),
+            branches: [
+              leaf('Yes', '是', 'MVCC', '/patterns/mvcc/', 'Readers never block', '读者永不阻塞'),
+              branch('No', '否', {
+                q: q('Need limit on concurrency?', '需要限制并发数？'),
+                branches: [
+                  leaf('Yes', '是', 'Semaphore', '/patterns/semaphore/'),
+                  branch('No', '否', {
+                    q: q('Need to split work?', '需要分配工作？'),
+                    branches: [
+                      leaf('Yes', '是', 'Work Stealing', '/patterns/work-stealing/'),
+                      leaf(
+                        'No',
+                        '否',
+                        'Event Loop',
+                        '/patterns/event-loop/',
+                        'Single-thread I/O',
+                        '单线程 I/O',
+                      ),
+                    ],
+                  }),
+                ],
+              }),
+            ],
+          }),
+        ],
+      },
+    ],
   },
 
   'pattern-selector': {
@@ -153,17 +182,37 @@ const trees: Record<string, TreeGroup> = {
               leaf('On disk', '在磁盘上', 'B+ Tree', '/patterns/b-plus-tree/'),
             ],
           }),
-          leaf('Approximate membership?', '近似成员检测？', 'Bloom Filter', '/patterns/bloom-filter/'),
+          leaf(
+            'Approximate membership?',
+            '近似成员检测？',
+            'Bloom Filter',
+            '/patterns/bloom-filter/',
+          ),
           leaf('Key-value with eviction?', '键值对 + 淘汰？', 'LRU Cache', '/patterns/lru-cache/'),
-          leaf('FIFO with fixed capacity?', '固定容量 FIFO？', 'Ring Buffer', '/patterns/ring-buffer/'),
+          leaf(
+            'FIFO with fixed capacity?',
+            '固定容量 FIFO？',
+            'Ring Buffer',
+            '/patterns/ring-buffer/',
+          ),
         ],
       },
       {
         q: q('Need to manage concurrency?', '需要管理并发？'),
         branches: [
           leaf('Limit concurrent access?', '限制并发访问？', 'Semaphore', '/patterns/semaphore/'),
-          leaf('Producer faster than consumer?', '生产者快于消费者？', 'Backpressure', '/patterns/backpressure/'),
-          leaf('Shared data, rare writes?', '共享数据，写入稀少？', 'Copy-on-Write', '/patterns/copy-on-write/'),
+          leaf(
+            'Producer faster than consumer?',
+            '生产者快于消费者？',
+            'Backpressure',
+            '/patterns/backpressure/',
+          ),
+          leaf(
+            'Shared data, rare writes?',
+            '共享数据，写入稀少？',
+            'Copy-on-Write',
+            '/patterns/copy-on-write/',
+          ),
           leaf('Multiple writers, no blocking?', '多写者，不阻塞？', 'MVCC', '/patterns/mvcc/'),
           leaf('Independent actors?', '独立的 Actor？', 'Actor Model', '/patterns/actor-model/'),
         ],
@@ -171,19 +220,49 @@ const trees: Record<string, TreeGroup> = {
       {
         q: q('Need resilience?', '需要弹性？'),
         branches: [
-          leaf('Downstream failing?', '下游故障？', 'Circuit Breaker', '/patterns/circuit-breaker/'),
+          leaf(
+            'Downstream failing?',
+            '下游故障？',
+            'Circuit Breaker',
+            '/patterns/circuit-breaker/',
+          ),
           leaf('Too many requests?', '请求过多？', 'Rate Limiter', '/patterns/rate-limiter/'),
           leaf('Transient errors?', '瞬态错误？', 'Retry with Backoff', '/patterns/retry-backoff/'),
-          leaf('Need crash recovery?', '需要崩溃恢复？', 'WAL + Checkpointing', '/patterns/write-ahead-log/'),
+          leaf(
+            'Need crash recovery?',
+            '需要崩溃恢复？',
+            'WAL + Checkpointing',
+            '/patterns/write-ahead-log/',
+          ),
         ],
       },
       {
         q: q('Need memory efficiency?', '需要内存效率？'),
         branches: [
-          leaf('Many identical objects?', '大量相同对象？', 'Flyweight / Interning', '/patterns/flyweight/'),
-          leaf('Reuse expensive objects?', '复用昂贵对象？', 'Object Pool', '/patterns/object-pool/'),
-          leaf('Phase-based allocation?', '阶段性分配？', 'Arena Allocator', '/patterns/arena-allocator/'),
-          leaf('Recycle fixed-size slots?', '回收固定大小槽位？', 'Free List', '/patterns/free-list/'),
+          leaf(
+            'Many identical objects?',
+            '大量相同对象？',
+            'Flyweight / Interning',
+            '/patterns/flyweight/',
+          ),
+          leaf(
+            'Reuse expensive objects?',
+            '复用昂贵对象？',
+            'Object Pool',
+            '/patterns/object-pool/',
+          ),
+          leaf(
+            'Phase-based allocation?',
+            '阶段性分配？',
+            'Arena Allocator',
+            '/patterns/arena-allocator/',
+          ),
+          leaf(
+            'Recycle fixed-size slots?',
+            '回收固定大小槽位？',
+            'Free List',
+            '/patterns/free-list/',
+          ),
         ],
       },
     ],
@@ -191,7 +270,7 @@ const trees: Record<string, TreeGroup> = {
 };
 
 const group = computed(() => trees[props.variant]);
-const prefix = computed(() => isZh.value ? '/zh' : '');
+const prefix = computed(() => (isZh.value ? '/zh' : ''));
 function txt(obj: { en: string; zh: string }): string {
   return isZh.value ? obj.zh : obj.en;
 }
@@ -199,7 +278,12 @@ function txt(obj: { en: string; zh: string }): string {
 
 <template>
   <div v-if="group" class="dt viz-container">
-    <div v-for="(root, ri) in group.roots" :key="ri" class="dt-root" :class="{ 'dt-root--spaced': ri > 0 }">
+    <div
+      v-for="(root, ri) in group.roots"
+      :key="ri"
+      class="dt-root"
+      :class="{ 'dt-root--spaced': ri > 0 }"
+    >
       <div class="dt-question dt-question--root">
         <span class="dt-q-icon">?</span>
         <span class="dt-q-text">{{ txt(root.q) }}</span>

@@ -84,17 +84,17 @@ describe('Actor Model - Basic', () => {
   });
 
   it('should handle complex state', () => {
-    interface TodoState { items: string[]; count: number }
-    const todos = new Actor<TodoState>(
-      { items: [], count: 0 },
-      (state, msg) => {
-        const { action, text } = msg as { action: string; text: string };
-        if (action === 'add') {
-          return { items: [...state.items, text], count: state.count + 1 };
-        }
-        return state;
-      },
-    );
+    interface TodoState {
+      items: string[];
+      count: number;
+    }
+    const todos = new Actor<TodoState>({ items: [], count: 0 }, (state, msg) => {
+      const { action, text } = msg as { action: string; text: string };
+      if (action === 'add') {
+        return { items: [...state.items, text], count: state.count + 1 };
+      }
+      return state;
+    });
 
     todos.send({ action: 'add', text: 'Buy milk' });
     todos.send({ action: 'add', text: 'Write code' });

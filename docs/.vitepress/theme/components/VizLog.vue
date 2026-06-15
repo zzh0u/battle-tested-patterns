@@ -5,14 +5,17 @@ import { useI18n } from '../composables/useI18n';
 
 const { t } = useI18n();
 
-const props = withDefaults(defineProps<{
-  entries: LogEntry[];
-  maxHeight?: number;
-  collapsible?: boolean;
-}>(), {
-  maxHeight: 160,
-  collapsible: true,
-});
+const props = withDefaults(
+  defineProps<{
+    entries: LogEntry[];
+    maxHeight?: number;
+    collapsible?: boolean;
+  }>(),
+  {
+    maxHeight: 160,
+    collapsible: true,
+  },
+);
 
 const emit = defineEmits<{
   clear: [];
@@ -37,10 +40,13 @@ function onScroll() {
   userScrolled.value = scrollHeight - scrollTop - clientHeight > 8;
 }
 
-watch(() => props.entries.length, () => {
-  userScrolled.value = false;
-  scrollToBottom();
-});
+watch(
+  () => props.entries.length,
+  () => {
+    userScrolled.value = false;
+    scrollToBottom();
+  },
+);
 
 onMounted(scrollToBottom);
 
@@ -50,7 +56,12 @@ function toggle() {
 </script>
 
 <template>
-  <div class="viz-log" :class="{ 'viz-log--collapsed': collapsed }" role="region" :aria-label="t('Log', '日志')">
+  <div
+    class="viz-log"
+    :class="{ 'viz-log--collapsed': collapsed }"
+    role="region"
+    :aria-label="t('Log', '日志')"
+  >
     <div
       class="viz-log-header"
       role="button"
@@ -61,7 +72,9 @@ function toggle() {
       @keydown.space.prevent="toggle"
     >
       <span class="viz-log-title">
-        <span v-if="collapsible" class="viz-log-arrow" aria-hidden="true">{{ collapsed ? '▶' : '▼' }}</span>
+        <span v-if="collapsible" class="viz-log-arrow" aria-hidden="true">{{
+          collapsed ? '▶' : '▼'
+        }}</span>
         {{ t('Log', '日志') }}
         <span class="viz-log-count">({{ entries.length }})</span>
       </span>
@@ -92,7 +105,9 @@ function toggle() {
         <span class="viz-log-index">#{{ entry.index }}</span>
         <span class="viz-log-text">{{ entry.text }}</span>
       </div>
-      <div v-if="entries.length === 0" class="viz-log-empty">{{ t('No log entries yet', '暂无日志记录') }}</div>
+      <div v-if="entries.length === 0" class="viz-log-empty">
+        {{ t('No log entries yet', '暂无日志记录') }}
+      </div>
     </div>
   </div>
 </template>
@@ -179,9 +194,15 @@ function toggle() {
   border-top: 1px solid color-mix(in srgb, var(--viz-border) 50%, transparent);
 }
 
-.viz-log-entry--success { border-left-color: var(--viz-success); }
-.viz-log-entry--warning { border-left-color: var(--viz-warning); }
-.viz-log-entry--error   { border-left-color: var(--viz-danger); }
+.viz-log-entry--success {
+  border-left-color: var(--viz-success);
+}
+.viz-log-entry--warning {
+  border-left-color: var(--viz-warning);
+}
+.viz-log-entry--error {
+  border-left-color: var(--viz-danger);
+}
 .viz-log-entry--highlight {
   border-left-color: var(--viz-primary);
   background: color-mix(in srgb, var(--viz-primary) 8%, transparent);

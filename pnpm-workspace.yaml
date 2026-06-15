@@ -1,6 +1,6 @@
 packages:
-  - "docs"
-  - "exercises"
+  - 'docs'
+  - 'exercises'
 
 nodeLinker: hoisted
 
@@ -11,5 +11,5 @@ onlyBuiltDependencies:
   - esbuild
 
 overrides:
-  debug: "4.4.0"
-  js-tokens: "10.0.0"
+  debug: '4.4.0'
+  js-tokens: '10.0.0'

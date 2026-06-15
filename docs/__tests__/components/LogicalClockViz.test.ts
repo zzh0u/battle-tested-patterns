@@ -25,7 +25,7 @@ describe('LogicalClockViz', () => {
     const wrapper = mount(LogicalClockViz);
     const actionGroups = wrapper.findAll('.lc-actions');
     expect(actionGroups).toHaveLength(3);
-    actionGroups.forEach(group => {
+    actionGroups.forEach((group) => {
       const btns = group.findAll('.lc-btn');
       expect(btns).toHaveLength(3);
     });

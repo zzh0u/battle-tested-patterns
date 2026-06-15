@@ -22,11 +22,12 @@ class TrafficLightController {
   private current: TrafficState;
   private history: TransitionResult[] = [];
 
-  private readonly transitions: Record<TrafficState, Partial<Record<TrafficEvent, TrafficState>>> = {
-    green:  { TIMER: 'yellow', PEDESTRIAN_REQUEST: 'yellow' },
-    yellow: { TIMER: 'red', PEDESTRIAN_REQUEST: 'red' },
-    red:    { TIMER: 'green' },
-  };
+  private readonly transitions: Record<TrafficState, Partial<Record<TrafficEvent, TrafficState>>> =
+    {
+      green: { TIMER: 'yellow', PEDESTRIAN_REQUEST: 'yellow' },
+      yellow: { TIMER: 'red', PEDESTRIAN_REQUEST: 'red' },
+      red: { TIMER: 'green' },
+    };
 
   constructor(initial: TrafficState = 'green') {
     this.current = initial; // TODO: implement

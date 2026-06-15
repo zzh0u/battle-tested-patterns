@@ -67,9 +67,9 @@ describe('TombstoneViz', () => {
     const wrapper = mount(TombstoneViz);
     // Located by visible text (not style class); we need the element itself to
     // assert the `disabled` attribute, so we can't use clickButton here.
-    const compactBtn = wrapper.findAll('button').find(
-      b => b.text().includes('Compact') || b.text().includes('压缩')
-    );
+    const compactBtn = wrapper
+      .findAll('button')
+      .find((b) => b.text().includes('Compact') || b.text().includes('压缩'));
     expect(compactBtn!.attributes('disabled')).toBeDefined();
   });
 

@@ -36,7 +36,11 @@ function workLoop(
 describe('Cooperative Scheduling - Basic: Work Loop', () => {
   it('should process all items when no yield needed', () => {
     const processed: number[] = [];
-    const result = workLoop([1, 2, 3, 4, 5], (x) => processed.push(x), () => false);
+    const result = workLoop(
+      [1, 2, 3, 4, 5],
+      (x) => processed.push(x),
+      () => false,
+    );
     expect(result.completed).toBe(5);
     expect(result.yielded).toBe(false);
     expect(processed).toEqual([1, 2, 3, 4, 5]);
@@ -57,13 +61,21 @@ describe('Cooperative Scheduling - Basic: Work Loop', () => {
 
   it('should yield immediately if shouldYield starts true', () => {
     const processed: number[] = [];
-    const result = workLoop([1, 2, 3], (x) => processed.push(x), () => true);
+    const result = workLoop(
+      [1, 2, 3],
+      (x) => processed.push(x),
+      () => true,
+    );
     expect(result.completed).toBe(0);
     expect(result.yielded).toBe(true);
   });
 
   it('should handle empty list', () => {
-    const result = workLoop([], () => {}, () => false);
+    const result = workLoop(
+      [],
+      () => {},
+      () => false,
+    );
     expect(result).toEqual({ completed: 0, yielded: false });
   });
 
@@ -71,10 +83,18 @@ describe('Cooperative Scheduling - Basic: Work Loop', () => {
     const items = [1, 2, 3, 4, 5, 6];
     const processed: number[] = [];
     let calls = 0;
-    const r1 = workLoop(items, (x) => processed.push(x), () => ++calls > 2);
+    const r1 = workLoop(
+      items,
+      (x) => processed.push(x),
+      () => ++calls > 2,
+    );
     const remaining = items.slice(r1.completed);
     calls = 0;
-    workLoop(remaining, (x) => processed.push(x), () => false);
+    workLoop(
+      remaining,
+      (x) => processed.push(x),
+      () => false,
+    );
     expect(processed).toEqual([1, 2, 3, 4, 5, 6]);
   });
 });

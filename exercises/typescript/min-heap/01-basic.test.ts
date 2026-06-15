@@ -41,7 +41,8 @@ class MinHeap {
 
   /** Bubble element up until parent is smaller */
   private siftUp(i: number): void {
-    while (i > 0) { // TODO: implement
+    while (i > 0) {
+      // TODO: implement
       const parent = (i - 1) >>> 1;
       if (this.compare(this.heap[i]!, this.heap[parent]!) < 0) {
         [this.heap[i], this.heap[parent]] = [this.heap[parent]!, this.heap[i]!];
@@ -58,7 +59,8 @@ class MinHeap {
       const left = 2 * i + 1;
       const right = 2 * i + 2;
       if (left < len && this.compare(this.heap[left]!, this.heap[smallest]!) < 0) smallest = left;
-      if (right < len && this.compare(this.heap[right]!, this.heap[smallest]!) < 0) smallest = right;
+      if (right < len && this.compare(this.heap[right]!, this.heap[smallest]!) < 0)
+        smallest = right;
       if (smallest !== i) {
         [this.heap[i], this.heap[smallest]] = [this.heap[smallest]!, this.heap[i]!];
         i = smallest;

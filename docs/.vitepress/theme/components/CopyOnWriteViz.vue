@@ -40,7 +40,13 @@ let nextId = 0;
 let nextVersion = 1;
 
 const versions = ref<DataVersion[]>([
-  { id: nextId++, version: nextVersion, items: [...INITIAL_ITEMS], status: 'current', modifiedIndex: null },
+  {
+    id: nextId++,
+    version: nextVersion,
+    items: [...INITIAL_ITEMS],
+    status: 'current',
+    modifiedIndex: null,
+  },
 ]);
 
 const readers = ref<Reader[]>([
@@ -53,10 +59,12 @@ const phase = ref<Phase>('idle');
 const selectedIndex = ref(0);
 const newValue = ref('');
 const history = ref<HistoryEntry[]>([]);
-const message = ref(t(
-  'All readers share v1. Write creates a copy, swap makes it current, refresh updates readers. Linux fork() and Java CopyOnWriteArrayList use this exact pattern.',
-  '所有读取者共享 v1。写入创建副本，交换使其成为当前版本，刷新更新读取者。Linux fork() 和 Java CopyOnWriteArrayList 使用完全相同的模式。',
-));
+const message = ref(
+  t(
+    'All readers share v1. Write creates a copy, swap makes it current, refresh updates readers. Linux fork() and Java CopyOnWriteArrayList use this exact pattern.',
+    '所有读取者共享 v1。写入创建副本，交换使其成为当前版本，刷新更新读取者。Linux fork() 和 Java CopyOnWriteArrayList 使用完全相同的模式。',
+  ),
+);
 let presetRunning = false;
 
 interface CoWSnapshot {
@@ -67,7 +75,12 @@ interface CoWSnapshot {
 }
 
 const vizHistory = useVizHistory<CoWSnapshot>(
-  { versions: versions.value, readers: readers.value, phase: phase.value, opHistory: history.value },
+  {
+    versions: versions.value,
+    readers: readers.value,
+    phase: phase.value,
+    opHistory: history.value,
+  },
   {
     getMessage: () => message.value,
     onRestore(snap, msg) {
@@ -75,33 +88,38 @@ const vizHistory = useVizHistory<CoWSnapshot>(
       versions.value = snap.versions;
       readers.value = snap.readers;
       phase.value = snap.phase as Phase;
-      history.value = snap.opHistory; if (msg !== undefined) message.value = msg; },
+      history.value = snap.opHistory;
+      if (msg !== undefined) message.value = msg;
+    },
   },
 );
 
 function commitVizSnapshot(label: string) {
   vizHistory.commit(
-    { versions: versions.value, readers: readers.value, phase: phase.value, opHistory: history.value },
+    {
+      versions: versions.value,
+      readers: readers.value,
+      phase: phase.value,
+      opHistory: history.value,
+    },
     label,
   );
 }
 
-const currentVersion = computed(() =>
-  versions.value.find(v => v.status === 'current'),
-);
+const currentVersion = computed(() => versions.value.find((v) => v.status === 'current'));
 
 function getVersionForReader(r: Reader): DataVersion | undefined {
-  return versions.value.find(v => v.id === r.versionId);
+  return versions.value.find((v) => v.id === r.versionId);
 }
 
 function readersForVersion(vId: number): Reader[] {
-  return readers.value.filter(r => r.versionId === vId);
+  return readers.value.filter((r) => r.versionId === vId);
 }
 
 const versionGroups = computed(() => {
   return [...versions.value]
     .sort((a, b) => a.version - b.version)
-    .map(v => ({
+    .map((v) => ({
       version: v,
       readers: readersForVersion(v.id),
       readerCount: readersForVersion(v.id).length,
@@ -114,7 +132,7 @@ const canRefresh = computed(() => {
   if (phase.value === 'copied') return false;
   const cur = currentVersion.value;
   if (!cur) return false;
-  return readers.value.some(r => r.versionId !== cur.id);
+  return readers.value.some((r) => r.versionId !== cur.id);
 });
 
 function addHistory(entry: HistoryEntry) {
@@ -167,7 +185,7 @@ function doWrite() {
 function doSwap() {
   if (!canSwap.value) return;
 
-  const draft = versions.value.find(v => v.status === 'draft');
+  const draft = versions.value.find((v) => v.status === 'draft');
   const current = currentVersion.value;
   if (!draft || !current) return;
 
@@ -198,16 +216,16 @@ function refreshReaders() {
   const current = currentVersion.value;
   if (!current) return;
 
-  const staleReaders = readers.value.filter(r => r.versionId !== current.id);
-  const staleNames = staleReaders.map(r => r.name).join(', ');
+  const staleReaders = readers.value.filter((r) => r.versionId !== current.id);
+  const staleNames = staleReaders.map((r) => r.name).join(', ');
 
   for (const r of readers.value) {
     r.versionId = current.id;
   }
 
   const before = versions.value.length;
-  versions.value = versions.value.filter(v =>
-    v.status === 'current' || v.status === 'draft' || readersForVersion(v.id).length > 0,
+  versions.value = versions.value.filter(
+    (v) => v.status === 'current' || v.status === 'draft' || readersForVersion(v.id).length > 0,
   );
   const gcCount = before - versions.value.length;
 
@@ -230,10 +248,7 @@ function refreshReaders() {
       actor: 'GC',
       color: 'var(--viz-muted)',
       type: 'gc',
-      detail: t(
-        `${gcCount} unreferenced version(s) collected`,
-        `${gcCount} 个未引用版本已回收`,
-      ),
+      detail: t(`${gcCount} unreferenced version(s) collected`, `${gcCount} 个未引用版本已回收`),
     });
   }
 
@@ -250,7 +265,13 @@ function reset() {
   nextId = 0;
   nextVersion = 1;
   versions.value = [
-    { id: nextId++, version: nextVersion, items: [...INITIAL_ITEMS], status: 'current', modifiedIndex: null },
+    {
+      id: nextId++,
+      version: nextVersion,
+      items: [...INITIAL_ITEMS],
+      status: 'current',
+      modifiedIndex: null,
+    },
   ];
   readers.value = [
     { name: 'R1', versionId: 0, color: 'var(--viz-primary)' },
@@ -262,10 +283,7 @@ function reset() {
   newValue.value = '';
   history.value = [];
   presetRunning = false;
-  message.value = t(
-    'Reset. All readers share v1 again.',
-    '已重置。所有读取者再次共享 v1。',
-  );
+  message.value = t('Reset. All readers share v1 again.', '已重置。所有读取者再次共享 v1。');
   clearLog();
   vizHistory.reset();
 }
@@ -275,8 +293,8 @@ async function presetFullCycle() {
   reset();
   presetRunning = true;
   message.value = t(
-    'Full CoW cycle: write → copy → swap → refresh → GC. This is exactly how Linux fork() works — the child gets a CoW copy of the parent\'s page tables.',
-    '完整 CoW 周期：写入 → 复制 → 交换 → 刷新 → GC。这正是 Linux fork() 的工作方式 — 子进程获得父进程页表的 CoW 副本。'
+    "Full CoW cycle: write → copy → swap → refresh → GC. This is exactly how Linux fork() works — the child gets a CoW copy of the parent's page tables.",
+    '完整 CoW 周期：写入 → 复制 → 交换 → 刷新 → GC。这正是 Linux fork() 的工作方式 — 子进程获得父进程页表的 CoW 副本。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -297,10 +315,16 @@ async function presetFullCycle() {
 
   message.value = t(
     'Complete cycle done. Key insight: readers were never blocked. This is why CoW enables lock-free reads — the foundation of MVCC in databases (PostgreSQL, CockroachDB).',
-    '完整周期完成。核心洞察：读取者从未被阻塞。这就是 CoW 实现无锁读取的原因 — 数据库 MVCC 的基础（PostgreSQL、CockroachDB）。'
+    '完整周期完成。核心洞察：读取者从未被阻塞。这就是 CoW 实现无锁读取的原因 — 数据库 MVCC 的基础（PostgreSQL、CockroachDB）。',
   );
   vizLog(message.value, 'success');
-  vizLog(t('CoW: readers never block — the foundation of lock-free reads', 'CoW：读者永不阻塞 — 无锁读取的基础'), 'highlight');
+  vizLog(
+    t(
+      'CoW: readers never block — the foundation of lock-free reads',
+      'CoW：读者永不阻塞 — 无锁读取的基础',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -310,7 +334,7 @@ async function presetMultipleWrites() {
   presetRunning = true;
   message.value = t(
     'Multiple writes without refresh — old versions accumulate. This is the memory pressure problem in MVCC: PostgreSQL needs VACUUM to clean up old tuple versions.',
-    '多次写入不刷新 — 旧版本积累。这是 MVCC 中的内存压力问题：PostgreSQL 需要 VACUUM 来清理旧的元组版本。'
+    '多次写入不刷新 — 旧版本积累。这是 MVCC 中的内存压力问题：PostgreSQL 需要 VACUUM 来清理旧的元组版本。',
   );
   await delay(800);
   if (isAborted()) return;
@@ -335,10 +359,16 @@ async function presetMultipleWrites() {
 
   message.value = t(
     `${versions.value.length} versions exist — readers still on v1 prevent GC. Click "Refresh Readers" to release old versions. This is why long-running queries in PostgreSQL block VACUUM.`,
-    `${versions.value.length} 个版本存在 — 读取者仍在 v1 上阻止 GC。点击"刷新读取者"释放旧版本。这就是 PostgreSQL 中长时间查询阻止 VACUUM 的原因。`
+    `${versions.value.length} 个版本存在 — 读取者仍在 v1 上阻止 GC。点击"刷新读取者"释放旧版本。这就是 PostgreSQL 中长时间查询阻止 VACUUM 的原因。`,
   );
   vizLog(message.value, 'warning');
-  vizLog(t('Version accumulation: long-lived readers block GC (PostgreSQL VACUUM)', '版本积累：长生命周期读者阻止 GC（PostgreSQL VACUUM）'), 'highlight');
+  vizLog(
+    t(
+      'Version accumulation: long-lived readers block GC (PostgreSQL VACUUM)',
+      '版本积累：长生命周期读者阻止 GC（PostgreSQL VACUUM）',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -348,7 +378,7 @@ async function presetConcurrentRead() {
   presetRunning = true;
   message.value = t(
     'Concurrent read demo: a write happens while readers are active. Readers continue seeing the old version — zero contention. This is snapshot isolation in databases.',
-    '并发读取演示：读取者活跃时发生写入。读取者继续看到旧版本 — 零争用。这是数据库中的快照隔离。'
+    '并发读取演示：读取者活跃时发生写入。读取者继续看到旧版本 — 零争用。这是数据库中的快照隔离。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -358,7 +388,7 @@ async function presetConcurrentRead() {
   doWrite();
   message.value = t(
     'Write created v2 (draft) — but R1, R2, R3 still safely read v1. No locks, no blocking, no torn reads. This is the power of copy-on-write.',
-    '写入创建了 v2（草稿）— 但 R1、R2、R3 仍安全读取 v1。没有锁，没有阻塞，没有撕裂读取。这就是写时复制的力量。'
+    '写入创建了 v2（草稿）— 但 R1、R2、R3 仍安全读取 v1。没有锁，没有阻塞，没有撕裂读取。这就是写时复制的力量。',
   );
   await delay(1200);
   if (!presetRunning || isAborted()) return;
@@ -369,9 +399,12 @@ async function presetConcurrentRead() {
 
   message.value = t(
     'v2 is now current. New readers would see v2, but existing R1/R2/R3 still have v1. In Java CopyOnWriteArrayList, iterators hold a snapshot of the array at creation time.',
-    'v2 现在是当前版本。新读取者看到 v2，但现有 R1/R2/R3 仍持有 v1。在 Java CopyOnWriteArrayList 中，迭代器持有创建时数组的快照。'
+    'v2 现在是当前版本。新读取者看到 v2，但现有 R1/R2/R3 仍持有 v1。在 Java CopyOnWriteArrayList 中，迭代器持有创建时数组的快照。',
   );
-  vizLog(t('Snapshot isolation: writers and readers never contend', '快照隔离：写者与读者永不争用'), 'highlight');
+  vizLog(
+    t('Snapshot isolation: writers and readers never contend', '快照隔离：写者与读者永不争用'),
+    'highlight',
+  );
   presetRunning = false;
 }
 </script>
@@ -404,10 +437,7 @@ async function presetConcurrentRead() {
         <span class="cow-step-text">{{ t('Swap', '交换') }}</span>
       </div>
       <div class="cow-step-arrow">&rarr;</div>
-      <div
-        class="cow-step"
-        :class="{ 'cow-step--active': phase === 'swapped' }"
-      >
+      <div class="cow-step" :class="{ 'cow-step--active': phase === 'swapped' }">
         <span class="cow-step-num">3</span>
         <span class="cow-step-text">{{ t('Refresh', '刷新') }}</span>
       </div>
@@ -438,16 +468,21 @@ async function presetConcurrentRead() {
               }"
             >
               {{
-                group.version.status === 'current' ? t('current', '当前')
-                : group.version.status === 'old' ? t('old', '旧版')
-                : t('copy', '副本')
+                group.version.status === 'current'
+                  ? t('current', '当前')
+                  : group.version.status === 'old'
+                    ? t('old', '旧版')
+                    : t('copy', '副本')
               }}
             </span>
-            <span class="cow-rc-badge" :class="{
-              'cow-rc--shared': group.readerCount > 1,
-              'cow-rc--exclusive': group.readerCount === 1,
-              'cow-rc--zero': group.readerCount === 0,
-            }">
+            <span
+              class="cow-rc-badge"
+              :class="{
+                'cow-rc--shared': group.readerCount > 1,
+                'cow-rc--exclusive': group.readerCount === 1,
+                'cow-rc--zero': group.readerCount === 0,
+              }"
+            >
               {{ t('refs', '引用') }}={{ group.readerCount }}
             </span>
           </div>
@@ -496,7 +531,7 @@ async function presetConcurrentRead() {
       <div class="cow-edit-row">
         <label class="viz-label">{{ t('Element:', '元素：') }}</label>
         <select v-model.number="selectedIndex" class="cow-select" :disabled="phase === 'copied'">
-          <option v-for="(item, i) in (currentVersion?.items ?? [])" :key="i" :value="i">
+          <option v-for="(item, i) in currentVersion?.items ?? []" :key="i" :value="i">
             [{{ i }}] {{ item }}
           </option>
         </select>
@@ -535,8 +570,12 @@ async function presetConcurrentRead() {
     <div class="viz-presets">
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
       <button class="viz-btn" @click="presetFullCycle">{{ t('Full Cycle', '完整周期') }}</button>
-      <button class="viz-btn" @click="presetMultipleWrites">{{ t('Version Pile-up', '版本堆积') }}</button>
-      <button class="viz-btn" @click="presetConcurrentRead">{{ t('Concurrent Read', '并发读取') }}</button>
+      <button class="viz-btn" @click="presetMultipleWrites">
+        {{ t('Version Pile-up', '版本堆积') }}
+      </button>
+      <button class="viz-btn" @click="presetConcurrentRead">
+        {{ t('Concurrent Read', '并发读取') }}
+      </button>
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
@@ -554,17 +593,23 @@ async function presetConcurrentRead() {
           :class="{ 'cow-history-entry--latest': i === 0 }"
         >
           <span class="cow-history-who" :style="{ color: entry.color }">{{ entry.actor }}</span>
-          <span class="cow-history-type" :class="{
-            'cow-ht--cow': entry.type === 'cow',
-            'cow-ht--swap': entry.type === 'swap',
-            'cow-ht--refresh': entry.type === 'refresh',
-            'cow-ht--gc': entry.type === 'gc',
-          }">
+          <span
+            class="cow-history-type"
+            :class="{
+              'cow-ht--cow': entry.type === 'cow',
+              'cow-ht--swap': entry.type === 'swap',
+              'cow-ht--refresh': entry.type === 'refresh',
+              'cow-ht--gc': entry.type === 'gc',
+            }"
+          >
             {{
-              entry.type === 'cow' ? t('CoW', 'CoW')
-              : entry.type === 'swap' ? t('Swap', '交换')
-              : entry.type === 'refresh' ? t('Refresh', '刷新')
-              : t('GC', 'GC')
+              entry.type === 'cow'
+                ? t('CoW', 'CoW')
+                : entry.type === 'swap'
+                  ? t('Swap', '交换')
+                  : entry.type === 'refresh'
+                    ? t('Refresh', '刷新')
+                    : t('GC', 'GC')
             }}
           </span>
           <span class="cow-history-detail">{{ entry.detail }}</span>
@@ -987,19 +1032,33 @@ async function presetConcurrentRead() {
 
 /* Animations */
 @keyframes cow-appear {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes cow-highlight {
-  0% { transform: scale(1); }
-  40% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* Responsive */
 @media (max-width: 640px) {
-  .cow-steps { gap: 0.25rem; }
+  .cow-steps {
+    gap: 0.25rem;
+  }
 
   .cow-step {
     padding: 0.2rem 0.5rem;
@@ -1014,14 +1073,18 @@ async function presetConcurrentRead() {
     max-width: 100%;
   }
 
-  .cow-items { gap: 0.25rem; }
+  .cow-items {
+    gap: 0.25rem;
+  }
 
   .cow-item {
     min-width: 30px;
     padding: 0.15rem 0.3rem;
   }
 
-  .cow-item-val { font-size: 0.75rem; }
+  .cow-item-val {
+    font-size: 0.75rem;
+  }
 
   .cow-edit-row {
     gap: 0.25rem;

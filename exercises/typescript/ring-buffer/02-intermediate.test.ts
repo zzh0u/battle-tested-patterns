@@ -61,9 +61,9 @@ class MovingAverage {
 describe('Ring Buffer - Intermediate: Streaming Moving Average', () => {
   it('should compute average during partial fill', () => {
     const ma = new MovingAverage(5);
-    expect(ma.push(10)).toBeCloseTo(10);       // avg of [10]
-    expect(ma.push(20)).toBeCloseTo(15);       // avg of [10, 20]
-    expect(ma.push(30)).toBeCloseTo(20);       // avg of [10, 20, 30]
+    expect(ma.push(10)).toBeCloseTo(10); // avg of [10]
+    expect(ma.push(20)).toBeCloseTo(15); // avg of [10, 20]
+    expect(ma.push(30)).toBeCloseTo(20); // avg of [10, 20, 30]
     expect(ma.filled).toBe(3);
   });
 

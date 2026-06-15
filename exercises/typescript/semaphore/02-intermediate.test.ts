@@ -107,8 +107,14 @@ describe('Semaphore - Intermediate: Connection Pool', () => {
     const c1 = await pool.acquire();
 
     const order: number[] = [];
-    const p1 = pool.acquire().then((conn) => { order.push(1); return conn; });
-    const p2 = pool.acquire().then((conn) => { order.push(2); return conn; });
+    const p1 = pool.acquire().then((conn) => {
+      order.push(1);
+      return conn;
+    });
+    const p2 = pool.acquire().then((conn) => {
+      order.push(2);
+      return conn;
+    });
 
     pool.release(c1);
     const conn1 = await p1;

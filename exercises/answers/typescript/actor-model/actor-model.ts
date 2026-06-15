@@ -5,7 +5,10 @@ class Actor<S> {
   private mailbox: unknown[] = [];
   private processing = false;
 
-  constructor(initialState: S, private handler: MessageHandler<S>) {
+  constructor(
+    initialState: S,
+    private handler: MessageHandler<S>,
+  ) {
     this.state = initialState;
   }
 

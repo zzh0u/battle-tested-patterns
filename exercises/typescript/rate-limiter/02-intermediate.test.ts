@@ -104,8 +104,8 @@ describe('Rate Limiter - Intermediate: Sliding Window', () => {
     const limiter = new SlidingWindowLimiter(2, 1000);
     const now = 1000;
 
-    expect(limiter.tryRequest('ip', now)).toBe(true);       // t=1000
-    expect(limiter.tryRequest('ip', now + 100)).toBe(true);  // t=1100
+    expect(limiter.tryRequest('ip', now)).toBe(true); // t=1000
+    expect(limiter.tryRequest('ip', now + 100)).toBe(true); // t=1100
     expect(limiter.tryRequest('ip', now + 200)).toBe(false); // full
 
     // At t=2001, the request at t=1000 has left the window
@@ -120,16 +120,16 @@ describe('Rate Limiter - Intermediate: Sliding Window', () => {
     expect(limiter.tryRequest('alice', now)).toBe(true);
     expect(limiter.tryRequest('alice', now + 10)).toBe(false); // alice is limited
 
-    expect(limiter.tryRequest('bob', now + 10)).toBe(true);    // bob is independent
-    expect(limiter.tryRequest('bob', now + 20)).toBe(false);   // bob is now limited
+    expect(limiter.tryRequest('bob', now + 10)).toBe(true); // bob is independent
+    expect(limiter.tryRequest('bob', now + 20)).toBe(false); // bob is now limited
   });
 
   it('should report correct retryAfter time', () => {
     const limiter = new SlidingWindowLimiter(2, 1000);
     const now = 5000;
 
-    limiter.tryRequest('svc', now);        // t=5000
-    limiter.tryRequest('svc', now + 200);  // t=5200
+    limiter.tryRequest('svc', now); // t=5000
+    limiter.tryRequest('svc', now + 200); // t=5200
 
     // At t=5300, both requests are active, window full
     expect(limiter.retryAfter('svc', now + 300)).toBe(700);

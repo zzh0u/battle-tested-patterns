@@ -14,17 +14,26 @@ const { entries: logEntries, log, clear: clearLog } = useVizLog();
 const heap = ref<number[]>([]);
 const history = useVizHistory<number[]>([], {
   getMessage: () => message.value,
-  onRestore: (snap, msg) => { presetRunning = false; heap.value = snap; highlightIndices.value = []; animType.value = ''; if (msg !== undefined) message.value = msg; },
+  onRestore: (snap, msg) => {
+    presetRunning = false;
+    heap.value = snap;
+    highlightIndices.value = [];
+    animType.value = '';
+    if (msg !== undefined) message.value = msg;
+  },
 });
-const message = ref(t(
-  'Insert values to build a min-heap — or pick a scenario below to watch the algorithm in action',
-  '插入值来构建最小堆 — 或选择下方场景观看算法运行过程'
-));
+const message = ref(
+  t(
+    'Insert values to build a min-heap — or pick a scenario below to watch the algorithm in action',
+    '插入值来构建最小堆 — 或选择下方场景观看算法运行过程',
+  ),
+);
 const highlightIndices = ref<number[]>([]);
 const animType = ref<'insert' | 'extract' | 'swap' | ''>('');
 let presetRunning = false;
 
-const SVG_W = 400, SVG_H = 200;
+const SVG_W = 400,
+  SVG_H = 200;
 
 function nodePos(index: number) {
   const depth = Math.floor(Math.log2(index + 1));
@@ -44,17 +53,17 @@ const treeNodes = computed(() =>
     pos: nodePos(i),
     parent: i > 0 ? Math.floor((i - 1) / 2) : -1,
     highlighted: highlightIndices.value.includes(i),
-  }))
+  })),
 );
 
 const edges = computed(() =>
   treeNodes.value
-    .filter(n => n.parent >= 0)
-    .map(n => ({
+    .filter((n) => n.parent >= 0)
+    .map((n) => ({
       from: nodePos(n.parent),
       to: n.pos,
       key: `${n.parent}-${n.index}`,
-    }))
+    })),
 );
 
 async function insert(val?: number) {
@@ -65,7 +74,7 @@ async function insert(val?: number) {
   animType.value = 'insert';
   message.value = t(
     `Inserted ${v} at bottom (index ${i}). Now bubble up: compare with parent to restore heap property.`,
-    `在底部插入 ${v}（索引 ${i}）。现在上浮：与父节点比较以恢复堆性质。`
+    `在底部插入 ${v}（索引 ${i}）。现在上浮：与父节点比较以恢复堆性质。`,
   );
   log(message.value, 'info');
   history.commit([...heap.value], `insert(${v}):push`);
@@ -79,7 +88,7 @@ async function insert(val?: number) {
       highlightIndices.value = [i, parent];
       message.value = t(
         `${heap.value[i]} < ${heap.value[parent]} → swap! Heap invariant: every parent ≤ its children.`,
-        `${heap.value[i]} < ${heap.value[parent]} → 交换！堆不变量：每个父节点 ≤ 其子节点。`
+        `${heap.value[i]} < ${heap.value[parent]} → 交换！堆不变量：每个父节点 ≤ 其子节点。`,
       );
       log(message.value, 'warning');
       await delay(400);
@@ -90,7 +99,7 @@ async function insert(val?: number) {
     } else {
       message.value = t(
         `${heap.value[i]} ≥ ${heap.value[parent]} → stop. Heap property satisfied.`,
-        `${heap.value[i]} ≥ ${heap.value[parent]} → 停止。堆性质已满足。`
+        `${heap.value[i]} ≥ ${heap.value[parent]} → 停止。堆性质已满足。`,
       );
       break;
     }
@@ -100,7 +109,7 @@ async function insert(val?: number) {
   if (i === 0) {
     message.value = t(
       `${v} is now the root (minimum). In React Scheduler, this would be the highest-priority task.`,
-      `${v} 现在是根节点（最小值）。在 React Scheduler 中，这将是最高优先级任务。`
+      `${v} 现在是根节点（最小值）。在 React Scheduler 中，这将是最高优先级任务。`,
     );
     log(message.value, 'success');
     history.commit([...heap.value], `insert(${v}):root`);
@@ -122,7 +131,7 @@ async function extractMin() {
   highlightIndices.value = [0];
   message.value = t(
     `Extracting min = ${min}. O(1) to find it (always at root). Now must restore heap property.`,
-    `提取最小值 = ${min}。O(1) 找到它（总在根节点）。现在需要恢复堆性质。`
+    `提取最小值 = ${min}。O(1) 找到它（总在根节点）。现在需要恢复堆性质。`,
   );
   log(message.value, 'highlight');
   history.commit([...heap.value], `extractMin(${min}):start`);
@@ -142,7 +151,7 @@ async function extractMin() {
   heap.value[0] = heap.value.pop()!;
   message.value = t(
     `Moved last element (${heap.value[0]}) to root. Now sift down to find its correct position.`,
-    `将最后一个元素 (${heap.value[0]}) 移至根节点。现在下沉以找到正确位置。`
+    `将最后一个元素 (${heap.value[0]}) 移至根节点。现在下沉以找到正确位置。`,
   );
   let i = 0;
 
@@ -158,7 +167,7 @@ async function extractMin() {
       highlightIndices.value = [i, smallest];
       message.value = t(
         `Sift down: ${heap.value[i]} > ${heap.value[smallest]} → swap. Total: O(log n) swaps.`,
-        `下沉：${heap.value[i]} > ${heap.value[smallest]} → 交换。总计：O(log n) 次交换。`
+        `下沉：${heap.value[i]} > ${heap.value[smallest]} → 交换。总计：O(log n) 次交换。`,
       );
       log(message.value, 'warning');
       await delay(400);
@@ -175,7 +184,7 @@ async function extractMin() {
   animType.value = '';
   message.value = t(
     `Extracted min = ${min}. Heap property restored in O(log n). This is why schedulers use heaps.`,
-    `已提取最小值 = ${min}。O(log n) 恢复堆性质。这就是调度器使用堆的原因。`
+    `已提取最小值 = ${min}。O(log n) 恢复堆性质。这就是调度器使用堆的原因。`,
   );
   log(message.value, 'success');
   history.commit([...heap.value], `extractMin(${min}):done`);
@@ -211,9 +220,15 @@ async function presetScheduler() {
   }
   message.value = t(
     'React Scheduler: extract-min always picks the highest-priority (lowest number) task next.',
-    'React Scheduler：extract-min 总是选择优先级最高（数字最小）的任务。'
+    'React Scheduler：extract-min 总是选择优先级最高（数字最小）的任务。',
   );
-  log(t('Min-heap: O(1) find-min, O(log n) insert/extract — the scheduler sweet spot', '最小堆：O(1) 查找最小值，O(log n) 插入/提取 — 调度器的最佳选择'), 'highlight');
+  log(
+    t(
+      'Min-heap: O(1) find-min, O(log n) insert/extract — the scheduler sweet spot',
+      '最小堆：O(1) 查找最小值，O(log n) 插入/提取 — 调度器的最佳选择',
+    ),
+    'highlight',
+  );
   history.commit([...heap.value], 'preset:summary');
   presetRunning = false;
 }
@@ -233,7 +248,7 @@ async function presetHeapSort() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'All inserted. Now extracting in sorted order — this is heap sort! O(n log n) total.',
-    '全部插入完毕。现在按顺序提取 — 这就是堆排序！总计 O(n log n)。'
+    '全部插入完毕。现在按顺序提取 — 这就是堆排序！总计 O(n log n)。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -248,9 +263,15 @@ async function presetHeapSort() {
   }
   message.value = t(
     `Heap sort complete: [${sorted.join(', ')}] — each extraction is O(log n).`,
-    `堆排序完成：[${sorted.join(', ')}] — 每次提取 O(log n)。`
+    `堆排序完成：[${sorted.join(', ')}] — 每次提取 O(log n)。`,
   );
-  log(t('Heap sort: O(n log n) with O(1) extra space — no worst-case degradation unlike quicksort', '堆排序：O(n log n)，O(1) 额外空间 — 不像快排有最坏退化'), 'highlight');
+  log(
+    t(
+      'Heap sort: O(n log n) with O(1) extra space — no worst-case degradation unlike quicksort',
+      '堆排序：O(n log n)，O(1) 额外空间 — 不像快排有最坏退化',
+    ),
+    'highlight',
+  );
   history.commit([...heap.value], 'preset:summary');
   presetRunning = false;
 }
@@ -261,11 +282,14 @@ async function presetMergeSorted() {
   presetRunning = true;
   message.value = t(
     'Merging two sorted streams via min-heap. This is how k-way merge works in database compaction and external sort.',
-    '通过最小堆合并两个有序流。这就是数据库压缩和外部排序中 k 路合并的工作方式。'
+    '通过最小堆合并两个有序流。这就是数据库压缩和外部排序中 k 路合并的工作方式。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
-  const streams = [[3, 7, 11, 15], [2, 5, 9, 13]];
+  const streams = [
+    [3, 7, 11, 15],
+    [2, 5, 9, 13],
+  ];
   for (let i = 0; i < Math.max(streams[0].length, streams[1].length); i++) {
     for (const stream of streams) {
       if (i < stream.length) {
@@ -278,9 +302,15 @@ async function presetMergeSorted() {
   }
   message.value = t(
     'All elements merged into heap. The root always holds the global minimum — extract to get sorted output across both streams.',
-    '所有元素已合并入堆。堆顶始终是全局最小值 — 提取即可获得两个流的排序输出。'
+    '所有元素已合并入堆。堆顶始终是全局最小值 — 提取即可获得两个流的排序输出。',
   );
-  log(t('Min-heap enables O(log k) merge of k sorted streams — core of LSM compaction and external sort', '最小堆实现 k 个有序流的 O(log k) 合并 — LSM 压缩和外部排序的核心'), 'highlight');
+  log(
+    t(
+      'Min-heap enables O(log k) merge of k sorted streams — core of LSM compaction and external sort',
+      '最小堆实现 k 个有序流的 O(log k) 合并 — LSM 压缩和外部排序的核心',
+    ),
+    'highlight',
+  );
   history.commit([...heap.value], 'preset:summary');
   presetRunning = false;
 }
@@ -291,7 +321,12 @@ async function presetMergeSorted() {
     <div class="viz-title">{{ t('Interactive Min Heap', '交互式 Min Heap') }}</div>
 
     <!-- Tree view -->
-    <svg :viewBox="`0 0 ${SVG_W} ${Math.max(SVG_H, (Math.floor(Math.log2(Math.max(heap.length, 1))) + 1) * 50 + 40)}`" class="heap-svg" role="img" :aria-label="t('Min heap tree visualization', '最小堆树可视化')">
+    <svg
+      :viewBox="`0 0 ${SVG_W} ${Math.max(SVG_H, (Math.floor(Math.log2(Math.max(heap.length, 1))) + 1) * 50 + 40)}`"
+      class="heap-svg"
+      role="img"
+      :aria-label="t('Min heap tree visualization', '最小堆树可视化')"
+    >
       <line
         v-for="e in edges"
         :key="e.key"
@@ -303,7 +338,11 @@ async function presetMergeSorted() {
         stroke-width="1.5"
       />
 
-      <g v-for="node in treeNodes" :key="node.index" :transform="`translate(${node.pos.x}, ${node.pos.y})`">
+      <g
+        v-for="node in treeNodes"
+        :key="node.index"
+        :transform="`translate(${node.pos.x}, ${node.pos.y})`"
+      >
         <circle
           r="18"
           :fill="node.highlighted ? 'var(--viz-warning)' : 'var(--viz-primary)'"
@@ -323,7 +362,14 @@ async function presetMergeSorted() {
         </text>
       </g>
 
-      <text v-if="heap.length === 0" :x="SVG_W / 2" :y="SVG_H / 2" text-anchor="middle" fill="var(--viz-muted)" font-size="13">
+      <text
+        v-if="heap.length === 0"
+        :x="SVG_W / 2"
+        :y="SVG_H / 2"
+        text-anchor="middle"
+        fill="var(--viz-muted)"
+        font-size="13"
+      >
         {{ t('Empty — click Insert or pick a scenario', '空 — 点击插入或选择一个场景') }}
       </text>
     </svg>
@@ -336,11 +382,14 @@ async function presetMergeSorted() {
         :key="i"
         class="heap-array-cell"
         :class="{ 'heap-array-cell--hl': highlightIndices.includes(i) }"
-      >{{ val }}</span>
+        >{{ val }}</span
+      >
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="insert()">{{ t('Insert Random', '插入随机值') }}</button>
+      <button class="viz-btn viz-btn--primary" @click="insert()">
+        {{ t('Insert Random', '插入随机值') }}
+      </button>
       <button class="viz-btn" @click="extractMin">{{ t('Extract Min', '提取最小值') }}</button>
       <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
       <div class="viz-speed">
@@ -351,7 +400,9 @@ async function presetMergeSorted() {
 
     <div class="viz-presets">
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
-      <button class="viz-btn" @click="presetScheduler">{{ t('React Scheduler', 'React 调度器') }}</button>
+      <button class="viz-btn" @click="presetScheduler">
+        {{ t('React Scheduler', 'React 调度器') }}
+      </button>
       <button class="viz-btn" @click="presetHeapSort">{{ t('Heap Sort', '堆排序') }}</button>
       <button class="viz-btn" @click="presetMergeSorted">{{ t('Merge Streams', '合并流') }}</button>
     </div>

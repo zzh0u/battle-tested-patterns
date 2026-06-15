@@ -9,14 +9,14 @@ import { describe, it, expect } from 'vitest';
  */
 
 const FiberFlags = {
-  NoFlags:       0b0000000,
-  Placement:     0b0000001,
-  Update:        0b0000010,
-  Deletion:      0b0000100,
+  NoFlags: 0b0000000,
+  Placement: 0b0000001,
+  Update: 0b0000010,
+  Deletion: 0b0000100,
   ChildDeletion: 0b0001000,
-  Ref:           0b0010000,
-  Callback:      0b0100000,
-  Snapshot:      0b1000000,
+  Ref: 0b0010000,
+  Callback: 0b0100000,
+  Snapshot: 0b1000000,
 } as const;
 
 interface SimpleFiber {

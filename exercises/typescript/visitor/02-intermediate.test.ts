@@ -36,15 +36,9 @@ function transform(expr: Expr, visitor: TransformVisitor): Expr {
     case 'variable':
       return visitor.visitVariable(expr.name);
     case 'add':
-      return visitor.visitAdd(
-        transform(expr.left, visitor),
-        transform(expr.right, visitor),
-      );
+      return visitor.visitAdd(transform(expr.left, visitor), transform(expr.right, visitor));
     case 'multiply':
-      return visitor.visitMultiply(
-        transform(expr.left, visitor),
-        transform(expr.right, visitor),
-      );
+      return visitor.visitMultiply(transform(expr.left, visitor), transform(expr.right, visitor));
     case 'negate':
       return visitor.visitNegate(transform(expr.operand, visitor));
   }

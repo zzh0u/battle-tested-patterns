@@ -63,9 +63,18 @@ describe('Middleware / Pipeline Chain - Basic', () => {
 
   it('should execute middleware in use() order', () => {
     const pipeline = new Pipeline<RequestCtx>();
-    pipeline.use((ctx, next) => { ctx.log.push('first'); next(); });
-    pipeline.use((ctx, next) => { ctx.log.push('second'); next(); });
-    pipeline.use((ctx, next) => { ctx.log.push('third'); next(); });
+    pipeline.use((ctx, next) => {
+      ctx.log.push('first');
+      next();
+    });
+    pipeline.use((ctx, next) => {
+      ctx.log.push('second');
+      next();
+    });
+    pipeline.use((ctx, next) => {
+      ctx.log.push('third');
+      next();
+    });
 
     const ctx: RequestCtx = { path: '/', headers: {}, body: '', log: [] };
     pipeline.execute(ctx);
@@ -74,12 +83,18 @@ describe('Middleware / Pipeline Chain - Basic', () => {
 
   it('should short-circuit when next() is not called', () => {
     const pipeline = new Pipeline<RequestCtx>();
-    pipeline.use((ctx, next) => { ctx.log.push('auth'); next(); });
+    pipeline.use((ctx, next) => {
+      ctx.log.push('auth');
+      next();
+    });
     pipeline.use((ctx, _next) => {
       ctx.log.push('denied');
       // deliberately not calling next() — short circuit
     });
-    pipeline.use((ctx, next) => { ctx.log.push('handler'); next(); });
+    pipeline.use((ctx, next) => {
+      ctx.log.push('handler');
+      next();
+    });
 
     const ctx: RequestCtx = { path: '/', headers: {}, body: '', log: [] };
     pipeline.execute(ctx);

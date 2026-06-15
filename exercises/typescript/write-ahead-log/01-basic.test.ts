@@ -95,10 +95,14 @@ describe('Write-Ahead Log - Basic', () => {
     let count = 0;
 
     wal.append('INC', {});
-    wal.apply(() => { count++; });
+    wal.apply(() => {
+      count++;
+    });
     expect(count).toBe(1);
 
-    wal.apply(() => { count++; });
+    wal.apply(() => {
+      count++;
+    });
     expect(count).toBe(1); // should not increment again
   });
 

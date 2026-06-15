@@ -48,7 +48,8 @@ class MinHeap<T extends HeapNode> {
       const left = 2 * i + 1;
       const right = 2 * i + 2;
       if (left < len && this.compare(this.heap[left]!, this.heap[smallest]!) < 0) smallest = left;
-      if (right < len && this.compare(this.heap[right]!, this.heap[smallest]!) < 0) smallest = right;
+      if (right < len && this.compare(this.heap[right]!, this.heap[smallest]!) < 0)
+        smallest = right;
       if (smallest !== i) {
         this.swap(i, smallest);
         i = smallest;

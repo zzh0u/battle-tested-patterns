@@ -15,7 +15,9 @@ class LazyIter<T> {
 
   static from<T>(items: T[]): LazyIter<T> {
     // TODO: implement
-    return new LazyIter(function* () { yield* items; });
+    return new LazyIter(function* () {
+      yield* items;
+    });
   }
 
   static infinite(start = 0): LazyIter<number> {
@@ -110,9 +112,7 @@ describe('Iterator - Intermediate: Lazy Pipeline', () => {
   });
 
   it('should take short-circuit an infinite source', () => {
-    const result = LazyIter.infinite(1)
-      .take(5)
-      .collect();
+    const result = LazyIter.infinite(1).take(5).collect();
 
     expect(result).toEqual([1, 2, 3, 4, 5]);
   });

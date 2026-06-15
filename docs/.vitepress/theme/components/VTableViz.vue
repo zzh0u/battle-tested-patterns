@@ -68,7 +68,7 @@ const classes: ClassDef[] = [
   },
 ];
 
-const subclasses = computed(() => classes.filter(c => c.name !== 'Animal'));
+const subclasses = computed(() => classes.filter((c) => c.name !== 'Animal'));
 
 const selectedClassName = ref('Dog');
 const selectedMethod = ref<MethodName>('speak()');
@@ -91,21 +91,26 @@ interface VTableSnapshot {
   method: string;
 }
 
-const vizHistory = useVizHistory<VTableSnapshot>({ className: 'Dog', method: 'speak()' }, {
-  getMessage: () => message.value,
-  onRestore(snapshot, msg) {
-    presetRunning = false;
-    selectedClassName.value = snapshot.className;
-    selectedMethod.value = snapshot.method as MethodName;
-    dispatching.value = false;
-    activeStep.value = 0;
-    dispatchResult.value = '';
-    dispatchOutput.value = '';
-    history.splice(0); if (msg !== undefined) message.value = msg; },
-});
+const vizHistory = useVizHistory<VTableSnapshot>(
+  { className: 'Dog', method: 'speak()' },
+  {
+    getMessage: () => message.value,
+    onRestore(snapshot, msg) {
+      presetRunning = false;
+      selectedClassName.value = snapshot.className;
+      selectedMethod.value = snapshot.method as MethodName;
+      dispatching.value = false;
+      activeStep.value = 0;
+      dispatchResult.value = '';
+      dispatchOutput.value = '';
+      history.splice(0);
+      if (msg !== undefined) message.value = msg;
+    },
+  },
+);
 
 function getClassDef(name: string): ClassDef {
-  return classes.find(c => c.name === name)!;
+  return classes.find((c) => c.name === name)!;
 }
 
 function getClassColor(name: string): string {
@@ -114,8 +119,8 @@ function getClassColor(name: string): string {
 
 const selectedClass = computed(() => getClassDef(selectedClassName.value));
 
-const selectedEntry = computed(() =>
-  selectedClass.value.vtable.find(e => e.methodName === selectedMethod.value)!,
+const selectedEntry = computed(
+  () => selectedClass.value.vtable.find((e) => e.methodName === selectedMethod.value)!,
 );
 
 async function callMethod() {
@@ -137,10 +142,7 @@ async function callMethod() {
   if (isAborted()) return;
 
   activeStep.value = 2;
-  message.value = t(
-    `vptr points to ${cls.name}'s vtable`,
-    `vptr 指向 ${cls.name} 的 vtable`,
-  );
+  message.value = t(`vptr points to ${cls.name}'s vtable`, `vptr 指向 ${cls.name} 的 vtable`);
   await delay(800);
   if (isAborted()) return;
 
@@ -162,7 +164,13 @@ async function callMethod() {
     `Dispatched to ${entry.implLabel} ${inheritNote} -- returns ${entry.output}`,
     `分派到 ${entry.implLabel} ${inheritNote} -- 返回 ${entry.output}`,
   );
-  log(t(`${objLabel}.${selectedMethod.value} → ${entry.implLabel} = ${entry.output}`, `${objLabel}.${selectedMethod.value} → ${entry.implLabel} = ${entry.output}`), 'info');
+  log(
+    t(
+      `${objLabel}.${selectedMethod.value} → ${entry.implLabel} = ${entry.output}`,
+      `${objLabel}.${selectedMethod.value} → ${entry.implLabel} = ${entry.output}`,
+    ),
+    'info',
+  );
 
   history.push({
     obj: objLabel,
@@ -174,7 +182,10 @@ async function callMethod() {
     history.splice(0, history.length - 6);
   }
 
-  vizHistory.commit({ className: selectedClassName.value, method: selectedMethod.value }, `${objLabel}.${selectedMethod.value}`);
+  vizHistory.commit(
+    { className: selectedClassName.value, method: selectedMethod.value },
+    `${objLabel}.${selectedMethod.value}`,
+  );
 
   await delay(1500);
   if (isAborted()) return;
@@ -235,7 +246,10 @@ async function presetPolymorphicDispatch() {
     'The same method call resolves to different implementations at runtime. C++ stores a vptr in every polymorphic object (8 bytes overhead on x64). Java uses a similar vtable but also has interface method tables (itable). Rust dyn Trait uses fat pointers: (data_ptr, vtable_ptr).',
     '同一方法调用在运行时解析到不同实现。C++ 在每个多态对象中存储 vptr（x64 上 8 字节开销）。Java 使用类似的 vtable，还有接口方法表（itable）。Rust 的 dyn Trait 使用胖指针：(data_ptr, vtable_ptr)。',
   );
-  log(t('Same call, different impls — runtime polymorphism', '同一调用不同实现 — 运行时多态'), 'highlight');
+  log(
+    t('Same call, different impls — runtime polymorphism', '同一调用不同实现 — 运行时多态'),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -244,7 +258,7 @@ async function presetInheritedVsOverridden() {
   reset();
   presetRunning = true;
   message.value = t(
-    'Inherited methods reuse the parent\'s function pointer -- the vtable entry points to Animal::eat. Overridden methods replace the pointer -- Dog::speak replaces Animal::speak. The object size doesn\'t change either way.',
+    "Inherited methods reuse the parent's function pointer -- the vtable entry points to Animal::eat. Overridden methods replace the pointer -- Dog::speak replaces Animal::speak. The object size doesn't change either way.",
     '继承的方法复用父类的函数指针——vtable 条目指向 Animal::eat。重写的方法替换指针——Dog::speak 替换 Animal::speak。无论哪种方式，对象大小都不变。',
   );
   await delay(800);
@@ -270,10 +284,13 @@ async function presetInheritedVsOverridden() {
   if (!presetRunning || isAborted()) return;
 
   message.value = t(
-    'In C++, forgetting `virtual` on the base class makes the method non-virtual -- the vtable entry won\'t exist and dispatch is static (resolved at compile time). Java makes all methods virtual by default; `final` prevents overriding. Rust has no inheritance -- traits provide vtable dispatch via dyn Trait.',
+    "In C++, forgetting `virtual` on the base class makes the method non-virtual -- the vtable entry won't exist and dispatch is static (resolved at compile time). Java makes all methods virtual by default; `final` prevents overriding. Rust has no inheritance -- traits provide vtable dispatch via dyn Trait.",
     '在 C++ 中，基类忘记加 `virtual` 会使方法成为非虚方法——vtable 中不会有该条目，分派是静态的（编译时确定）。Java 默认所有方法都是虚的；`final` 阻止重写。Rust 没有继承——trait 通过 dyn Trait 提供 vtable 分派。',
   );
-  log(t('Inherited reuses parent ptr; overridden replaces it', '继承复用父类指针；重写替换指针'), 'highlight');
+  log(
+    t('Inherited reuses parent ptr; overridden replaces it', '继承复用父类指针；重写替换指针'),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -311,7 +328,10 @@ async function presetSameMethodDifferentImpl() {
     'This is how game engines work -- Entity::update() calls the right update function for each entity type. Unreal Engine uses UObject vtables. Unity uses component vtables. The CPU cost is one extra memory indirection per call (vtable lookup), roughly 1-5ns on modern hardware.',
     '游戏引擎正是这样工作的——Entity::update() 为每种实体类型调用正确的更新函数。Unreal Engine 使用 UObject vtable。Unity 使用组件 vtable。CPU 开销是每次调用多一次内存间接寻址（vtable 查找），在现代硬件上约 1-5ns。',
   );
-  log(t('Liskov Substitution: any subtype fits the base', '里氏替换：任何子类型适配基类型'), 'highlight');
+  log(
+    t('Liskov Substitution: any subtype fits the base', '里氏替换：任何子类型适配基类型'),
+    'highlight',
+  );
   presetRunning = false;
 }
 </script>
@@ -341,7 +361,9 @@ async function presetSameMethodDifferentImpl() {
             :class="{ 'vt-method-btn--selected': m === selectedMethod }"
             :disabled="dispatching"
             @click="selectedMethod = m"
-          >{{ m }}</button>
+          >
+            {{ m }}
+          </button>
         </div>
       </div>
 
@@ -380,10 +402,9 @@ async function presetSameMethodDifferentImpl() {
 
       <!-- Arrow column -->
       <div class="vt-arrow-col">
-        <span
-          class="vt-ptr-line"
-          :class="{ 'vt-ptr-lit': activeStep >= 2 }"
-        >&#x2500;&#x2500;&#x25B6;</span>
+        <span class="vt-ptr-line" :class="{ 'vt-ptr-lit': activeStep >= 2 }"
+          >&#x2500;&#x2500;&#x25B6;</span
+        >
       </div>
 
       <!-- VTable column -->
@@ -417,19 +438,15 @@ async function presetSameMethodDifferentImpl() {
 
       <!-- Resolution arrow -->
       <div class="vt-arrow-col">
-        <span
-          class="vt-ptr-line"
-          :class="{ 'vt-ptr-lit': activeStep >= 4 }"
-        >&#x2500;&#x2500;&#x25B6;</span>
+        <span class="vt-ptr-line" :class="{ 'vt-ptr-lit': activeStep >= 4 }"
+          >&#x2500;&#x2500;&#x25B6;</span
+        >
       </div>
 
       <!-- Function column -->
       <div class="vt-col">
         <div class="vt-col-label">{{ t('Function', '函数') }}</div>
-        <div
-          class="vt-func"
-          :class="{ 'vt-func-active': activeStep >= 4 }"
-        >
+        <div class="vt-func" :class="{ 'vt-func-active': activeStep >= 4 }">
           <div class="vt-func-name">{{ activeStep >= 4 ? dispatchResult : '???' }}</div>
           <div v-if="activeStep >= 4" class="vt-func-output">
             {{ t('returns', '返回') }} {{ dispatchOutput }}
@@ -444,9 +461,7 @@ async function presetSameMethodDifferentImpl() {
         {{ t('object', '对象') }}
       </span>
       <span class="vt-chain-arrow" :class="{ 'vt-step-active': activeStep >= 2 }">&#x2192;</span>
-      <span class="vt-chain-step" :class="{ 'vt-step-active': activeStep >= 2 }">
-        vptr
-      </span>
+      <span class="vt-chain-step" :class="{ 'vt-step-active': activeStep >= 2 }"> vptr </span>
       <span class="vt-chain-arrow" :class="{ 'vt-step-active': activeStep >= 3 }">&#x2192;</span>
       <span class="vt-chain-step" :class="{ 'vt-step-active': activeStep >= 3 }">
         vtable[{{ selectedMethod }}]
@@ -460,9 +475,12 @@ async function presetSameMethodDifferentImpl() {
     <!-- Dispatch result -->
     <div v-if="dispatchResult && activeStep >= 4" class="vt-result">
       <span class="vt-result-label">{{ t('Result:', '结果：') }}</span>
-      <span class="vt-result-value">{{ dispatchResult }} {{ t('returns', '返回') }} {{ dispatchOutput }}</span>
+      <span class="vt-result-value"
+        >{{ dispatchResult }} {{ t('returns', '返回') }} {{ dispatchOutput }}</span
+      >
       <span v-if="!selectedEntry.overridden" class="vt-result-note">
-        {{ t('(inherited -- not overridden by ', '(继承 -- 未被 ') }}{{ selectedClassName }}{{ t(' )', ' 重写)') }}
+        {{ t('(inherited -- not overridden by ', '(继承 -- 未被 ') }}{{ selectedClassName
+        }}{{ t(' )', ' 重写)') }}
       </span>
     </div>
 
@@ -515,9 +533,15 @@ async function presetSameMethodDifferentImpl() {
 
     <div class="viz-presets">
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
-      <button class="viz-btn" @click="presetPolymorphicDispatch">{{ t('Polymorphic Dispatch', '多态分派') }}</button>
-      <button class="viz-btn" @click="presetInheritedVsOverridden">{{ t('Inherited vs Overridden', '继承 vs 重写') }}</button>
-      <button class="viz-btn" @click="presetSameMethodDifferentImpl">{{ t('Same Interface, Different Behavior', '同接口不同行为') }}</button>
+      <button class="viz-btn" @click="presetPolymorphicDispatch">
+        {{ t('Polymorphic Dispatch', '多态分派') }}
+      </button>
+      <button class="viz-btn" @click="presetInheritedVsOverridden">
+        {{ t('Inherited vs Overridden', '继承 vs 重写') }}
+      </button>
+      <button class="viz-btn" @click="presetSameMethodDifferentImpl">
+        {{ t('Same Interface, Different Behavior', '同接口不同行为') }}
+      </button>
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
@@ -648,7 +672,9 @@ async function presetSameMethodDifferentImpl() {
   border: 2px solid var(--viz-border);
   border-radius: var(--viz-radius-sm);
   background: var(--vp-c-bg);
-  transition: border-color 0.25s, box-shadow 0.25s;
+  transition:
+    border-color 0.25s,
+    box-shadow 0.25s;
   min-width: 110px;
 }
 
@@ -728,7 +754,9 @@ async function presetSameMethodDifferentImpl() {
   border-radius: var(--viz-radius-sm);
   overflow: hidden;
   background: var(--vp-c-bg);
-  transition: border-color 0.25s, box-shadow 0.25s;
+  transition:
+    border-color 0.25s,
+    box-shadow 0.25s;
   min-width: 170px;
 }
 
@@ -753,7 +781,9 @@ async function presetSameMethodDifferentImpl() {
   border-top: 1px solid var(--viz-border);
   font-size: 0.68rem;
   font-family: var(--vp-font-family-mono);
-  transition: background 0.25s, color 0.25s;
+  transition:
+    background 0.25s,
+    color 0.25s;
 }
 
 .vt-row-hit {
@@ -802,7 +832,9 @@ async function presetSameMethodDifferentImpl() {
   border: 2px dashed var(--viz-border);
   border-radius: var(--viz-radius-sm);
   background: var(--vp-c-bg);
-  transition: border-color 0.25s, box-shadow 0.25s;
+  transition:
+    border-color 0.25s,
+    box-shadow 0.25s;
   min-width: 110px;
   min-height: 60px;
   justify-content: center;

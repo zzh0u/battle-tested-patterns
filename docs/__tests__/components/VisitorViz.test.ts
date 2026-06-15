@@ -16,11 +16,11 @@ describe('VisitorViz', () => {
     const wrapper = mount(VisitorViz);
     expect(wrapper.find('svg').exists()).toBe(true);
 
-    const nodeTexts = wrapper.findAll('svg text').map(t => t.text());
-    expect(nodeTexts.filter(t => t === 'Prog')).toHaveLength(1);
-    expect(nodeTexts.filter(t => t === 'Func')).toHaveLength(2);
-    expect(nodeTexts.filter(t => t === 'Stmt')).toHaveLength(3);
-    expect(nodeTexts.filter(t => t === 'Expr')).toHaveLength(4);
+    const nodeTexts = wrapper.findAll('svg text').map((t) => t.text());
+    expect(nodeTexts.filter((t) => t === 'Prog')).toHaveLength(1);
+    expect(nodeTexts.filter((t) => t === 'Func')).toHaveLength(2);
+    expect(nodeTexts.filter((t) => t === 'Stmt')).toHaveLength(3);
+    expect(nodeTexts.filter((t) => t === 'Expr')).toHaveLength(4);
   });
 
   it('has Print Visitor and Count Visitor type buttons', () => {

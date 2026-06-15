@@ -139,10 +139,18 @@ class IncrementalCheckpointStore {
     }
   }
 
-  get walLength(): number { return this.wal.length; }
-  get stateSize(): number { return this.state.size; }
-  get dirtyCount(): number { return this.dirtyKeys.size; }
-  get checkpointCount(): number { return this.hasBase ? this.incrementals.length : 0; }
+  get walLength(): number {
+    return this.wal.length;
+  }
+  get stateSize(): number {
+    return this.state.size;
+  }
+  get dirtyCount(): number {
+    return this.dirtyKeys.size;
+  }
+  get checkpointCount(): number {
+    return this.hasBase ? this.incrementals.length : 0;
+  }
 }
 
 // ─── Tests (do not modify below this line) ───────────────────────
@@ -189,8 +197,8 @@ describe('Checkpointing - Intermediate: Incremental Checkpoint', () => {
     expect(result.fromCheckpoint).toBe(true);
     expect(result.replayed).toBe(1); // only z
     expect(store.get('x')).toBe(10); // from incremental
-    expect(store.get('y')).toBe(2);  // from base
-    expect(store.get('z')).toBe(3);  // from WAL replay
+    expect(store.get('y')).toBe(2); // from base
+    expect(store.get('z')).toBe(3); // from WAL replay
   });
 
   it('should handle deletes in incremental checkpoint', () => {

@@ -31,25 +31,26 @@ const workers = ref<Worker[]>([
   { name: 'W3', color: 'var(--viz-warning)', queue: [], stolen: 0 },
 ]);
 
-const message = ref(t(
-  'Add tasks to workers, then start — idle workers steal from busy ones. Pick a scenario below.',
-  '向工作线程添加任务，然后开始 — 空闲线程从繁忙线程窃取任务。选择下方场景。'
-));
+const message = ref(
+  t(
+    'Add tasks to workers, then start — idle workers steal from busy ones. Pick a scenario below.',
+    '向工作线程添加任务，然后开始 — 空闲线程从繁忙线程窃取任务。选择下方场景。',
+  ),
+);
 const running = ref(false);
 const stealHighlight = ref('');
 let presetRunning = false;
 
-const history = useVizHistory<Worker[]>(
-  workers.value,
-  {
-    getMessage: () => message.value,
-    onRestore(state, msg) {
-      presetRunning = false;
-      workers.value = state;
-      stealHighlight.value = '';
-      running.value = false; if (msg !== undefined) message.value = msg; },
+const history = useVizHistory<Worker[]>(workers.value, {
+  getMessage: () => message.value,
+  onRestore(state, msg) {
+    presetRunning = false;
+    workers.value = state;
+    stealHighlight.value = '';
+    running.value = false;
+    if (msg !== undefined) message.value = msg;
   },
-);
+});
 
 function addTasks(workerIdx: number, count = 4) {
   const w = workers.value[workerIdx];
@@ -58,7 +59,7 @@ function addTasks(workerIdx: number, count = 4) {
   }
   message.value = t(
     `Added ${count} tasks to ${w.name} (queue: ${w.queue.length}). Uneven distribution triggers work stealing.`,
-    `已添加 ${count} 个任务到 ${w.name}（队列：${w.queue.length}）。不均匀分布会触发 work stealing。`
+    `已添加 ${count} 个任务到 ${w.name}（队列：${w.queue.length}）。不均匀分布会触发 work stealing。`,
   );
   history.commit(workers.value, `addTask ${w.name} +${count}`);
 }
@@ -66,7 +67,10 @@ function addTasks(workerIdx: number, count = 4) {
 function startProcessing() {
   if (running.value) return;
   running.value = true;
-  message.value = t('Processing... watch idle workers steal from busy ones.', '处理中... 观察空闲线程从繁忙线程窃取任务。');
+  message.value = t(
+    'Processing... watch idle workers steal from busy ones.',
+    '处理中... 观察空闲线程从繁忙线程窃取任务。',
+  );
   stealHighlight.value = '';
 
   safeInterval(() => {
@@ -82,7 +86,7 @@ function startProcessing() {
         }
       } else {
         const busiest = workers.value
-          .filter(other => other.name !== w.name && other.queue.length > 1)
+          .filter((other) => other.name !== w.name && other.queue.length > 1)
           .sort((a, b) => b.queue.length - a.queue.length)[0];
 
         if (busiest) {
@@ -91,14 +95,22 @@ function startProcessing() {
           w.queue.push(stolen);
           w.stolen++;
           stealHighlight.value = `${busiest.name}->${w.name}`;
-          log(t(`${w.name} stole #${stolen.id} from ${busiest.name}`, `${w.name} 从 ${busiest.name} 窃取 #${stolen.id}`), 'warning');
+          log(
+            t(
+              `${w.name} stole #${stolen.id} from ${busiest.name}`,
+              `${w.name} 从 ${busiest.name} 窃取 #${stolen.id}`,
+            ),
+            'warning',
+          );
           message.value = t(
             `${w.name} stole task #${stolen.id} from ${busiest.name}! Stealing from the TAIL of the deque minimizes contention — this is the key to Go's goroutine scheduler.`,
-            `${w.name} 从 ${busiest.name} 窃取了任务 #${stolen.id}！从双端队列的尾部窃取最小化竞争 — 这是 Go goroutine 调度器的关键。`
+            `${w.name} 从 ${busiest.name} 窃取了任务 #${stolen.id}！从双端队列的尾部窃取最小化竞争 — 这是 Go goroutine 调度器的关键。`,
           );
           anyWork = true;
           history.commit(workers.value, `steal ${busiest.name}->${w.name}`);
-          safeTimeout(() => { stealHighlight.value = ''; }, 400);
+          safeTimeout(() => {
+            stealHighlight.value = '';
+          }, 400);
         }
       }
     }
@@ -108,10 +120,16 @@ function startProcessing() {
       const totalStolen = workers.value.reduce((sum, w) => sum + w.stolen, 0);
       message.value = t(
         `All tasks completed! ${totalStolen} steals occurred. Without stealing, W1 would finish first while others idle — wasting CPU.`,
-        `所有任务已完成！发生了 ${totalStolen} 次窃取。没有窃取的话，W1 会先完成而其他线程空闲 — 浪费 CPU。`
+        `所有任务已完成！发生了 ${totalStolen} 次窃取。没有窃取的话，W1 会先完成而其他线程空闲 — 浪费 CPU。`,
       );
       log(t(`done: ${totalStolen} steals`, `完成：${totalStolen} 次窃取`), 'success');
-      log(t('Steal from tail, process from head — deque minimizes contention', '从尾部窃取，从头部处理 — 双端队列最小化争用'), 'highlight');
+      log(
+        t(
+          'Steal from tail, process from head — deque minimizes contention',
+          '从尾部窃取，从头部处理 — 双端队列最小化争用',
+        ),
+        'highlight',
+      );
     } else {
       history.commit(workers.value, 'process step');
     }
@@ -148,7 +166,7 @@ function presetImbalanced() {
   log(t('W2: +2 tasks (queue: 2) — lightly loaded', 'W2：+2 任务（队列：2）— 轻负载'), 'info');
   message.value = t(
     'Imbalanced: W1 has 8 tasks, W2 has 2, W3 has 0. Click Start — watch W3 steal from W1 to balance the load.',
-    '不平衡：W1 有 8 个任务，W2 有 2 个，W3 有 0 个。点击开始 — 观察 W3 从 W1 窃取以平衡负载。'
+    '不平衡：W1 有 8 个任务，W2 有 2 个，W3 有 0 个。点击开始 — 观察 W3 从 W1 窃取以平衡负载。',
   );
   presetRunning = false;
 }
@@ -165,7 +183,7 @@ function presetAllBusy() {
   log(t('W3: +4 tasks (queue: 4)', 'W3：+4 任务（队列：4）'), 'info');
   message.value = t(
     'All workers equally loaded — no stealing needed. This is the ideal initial distribution. Work stealing is a fallback, not the primary strategy.',
-    '所有工作线程负载均等 — 无需窃取。这是理想的初始分布。Work stealing 是后备策略，而非主要策略。'
+    '所有工作线程负载均等 — 无需窃取。这是理想的初始分布。Work stealing 是后备策略，而非主要策略。',
   );
   presetRunning = false;
 }
@@ -175,10 +193,16 @@ function presetOneWorker() {
   reset();
   presetRunning = true;
   addTasks(0, 12);
-  log(t('W1: +12 tasks (queue: 12) — all work on one thread', 'W1：+12 任务（队列：12）— 所有工作集中在一个线程'), 'info');
+  log(
+    t(
+      'W1: +12 tasks (queue: 12) — all work on one thread',
+      'W1：+12 任务（队列：12）— 所有工作集中在一个线程',
+    ),
+    'info',
+  );
   message.value = t(
     'Worst case: all 12 tasks on W1. W2 and W3 will steal aggressively. This models recursive task spawning (e.g., fork-join) where one thread generates all work.',
-    '最坏情况：所有 12 个任务在 W1 上。W2 和 W3 会积极窃取。这模拟了递归任务生成（如 fork-join），其中一个线程生成所有工作。'
+    '最坏情况：所有 12 个任务在 W1 上。W2 和 W3 会积极窃取。这模拟了递归任务生成（如 fork-join），其中一个线程生成所有工作。',
   );
   presetRunning = false;
 }
@@ -199,16 +223,13 @@ function presetOneWorker() {
         <div class="ws-worker-header">
           <span class="ws-worker-name" :style="{ color: w.color }">{{ w.name }}</span>
           <span class="ws-worker-stats">
-            {{ t('queue:', '队列：') }} {{ w.queue.length }} | {{ t('stolen:', '窃取：') }} {{ w.stolen }}
+            {{ t('queue:', '队列：') }} {{ w.queue.length }} | {{ t('stolen:', '窃取：') }}
+            {{ w.stolen }}
           </span>
         </div>
 
         <div class="ws-queue">
-          <div
-            v-for="task in w.queue"
-            :key="task.id"
-            class="ws-task"
-          >
+          <div v-for="task in w.queue" :key="task.id" class="ws-task">
             <div class="ws-task-label">#{{ task.id }}</div>
             <div class="ws-task-bar">
               <div
@@ -220,17 +241,19 @@ function presetOneWorker() {
           <div v-if="w.queue.length === 0" class="ws-empty">{{ t('idle', '空闲') }}</div>
         </div>
 
-        <button
-          class="viz-btn ws-add-btn"
-          @click="addTasks(i)"
-          :disabled="running"
-        >{{ t('+ 4 Tasks', '+ 4 任务') }}</button>
+        <button class="viz-btn ws-add-btn" @click="addTasks(i)" :disabled="running">
+          {{ t('+ 4 Tasks', '+ 4 任务') }}
+        </button>
       </div>
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="startProcessing" :disabled="running">{{ t('Start', '开始') }}</button>
-      <button class="viz-btn" @click="stopProcessing" :disabled="!running">{{ t('Stop', '停止') }}</button>
+      <button class="viz-btn viz-btn--primary" @click="startProcessing" :disabled="running">
+        {{ t('Start', '开始') }}
+      </button>
+      <button class="viz-btn" @click="stopProcessing" :disabled="!running">
+        {{ t('Stop', '停止') }}
+      </button>
       <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
       <div class="viz-speed">
         <input type="range" min="0.5" max="3" step="0.5" v-model.number="speed" />
@@ -259,7 +282,9 @@ function presetOneWorker() {
 }
 
 @media (max-width: 640px) {
-  .ws-workers { flex-direction: column; }
+  .ws-workers {
+    flex-direction: column;
+  }
 }
 
 .ws-worker {
@@ -345,8 +370,14 @@ function presetOneWorker() {
 }
 
 @keyframes ws-steal-flash {
-  0% { background: var(--vp-c-bg); }
-  50% { background: rgba(245, 158, 11, 0.1); }
-  100% { background: var(--vp-c-bg); }
+  0% {
+    background: var(--vp-c-bg);
+  }
+  50% {
+    background: rgba(245, 158, 11, 0.1);
+  }
+  100% {
+    background: var(--vp-c-bg);
+  }
 }
 </style>

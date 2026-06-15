@@ -80,7 +80,8 @@ class Transaction<T> {
 
   /** Read a key: local writes first, then snapshot */
   get(key: string): T | undefined {
-    if (this.localWrites.has(key)) { // TODO: implement
+    if (this.localWrites.has(key)) {
+      // TODO: implement
       const local = this.localWrites.get(key)!;
       return local.deleted ? undefined : local.value;
     }

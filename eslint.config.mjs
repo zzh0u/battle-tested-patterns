@@ -59,6 +59,26 @@ export default tseslint.config(
         'warn',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
       ],
+      // `vue/attributes-order` is classified by eslint-plugin-vue as a
+      // "Layout & Formatting" rule — that is Prettier's job, not ESLint's.
+      // eslint-config-prettier does NOT disable it, so we turn it off here to
+      // keep the linter focused on code quality and avoid 100+ style-only
+      // warnings drowning out real issues.
+      'vue/attributes-order': 'off',
+    },
+  },
+
+  // Inline helper components in tests / theme scaffolding are intentional;
+  // one-component-per-file targets app SFCs, not test/utility files.
+  {
+    files: [
+      '**/__tests__/**',
+      '**/*.test.{ts,js}',
+      'docs/.vitepress/theme/index.ts',
+      'docs/.vitepress/theme/components/**/*.{ts,tsx}',
+    ],
+    rules: {
+      'vue/one-component-per-file': 'off',
     },
   },
 

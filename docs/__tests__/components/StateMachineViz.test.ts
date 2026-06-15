@@ -32,9 +32,7 @@ describe('StateMachineViz', () => {
 
   it('FETCH transitions from IDLE to LOADING', async () => {
     const wrapper = mount(StateMachineViz);
-    const fetchBtn = wrapper.findAll('.viz-btn').find((b) =>
-      b.text().includes('FETCH'),
-    );
+    const fetchBtn = wrapper.findAll('.viz-btn').find((b) => b.text().includes('FETCH'));
 
     await fetchBtn!.trigger('click');
     await flushPromises();
@@ -44,9 +42,7 @@ describe('StateMachineViz', () => {
 
   it('invalid event shows error message', async () => {
     const wrapper = mount(StateMachineViz);
-    const resolveBtn = wrapper.findAll('.viz-btn').find((b) =>
-      b.text().includes('RESOLVE'),
-    );
+    const resolveBtn = wrapper.findAll('.viz-btn').find((b) => b.text().includes('RESOLVE'));
 
     await resolveBtn!.trigger('click');
     await flushPromises();
@@ -86,9 +82,7 @@ describe('StateMachineViz', () => {
 
   it('tracks transition history', async () => {
     const wrapper = mount(StateMachineViz);
-    const fetchBtn = wrapper.findAll('.viz-btn').find((b) =>
-      b.text().includes('FETCH'),
-    );
+    const fetchBtn = wrapper.findAll('.viz-btn').find((b) => b.text().includes('FETCH'));
 
     await fetchBtn!.trigger('click');
     await flushPromises();

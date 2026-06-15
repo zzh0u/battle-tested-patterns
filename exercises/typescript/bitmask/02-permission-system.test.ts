@@ -58,7 +58,12 @@ describe('Bitmask - Intermediate: Permission System', () => {
   const VIEWER = createRole(Permission.READ);
   const EDITOR = createRole(Permission.READ, Permission.WRITE);
   const MODERATOR = createRole(Permission.READ, Permission.WRITE, Permission.DELETE);
-  const SUPER_ADMIN = createRole(Permission.READ, Permission.WRITE, Permission.DELETE, Permission.ADMIN);
+  const SUPER_ADMIN = createRole(
+    Permission.READ,
+    Permission.WRITE,
+    Permission.DELETE,
+    Permission.ADMIN,
+  );
 
   it('should create roles with correct flag values', () => {
     expect(VIEWER).toBe(0b0001);

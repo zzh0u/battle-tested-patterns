@@ -21,10 +21,10 @@ describe('TrieViz', () => {
   it('has insert, search, demo, and reset buttons', () => {
     const wrapper = mount(TrieViz);
     const btns = wrapper.findAll('.viz-btn, .viz-btn--primary, .viz-btn--danger');
-    const texts = btns.map(b => b.text());
-    expect(texts.some(t => t.includes('Insert') || t.includes('插入'))).toBe(true);
-    expect(texts.some(t => t.includes('Search') || t.includes('搜索'))).toBe(true);
-    expect(texts.some(t => t.includes('Reset') || t.includes('重置'))).toBe(true);
+    const texts = btns.map((b) => b.text());
+    expect(texts.some((t) => t.includes('Insert') || t.includes('插入'))).toBe(true);
+    expect(texts.some((t) => t.includes('Search') || t.includes('搜索'))).toBe(true);
+    expect(texts.some((t) => t.includes('Reset') || t.includes('重置'))).toBe(true);
   });
 
   it('inserting a word adds it to the word list and creates tree nodes', async () => {
@@ -51,8 +51,8 @@ describe('TrieViz', () => {
 
     const tags = wrapper.findAll('.trie-word-tag');
     expect(tags.length).toBe(6);
-    expect(tags.map(t => t.text())).toContain('cat');
-    expect(tags.map(t => t.text())).toContain('dog');
+    expect(tags.map((t) => t.text())).toContain('cat');
+    expect(tags.map((t) => t.text())).toContain('dog');
   });
 
   it('clicking demo twice resets cleanly and leaves no residual input', async () => {

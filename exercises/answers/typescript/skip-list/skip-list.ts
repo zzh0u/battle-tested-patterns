@@ -1,6 +1,10 @@
 class SkipNode {
   forward: (SkipNode | null)[];
-  constructor(public key: number, public value: string, level: number) {
+  constructor(
+    public key: number,
+    public value: string,
+    level: number,
+  ) {
     this.forward = new Array(level + 1).fill(null);
   }
 }
@@ -23,7 +27,10 @@ class SkipList {
       while (cur.forward[i] && cur.forward[i]!.key < key) cur = cur.forward[i]!;
       update[i] = cur;
     }
-    if (cur.forward[0]?.key === key) { cur.forward[0]!.value = value; return; }
+    if (cur.forward[0]?.key === key) {
+      cur.forward[0]!.value = value;
+      return;
+    }
     const newLvl = this.randomLevel();
     if (newLvl > this.level) {
       for (let i = this.level + 1; i <= newLvl; i++) update[i] = this.header;

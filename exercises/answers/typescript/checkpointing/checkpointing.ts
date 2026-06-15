@@ -66,6 +66,10 @@ class CheckpointableStore {
     }
   }
 
-  get walLength(): number { return this.wal.length; }
-  get stateSize(): number { return this.state.size; }
+  get walLength(): number {
+    return this.wal.length;
+  }
+  get stateSize(): number {
+    return this.state.size;
+  }
 }

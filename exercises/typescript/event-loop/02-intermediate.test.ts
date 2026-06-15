@@ -98,7 +98,13 @@ describe('Event Loop - Intermediate: Timer + I/O Event Loop', () => {
     const loop = new TimerEventLoop();
     let fired = false;
 
-    loop.setTimeout(() => { fired = true; }, 100, 0); // fires at t=100
+    loop.setTimeout(
+      () => {
+        fired = true;
+      },
+      100,
+      0,
+    ); // fires at t=100
 
     loop.tick(50); // too early
     expect(fired).toBe(false);
@@ -128,7 +134,13 @@ describe('Event Loop - Intermediate: Timer + I/O Event Loop', () => {
     const loop = new TimerEventLoop();
     let fired = false;
 
-    const id = loop.setTimeout(() => { fired = true; }, 50, 0);
+    const id = loop.setTimeout(
+      () => {
+        fired = true;
+      },
+      50,
+      0,
+    );
     expect(loop.pendingTimers).toBe(1);
 
     const cancelled = loop.clearTimeout(id);

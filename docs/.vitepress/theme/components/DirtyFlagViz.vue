@@ -28,22 +28,43 @@ const entities = ref<Entity[]>([
   { id: nextId++, name: 'NPC', x: 300, y: 100, dirty: false, lastComputed: '(300,100)' },
 ]);
 
-const message = ref(t(
-  'Move entities to mark them dirty, then recompute only what changed — used by React, Unity, and every game engine',
-  '移动实体标记为脏，然后仅重新计算变更部分 — React、Unity 和所有游戏引擎都使用此模式'
-));
+const message = ref(
+  t(
+    'Move entities to mark them dirty, then recompute only what changed — used by React, Unity, and every game engine',
+    '移动实体标记为脏，然后仅重新计算变更部分 — React、Unity 和所有游戏引擎都使用此模式',
+  ),
+);
 const recomputeCount = ref(0);
 const skipCount = ref(0);
 let presetRunning = false;
 
-interface DirtyFlagSnapshot { entities: Entity[]; recomputeCount: number; skipCount: number }
+interface DirtyFlagSnapshot {
+  entities: Entity[];
+  recomputeCount: number;
+  skipCount: number;
+}
 const history = useVizHistory<DirtyFlagSnapshot>(
   { entities: JSON.parse(JSON.stringify(entities.value)), recomputeCount: 0, skipCount: 0 },
-  { getMessage: () => message.value,
- onRestore: (s, msg) => { presetRunning = false; entities.value = s.entities; recomputeCount.value = s.recomputeCount; skipCount.value = s.skipCount; if (msg !== undefined) message.value = msg; } },
+  {
+    getMessage: () => message.value,
+    onRestore: (s, msg) => {
+      presetRunning = false;
+      entities.value = s.entities;
+      recomputeCount.value = s.recomputeCount;
+      skipCount.value = s.skipCount;
+      if (msg !== undefined) message.value = msg;
+    },
+  },
 );
 function commitSnapshot(label: string) {
-  history.commit({ entities: JSON.parse(JSON.stringify(entities.value)), recomputeCount: recomputeCount.value, skipCount: skipCount.value }, label);
+  history.commit(
+    {
+      entities: JSON.parse(JSON.stringify(entities.value)),
+      recomputeCount: recomputeCount.value,
+      skipCount: skipCount.value,
+    },
+    label,
+  );
 }
 
 function moveEntity(idx: number) {
@@ -53,7 +74,7 @@ function moveEntity(idx: number) {
   e.dirty = true;
   message.value = t(
     `${e.name} moved to (${e.x},${e.y}) — marked DIRTY. Only this entity needs recomputation, not all ${entities.value.length}.`,
-    `${e.name} 移动到 (${e.x},${e.y}) - 标记为脏。只有这个实体需要重算，而非全部 ${entities.value.length} 个。`
+    `${e.name} 移动到 (${e.x},${e.y}) - 标记为脏。只有这个实体需要重算，而非全部 ${entities.value.length} 个。`,
   );
   commitSnapshot(`move ${e.name}`);
 }
@@ -76,7 +97,7 @@ function recompute() {
   skipCount.value += skipped;
   message.value = t(
     `Recomputed: ${computed} dirty | Skipped: ${skipped} clean — total saved: ${skipCount.value}. This is how React.memo and shouldComponentUpdate work.`,
-    `已重算: ${computed} 个脏 | 跳过: ${skipped} 个干净 - 累计节省: ${skipCount.value}。React.memo 和 shouldComponentUpdate 就是这样工作的。`
+    `已重算: ${computed} 个脏 | 跳过: ${skipped} 个干净 - 累计节省: ${skipCount.value}。React.memo 和 shouldComponentUpdate 就是这样工作的。`,
   );
   log(message.value, 'success');
   commitSnapshot(`recompute (${computed} dirty, ${skipped} skipped)`);
@@ -90,7 +111,7 @@ function recomputeAll() {
   recomputeCount.value += entities.value.length;
   message.value = t(
     `Recomputed ALL ${entities.value.length} entities (no dirty flag optimization) — this is the naive approach that dirty flags avoid.`,
-    `重算全部 ${entities.value.length} 个实体（无 Dirty Flag 优化）— 这是脏标记要避免的朴素方法。`
+    `重算全部 ${entities.value.length} 个实体（无 Dirty Flag 优化）— 这是脏标记要避免的朴素方法。`,
   );
   log(message.value, 'warning');
   commitSnapshot(`recomputeAll (${entities.value.length})`);
@@ -112,15 +133,15 @@ function reset() {
   history.reset();
 }
 
-const dirtyCount = computed(() => entities.value.filter(e => e.dirty).length);
+const dirtyCount = computed(() => entities.value.filter((e) => e.dirty).length);
 
 async function presetSelectiveUpdate() {
   if (presetRunning) return;
   reset();
   presetRunning = true;
   message.value = t(
-    'Selective update: move 1 of 3 entities, then recompute. Only the dirty entity gets recalculated — React\'s reconciler does exactly this with fiber dirty flags.',
-    '选择性更新：移动 3 个实体中的 1 个，然后重算。只有脏实体被重新计算 — React 的协调器用 fiber 脏标记做同样的事。'
+    "Selective update: move 1 of 3 entities, then recompute. Only the dirty entity gets recalculated — React's reconciler does exactly this with fiber dirty flags.",
+    '选择性更新：移动 3 个实体中的 1 个，然后重算。只有脏实体被重新计算 — React 的协调器用 fiber 脏标记做同样的事。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -132,7 +153,7 @@ async function presetSelectiveUpdate() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'Result: 1 recomputed, 2 skipped. In a scene with 10,000 objects, dirty flags turn O(n) into O(k) where k = changed count.',
-    '结果：1 个重算，2 个跳过。在有 10,000 个对象的场景中，脏标记将 O(n) 变为 O(k)，k = 变更数量。'
+    '结果：1 个重算，2 个跳过。在有 10,000 个对象的场景中，脏标记将 O(n) 变为 O(k)，k = 变更数量。',
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -143,8 +164,8 @@ async function presetBatchVsNaive() {
   reset();
   presetRunning = true;
   message.value = t(
-    'Batch vs naive: move all 3 entities, then compare dirty-only vs recompute-all. Unity\'s transform system batches dirty transforms before physics step.',
-    '批量 vs 朴素：移动全部 3 个实体，然后比较仅脏数据 vs 全部重算。Unity 的变换系统在物理步骤前批量处理脏变换。'
+    "Batch vs naive: move all 3 entities, then compare dirty-only vs recompute-all. Unity's transform system batches dirty transforms before physics step.",
+    '批量 vs 朴素：移动全部 3 个实体，然后比较仅脏数据 vs 全部重算。Unity 的变换系统在物理步骤前批量处理脏变换。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -155,15 +176,18 @@ async function presetBatchVsNaive() {
   }
   message.value = t(
     'All dirty — recomputing with dirty flags processes all 3, same as naive. Dirty flags shine when only a subset changes.',
-    '全部为脏 — 使用脏标记处理全部 3 个，与朴素方法相同。脏标记在只有子集变更时才发挥优势。'
+    '全部为脏 — 使用脏标记处理全部 3 个，与朴素方法相同。脏标记在只有子集变更时才发挥优势。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
   recompute();
-  log(t(
-    'When all entities are dirty, dirty flags add no benefit — the optimization shines when only a subset changes.',
-    '当所有实体都是脏的时，脏标记无优势 — 该优化在只有子集变更时才发挥作用。'
-  ), 'highlight');
+  log(
+    t(
+      'When all entities are dirty, dirty flags add no benefit — the optimization shines when only a subset changes.',
+      '当所有实体都是脏的时，脏标记无优势 — 该优化在只有子集变更时才发挥作用。',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -173,7 +197,7 @@ async function presetCascadingDirty() {
   presetRunning = true;
   message.value = t(
     'Cascading dirty: move Player, recompute, move again, recompute. Shows how dirty flags handle rapid successive changes — CSS layout invalidation works this way.',
-    '级联脏标记：移动 Player，重算，再次移动，重算。展示脏标记如何处理快速连续变更 — CSS 布局失效就是这样工作的。'
+    '级联脏标记：移动 Player，重算，再次移动，重算。展示脏标记如何处理快速连续变更 — CSS 布局失效就是这样工作的。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -192,12 +216,15 @@ async function presetCascadingDirty() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'Two rounds: 1 + 2 = 3 recomputed, 2 + 1 = 3 skipped. Each cycle only processes what changed since last recompute.',
-    '两轮：1 + 2 = 3 个重算，2 + 1 = 3 个跳过。每轮只处理自上次重算以来变更的内容。'
+    '两轮：1 + 2 = 3 个重算，2 + 1 = 3 个跳过。每轮只处理自上次重算以来变更的内容。',
   );
-  log(t(
-    'Each recompute cycle only processes changes since the last cycle — incremental updates compound savings.',
-    '每个重算周期只处理自上次周期以来的变更 — 增量更新的节省效果不断累积。'
-  ), 'highlight');
+  log(
+    t(
+      'Each recompute cycle only processes changes since the last cycle — incremental updates compound savings.',
+      '每个重算周期只处理自上次周期以来的变更 — 增量更新的节省效果不断累积。',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 </script>
@@ -206,7 +233,12 @@ async function presetCascadingDirty() {
   <div class="viz-container">
     <div class="viz-title">{{ t('Interactive Dirty Flag', '交互式 Dirty Flag') }}</div>
 
-    <svg viewBox="0 0 380 150" class="df-svg" role="img" :aria-label="t('Dirty flag tree visualization', '脏标记树可视化')">
+    <svg
+      viewBox="0 0 380 150"
+      class="df-svg"
+      role="img"
+      :aria-label="t('Dirty flag tree visualization', '脏标记树可视化')"
+    >
       <g v-for="(e, i) in entities" :key="e.id">
         <circle
           :cx="e.x"
@@ -233,7 +265,9 @@ async function presetCascadingDirty() {
           font-weight="700"
           font-family="var(--vp-font-family-mono)"
           style="pointer-events: none"
-        >{{ e.name }}</text>
+        >
+          {{ e.name }}
+        </text>
         <text
           v-if="e.dirty"
           :x="e.x + 16"
@@ -241,7 +275,9 @@ async function presetCascadingDirty() {
           fill="var(--viz-danger)"
           font-size="12"
           font-weight="700"
-        >*</text>
+        >
+          *
+        </text>
         <text
           :x="e.x"
           :y="e.y + 30"
@@ -249,21 +285,39 @@ async function presetCascadingDirty() {
           fill="var(--viz-muted)"
           font-size="8"
           font-family="var(--vp-font-family-mono)"
-        >{{ t('cached:', '缓存:') }} {{ e.lastComputed }}</text>
+        >
+          {{ t('cached:', '缓存:') }} {{ e.lastComputed }}
+        </text>
       </g>
     </svg>
 
     <div class="df-stats">
-      <span class="df-stat">{{ t('Dirty:', '脏:') }} <strong :style="{ color: dirtyCount > 0 ? 'var(--viz-warning)' : 'var(--viz-success)' }">{{ dirtyCount }}</strong></span>
-      <span class="df-stat">{{ t('Recomputed:', '已重算:') }} <strong>{{ recomputeCount }}</strong></span>
-      <span class="df-stat">{{ t('Skipped:', '已跳过:') }} <strong style="color: var(--viz-success)">{{ skipCount }}</strong></span>
+      <span class="df-stat"
+        >{{ t('Dirty:', '脏:') }}
+        <strong :style="{ color: dirtyCount > 0 ? 'var(--viz-warning)' : 'var(--viz-success)' }">{{
+          dirtyCount
+        }}</strong></span
+      >
+      <span class="df-stat"
+        >{{ t('Recomputed:', '已重算:') }} <strong>{{ recomputeCount }}</strong></span
+      >
+      <span class="df-stat"
+        >{{ t('Skipped:', '已跳过:') }}
+        <strong style="color: var(--viz-success)">{{ skipCount }}</strong></span
+      >
     </div>
 
-    <div class="df-hint">{{ t('Click entities to move them (marks dirty)', '点击实体移动它们（标记为脏）') }}</div>
+    <div class="df-hint">
+      {{ t('Click entities to move them (marks dirty)', '点击实体移动它们（标记为脏）') }}
+    </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="recompute">{{ t('Recompute (dirty only)', '重算（仅脏数据）') }}</button>
-      <button class="viz-btn" @click="recomputeAll">{{ t('Recompute ALL (no optimization)', '重算全部（无优化）') }}</button>
+      <button class="viz-btn viz-btn--primary" @click="recompute">
+        {{ t('Recompute (dirty only)', '重算（仅脏数据）') }}
+      </button>
+      <button class="viz-btn" @click="recomputeAll">
+        {{ t('Recompute ALL (no optimization)', '重算全部（无优化）') }}
+      </button>
       <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
       <div class="viz-speed">
         <input type="range" min="0.5" max="3" step="0.5" v-model.number="speed" />
@@ -273,7 +327,9 @@ async function presetCascadingDirty() {
 
     <div class="viz-presets">
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
-      <button class="viz-btn" @click="presetSelectiveUpdate">{{ t('Selective Update', '选择性更新') }}</button>
+      <button class="viz-btn" @click="presetSelectiveUpdate">
+        {{ t('Selective Update', '选择性更新') }}
+      </button>
       <button class="viz-btn" @click="presetBatchVsNaive">{{ t('All Dirty', '全部脏') }}</button>
       <button class="viz-btn" @click="presetCascadingDirty">{{ t('Cascading', '级联') }}</button>
     </div>

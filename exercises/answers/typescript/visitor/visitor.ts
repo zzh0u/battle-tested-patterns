@@ -11,9 +11,12 @@ interface ExprVisitor<T> {
 
 function visit<T>(expr: Expr, v: ExprVisitor<T>): T {
   switch (expr.type) {
-    case 'number': return v.visitNumber(expr.value);
-    case 'add': return v.visitAdd(expr.left, expr.right);
-    case 'multiply': return v.visitMultiply(expr.left, expr.right);
+    case 'number':
+      return v.visitNumber(expr.value);
+    case 'add':
+      return v.visitAdd(expr.left, expr.right);
+    case 'multiply':
+      return v.visitMultiply(expr.left, expr.right);
   }
 }
 

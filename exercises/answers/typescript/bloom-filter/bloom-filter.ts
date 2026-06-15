@@ -18,7 +18,7 @@ class BloomFilter {
     }
     const result: number[] = [];
     for (let i = 0; i < this.hashCount; i++) {
-      result.push(((h1 + i * h2) % this.size + this.size) % this.size);
+      result.push((((h1 + i * h2) % this.size) + this.size) % this.size);
     }
     return result;
   }

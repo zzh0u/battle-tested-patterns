@@ -54,10 +54,14 @@ describe('time-travel regressions (audit fixes)', () => {
     it('insert → extract → insert → extract records all sub-steps', async () => {
       const wrapper = mount(MinHeapViz);
 
-      await clickButton(wrapper, ['Insert Random', '插入随机值']); await settle();
-      await clickButton(wrapper, ['Extract Min', '提取最小值']); await settle();
-      await clickButton(wrapper, ['Insert Random', '插入随机值']); await settle();
-      await clickButton(wrapper, ['Extract Min', '提取最小值']); await settle();
+      await clickButton(wrapper, ['Insert Random', '插入随机值']);
+      await settle();
+      await clickButton(wrapper, ['Extract Min', '提取最小值']);
+      await settle();
+      await clickButton(wrapper, ['Insert Random', '插入随机值']);
+      await settle();
+      await clickButton(wrapper, ['Extract Min', '提取最小值']);
+      await settle();
 
       // Per-step commits: on an empty/single-element heap each operation
       // produces multiple snapshots (insert: push+root = 2, extract: start+done = 2).

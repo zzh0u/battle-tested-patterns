@@ -9,9 +9,9 @@ const difficulty = computed(() => frontmatter.value.difficulty || '');
 
 const label = computed(() => {
   const labels = {
-    beginner:     isZh.value ? '入门' : 'Beginner',
+    beginner: isZh.value ? '入门' : 'Beginner',
     intermediate: isZh.value ? '进阶' : 'Intermediate',
-    advanced:     isZh.value ? '高级' : 'Advanced',
+    advanced: isZh.value ? '高级' : 'Advanced',
   };
   return labels[difficulty.value] || difficulty.value;
 });

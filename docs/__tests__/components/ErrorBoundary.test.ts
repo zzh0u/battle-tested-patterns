@@ -2,7 +2,12 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
 import { defineComponent, h, nextTick } from 'vue';
 import ErrorBoundary from '../../.vitepress/theme/components/ErrorBoundary';
-import { CrashOnSetup, CrashOnMount, HealthyChild, createCrashOnce } from '../helpers/error-boundary';
+import {
+  CrashOnSetup,
+  CrashOnMount,
+  HealthyChild,
+  createCrashOnce,
+} from '../helpers/error-boundary';
 
 // Mock vitepress useData for useI18n
 const mockLang = { value: 'en-US' };
@@ -58,11 +63,12 @@ describe('ErrorBoundary', () => {
   it('does not propagate error to parent — page remains intact', async () => {
     const Page = defineComponent({
       setup() {
-        return () => h('div', { class: 'page' }, [
-          h('h1', 'Page Title'),
-          h(ErrorBoundary, { name: 'TestComp', component: CrashOnSetup }),
-          h('footer', 'Footer'),
-        ]);
+        return () =>
+          h('div', { class: 'page' }, [
+            h('h1', 'Page Title'),
+            h(ErrorBoundary, { name: 'TestComp', component: CrashOnSetup }),
+            h('footer', 'Footer'),
+          ]);
       },
     });
 

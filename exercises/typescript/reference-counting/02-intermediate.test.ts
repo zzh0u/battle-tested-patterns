@@ -139,7 +139,9 @@ describe('Reference Counting - Intermediate: Weak References', () => {
 
   it('weak ref does not prevent cleanup', () => {
     let cleanedUp = false;
-    const strong = new StrongRef('temp', () => { cleanedUp = true; });
+    const strong = new StrongRef('temp', () => {
+      cleanedUp = true;
+    });
     const _weak = strong.downgrade();
 
     // Weak ref exists but should not prevent cleanup

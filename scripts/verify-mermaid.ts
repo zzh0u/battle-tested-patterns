@@ -22,9 +22,16 @@ const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
 
 Object.defineProperty(globalThis, 'document', { value: dom.window.document, writable: true });
 Object.defineProperty(globalThis, 'window', { value: dom.window, writable: true });
-Object.defineProperty(globalThis, 'navigator', { value: dom.window.navigator, writable: true, configurable: true });
+Object.defineProperty(globalThis, 'navigator', {
+  value: dom.window.navigator,
+  writable: true,
+  configurable: true,
+});
 Object.defineProperty(globalThis, 'DOMParser', { value: dom.window.DOMParser, writable: true });
-Object.defineProperty(globalThis, 'XMLSerializer', { value: dom.window.XMLSerializer, writable: true });
+Object.defineProperty(globalThis, 'XMLSerializer', {
+  value: dom.window.XMLSerializer,
+  writable: true,
+});
 Object.defineProperty(globalThis, 'HTMLElement', { value: dom.window.HTMLElement, writable: true });
 Object.defineProperty(globalThis, 'SVGElement', { value: dom.window.SVGElement, writable: true });
 
@@ -58,10 +65,7 @@ async function main() {
   const mermaid = (await import('mermaid')).default;
   mermaid.initialize({ startOnLoad: false });
 
-  const files =
-    process.argv.length > 2
-      ? process.argv.slice(2)
-      : findMarkdownFiles(DOCS_DIR);
+  const files = process.argv.length > 2 ? process.argv.slice(2) : findMarkdownFiles(DOCS_DIR);
 
   const errors: MermaidError[] = [];
   let totalBlocks = 0;
@@ -93,9 +97,7 @@ async function main() {
   }
 
   // ─── Report ───
-  console.log(
-    `\nMermaid syntax check: ${totalBlocks} block(s) in ${files.length} file(s)\n`,
-  );
+  console.log(`\nMermaid syntax check: ${totalBlocks} block(s) in ${files.length} file(s)\n`);
 
   if (errors.length === 0) {
     console.log('✓ All mermaid diagrams have valid syntax.');

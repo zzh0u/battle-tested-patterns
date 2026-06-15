@@ -64,7 +64,9 @@ describe('Backpressure - Basic', () => {
     await q.push(2);
 
     let pushed = false;
-    const pushPromise = q.push(3).then(() => { pushed = true; });
+    const pushPromise = q.push(3).then(() => {
+      pushed = true;
+    });
 
     await new Promise((r) => setTimeout(r, 10));
     expect(pushed).toBe(false);
@@ -79,7 +81,10 @@ describe('Backpressure - Basic', () => {
 
     let pulled = false;
     let result = '';
-    const pullPromise = q.pull().then((v) => { pulled = true; result = v; });
+    const pullPromise = q.pull().then((v) => {
+      pulled = true;
+      result = v;
+    });
 
     await new Promise((r) => setTimeout(r, 10));
     expect(pulled).toBe(false);

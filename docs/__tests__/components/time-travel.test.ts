@@ -30,11 +30,7 @@
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
-import {
-  clickReset,
-  playbackVisible,
-  settle,
-} from '../helpers/viz-interactions';
+import { clickReset, playbackVisible, settle } from '../helpers/viz-interactions';
 
 function nameFromPath(path: string): string {
   return path.split('/').pop()!.replace('.vue', '');
@@ -46,10 +42,7 @@ const allModules = import.meta.glob('../../.vitepress/theme/components/*Viz.vue'
 // Static pattern-navigation components that match the *Viz.vue glob but are NOT
 // interactive time-travel components (no VizPlaybackBar, no useVizHistory).
 // They use VitePress `withBase`, unavailable in the test environment.
-const NON_INTERACTIVE = new Set<string>([
-  'PatternConnectionsViz',
-  'PatternTimelineViz',
-]);
+const NON_INTERACTIVE = new Set<string>(['PatternConnectionsViz', 'PatternTimelineViz']);
 
 // Components that commit a snapshot during setup (pre-populated demo state), so
 // their playback bar is visible immediately on mount — by design, not a bug.
@@ -67,9 +60,7 @@ const FIRST_ACTION_SELECTOR: Record<string, string> = {
 const DEFAULT_FIRST_ACTION = '.viz-btn--primary';
 
 const modules = Object.fromEntries(
-  Object.entries(allModules).filter(
-    ([path]) => !NON_INTERACTIVE.has(nameFromPath(path)),
-  ),
+  Object.entries(allModules).filter(([path]) => !NON_INTERACTIVE.has(nameFromPath(path))),
 );
 
 /** Trigger a best-effort first action to reveal the playback bar. */

@@ -31,7 +31,8 @@ class Cow<T extends Record<string, unknown>> {
 
   /** Get mutable access — copies if shared, then returns owned data */
   write(): T {
-    if (this.shared) { // TODO: implement
+    if (this.shared) {
+      // TODO: implement
       this.data = structuredClone(this.data);
       this.shared = false;
     }

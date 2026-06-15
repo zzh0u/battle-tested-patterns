@@ -30,6 +30,9 @@ class Semaphore {
 
 async function withSemaphore<T>(sem: Semaphore, fn: () => Promise<T>): Promise<T> {
   await sem.acquire();
-  try { return await fn(); }
-  finally { sem.release(); }
+  try {
+    return await fn();
+  } finally {
+    sem.release();
+  }
 }

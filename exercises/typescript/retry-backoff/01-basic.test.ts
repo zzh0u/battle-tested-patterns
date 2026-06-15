@@ -13,10 +13,7 @@ interface BackoffConfig {
   maxDelay: number;
 }
 
-async function retryWithBackoff<T>(
-  fn: () => Promise<T>,
-  config: BackoffConfig,
-): Promise<T> {
+async function retryWithBackoff<T>(fn: () => Promise<T>, config: BackoffConfig): Promise<T> {
   let lastError: Error | undefined; // TODO: implement
 
   for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
@@ -37,10 +34,11 @@ async function retryWithBackoff<T>(
 
 describe('Retry with Backoff - Basic', () => {
   it('should succeed on first try', async () => {
-    const result = await retryWithBackoff(
-      async () => 'ok',
-      { maxRetries: 3, baseDelay: 10, maxDelay: 100 },
-    );
+    const result = await retryWithBackoff(async () => 'ok', {
+      maxRetries: 3,
+      baseDelay: 10,
+      maxDelay: 100,
+    });
     expect(result).toBe('ok');
   });
 
@@ -61,7 +59,9 @@ describe('Retry with Backoff - Basic', () => {
   it('should throw after max retries exhausted', async () => {
     await expect(
       retryWithBackoff(
-        async () => { throw new Error('permanent'); },
+        async () => {
+          throw new Error('permanent');
+        },
         { maxRetries: 2, baseDelay: 1, maxDelay: 10 },
       ),
     ).rejects.toThrow('permanent');

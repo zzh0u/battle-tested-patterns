@@ -28,7 +28,9 @@ describe('useVizTimers', () => {
   it('delay resolves after specified time', async () => {
     const { result, unmount } = withSetup(() => useVizTimers());
     let resolved = false;
-    result.delay(1000).then(() => { resolved = true; });
+    result.delay(1000).then(() => {
+      resolved = true;
+    });
 
     vi.advanceTimersByTime(500);
     await Promise.resolve();
@@ -44,7 +46,9 @@ describe('useVizTimers', () => {
     const { result, unmount } = withSetup(() => useVizTimers());
     result.speed.value = 2;
     let resolved = false;
-    result.delay(1000).then(() => { resolved = true; });
+    result.delay(1000).then(() => {
+      resolved = true;
+    });
 
     vi.advanceTimersByTime(500);
     await Promise.resolve();

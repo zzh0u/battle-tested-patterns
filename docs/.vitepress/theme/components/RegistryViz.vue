@@ -51,12 +51,19 @@ const history = useVizHistory<RegistrySnapshot>(
       lookupResult.value = null;
       lookupNotFound.value = false;
       flashId.value = -1;
-      dispatchTarget.value = null; if (msg !== undefined) message.value = msg; },
+      dispatchTarget.value = null;
+      if (msg !== undefined) message.value = msg;
+    },
   },
 );
 
 const lookupQuery = ref('');
-const message = ref(t('Register handlers into the registry, then look them up by name.', '将处理器注册到注册表中，然后按名称查找。'));
+const message = ref(
+  t(
+    'Register handlers into the registry, then look them up by name.',
+    '将处理器注册到注册表中，然后按名称查找。',
+  ),
+);
 const lookupResult = ref<Handler | null>(null);
 const lookupNotFound = ref(false);
 const dispatchTarget = ref<string | null>(null);
@@ -77,11 +84,25 @@ function registerHandler(pluginName: string) {
   flashId.value = handler.id;
   lookupResult.value = null;
   lookupNotFound.value = false;
-  message.value = t(`Registered "${plugin.name}" (order #${handler.registeredAt}). Registry now has ${registry.value.length} handler(s).`, `已注册 "${plugin.name}"（顺序 #${handler.registeredAt}）。注册表现有 ${registry.value.length} 个处理器。`);
-  log(t(`register "${plugin.name}" (#${handler.registeredAt})`, `注册 "${plugin.name}" (#${handler.registeredAt})`), 'info');
-  safeTimeout(() => { flashId.value = -1; }, 600);
+  message.value = t(
+    `Registered "${plugin.name}" (order #${handler.registeredAt}). Registry now has ${registry.value.length} handler(s).`,
+    `已注册 "${plugin.name}"（顺序 #${handler.registeredAt}）。注册表现有 ${registry.value.length} 个处理器。`,
+  );
+  log(
+    t(
+      `register "${plugin.name}" (#${handler.registeredAt})`,
+      `注册 "${plugin.name}" (#${handler.registeredAt})`,
+    ),
+    'info',
+  );
+  safeTimeout(() => {
+    flashId.value = -1;
+  }, 600);
   history.commit(
-    { availablePlugins: JSON.parse(JSON.stringify(availablePlugins.value)), registry: JSON.parse(JSON.stringify(registry.value)) },
+    {
+      availablePlugins: JSON.parse(JSON.stringify(availablePlugins.value)),
+      registry: JSON.parse(JSON.stringify(registry.value)),
+    },
     `register ${plugin.name}`,
   );
 }
@@ -95,9 +116,15 @@ function unregisterHandler(handler: Handler) {
   if (lookupResult.value?.id === handler.id) {
     lookupResult.value = null;
   }
-  message.value = t(`Unregistered "${handler.name}". ${registry.value.length} handler(s) remain.`, `已注销 "${handler.name}"。剩余 ${registry.value.length} 个处理器。`);
+  message.value = t(
+    `Unregistered "${handler.name}". ${registry.value.length} handler(s) remain.`,
+    `已注销 "${handler.name}"。剩余 ${registry.value.length} 个处理器。`,
+  );
   history.commit(
-    { availablePlugins: JSON.parse(JSON.stringify(availablePlugins.value)), registry: JSON.parse(JSON.stringify(registry.value)) },
+    {
+      availablePlugins: JSON.parse(JSON.stringify(availablePlugins.value)),
+      registry: JSON.parse(JSON.stringify(registry.value)),
+    },
     `unregister ${handler.name}`,
   );
 }
@@ -109,28 +136,39 @@ function doLookup() {
     return;
   }
   dispatchTarget.value = q;
-  const found = registry.value.find(
-    (h) => h.name.toLowerCase() === q.toLowerCase(),
-  );
+  const found = registry.value.find((h) => h.name.toLowerCase() === q.toLowerCase());
   safeTimeout(() => {
     if (found) {
       lookupResult.value = found;
       lookupNotFound.value = false;
       flashId.value = found.id;
-      message.value = t(`FOUND: "${found.name}" -> ${found.description}`, `已找到："${found.name}" -> ${found.description}`);
+      message.value = t(
+        `FOUND: "${found.name}" -> ${found.description}`,
+        `已找到："${found.name}" -> ${found.description}`,
+      );
       log(t(`lookup "${found.name}" → found`, `查找 "${found.name}" → 已找到`), 'success');
-      safeTimeout(() => { flashId.value = -1; }, 600);
+      safeTimeout(() => {
+        flashId.value = -1;
+      }, 600);
     } else {
       lookupResult.value = null;
       lookupNotFound.value = true;
-      message.value = t(`NOT FOUND: No handler registered for "${q}".`, `未找到：没有为 "${q}" 注册的处理器。`);
+      message.value = t(
+        `NOT FOUND: No handler registered for "${q}".`,
+        `未找到：没有为 "${q}" 注册的处理器。`,
+      );
       log(t(`lookup "${q}" → not found`, `查找 "${q}" → 未找到`), 'warning');
     }
-    safeTimeout(() => { dispatchTarget.value = null; }, 800);
+    safeTimeout(() => {
+      dispatchTarget.value = null;
+    }, 800);
   }, 300);
   lookupQuery.value = '';
   history.commit(
-    { availablePlugins: JSON.parse(JSON.stringify(availablePlugins.value)), registry: JSON.parse(JSON.stringify(registry.value)) },
+    {
+      availablePlugins: JSON.parse(JSON.stringify(availablePlugins.value)),
+      registry: JSON.parse(JSON.stringify(registry.value)),
+    },
     `lookup ${q}`,
   );
 }
@@ -147,7 +185,9 @@ function reset() {
   nextId = 0;
   order = 0;
   registry.value = [];
-  availablePlugins.value.forEach((p) => { p.registered = false; });
+  availablePlugins.value.forEach((p) => {
+    p.registered = false;
+  });
   lookupQuery.value = '';
   lookupResult.value = null;
   lookupNotFound.value = false;
@@ -155,7 +195,10 @@ function reset() {
   flashId.value = -1;
   clearLog();
   history.reset();
-  message.value = t('Registry cleared. Register handlers to begin.', '注册表已清空。注册处理器以开始。');
+  message.value = t(
+    'Registry cleared. Register handlers to begin.',
+    '注册表已清空。注册处理器以开始。',
+  );
 }
 
 const registeredCount = computed(() => registry.value.length);
@@ -168,7 +211,7 @@ async function presetRegisterAndLookup() {
   presetRunning = true;
   message.value = t(
     'Preset: registering all plugins, then resolving each by name...',
-    '预设：注册所有插件，然后按名称逐一解析...'
+    '预设：注册所有插件，然后按名称逐一解析...',
   );
 
   // Register all plugins one by one
@@ -193,9 +236,12 @@ async function presetRegisterAndLookup() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'Register-then-resolve is the service locator pattern — Java ServiceLoader, Spring @Component scanning, and VSCode extension host all use a registry to decouple providers from consumers. Lookup is O(1) by name.',
-    '先注册再解析是服务定位器模式 — Java ServiceLoader、Spring @Component 扫描和 VSCode 扩展主机都使用注册表来解耦提供者和消费者。按名称查找是 O(1)。'
+    '先注册再解析是服务定位器模式 — Java ServiceLoader、Spring @Component 扫描和 VSCode 扩展主机都使用注册表来解耦提供者和消费者。按名称查找是 O(1)。',
   );
-  log(t('Service locator: register then resolve O(1)', '服务定位器：注册后 O(1) 解析'), 'highlight');
+  log(
+    t('Service locator: register then resolve O(1)', '服务定位器：注册后 O(1) 解析'),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -205,7 +251,7 @@ async function presetLateBind() {
   presetRunning = true;
   message.value = t(
     'Preset: demonstrating late binding — register some, lookup, then register more...',
-    '预设：演示延迟绑定 — 先注册一些，查找，然后注册更多...'
+    '预设：演示延迟绑定 — 先注册一些，查找，然后注册更多...',
   );
 
   // Register first 2
@@ -227,7 +273,7 @@ async function presetLateBind() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'Two handlers registered. Now registering more at runtime...',
-    '已注册两个处理器。现在在运行时注册更多...'
+    '已注册两个处理器。现在在运行时注册更多...',
   );
 
   // Register 2 more
@@ -249,9 +295,12 @@ async function presetLateBind() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'Late binding: plugins registered at runtime, not compile time. This is how Express middleware (app.use), Webpack loaders (module.rules), and browser custom elements (customElements.define) work — register anytime, resolve on demand.',
-    '延迟绑定：插件在运行时注册，而非编译时。Express 中间件（app.use）、Webpack 加载器（module.rules）和浏览器自定义元素（customElements.define）都是这样工作的 — 随时注册，按需解析。'
+    '延迟绑定：插件在运行时注册，而非编译时。Express 中间件（app.use）、Webpack 加载器（module.rules）和浏览器自定义元素（customElements.define）都是这样工作的 — 随时注册，按需解析。',
   );
-  log(t('Late binding: register at runtime, resolve on demand', '延迟绑定：运行时注册，按需解析'), 'highlight');
+  log(
+    t('Late binding: register at runtime, resolve on demand', '延迟绑定：运行时注册，按需解析'),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -260,8 +309,8 @@ async function presetMissAndFallback() {
   reset();
   presetRunning = true;
   message.value = t(
-    'Preset: register 2 handlers, then look up a name that doesn\'t exist...',
-    '预设：注册 2 个处理器，然后查找一个不存在的名称...'
+    "Preset: register 2 handlers, then look up a name that doesn't exist...",
+    '预设：注册 2 个处理器，然后查找一个不存在的名称...',
   );
 
   // Register 2 handlers
@@ -277,7 +326,7 @@ async function presetMissAndFallback() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'Two handlers registered. Now looking up "ProtobufHandler" which was never registered...',
-    '已注册两个处理器。现在查找从未注册的 "ProtobufHandler"...'
+    '已注册两个处理器。现在查找从未注册的 "ProtobufHandler"...',
   );
 
   // Lookup a name that doesn't exist
@@ -290,9 +339,15 @@ async function presetMissAndFallback() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'Key not found — the registry has no fallback. In production: HTTP returns 404, MIME sniffing kicks in, or a default handler catches unregistered types. Kubernetes uses admission webhooks as a registry with deny-by-default.',
-    '键未找到 — 注册表没有回退机制。在生产环境中：HTTP 返回 404，MIME 嗅探介入，或默认处理器捕获未注册的类型。Kubernetes 使用准入 webhook 作为默认拒绝的注册表。'
+    '键未找到 — 注册表没有回退机制。在生产环境中：HTTP 返回 404，MIME 嗅探介入，或默认处理器捕获未注册的类型。Kubernetes 使用准入 webhook 作为默认拒绝的注册表。',
   );
-  log(t('Miss with no fallback — production needs default handlers', '未命中无回退 — 生产环境需要默认处理器'), 'highlight');
+  log(
+    t(
+      'Miss with no fallback — production needs default handlers',
+      '未命中无回退 — 生产环境需要默认处理器',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 </script>
@@ -320,7 +375,9 @@ async function presetMissAndFallback() {
               v-if="!plugin.registered"
               class="viz-btn viz-btn--primary rg-btn-sm"
               @click="registerHandler(plugin.name)"
-            >{{ t('Register', '注册') }}</button>
+            >
+              {{ t('Register', '注册') }}
+            </button>
             <span v-else class="rg-registered-badge">{{ t('registered', '已注册') }}</span>
           </div>
         </div>
@@ -351,7 +408,9 @@ async function presetMissAndFallback() {
             </thead>
             <tbody>
               <tr v-if="registry.length === 0">
-                <td colspan="4" class="rg-empty">{{ t('No handlers registered', '暂无注册的处理器') }}</td>
+                <td colspan="4" class="rg-empty">
+                  {{ t('No handlers registered', '暂无注册的处理器') }}
+                </td>
               </tr>
               <tr
                 v-for="handler in registry"
@@ -370,7 +429,9 @@ async function presetMissAndFallback() {
                     class="rg-action rg-action--rm"
                     :title="t('Unregister', '注销')"
                     @click="unregisterHandler(handler)"
-                  >{{ t('unregister', '注销') }}</button>
+                  >
+                    {{ t('unregister', '注销') }}
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -389,7 +450,9 @@ async function presetMissAndFallback() {
             maxlength="24"
             @keyup.enter="doLookup"
           />
-          <button class="viz-btn viz-btn--primary rg-btn-sm" @click="doLookup">{{ t('Resolve', '解析') }}</button>
+          <button class="viz-btn viz-btn--primary rg-btn-sm" @click="doLookup">
+            {{ t('Resolve', '解析') }}
+          </button>
         </div>
 
         <!-- Lookup result -->
@@ -400,7 +463,9 @@ async function presetMissAndFallback() {
         </div>
         <div v-else-if="lookupNotFound" class="rg-lookup-result rg-lookup-result--miss">
           <div class="rg-result-label">{{ t('Not Found', '未找到') }}</div>
-          <div class="rg-result-desc">{{ t('No handler matches this key', '没有匹配此键的处理器') }}</div>
+          <div class="rg-result-desc">
+            {{ t('No handler matches this key', '没有匹配此键的处理器') }}
+          </div>
         </div>
 
         <!-- Quick lookup buttons -->
@@ -411,8 +476,13 @@ async function presetMissAndFallback() {
             :key="plugin.name"
             class="rg-quick-btn"
             :class="{ 'rg-quick-btn--active': plugin.registered }"
-            @click="lookupQuery = plugin.name; doLookup()"
-          >{{ plugin.name.replace('Handler', '') }}</button>
+            @click="
+              lookupQuery = plugin.name;
+              doLookup();
+            "
+          >
+            {{ plugin.name.replace('Handler', '') }}
+          </button>
         </div>
       </div>
     </div>
@@ -428,9 +498,13 @@ async function presetMissAndFallback() {
 
     <div class="viz-presets">
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
-      <button class="viz-btn" @click="presetRegisterAndLookup">{{ t('Register & Lookup', '注册查找') }}</button>
+      <button class="viz-btn" @click="presetRegisterAndLookup">
+        {{ t('Register & Lookup', '注册查找') }}
+      </button>
       <button class="viz-btn" @click="presetLateBind">{{ t('Late Binding', '延迟绑定') }}</button>
-      <button class="viz-btn" @click="presetMissAndFallback">{{ t('Key Miss', '键未命中') }}</button>
+      <button class="viz-btn" @click="presetMissAndFallback">
+        {{ t('Key Miss', '键未命中') }}
+      </button>
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
@@ -714,13 +788,23 @@ async function presetMissAndFallback() {
 }
 
 @keyframes rg-flash {
-  0% { background: color-mix(in srgb, var(--viz-primary) 30%, transparent); }
-  100% { background: color-mix(in srgb, var(--viz-primary) 15%, transparent); }
+  0% {
+    background: color-mix(in srgb, var(--viz-primary) 30%, transparent);
+  }
+  100% {
+    background: color-mix(in srgb, var(--viz-primary) 15%, transparent);
+  }
 }
 
 @keyframes rg-fade-in {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 640px) {

@@ -123,8 +123,14 @@ function mergeWithDedup(streams: KVEntry[][]): KVEntry[] {
 describe('Merge Iterator - Intermediate: Deduplication', () => {
   it('should merge without duplicates when keys are unique', () => {
     const result = mergeWithDedup([
-      [{ key: 'a', value: '1' }, { key: 'c', value: '3' }],
-      [{ key: 'b', value: '2' }, { key: 'd', value: '4' }],
+      [
+        { key: 'a', value: '1' },
+        { key: 'c', value: '3' },
+      ],
+      [
+        { key: 'b', value: '2' },
+        { key: 'd', value: '4' },
+      ],
     ]);
     expect(result).toEqual([
       { key: 'a', value: '1' },
@@ -136,21 +142,27 @@ describe('Merge Iterator - Intermediate: Deduplication', () => {
 
   it('should keep latest value for duplicate keys (higher stream wins)', () => {
     const result = mergeWithDedup([
-      [{ key: 'x', value: 'old' }],     // stream 0 (oldest)
-      [{ key: 'x', value: 'new' }],     // stream 1 (newest)
+      [{ key: 'x', value: 'old' }], // stream 0 (oldest)
+      [{ key: 'x', value: 'new' }], // stream 1 (newest)
     ]);
     expect(result).toEqual([{ key: 'x', value: 'new' }]);
   });
 
   it('should handle duplicates across three streams', () => {
     const result = mergeWithDedup([
-      [{ key: 'a', value: 'v0' }, { key: 'b', value: 'v0' }], // stream 0
-      [{ key: 'a', value: 'v1' }],                              // stream 1
-      [{ key: 'b', value: 'v2' }, { key: 'c', value: 'v2' }], // stream 2
+      [
+        { key: 'a', value: 'v0' },
+        { key: 'b', value: 'v0' },
+      ], // stream 0
+      [{ key: 'a', value: 'v1' }], // stream 1
+      [
+        { key: 'b', value: 'v2' },
+        { key: 'c', value: 'v2' },
+      ], // stream 2
     ]);
     expect(result).toEqual([
-      { key: 'a', value: 'v1' },  // stream 1 wins for 'a'
-      { key: 'b', value: 'v2' },  // stream 2 wins for 'b'
+      { key: 'a', value: 'v1' }, // stream 1 wins for 'a'
+      { key: 'b', value: 'v2' }, // stream 2 wins for 'b'
       { key: 'c', value: 'v2' },
     ]);
   });
@@ -166,18 +178,20 @@ describe('Merge Iterator - Intermediate: Deduplication', () => {
   });
 
   it('should handle empty streams', () => {
-    const result = mergeWithDedup([
-      [],
-      [{ key: 'a', value: '1' }],
-      [],
-    ]);
+    const result = mergeWithDedup([[], [{ key: 'a', value: '1' }], []]);
     expect(result).toEqual([{ key: 'a', value: '1' }]);
   });
 
   it('should handle mixed unique and duplicate keys', () => {
     const result = mergeWithDedup([
-      [{ key: 'a', value: 'old-a' }, { key: 'c', value: 'only-c' }],
-      [{ key: 'a', value: 'new-a' }, { key: 'b', value: 'only-b' }],
+      [
+        { key: 'a', value: 'old-a' },
+        { key: 'c', value: 'only-c' },
+      ],
+      [
+        { key: 'a', value: 'new-a' },
+        { key: 'b', value: 'only-b' },
+      ],
     ]);
     expect(result).toEqual([
       { key: 'a', value: 'new-a' },
@@ -188,9 +202,18 @@ describe('Merge Iterator - Intermediate: Deduplication', () => {
 
   it('should produce sorted output', () => {
     const result = mergeWithDedup([
-      [{ key: 'b', value: '1' }, { key: 'd', value: '2' }],
-      [{ key: 'a', value: '3' }, { key: 'c', value: '4' }],
-      [{ key: 'b', value: '5' }, { key: 'e', value: '6' }],
+      [
+        { key: 'b', value: '1' },
+        { key: 'd', value: '2' },
+      ],
+      [
+        { key: 'a', value: '3' },
+        { key: 'c', value: '4' },
+      ],
+      [
+        { key: 'b', value: '5' },
+        { key: 'e', value: '6' },
+      ],
     ]);
     const keys = result.map((e) => e.key);
     expect(keys).toEqual([...keys].sort());

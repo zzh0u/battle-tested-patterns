@@ -38,10 +38,12 @@ const edges = ref<GEdge[]>([
 
 const sortedOrder = ref<string[]>([]);
 const highlightNode = ref<string>('');
-const message = ref(t(
-  'Click "Topo Sort" to find valid execution order — used by build systems, package managers, and task schedulers',
-  '点击"拓扑排序"查找有效执行顺序 — 构建系统、包管理器和任务调度器都使用此算法'
-));
+const message = ref(
+  t(
+    'Click "Topo Sort" to find valid execution order — used by build systems, package managers, and task schedulers',
+    '点击"拓扑排序"查找有效执行顺序 — 构建系统、包管理器和任务调度器都使用此算法',
+  ),
+);
 const sorting = ref(false);
 let presetRunning = false;
 
@@ -61,7 +63,9 @@ const history = useVizHistory<DGSnapshot>(
       edges.value = snap.edges;
       sortedOrder.value = snap.sortedOrder;
       highlightNode.value = '';
-      sorting.value = false; if (msg !== undefined) message.value = msg; },
+      sorting.value = false;
+      if (msg !== undefined) message.value = msg;
+    },
   },
 );
 
@@ -70,7 +74,7 @@ function commitSnapshot(label: string) {
 }
 
 function getNode(id: string) {
-  return nodes.value.find(n => n.id === id)!;
+  return nodes.value.find((n) => n.id === id)!;
 }
 
 async function topoSort() {
@@ -97,10 +101,13 @@ async function topoSort() {
 
   message.value = t(
     `Kahn's algorithm: start with zero in-degree nodes: ${queue.join(', ')}. These have no dependencies — safe to execute first.`,
-    `Kahn 算法：从入度为零的节点开始：${queue.join(', ')}。这些没有依赖 — 可以安全先执行。`
+    `Kahn 算法：从入度为零的节点开始：${queue.join(', ')}。这些没有依赖 — 可以安全先执行。`,
   );
   await delay(600);
-  if (isAborted()) { sorting.value = false; return; }
+  if (isAborted()) {
+    sorting.value = false;
+    return;
+  }
 
   while (queue.length > 0) {
     const id = queue.shift()!;
@@ -108,10 +115,13 @@ async function topoSort() {
     sortedOrder.value = [...sortedOrder.value, id];
     message.value = t(
       `Processing ${id} — removing its edges, decrementing neighbors' in-degree. This is how Make, Webpack, and Gradle resolve build order.`,
-      `处理 ${id} — 移除其边，递减邻居的入度。Make、Webpack 和 Gradle 就是这样解析构建顺序的。`
+      `处理 ${id} — 移除其边，递减邻居的入度。Make、Webpack 和 Gradle 就是这样解析构建顺序的。`,
     );
     await delay(500);
-    if (isAborted()) { sorting.value = false; return; }
+    if (isAborted()) {
+      sorting.value = false;
+      return;
+    }
 
     for (const next of adj[id]) {
       inDegree[next]--;
@@ -122,13 +132,13 @@ async function topoSort() {
   if (sortedOrder.value.length < nodes.value.length) {
     message.value = t(
       'Cycle detected — not all nodes processed! Circular dependencies are the #1 cause of deadlocks in package managers (npm, pip) and build systems.',
-      '检测到环 — 未处理所有节点！循环依赖是包管理器（npm、pip）和构建系统中死锁的首要原因。'
+      '检测到环 — 未处理所有节点！循环依赖是包管理器（npm、pip）和构建系统中死锁的首要原因。',
     );
     log(message.value, 'error');
   } else {
     message.value = t(
       `Topological order: ${sortedOrder.value.join(' → ')}. O(V+E) time. Any DAG has at least one valid ordering — some have many.`,
-      `拓扑排序：${sortedOrder.value.join(' → ')}。O(V+E) 时间。任何 DAG 至少有一个有效排序 — 有些有多个。`
+      `拓扑排序：${sortedOrder.value.join(' → ')}。O(V+E) 时间。任何 DAG 至少有一个有效排序 — 有些有多个。`,
     );
     log(message.value, 'success');
   }
@@ -138,12 +148,12 @@ async function topoSort() {
 }
 
 function addEdge() {
-  const ids = nodes.value.map(n => n.id);
+  const ids = nodes.value.map((n) => n.id);
   const from = ids[Math.floor(Math.random() * ids.length)];
   let to = ids[Math.floor(Math.random() * ids.length)];
   if (from === to) to = ids[(ids.indexOf(to) + 1) % ids.length];
 
-  if (edges.value.some(e => e.from === from && e.to === to)) {
+  if (edges.value.some((e) => e.from === from && e.to === to)) {
     message.value = t(`Edge ${from}→${to} already exists`, `边 ${from}→${to} 已存在`);
     return;
   }
@@ -152,7 +162,7 @@ function addEdge() {
   sortedOrder.value = [];
   message.value = t(
     `Added edge ${from} → ${to}. This might create a cycle — run topo sort to find out!`,
-    `已添加边 ${from} → ${to}。这可能创建环 — 运行拓扑排序来确认！`
+    `已添加边 ${from} → ${to}。这可能创建环 — 运行拓扑排序来确认！`,
   );
   commitSnapshot(`addEdge ${from}→${to}`);
 }
@@ -163,7 +173,16 @@ function addNode() {
     message.value = t('Maximum 8 nodes', '最多 8 个节点');
     return;
   }
-  const angles = [0, Math.PI / 3, Math.PI / 2, Math.PI, (4 * Math.PI) / 3, (5 * Math.PI) / 3, Math.PI / 6, (5 * Math.PI) / 6];
+  const angles = [
+    0,
+    Math.PI / 3,
+    Math.PI / 2,
+    Math.PI,
+    (4 * Math.PI) / 3,
+    (5 * Math.PI) / 3,
+    Math.PI / 6,
+    (5 * Math.PI) / 6,
+  ];
   const a = angles[nodes.value.length % angles.length];
   nodes.value.push({
     id: nextChar,
@@ -171,7 +190,10 @@ function addNode() {
     y: 80 + Math.sin(a) * 60 + Math.random() * 20,
   });
   sortedOrder.value = [];
-  message.value = t(`Added node ${nextChar} — add edges to create dependencies`, `已添加节点 ${nextChar} — 添加边来创建依赖`);
+  message.value = t(
+    `Added node ${nextChar} — add edges to create dependencies`,
+    `已添加节点 ${nextChar} — 添加边来创建依赖`,
+  );
   commitSnapshot(`addNode ${nextChar}`);
 }
 
@@ -204,7 +226,7 @@ async function presetDiamondDep() {
   presetRunning = true;
   message.value = t(
     'Diamond dependency: A→B, A→C, B→D, C→D. The classic pattern in build systems — D depends on both B and C. Running topo sort shows D must come last.',
-    '菱形依赖：A→B，A→C，B→D，C→D。构建系统中的经典模式 — D 依赖 B 和 C。拓扑排序显示 D 必须在最后。'
+    '菱形依赖：A→B，A→C，B→D，C→D。构建系统中的经典模式 — D 依赖 B 和 C。拓扑排序显示 D 必须在最后。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -213,7 +235,7 @@ async function presetDiamondDep() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'B and C can run in parallel — they have no mutual dependency. This is how Bazel and Turborepo parallelize builds: find independent tasks in the DAG.',
-    'B 和 C 可以并行运行 — 它们没有相互依赖。这就是 Bazel 和 Turborepo 并行构建的方式：在 DAG 中找到独立任务。'
+    'B 和 C 可以并行运行 — 它们没有相互依赖。这就是 Bazel 和 Turborepo 并行构建的方式：在 DAG 中找到独立任务。',
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -225,7 +247,7 @@ async function presetCycleDetection() {
   presetRunning = true;
   message.value = t(
     'Adding a back-edge D→A to create a cycle. Cycles make topological sort impossible — this is how npm detects circular dependencies.',
-    '添加反向边 D→A 创建环。环使拓扑排序不可能 — npm 就是这样检测循环依赖的。'
+    '添加反向边 D→A 创建环。环使拓扑排序不可能 — npm 就是这样检测循环依赖的。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -234,15 +256,18 @@ async function presetCycleDetection() {
   commitSnapshot('preset: add cycle edge D→A');
   message.value = t(
     'Cycle created: A→B→D→A. Now running topo sort — it will detect the cycle because not all nodes reach in-degree 0.',
-    '环已创建：A→B→D→A。现在运行拓扑排序 — 它将检测到环，因为不是所有节点都能达到入度 0。'
+    '环已创建：A→B→D→A。现在运行拓扑排序 — 它将检测到环，因为不是所有节点都能达到入度 0。',
   );
   await delay(1000);
   if (!presetRunning || isAborted()) return;
   await topoSort();
-  log(t(
-    'Kahn\'s algorithm detects cycles by checking if all nodes reach in-degree zero.',
-    'Kahn 算法通过检查所有节点是否达到入度零来检测环。'
-  ), 'highlight');
+  log(
+    t(
+      "Kahn's algorithm detects cycles by checking if all nodes reach in-degree zero.",
+      'Kahn 算法通过检查所有节点是否达到入度零来检测环。',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -267,21 +292,26 @@ async function presetLinearChain() {
   commitSnapshot('preset: linear chain');
   message.value = t(
     'Linear chain: A→B→C→D→E. Only one valid order. No parallelism possible — this is the worst case for build performance. Critical path = total time.',
-    '线性链：A→B→C→D→E。只有一个有效排序。无法并行 — 这是构建性能的最差情况。关键路径 = 总时间。'
+    '线性链：A→B→C→D→E。只有一个有效排序。无法并行 — 这是构建性能的最差情况。关键路径 = 总时间。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
   await topoSort();
-  log(t(
-    'Linear dependency chains are the worst case — zero parallelism, critical path equals total time.',
-    '线性依赖链是最坏情况 — 零并行性，关键路径等于总时间。'
-  ), 'highlight');
+  log(
+    t(
+      'Linear dependency chains are the worst case — zero parallelism, critical path equals total time.',
+      '线性依赖链是最坏情况 — 零并行性，关键路径等于总时间。',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 
 const sortedIdx = computed(() => {
   const map: Record<string, number> = {};
-  sortedOrder.value.forEach((id, i) => { map[id] = i; });
+  sortedOrder.value.forEach((id, i) => {
+    map[id] = i;
+  });
   return map;
 });
 </script>
@@ -290,7 +320,12 @@ const sortedIdx = computed(() => {
   <div class="viz-container">
     <div class="viz-title">{{ t('Interactive Dependency Graph', '交互式依赖图') }}</div>
 
-    <svg viewBox="0 0 380 160" class="depgraph-svg" role="img" :aria-label="t('Dependency graph visualization', '依赖图可视化')">
+    <svg
+      viewBox="0 0 380 160"
+      class="depgraph-svg"
+      role="img"
+      :aria-label="t('Dependency graph visualization', '依赖图可视化')"
+    >
       <defs>
         <marker id="dg-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
           <polygon points="0 0, 8 3, 0 6" fill="var(--viz-border)" />
@@ -314,9 +349,13 @@ const sortedIdx = computed(() => {
       <g v-for="n in nodes" :key="n.id" :transform="`translate(${n.x}, ${n.y})`">
         <circle
           r="18"
-          :fill="highlightNode === n.id ? 'var(--viz-warning)' :
-                 sortedIdx[n.id] !== undefined ? 'var(--viz-success)' :
-                 'var(--viz-primary)'"
+          :fill="
+            highlightNode === n.id
+              ? 'var(--viz-warning)'
+              : sortedIdx[n.id] !== undefined
+                ? 'var(--viz-success)'
+                : 'var(--viz-primary)'
+          "
           stroke="#fff"
           stroke-width="2"
         />
@@ -327,7 +366,9 @@ const sortedIdx = computed(() => {
           font-size="13"
           font-weight="700"
           font-family="var(--vp-font-family-mono)"
-        >{{ n.id }}</text>
+        >
+          {{ n.id }}
+        </text>
         <text
           v-if="sortedIdx[n.id] !== undefined"
           y="26"
@@ -336,7 +377,9 @@ const sortedIdx = computed(() => {
           font-size="9"
           font-weight="600"
           font-family="var(--vp-font-family-mono)"
-        >#{{ sortedIdx[n.id] + 1 }}</text>
+        >
+          #{{ sortedIdx[n.id] + 1 }}
+        </text>
       </g>
     </svg>
 
@@ -349,9 +392,15 @@ const sortedIdx = computed(() => {
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="topoSort" :disabled="sorting">{{ t('Topo Sort', '拓扑排序') }}</button>
-      <button class="viz-btn" @click="addNode" :disabled="sorting">{{ t('+ Node', '+ 节点') }}</button>
-      <button class="viz-btn" @click="addEdge" :disabled="sorting">{{ t('+ Edge', '+ 边') }}</button>
+      <button class="viz-btn viz-btn--primary" @click="topoSort" :disabled="sorting">
+        {{ t('Topo Sort', '拓扑排序') }}
+      </button>
+      <button class="viz-btn" @click="addNode" :disabled="sorting">
+        {{ t('+ Node', '+ 节点') }}
+      </button>
+      <button class="viz-btn" @click="addEdge" :disabled="sorting">
+        {{ t('+ Edge', '+ 边') }}
+      </button>
       <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
       <div class="viz-speed">
         <input type="range" min="0.5" max="3" step="0.5" v-model.number="speed" />
@@ -362,7 +411,9 @@ const sortedIdx = computed(() => {
     <div class="viz-presets">
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
       <button class="viz-btn" @click="presetDiamondDep">{{ t('Diamond Dep', '菱形依赖') }}</button>
-      <button class="viz-btn" @click="presetCycleDetection">{{ t('Cycle Detection', '环检测') }}</button>
+      <button class="viz-btn" @click="presetCycleDetection">
+        {{ t('Cycle Detection', '环检测') }}
+      </button>
       <button class="viz-btn" @click="presetLinearChain">{{ t('Linear Chain', '线性链') }}</button>
     </div>
 

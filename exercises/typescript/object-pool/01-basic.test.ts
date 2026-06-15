@@ -41,7 +41,13 @@ class ObjectPool<T> {
 describe('Object Pool - Basic: Reusable Pool', () => {
   it('should create object when pool is empty', () => {
     let created = 0;
-    const pool = new ObjectPool(() => { created++; return { id: created }; }, () => {});
+    const pool = new ObjectPool(
+      () => {
+        created++;
+        return { id: created };
+      },
+      () => {},
+    );
     const obj = pool.get();
     expect(obj.id).toBe(1);
     expect(created).toBe(1);
@@ -49,7 +55,15 @@ describe('Object Pool - Basic: Reusable Pool', () => {
 
   it('should reuse released objects', () => {
     let created = 0;
-    const pool = new ObjectPool(() => { created++; return { id: created, data: '' }; }, (o) => { o.data = ''; });
+    const pool = new ObjectPool(
+      () => {
+        created++;
+        return { id: created, data: '' };
+      },
+      (o) => {
+        o.data = '';
+      },
+    );
     const obj1 = pool.get();
     obj1.data = 'used';
     pool.release(obj1);
@@ -60,14 +74,22 @@ describe('Object Pool - Basic: Reusable Pool', () => {
   });
 
   it('should pre-allocate initial objects', () => {
-    const pool = new ObjectPool(() => ({ value: 0 }), (o) => { o.value = 0; }, 5);
+    const pool = new ObjectPool(
+      () => ({ value: 0 }),
+      (o) => {
+        o.value = 0;
+      },
+      5,
+    );
     expect(pool.size).toBe(5);
   });
 
   it('should reset objects on release', () => {
     const pool = new ObjectPool(
       () => ({ buffer: new Array(100).fill(0) }),
-      (o) => { o.buffer.fill(0); },
+      (o) => {
+        o.buffer.fill(0);
+      },
     );
     const obj = pool.get();
     obj.buffer[0] = 42;
@@ -77,7 +99,11 @@ describe('Object Pool - Basic: Reusable Pool', () => {
   });
 
   it('should grow beyond initial size', () => {
-    const pool = new ObjectPool(() => ({}), () => {}, 2);
+    const pool = new ObjectPool(
+      () => ({}),
+      () => {},
+      2,
+    );
     const a = pool.get();
     const b = pool.get();
     const c = pool.get();

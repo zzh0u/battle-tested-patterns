@@ -4,7 +4,11 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <div class="viz-container viz-skeleton" role="status" :aria-label="t('Loading visualization', '加载可视化中')">
+  <div
+    class="viz-container viz-skeleton"
+    role="status"
+    :aria-label="t('Loading visualization', '加载可视化中')"
+  >
     <div class="viz-skel-title"></div>
     <div class="viz-skel-content"></div>
     <div class="viz-skel-controls">
@@ -18,8 +22,12 @@ const { t } = useI18n();
 
 <style scoped>
 @keyframes viz-shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .viz-skeleton {

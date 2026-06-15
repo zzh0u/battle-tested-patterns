@@ -54,19 +54,23 @@ const history = useVizHistory<RCSnapshot>(
       presetRunning = false;
       objects.value = snap.objects;
       references.value = snap.references;
-      lastFreed.value = -1; if (msg !== undefined) message.value = msg; },
+      lastFreed.value = -1;
+      if (msg !== undefined) message.value = msg;
+    },
   },
 );
 
-const message = ref(t(
-  'Drop references to decrement ref counts. Objects are freed at rc=0 — this is how CPython, Objective-C ARC, and Rust\'s Rc<T>/Arc<T> manage memory',
-  '删除引用以减少引用计数。rc=0 时对象将被释放 — CPython、Objective-C ARC 和 Rust 的 Rc<T>/Arc<T> 就是这样管理内存的'
-));
+const message = ref(
+  t(
+    "Drop references to decrement ref counts. Objects are freed at rc=0 — this is how CPython, Objective-C ARC, and Rust's Rc<T>/Arc<T> manage memory",
+    '删除引用以减少引用计数。rc=0 时对象将被释放 — CPython、Objective-C ARC 和 Rust 的 Rc<T>/Arc<T> 就是这样管理内存的',
+  ),
+);
 const lastFreed = ref(-1);
 
 function dropRef(refIdx: number) {
   const r = references.value[refIdx];
-  const obj = objects.value.find(o => o.id === r.toId);
+  const obj = objects.value.find((o) => o.id === r.toId);
   if (!obj || obj.freed) return;
 
   references.value = references.value.filter((_, i) => i !== refIdx);
@@ -75,51 +79,90 @@ function dropRef(refIdx: number) {
   if (obj.refCount <= 0) {
     obj.freed = true;
     lastFreed.value = obj.id;
-    message.value = t(`Dropped ${r.from} → ${obj.name} — rc=0, FREED!`, `已删除 ${r.from} → ${obj.name} — rc=0，已释放！`);
+    message.value = t(
+      `Dropped ${r.from} → ${obj.name} — rc=0, FREED!`,
+      `已删除 ${r.from} → ${obj.name} — rc=0，已释放！`,
+    );
     log(t(`${obj.name} freed (rc=0)`, `${obj.name} 已释放 (rc=0)`), 'success');
-    safeTimeout(() => { lastFreed.value = -1; }, 600);
+    safeTimeout(() => {
+      lastFreed.value = -1;
+    }, 600);
   } else {
-    message.value = t(`Dropped ${r.from} → ${obj.name} — rc=${obj.refCount}`, `已删除 ${r.from} → ${obj.name} — rc=${obj.refCount}`);
-    log(t(`drop ${r.from} → ${obj.name}, rc=${obj.refCount}`, `删除 ${r.from} → ${obj.name}, rc=${obj.refCount}`), 'info');
+    message.value = t(
+      `Dropped ${r.from} → ${obj.name} — rc=${obj.refCount}`,
+      `已删除 ${r.from} → ${obj.name} — rc=${obj.refCount}`,
+    );
+    log(
+      t(
+        `drop ${r.from} → ${obj.name}, rc=${obj.refCount}`,
+        `删除 ${r.from} → ${obj.name}, rc=${obj.refCount}`,
+      ),
+      'info',
+    );
   }
   history.commit(
-    { objects: JSON.parse(JSON.stringify(objects.value)), references: JSON.parse(JSON.stringify(references.value)) },
+    {
+      objects: JSON.parse(JSON.stringify(objects.value)),
+      references: JSON.parse(JSON.stringify(references.value)),
+    },
     `drop ${r.from}`,
   );
 }
 
 function addRef(targetId?: number) {
-  const liveObjs = objects.value.filter(o => !o.freed);
+  const liveObjs = objects.value.filter((o) => !o.freed);
   if (liveObjs.length === 0) {
     message.value = t('No live objects to reference', '没有可引用的存活对象');
     return;
   }
   const target = targetId
-    ? liveObjs.find(o => o.id === targetId) || liveObjs[0]
+    ? liveObjs.find((o) => o.id === targetId) || liveObjs[0]
     : liveObjs[Math.floor(Math.random() * liveObjs.length)];
   const varName = `var ${String.fromCharCode(97 + references.value.length)}`;
-  const colors = ['var(--viz-primary)', 'var(--viz-success)', 'var(--viz-warning)', 'var(--viz-danger)'];
+  const colors = [
+    'var(--viz-primary)',
+    'var(--viz-success)',
+    'var(--viz-warning)',
+    'var(--viz-danger)',
+  ];
   const color = colors[references.value.length % colors.length];
 
   references.value = [...references.value, { from: varName, toId: target.id, color }];
   target.refCount++;
-  message.value = t(`Added ${varName} → ${target.name} — rc=${target.refCount}`, `已添加 ${varName} → ${target.name} — rc=${target.refCount}`);
+  message.value = t(
+    `Added ${varName} → ${target.name} — rc=${target.refCount}`,
+    `已添加 ${varName} → ${target.name} — rc=${target.refCount}`,
+  );
   history.commit(
-    { objects: JSON.parse(JSON.stringify(objects.value)), references: JSON.parse(JSON.stringify(references.value)) },
+    {
+      objects: JSON.parse(JSON.stringify(objects.value)),
+      references: JSON.parse(JSON.stringify(references.value)),
+    },
     `add ${varName}`,
   );
 }
 
 function addObject() {
-  if (objects.value.filter(o => !o.freed).length >= 5) {
+  if (objects.value.filter((o) => !o.freed).length >= 5) {
     message.value = t('Maximum 5 live objects', '最多 5 个存活对象');
     return;
   }
-  const obj: RCObject = { id: nextObjId++, name: `Obj ${String.fromCharCode(64 + nextObjId - 1)}`, refCount: 0, freed: false };
+  const obj: RCObject = {
+    id: nextObjId++,
+    name: `Obj ${String.fromCharCode(64 + nextObjId - 1)}`,
+    refCount: 0,
+    freed: false,
+  };
   objects.value = [...objects.value, obj];
-  message.value = t(`Created ${obj.name} with rc=0 — add a reference or it stays unreachable`, `已创建 ${obj.name}，rc=0 — 添加引用否则将不可达`);
+  message.value = t(
+    `Created ${obj.name} with rc=0 — add a reference or it stays unreachable`,
+    `已创建 ${obj.name}，rc=0 — 添加引用否则将不可达`,
+  );
   history.commit(
-    { objects: JSON.parse(JSON.stringify(objects.value)), references: JSON.parse(JSON.stringify(references.value)) },
+    {
+      objects: JSON.parse(JSON.stringify(objects.value)),
+      references: JSON.parse(JSON.stringify(references.value)),
+    },
     `add ${obj.name}`,
   );
 }
@@ -140,19 +183,22 @@ function reset() {
   lastFreed.value = -1;
   clearLog();
   history.reset();
-  message.value = t('Reset — drop references to see ref counting in action', '已重置 — 删除引用以查看引用计数的工作过程');
+  message.value = t(
+    'Reset — drop references to see ref counting in action',
+    '已重置 — 删除引用以查看引用计数的工作过程',
+  );
 }
 
-const liveCount = computed(() => objects.value.filter(o => !o.freed).length);
-const freedCount = computed(() => objects.value.filter(o => o.freed).length);
+const liveCount = computed(() => objects.value.filter((o) => !o.freed).length);
+const freedCount = computed(() => objects.value.filter((o) => o.freed).length);
 
 async function presetDropAll() {
   if (presetRunning) return;
   reset();
   presetRunning = true;
   message.value = t(
-    'Drop all refs: remove every reference one by one. Each drop decrements rc — when rc hits 0, the object is immediately freed. This is CPython\'s primary GC mechanism: no pause, deterministic deallocation.',
-    '逐一删除：逐个移除所有引用。每次删除减少 rc — rc 到 0 时对象立即释放。这是 CPython 的主要 GC 机制：无暂停，确定性释放。'
+    "Drop all refs: remove every reference one by one. Each drop decrements rc — when rc hits 0, the object is immediately freed. This is CPython's primary GC mechanism: no pause, deterministic deallocation.",
+    '逐一删除：逐个移除所有引用。每次删除减少 rc — rc 到 0 时对象立即释放。这是 CPython 的主要 GC 机制：无暂停，确定性释放。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -165,7 +211,7 @@ async function presetDropAll() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'All objects freed deterministically — no GC pause needed. CPython frees objects the instant rc=0. Compare with tracing GC (Java, Go): objects survive until the next mark-sweep cycle, causing latency spikes. The tradeoff: reference counting cannot detect cycles (A→B→A).',
-    '所有对象确定性释放 — 无需 GC 暂停。CPython 在 rc=0 时立即释放。对比追踪式 GC (Java, Go)：对象存活到下一次标记-清除周期，导致延迟抖动。代价：引用计数无法检测循环引用 (A→B→A)。'
+    '所有对象确定性释放 — 无需 GC 暂停。CPython 在 rc=0 时立即释放。对比追踪式 GC (Java, Go)：对象存活到下一次标记-清除周期，导致延迟抖动。代价：引用计数无法检测循环引用 (A→B→A)。',
   );
   log(t('Deterministic deallocation — no GC pause', '确定性释放 — 无 GC 暂停'), 'highlight');
   presetRunning = false;
@@ -176,8 +222,8 @@ async function presetSharedOwnership() {
   reset();
   presetRunning = true;
   message.value = t(
-    'Shared ownership: multiple variables point to the same object, incrementing its rc. This is Rust\'s Rc<T> (single-thread) and Arc<T> (atomic, multi-thread) — the object lives until the last owner drops.',
-    '共享所有权：多个变量指向同一对象，递增其 rc。这就是 Rust 的 Rc<T>（单线程）和 Arc<T>（原子，多线程）— 对象存活到最后一个所有者释放。'
+    "Shared ownership: multiple variables point to the same object, incrementing its rc. This is Rust's Rc<T> (single-thread) and Arc<T> (atomic, multi-thread) — the object lives until the last owner drops.",
+    '共享所有权：多个变量指向同一对象，递增其 rc。这就是 Rust 的 Rc<T>（单线程）和 Arc<T>（原子，多线程）— 对象存活到最后一个所有者释放。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -192,24 +238,27 @@ async function presetSharedOwnership() {
   if (!presetRunning || isAborted()) return;
 
   message.value = t(
-    'Obj A now has rc=4. Dropping one reference won\'t free it — 3 owners remain. Watch as we drop 3 refs, leaving it alive with rc=1.',
-    'Obj A 现在 rc=4。删除一个引用不会释放它 — 还有 3 个所有者。观察我们删除 3 个引用，它仍以 rc=1 存活。'
+    "Obj A now has rc=4. Dropping one reference won't free it — 3 owners remain. Watch as we drop 3 refs, leaving it alive with rc=1.",
+    'Obj A 现在 rc=4。删除一个引用不会释放它 — 还有 3 个所有者。观察我们删除 3 个引用，它仍以 rc=1 存活。',
   );
   await delay(600);
   if (!presetRunning || isAborted()) return;
 
   for (let i = 0; i < 3; i++) {
     if (!presetRunning || isAborted()) return;
-    const idx = references.value.findIndex(r => r.toId === 1);
+    const idx = references.value.findIndex((r) => r.toId === 1);
     if (idx >= 0) dropRef(idx);
     await delay(500);
   }
   if (!presetRunning || isAborted()) return;
   message.value = t(
-    'Obj A survives at rc=1 — the last owner keeps it alive. In Rust, Rc::strong_count() lets you inspect this. In Objective-C ARC, the compiler inserts retain/release calls automatically. Swift\'s ARC works the same way — every strong property is an rc increment.',
-    'Obj A 以 rc=1 存活 — 最后一个所有者保持它存活。在 Rust 中，Rc::strong_count() 可以检查这个值。在 Objective-C ARC 中，编译器自动插入 retain/release 调用。Swift 的 ARC 也一样 — 每个 strong 属性都是一次 rc 递增。'
+    "Obj A survives at rc=1 — the last owner keeps it alive. In Rust, Rc::strong_count() lets you inspect this. In Objective-C ARC, the compiler inserts retain/release calls automatically. Swift's ARC works the same way — every strong property is an rc increment.",
+    'Obj A 以 rc=1 存活 — 最后一个所有者保持它存活。在 Rust 中，Rc::strong_count() 可以检查这个值。在 Objective-C ARC 中，编译器自动插入 retain/release 调用。Swift 的 ARC 也一样 — 每个 strong 属性都是一次 rc 递增。',
   );
-  log(t('Shared ownership: last owner keeps object alive', '共享所有权：最后一个所有者保持对象存活'), 'highlight');
+  log(
+    t('Shared ownership: last owner keeps object alive', '共享所有权：最后一个所有者保持对象存活'),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -219,7 +268,7 @@ async function presetDanglingZero() {
   presetRunning = true;
   message.value = t(
     'Zero-rc danger: create an object with no references. It has rc=0 but is never freed — this is a memory leak. Reference counting only frees when rc *decrements* to 0, not when it starts at 0.',
-    '零引用危险：创建没有引用的对象。它 rc=0 但永远不会被释放 — 这是内存泄漏。引用计数只在 rc *递减*到 0 时释放，而不是一开始就是 0。'
+    '零引用危险：创建没有引用的对象。它 rc=0 但永远不会被释放 — 这是内存泄漏。引用计数只在 rc *递减*到 0 时释放，而不是一开始就是 0。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -231,7 +280,7 @@ async function presetDanglingZero() {
 
   message.value = t(
     'New object sits at rc=0 — unreachable but not freed. Now drop all refs to the original objects. They get freed, but the orphan stays.',
-    '新对象 rc=0 — 不可达但未释放。现在删除原始对象的所有引用。它们被释放了，但孤儿留下了。'
+    '新对象 rc=0 — 不可达但未释放。现在删除原始对象的所有引用。它们被释放了，但孤儿留下了。',
   );
   await delay(600);
   if (!presetRunning || isAborted()) return;
@@ -244,16 +293,21 @@ async function presetDanglingZero() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'Obj A and B freed, but the orphan object leaks! In CPython, the cyclic GC catches these. In C++ shared_ptr, you must ensure at least one shared_ptr is created — raw new without shared_ptr = leak. Weak references (weak_ptr, weakref) break cycles without incrementing rc.',
-    'Obj A 和 B 已释放，但孤儿对象泄漏了！在 CPython 中，循环 GC 会捕获这些。在 C++ shared_ptr 中，必须确保至少创建一个 shared_ptr — 不用 shared_ptr 的 raw new = 泄漏。弱引用 (weak_ptr, weakref) 在不递增 rc 的情况下打破循环。'
+    'Obj A 和 B 已释放，但孤儿对象泄漏了！在 CPython 中，循环 GC 会捕获这些。在 C++ shared_ptr 中，必须确保至少创建一个 shared_ptr — 不用 shared_ptr 的 raw new = 泄漏。弱引用 (weak_ptr, weakref) 在不递增 rc 的情况下打破循环。',
   );
-  log(t('Orphan object leaked — rc=0 but never freed', '孤儿对象泄漏 — rc=0 但未释放'), 'highlight');
+  log(
+    t('Orphan object leaked — rc=0 but never freed', '孤儿对象泄漏 — rc=0 但未释放'),
+    'highlight',
+  );
   presetRunning = false;
 }
 </script>
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">{{ t('Interactive Reference Counting', '交互式 Reference Counting') }}</div>
+    <div class="viz-title">
+      {{ t('Interactive Reference Counting', '交互式 Reference Counting') }}
+    </div>
 
     <div class="rc-layout">
       <!-- References -->
@@ -272,9 +326,11 @@ async function presetDanglingZero() {
         >
           <span class="rc-ref-name" :style="{ color: r.color }">{{ r.from }}</span>
           <span class="rc-ref-arrow">→</span>
-          <span class="rc-ref-target">{{ objects.find(o => o.id === r.toId)?.name }}</span>
+          <span class="rc-ref-target">{{ objects.find((o) => o.id === r.toId)?.name }}</span>
         </div>
-        <div v-if="references.length === 0" class="rc-empty">{{ t('no references', '无引用') }}</div>
+        <div v-if="references.length === 0" class="rc-empty">
+          {{ t('no references', '无引用') }}
+        </div>
         <div class="rc-hint">{{ t('Click to drop', '点击删除') }}</div>
       </div>
 
@@ -300,13 +356,22 @@ async function presetDanglingZero() {
     </div>
 
     <div class="rc-stats">
-      <span class="rc-stat">{{ t('Live:', '存活：') }} <strong>{{ liveCount }}</strong></span>
-      <span class="rc-stat">{{ t('Freed:', '已释放：') }} <strong style="color: var(--viz-danger)">{{ freedCount }}</strong></span>
-      <span class="rc-stat">{{ t('Refs:', '引用：') }} <strong>{{ references.length }}</strong></span>
+      <span class="rc-stat"
+        >{{ t('Live:', '存活：') }} <strong>{{ liveCount }}</strong></span
+      >
+      <span class="rc-stat"
+        >{{ t('Freed:', '已释放：') }}
+        <strong style="color: var(--viz-danger)">{{ freedCount }}</strong></span
+      >
+      <span class="rc-stat"
+        >{{ t('Refs:', '引用：') }} <strong>{{ references.length }}</strong></span
+      >
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="addRef()">{{ t('+ Reference', '+ 引用') }}</button>
+      <button class="viz-btn viz-btn--primary" @click="addRef()">
+        {{ t('+ Reference', '+ 引用') }}
+      </button>
       <button class="viz-btn" @click="addObject">{{ t('+ Object', '+ 对象') }}</button>
       <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
       <div class="viz-speed">
@@ -318,8 +383,12 @@ async function presetDanglingZero() {
     <div class="viz-presets">
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
       <button class="viz-btn" @click="presetDropAll">{{ t('Drop All', '全部删除') }}</button>
-      <button class="viz-btn" @click="presetSharedOwnership">{{ t('Shared Ownership', '共享所有权') }}</button>
-      <button class="viz-btn" @click="presetDanglingZero">{{ t('Orphan Leak', '孤儿泄漏') }}</button>
+      <button class="viz-btn" @click="presetSharedOwnership">
+        {{ t('Shared Ownership', '共享所有权') }}
+      </button>
+      <button class="viz-btn" @click="presetDanglingZero">
+        {{ t('Orphan Leak', '孤儿泄漏') }}
+      </button>
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
@@ -336,7 +405,9 @@ async function presetDanglingZero() {
 }
 
 @media (max-width: 640px) {
-  .rc-layout { flex-direction: column; }
+  .rc-layout {
+    flex-direction: column;
+  }
 }
 
 .rc-section-title {

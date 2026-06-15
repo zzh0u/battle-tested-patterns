@@ -23,10 +23,12 @@ const blocks = ref<Block[]>(initBlocks());
 const freeListOrder = ref<number[]>(Array.from({ length: BLOCK_COUNT }, (_, i) => i));
 let allocCounter = 0;
 const customLabel = ref('');
-const message = ref(t(
-  'All blocks free — type a label and click "Allocate". Free lists power malloc, game engines, and kernel slab allocators.',
-  '所有块空闲 — 输入标签后点击"分配"。Free List 驱动 malloc、游戏引擎和内核 slab 分配器。'
-));
+const message = ref(
+  t(
+    'All blocks free — type a label and click "Allocate". Free lists power malloc, game engines, and kernel slab allocators.',
+    '所有块空闲 — 输入标签后点击"分配"。Free List 驱动 malloc、游戏引擎和内核 slab 分配器。',
+  ),
+);
 let presetRunning = false;
 
 interface Snapshot {
@@ -41,7 +43,9 @@ const vizHistory = useVizHistory<Snapshot>(
     onRestore(s, msg) {
       presetRunning = false;
       blocks.value = s.blocks;
-      freeListOrder.value = s.freeListOrder; if (msg !== undefined) message.value = msg; },
+      freeListOrder.value = s.freeListOrder;
+      if (msg !== undefined) message.value = msg;
+    },
   },
 );
 
@@ -53,17 +57,15 @@ function initBlocks(): Block[] {
   }));
 }
 
-const freeHead = computed(() =>
-  freeListOrder.value.length > 0 ? freeListOrder.value[0] : null
-);
-const allocatedCount = computed(() => blocks.value.filter(b => b.allocated).length);
+const freeHead = computed(() => (freeListOrder.value.length > 0 ? freeListOrder.value[0] : null));
+const allocatedCount = computed(() => blocks.value.filter((b) => b.allocated).length);
 const freeCount = computed(() => freeListOrder.value.length);
 
 function allocate() {
   if (freeListOrder.value.length === 0) {
     message.value = t(
       'Out of memory! No free blocks available. This is what happens when malloc returns NULL — the kernel OOM killer may intervene.',
-      '内存耗尽！没有可用的空闲块。这就是 malloc 返回 NULL 时发生的事 — 内核 OOM killer 可能介入。'
+      '内存耗尽！没有可用的空闲块。这就是 malloc 返回 NULL 时发生的事 — 内核 OOM killer 可能介入。',
     );
     return;
   }
@@ -80,10 +82,13 @@ function allocate() {
   const newHead = freeHead.value;
   message.value = t(
     `Allocated block ${blockId} as "${label}" — O(1) pop from head. New head: ${newHead !== null ? newHead : 'null'}. LIFO order means recently freed blocks are reused first (cache-friendly).`,
-    `已分配块 ${blockId} 为 "${label}" — O(1) 从头部弹出。新 head: ${newHead !== null ? newHead : 'null'}。LIFO 顺序意味着最近释放的块优先复用（缓存友好）。`
+    `已分配块 ${blockId} 为 "${label}" — O(1) 从头部弹出。新 head: ${newHead !== null ? newHead : 'null'}。LIFO 顺序意味着最近释放的块优先复用（缓存友好）。`,
   );
   log(message.value, 'info');
-  vizHistory.commit({ blocks: blocks.value, freeListOrder: freeListOrder.value }, `Allocate block ${blockId}`);
+  vizHistory.commit(
+    { blocks: blocks.value, freeListOrder: freeListOrder.value },
+    `Allocate block ${blockId}`,
+  );
 }
 
 function freeBlock(id: number) {
@@ -98,10 +103,13 @@ function freeBlock(id: number) {
 
   message.value = t(
     `Freed block ${id} ("${oldLabel}") — O(1) prepend to head. LIFO: block ${id} will be allocated next. This is how jemalloc and tcmalloc work.`,
-    `已释放块 ${id}（"${oldLabel}"）— O(1) 插入头部。LIFO：块 ${id} 将被下次分配。jemalloc 和 tcmalloc 就是这样工作的。`
+    `已释放块 ${id}（"${oldLabel}"）— O(1) 插入头部。LIFO：块 ${id} 将被下次分配。jemalloc 和 tcmalloc 就是这样工作的。`,
   );
   log(message.value, 'success');
-  vizHistory.commit({ blocks: blocks.value, freeListOrder: freeListOrder.value }, `Free block ${id}`);
+  vizHistory.commit(
+    { blocks: blocks.value, freeListOrder: freeListOrder.value },
+    `Free block ${id}`,
+  );
 }
 
 function freeAll() {
@@ -114,15 +122,21 @@ function freeAll() {
     }
   }
   if (freedIds.length === 0) {
-    message.value = t('Nothing to free — all blocks are already free', '无需释放 — 所有块已经是空闲的');
+    message.value = t(
+      'Nothing to free — all blocks are already free',
+      '无需释放 — 所有块已经是空闲的',
+    );
     return;
   }
   freeListOrder.value = [...freedIds.reverse(), ...freeListOrder.value];
   message.value = t(
     `Freed ${freedIds.length} block(s) — all returned to free list`,
-    `已释放 ${freedIds.length} 个块 — 全部归还到 Free List`
+    `已释放 ${freedIds.length} 个块 — 全部归还到 Free List`,
   );
-  vizHistory.commit({ blocks: blocks.value, freeListOrder: freeListOrder.value }, `Free all (${freedIds.length})`);
+  vizHistory.commit(
+    { blocks: blocks.value, freeListOrder: freeListOrder.value },
+    `Free all (${freedIds.length})`,
+  );
 }
 
 function reset() {
@@ -134,7 +148,7 @@ function reset() {
   presetRunning = false;
   message.value = t(
     'Reset complete — free list restored to initial order [0 → 1 → ... → 9 → null]',
-    '重置完成 — Free List 恢复初始顺序 [0 → 1 → ... → 9 → null]'
+    '重置完成 — Free List 恢复初始顺序 [0 → 1 → ... → 9 → null]',
   );
   clearLog();
   vizHistory.reset();
@@ -150,15 +164,18 @@ async function presetAllocFree() {
   presetRunning = true;
   message.value = t(
     'Alloc-free cycle: allocate 3 blocks, free the middle one, allocate again. The freed block gets reused — LIFO ensures temporal locality. This is the core loop of any memory allocator.',
-    '分配-释放循环：分配 3 个块，释放中间的，再分配。被释放的块被复用 — LIFO 确保时间局部性。这是任何内存分配器的核心循环。'
+    '分配-释放循环：分配 3 个块，释放中间的，再分配。被释放的块被复用 — LIFO 确保时间局部性。这是任何内存分配器的核心循环。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
-  allocate(); await delay(500);
+  allocate();
+  await delay(500);
   if (!presetRunning || isAborted()) return;
-  allocate(); await delay(500);
+  allocate();
+  await delay(500);
   if (!presetRunning || isAborted()) return;
-  allocate(); await delay(600);
+  allocate();
+  await delay(600);
   if (!presetRunning || isAborted()) return;
   freeBlock(1);
   await delay(600);
@@ -168,7 +185,7 @@ async function presetAllocFree() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'Block 1 was freed and immediately reused — LIFO order. Hot cache lines stay warm. Linux kernel slab allocator uses this exact pattern for struct allocation.',
-    '块 1 被释放后立即复用 — LIFO 顺序。热缓存行保持温度。Linux 内核 slab 分配器用完全相同的模式分配 struct。'
+    '块 1 被释放后立即复用 — LIFO 顺序。热缓存行保持温度。Linux 内核 slab 分配器用完全相同的模式分配 struct。',
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -180,7 +197,7 @@ async function presetExhaustion() {
   presetRunning = true;
   message.value = t(
     'Pool exhaustion: allocate all 10 blocks, then try one more. Fixed-size pools prevent heap fragmentation but require capacity planning.',
-    '池耗尽：分配全部 10 个块，然后再尝试一个。固定大小的池防止堆碎片化，但需要容量规划。'
+    '池耗尽：分配全部 10 个块，然后再尝试一个。固定大小的池防止堆碎片化，但需要容量规划。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -193,10 +210,13 @@ async function presetExhaustion() {
   await delay(400);
   if (!presetRunning || isAborted()) return;
   allocate();
-  log(t(
-    'Fixed-size pools trade flexibility for predictability — capacity must be planned upfront to avoid exhaustion.',
-    '固定大小池以灵活性换取可预测性 — 必须预先规划容量以避免耗尽。'
-  ), 'highlight');
+  log(
+    t(
+      'Fixed-size pools trade flexibility for predictability — capacity must be planned upfront to avoid exhaustion.',
+      '固定大小池以灵活性换取可预测性 — 必须预先规划容量以避免耗尽。',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -206,7 +226,7 @@ async function presetFragmentation() {
   presetRunning = true;
   message.value = t(
     'Fragmentation demo: allocate 5, free odds (1,3), allocate 2. Free list reuses gaps — no external fragmentation. This is why game engines prefer pool allocators over general-purpose malloc.',
-    '碎片化演示：分配 5 个，释放奇数位（1,3），分配 2 个。Free list 复用间隙 — 无外部碎片化。这就是游戏引擎偏好池分配器而非通用 malloc 的原因。'
+    '碎片化演示：分配 5 个，释放奇数位（1,3），分配 2 个。Free list 复用间隙 — 无外部碎片化。这就是游戏引擎偏好池分配器而非通用 malloc 的原因。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -216,17 +236,21 @@ async function presetFragmentation() {
     await delay(300);
   }
   if (!presetRunning || isAborted()) return;
-  freeBlock(1); await delay(400);
+  freeBlock(1);
+  await delay(400);
   if (!presetRunning || isAborted()) return;
-  freeBlock(3); await delay(400);
+  freeBlock(3);
+  await delay(400);
   if (!presetRunning || isAborted()) return;
-  allocate(); await delay(400);
+  allocate();
+  await delay(400);
   if (!presetRunning || isAborted()) return;
-  allocate(); await delay(400);
+  allocate();
+  await delay(400);
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'Freed slots 1 and 3 were filled by new allocations. Zero fragmentation — every block is the same size. Unity ECS and Unreal use this for component storage.',
-    '释放的槽位 1 和 3 被新分配填充。零碎片化 — 每个块大小相同。Unity ECS 和 Unreal 用此方式存储组件。'
+    '释放的槽位 1 和 3 被新分配填充。零碎片化 — 每个块大小相同。Unity ECS 和 Unreal 用此方式存储组件。',
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -273,9 +297,14 @@ async function presetFragmentation() {
         @keydown.space.prevent="block.allocated ? freeBlock(block.id) : undefined"
         :role="block.allocated ? 'button' : undefined"
         :tabindex="block.allocated ? 0 : undefined"
-        :title="block.allocated
-          ? t('Click to free block ' + block.id + ' (' + block.label + ')', '点击释放块 ' + block.id + '（' + block.label + '）')
-          : t('Free block', '空闲块')"
+        :title="
+          block.allocated
+            ? t(
+                'Click to free block ' + block.id + ' (' + block.label + ')',
+                '点击释放块 ' + block.id + '（' + block.label + '）',
+              )
+            : t('Free block', '空闲块')
+        "
       >
         <div class="fl-block-id">#{{ block.id }}</div>
         <div class="fl-block-content">
@@ -285,9 +314,7 @@ async function presetFragmentation() {
         <div v-if="block.allocated" class="fl-block-hint">
           {{ t('click to free', '点击释放') }}
         </div>
-        <div v-if="freeHead === block.id && !block.allocated" class="fl-block-head-badge">
-          head
-        </div>
+        <div v-if="freeHead === block.id && !block.allocated" class="fl-block-head-badge">head</div>
       </div>
     </div>
 
@@ -298,12 +325,22 @@ async function presetFragmentation() {
         <span class="fl-chain-item fl-chain-head">head</span>
         <template v-for="id in freeListOrder" :key="'fl-' + id">
           <svg class="fl-chain-arrow" viewBox="0 0 24 12" width="24" height="12" aria-hidden="true">
-            <path d="M2 6 L18 6 M14 2 L18 6 L14 10" stroke="var(--viz-primary)" stroke-width="1.5" fill="none"/>
+            <path
+              d="M2 6 L18 6 M14 2 L18 6 L14 10"
+              stroke="var(--viz-primary)"
+              stroke-width="1.5"
+              fill="none"
+            />
           </svg>
           <span class="fl-chain-item">{{ id }}</span>
         </template>
         <svg class="fl-chain-arrow" viewBox="0 0 24 12" width="24" height="12" aria-hidden="true">
-          <path d="M2 6 L18 6 M14 2 L18 6 L14 10" stroke="var(--viz-muted)" stroke-width="1.5" fill="none"/>
+          <path
+            d="M2 6 L18 6 M14 2 L18 6 L14 10"
+            stroke="var(--viz-muted)"
+            stroke-width="1.5"
+            fill="none"
+          />
         </svg>
         <span class="fl-chain-item fl-chain-null">null</span>
       </template>
@@ -345,9 +382,15 @@ async function presetFragmentation() {
 
     <div class="viz-presets">
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
-      <button class="viz-btn" @click="presetAllocFree">{{ t('Alloc/Free Cycle', '分配/释放循环') }}</button>
-      <button class="viz-btn" @click="presetExhaustion">{{ t('Pool Exhaustion', '池耗尽') }}</button>
-      <button class="viz-btn" @click="presetFragmentation">{{ t('Zero Fragmentation', '零碎片化') }}</button>
+      <button class="viz-btn" @click="presetAllocFree">
+        {{ t('Alloc/Free Cycle', '分配/释放循环') }}
+      </button>
+      <button class="viz-btn" @click="presetExhaustion">
+        {{ t('Pool Exhaustion', '池耗尽') }}
+      </button>
+      <button class="viz-btn" @click="presetFragmentation">
+        {{ t('Zero Fragmentation', '零碎片化') }}
+      </button>
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>
@@ -381,9 +424,15 @@ async function presetFragmentation() {
   color: var(--viz-text);
 }
 
-.fl-stat--alloc { color: var(--viz-cell-filled); }
-.fl-stat--free { color: var(--viz-success); }
-.fl-stat--head { color: var(--viz-primary); }
+.fl-stat--alloc {
+  color: var(--viz-cell-filled);
+}
+.fl-stat--free {
+  color: var(--viz-success);
+}
+.fl-stat--head {
+  color: var(--viz-primary);
+}
 
 /* --- Memory blocks --- */
 .fl-memory {
@@ -583,8 +632,14 @@ async function presetFragmentation() {
 
 /* --- Animations --- */
 @keyframes fl-alloc-in {
-  from { opacity: 0.5; transform: scale(0.92); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0.5;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* --- Responsive --- */

@@ -17,25 +17,26 @@ interface SkipNode {
 }
 
 const nodes = ref<SkipNode[]>([]);
-const message = ref(t(
-  'Insert values to build a skip list — or pick a scenario to see O(log n) search in action',
-  '插入值来构建 Skip List — 或选择场景观看 O(log n) 搜索过程'
-));
+const message = ref(
+  t(
+    'Insert values to build a skip list — or pick a scenario to see O(log n) search in action',
+    '插入值来构建 Skip List — 或选择场景观看 O(log n) 搜索过程',
+  ),
+);
 const highlightPath = ref<{ nodeIdx: number; level: number }[]>([]);
 const searchTarget = ref<number | null>(null);
 let presetRunning = false;
 
-const history = useVizHistory<SkipNode[]>(
-  [],
-  {
-    getMessage: () => message.value,
-    onRestore(snapshot, msg) {
-      presetRunning = false;
-      nodes.value = snapshot;
-      highlightPath.value = [];
-      searchTarget.value = null; if (msg !== undefined) message.value = msg; },
+const history = useVizHistory<SkipNode[]>([], {
+  getMessage: () => message.value,
+  onRestore(snapshot, msg) {
+    presetRunning = false;
+    nodes.value = snapshot;
+    highlightPath.value = [];
+    searchTarget.value = null;
+    if (msg !== undefined) message.value = msg;
   },
-);
+});
 
 const MAX_LEVEL = 4;
 const NODE_W = 36;
@@ -51,10 +52,12 @@ function randomLevel(): number {
 }
 
 const maxLevel = computed(() =>
-  nodes.value.length === 0 ? 1 : Math.max(...nodes.value.map(n => n.levels))
+  nodes.value.length === 0 ? 1 : Math.max(...nodes.value.map((n) => n.levels)),
 );
 
-const svgW = computed(() => Math.max(320, LEFT_PAD + (nodes.value.length + 2) * (NODE_W + GAP) + 40));
+const svgW = computed(() =>
+  Math.max(320, LEFT_PAD + (nodes.value.length + 2) * (NODE_W + GAP) + 40),
+);
 const svgH = computed(() => TOP_PAD + maxLevel.value * (NODE_H + 6) + 30);
 
 function nodeX(idx: number) {
@@ -65,19 +68,19 @@ function levelY(level: number) {
 }
 
 function isHighlighted(nodeIdx: number, level: number) {
-  return highlightPath.value.some(h => h.nodeIdx === nodeIdx && h.level === level);
+  return highlightPath.value.some((h) => h.nodeIdx === nodeIdx && h.level === level);
 }
 
 async function insert(val?: number) {
   const v = val ?? Math.floor(Math.random() * 99) + 1;
-  if (nodes.value.some(n => n.val === v)) {
+  if (nodes.value.some((n) => n.val === v)) {
     message.value = t(`${v} already exists — try again`, `${v} 已存在 — 请重试`);
     return;
   }
   const levels = randomLevel();
   const newNode: SkipNode = { val: v, levels };
 
-  const insertIdx = nodes.value.findIndex(n => n.val > v);
+  const insertIdx = nodes.value.findIndex((n) => n.val > v);
   if (insertIdx === -1) {
     nodes.value.push(newNode);
   } else {
@@ -88,7 +91,7 @@ async function insert(val?: number) {
   highlightPath.value = [{ nodeIdx: actualIdx, level: 0 }];
   message.value = t(
     `Inserted ${v} with ${levels} level${levels > 1 ? 's' : ''}. Higher levels = express lanes that skip over nodes for O(log n) search.`,
-    `已插入 ${v}，${levels} 层。高层 = 快速通道，跳过节点实现 O(log n) 搜索。`
+    `已插入 ${v}，${levels} 层。高层 = 快速通道，跳过节点实现 O(log n) 搜索。`,
   );
   log(message.value, 'info');
   history.commit(nodes.value, `insert ${v}`);
@@ -107,7 +110,7 @@ async function search(target?: number) {
   highlightPath.value = [];
   message.value = t(
     `Searching for ${tgt}... start at top level and move right, drop down when value exceeds target.`,
-    `正在搜索 ${tgt}... 从最高层开始向右移动，当值超过目标时下降到下一层。`
+    `正在搜索 ${tgt}... 从最高层开始向右移动，当值超过目标时下降到下一层。`,
   );
 
   let stepsCount = 0;
@@ -123,14 +126,14 @@ async function search(target?: number) {
           highlightPath.value = [...highlightPath.value, { nodeIdx: nextIdx, level: currentLevel }];
           message.value = t(
             `L${currentLevel}: visit ${nodes.value[nextIdx].val} (step ${stepsCount}). ${nodes.value[nextIdx].val === tgt ? 'Found!' : nodes.value[nextIdx].val < tgt ? 'Move right →' : 'Too far, drop down ↓'}`,
-            `L${currentLevel}: 访问 ${nodes.value[nextIdx].val}（步骤 ${stepsCount}）。${nodes.value[nextIdx].val === tgt ? '找到了！' : nodes.value[nextIdx].val < tgt ? '继续右移 →' : '超过目标，下降 ↓'}`
+            `L${currentLevel}: 访问 ${nodes.value[nextIdx].val}（步骤 ${stepsCount}）。${nodes.value[nextIdx].val === tgt ? '找到了！' : nodes.value[nextIdx].val < tgt ? '继续右移 →' : '超过目标，下降 ↓'}`,
           );
           await delay(400);
           if (isAborted()) return;
           if (nodes.value[nextIdx].val === tgt) {
             message.value = t(
               `Found ${tgt} in ${stepsCount} steps! A sorted linked list would need O(n) traversal. Skip list: O(log n) average with O(log n) insert/delete.`,
-              `在 ${stepsCount} 步中找到 ${tgt}！有序链表需要 O(n) 遍历。Skip List：平均 O(log n) 搜索，且插入/删除同为 O(log n)。`
+              `在 ${stepsCount} 步中找到 ${tgt}！有序链表需要 O(n) 遍历。Skip List：平均 O(log n) 搜索，且插入/删除同为 O(log n)。`,
             );
             log(message.value, 'success');
             searchTarget.value = null;
@@ -151,14 +154,17 @@ async function search(target?: number) {
     if (currentLevel > 0) {
       message.value = t(
         `L${currentLevel}: can't go further right → drop to L${currentLevel - 1}. This "drop down" is what makes skip lists fast.`,
-        `L${currentLevel}: 无法继续右移 → 下降到 L${currentLevel - 1}。"下降"是 Skip List 快速的关键。`
+        `L${currentLevel}: 无法继续右移 → 下降到 L${currentLevel - 1}。"下降"是 Skip List 快速的关键。`,
       );
       await delay(300);
       if (isAborted()) return;
     }
     currentLevel--;
   }
-  message.value = t(`${tgt} not found after ${stepsCount} steps`, `${stepsCount} 步后未找到 ${tgt}`);
+  message.value = t(
+    `${tgt} not found after ${stepsCount} steps`,
+    `${stepsCount} 步后未找到 ${tgt}`,
+  );
   log(message.value, 'warning');
   searchTarget.value = null;
   await delay(800);
@@ -190,7 +196,7 @@ async function presetBuildAndSearch() {
   }
   message.value = t(
     'Skip list built! Now searching — watch how higher levels let us skip over many nodes at once.',
-    'Skip List 已构建！现在搜索 — 观察高层如何让我们一次跳过多个节点。'
+    'Skip List 已构建！现在搜索 — 观察高层如何让我们一次跳过多个节点。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -201,10 +207,16 @@ async function presetBuildAndSearch() {
   await search(15);
   message.value = t(
     'Redis sorted sets use skip lists instead of balanced BSTs. Why? Simpler implementation, comparable performance, and range queries are natural.',
-    'Redis 有序集合使用 Skip List 而非平衡 BST。为什么？实现更简单，性能相当，范围查询天然支持。'
+    'Redis 有序集合使用 Skip List 而非平衡 BST。为什么？实现更简单，性能相当，范围查询天然支持。',
   );
   log(message.value, 'success');
-  log(t('Skip list: O(log n) search via random level promotion — no rotations, no rebalancing', 'Skip List：通过随机层级提升实现 O(log n) 搜索 — 无旋转，无重平衡'), 'highlight');
+  log(
+    t(
+      'Skip list: O(log n) search via random level promotion — no rotations, no rebalancing',
+      'Skip List：通过随机层级提升实现 O(log n) 搜索 — 无旋转，无重平衡',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -221,12 +233,13 @@ async function presetRangeScan() {
   }
   message.value = t(
     'Range scan: finding all values in [20, 50]. First search for the start, then walk the bottom level — this is Redis ZRANGEBYSCORE.',
-    '范围扫描：查找 [20, 50] 内的所有值。先搜索起点，然后遍历底层 — 这就是 Redis 的 ZRANGEBYSCORE。'
+    '范围扫描：查找 [20, 50] 内的所有值。先搜索起点，然后遍历底层 — 这就是 Redis 的 ZRANGEBYSCORE。',
   );
   await delay(1000);
   if (!presetRunning || isAborted()) return;
 
-  const rangeStart = 20, rangeEnd = 50;
+  const rangeStart = 20,
+    rangeEnd = 50;
   const results: number[] = [];
   highlightPath.value = [];
 
@@ -238,7 +251,7 @@ async function presetRangeScan() {
       results.push(val);
       message.value = t(
         `Range scan: found ${val} (${results.length} so far). Walking bottom level — O(1) per node.`,
-        `范围扫描：找到 ${val}（已找到 ${results.length} 个）。遍历底层 — 每个节点 O(1)。`
+        `范围扫描：找到 ${val}（已找到 ${results.length} 个）。遍历底层 — 每个节点 O(1)。`,
       );
       await delay(400);
       if (!presetRunning || isAborted()) return;
@@ -249,9 +262,15 @@ async function presetRangeScan() {
 
   message.value = t(
     `Range [${rangeStart}, ${rangeEnd}] complete: found ${results.length} values (${results.join(', ')}). O(log n) to find start + O(k) to scan k results.`,
-    `范围 [${rangeStart}, ${rangeEnd}] 完成：找到 ${results.length} 个值（${results.join(', ')}）。O(log n) 查找起点 + O(k) 扫描 k 个结果。`
+    `范围 [${rangeStart}, ${rangeEnd}] 完成：找到 ${results.length} 个值（${results.join(', ')}）。O(log n) 查找起点 + O(k) 扫描 k 个结果。`,
   );
-  log(t('Range scan: O(log n + k) — skip list links make range queries natural, why Redis chose it over BSTs', '范围扫描：O(log n + k) — 跳表链接使范围查询天然高效，Redis 选择它而非 BST 的原因'), 'highlight');
+  log(
+    t(
+      'Range scan: O(log n + k) — skip list links make range queries natural, why Redis chose it over BSTs',
+      '范围扫描：O(log n + k) — 跳表链接使范围查询天然高效，Redis 选择它而非 BST 的原因',
+    ),
+    'highlight',
+  );
   await delay(800);
   if (isAborted()) return;
   highlightPath.value = [];
@@ -271,7 +290,7 @@ async function presetLevelTraversal() {
   }
   message.value = t(
     'Notice the level distribution: ~50% have 1 level, ~25% have 2, ~12.5% have 3... This geometric distribution creates the O(log n) structure automatically — no rebalancing needed!',
-    '注意层级分布：约 50% 有 1 层，约 25% 有 2 层，约 12.5% 有 3 层... 这种几何分布自动创建 O(log n) 结构 — 无需重新平衡！'
+    '注意层级分布：约 50% 有 1 层，约 25% 有 2 层，约 12.5% 有 3 层... 这种几何分布自动创建 O(log n) 结构 — 无需重新平衡！',
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -282,7 +301,12 @@ async function presetLevelTraversal() {
   <div class="viz-container">
     <div class="viz-title">{{ t('Interactive Skip List', '交互式 Skip List') }}</div>
 
-    <svg :viewBox="`0 0 ${svgW} ${svgH}`" class="skiplist-svg" role="img" :aria-label="t('Skip list visualization', 'Skip List 可视化')">
+    <svg
+      :viewBox="`0 0 ${svgW} ${svgH}`"
+      class="skiplist-svg"
+      role="img"
+      :aria-label="t('Skip list visualization', 'Skip List 可视化')"
+    >
       <!-- Level labels -->
       <text
         v-for="lvl in maxLevel"
@@ -294,7 +318,9 @@ async function presetLevelTraversal() {
         fill="var(--viz-muted)"
         font-size="10"
         font-family="var(--vp-font-family-mono)"
-      >L{{ lvl - 1 }}</text>
+      >
+        L{{ lvl - 1 }}
+      </text>
 
       <!-- HEAD column -->
       <g v-for="lvl in maxLevel" :key="'head-' + lvl">
@@ -315,7 +341,9 @@ async function presetLevelTraversal() {
           fill="var(--viz-text)"
           font-size="9"
           font-family="var(--vp-font-family-mono)"
-        >HD</text>
+        >
+          HD
+        </text>
       </g>
 
       <!-- Nodes -->
@@ -341,12 +369,14 @@ async function presetLevelTraversal() {
             font-size="11"
             font-weight="700"
             font-family="var(--vp-font-family-mono)"
-          >{{ node.val }}</text>
+          >
+            {{ node.val }}
+          </text>
         </g>
 
         <!-- Vertical connectors between levels -->
         <line
-          v-for="lvl in (node.levels - 1)"
+          v-for="lvl in node.levels - 1"
           :key="'vert-' + i + '-' + lvl"
           :x1="nodeX(i)"
           :y1="levelY(lvl - 1) + NODE_H"
@@ -362,10 +392,10 @@ async function presetLevelTraversal() {
       <g v-for="lvl in maxLevel" :key="'arrows-' + lvl">
         <!-- HEAD to first node at this level -->
         <line
-          v-if="nodes.some(n => n.levels >= lvl)"
+          v-if="nodes.some((n) => n.levels >= lvl)"
           :x1="LEFT_PAD + NODE_W / 2"
           :y1="levelY(lvl - 1) + NODE_H / 2"
-          :x2="nodeX(nodes.findIndex(n => n.levels >= lvl)) - NODE_W / 2"
+          :x2="nodeX(nodes.findIndex((n) => n.levels >= lvl)) - NODE_W / 2"
           :y2="levelY(lvl - 1) + NODE_H / 2"
           stroke="var(--viz-border)"
           stroke-width="1"
@@ -374,10 +404,10 @@ async function presetLevelTraversal() {
         <!-- Between nodes at this level -->
         <template v-for="(node, i) in nodes" :key="'harrow-' + i + '-' + lvl">
           <line
-            v-if="node.levels >= lvl && nodes.slice(i + 1).some(n => n.levels >= lvl)"
+            v-if="node.levels >= lvl && nodes.slice(i + 1).some((n) => n.levels >= lvl)"
             :x1="nodeX(i) + NODE_W / 2"
             :y1="levelY(lvl - 1) + NODE_H / 2"
-            :x2="nodeX(i + 1 + nodes.slice(i + 1).findIndex(n => n.levels >= lvl)) - NODE_W / 2"
+            :x2="nodeX(i + 1 + nodes.slice(i + 1).findIndex((n) => n.levels >= lvl)) - NODE_W / 2"
             :y2="levelY(lvl - 1) + NODE_H / 2"
             stroke="var(--viz-border)"
             stroke-width="1"
@@ -394,13 +424,22 @@ async function presetLevelTraversal() {
       </defs>
 
       <!-- Empty state -->
-      <text v-if="nodes.length === 0" :x="svgW / 2" :y="svgH / 2" text-anchor="middle" fill="var(--viz-muted)" font-size="13">
+      <text
+        v-if="nodes.length === 0"
+        :x="svgW / 2"
+        :y="svgH / 2"
+        text-anchor="middle"
+        fill="var(--viz-muted)"
+        font-size="13"
+      >
         {{ t('Empty — click Insert or pick a scenario', '空 — 点击插入或选择一个场景') }}
       </text>
     </svg>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="insert()">{{ t('Insert Random', '插入随机值') }}</button>
+      <button class="viz-btn viz-btn--primary" @click="insert()">
+        {{ t('Insert Random', '插入随机值') }}
+      </button>
       <button class="viz-btn" @click="search()">{{ t('Search Random', '搜索随机值') }}</button>
       <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
       <div class="viz-speed">
@@ -411,9 +450,13 @@ async function presetLevelTraversal() {
 
     <div class="viz-presets">
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
-      <button class="viz-btn" @click="presetBuildAndSearch">{{ t('Build & Search', '构建搜索') }}</button>
+      <button class="viz-btn" @click="presetBuildAndSearch">
+        {{ t('Build & Search', '构建搜索') }}
+      </button>
       <button class="viz-btn" @click="presetRangeScan">{{ t('Range Scan', '范围扫描') }}</button>
-      <button class="viz-btn" @click="presetLevelTraversal">{{ t('Level Distribution', '层级分布') }}</button>
+      <button class="viz-btn" @click="presetLevelTraversal">
+        {{ t('Level Distribution', '层级分布') }}
+      </button>
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>

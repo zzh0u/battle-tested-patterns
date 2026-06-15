@@ -20,12 +20,15 @@ interface ChildRef {
 }
 
 class SupervisedActor<S> {
-  private children = new Map<string, {
-    state: S;
-    initialState: S;
-    handler: ChildHandler<S>;
-    mailbox: unknown[];
-  }>();
+  private children = new Map<
+    string,
+    {
+      state: S;
+      initialState: S;
+      handler: ChildHandler<S>;
+      mailbox: unknown[];
+    }
+  >();
   private restartLog: Array<{ name: string; error: string }> = [];
 
   // TODO: implement

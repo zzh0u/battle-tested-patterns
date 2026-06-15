@@ -107,9 +107,7 @@ describe('mermaid-loader', () => {
     const render = createLoader();
     await render();
 
-    expect(initializeMock).toHaveBeenCalledWith(
-      expect.objectContaining({ theme: 'dark' }),
-    );
+    expect(initializeMock).toHaveBeenCalledWith(expect.objectContaining({ theme: 'dark' }));
   });
 
   // --- FOUC prevention: data-mermaid-status lifecycle ---

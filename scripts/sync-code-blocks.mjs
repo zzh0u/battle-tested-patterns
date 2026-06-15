@@ -46,7 +46,7 @@ function findCodeGroupEnd(content) {
 
 let totalFixed = 0;
 
-const slugs = fs.readdirSync(enDir).filter(f => {
+const slugs = fs.readdirSync(enDir).filter((f) => {
   const fp = path.join(enDir, f, 'index.md');
   return fs.existsSync(fp);
 });
@@ -64,7 +64,7 @@ for (const slug of slugs) {
 
   const enLangs = Object.keys(enBlocks);
   const zhLangs = Object.keys(zhBlocks);
-  const missing = enLangs.filter(l => !zhLangs.includes(l));
+  const missing = enLangs.filter((l) => !zhLangs.includes(l));
 
   if (missing.length === 0) continue;
 
@@ -82,7 +82,8 @@ for (const slug of slugs) {
     insertions += `\n\`\`\`${block.lang} [${block.label}]\n${block.code}\`\`\`\n`;
   }
 
-  const newZhContent = zhContent.slice(0, codeGroupEndPos) + insertions + zhContent.slice(codeGroupEndPos);
+  const newZhContent =
+    zhContent.slice(0, codeGroupEndPos) + insertions + zhContent.slice(codeGroupEndPos);
   fs.writeFileSync(zhPath, newZhContent);
   console.log(`${slug}: added ${missing.join(', ')}`);
   totalFixed++;

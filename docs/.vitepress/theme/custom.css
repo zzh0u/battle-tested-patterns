@@ -60,7 +60,7 @@
   -webkit-user-select: text;
 }
 
-.viz-container input[type="range"] {
+.viz-container input[type='range'] {
   cursor: pointer;
 }
 
@@ -224,7 +224,7 @@
   flex-shrink: 0;
 }
 
-.viz-speed input[type="range"] {
+.viz-speed input[type='range'] {
   width: 72px;
   height: 4px;
   accent-color: var(--viz-primary);
@@ -296,7 +296,7 @@
     min-height: 36px;
   }
 
-  .viz-speed input[type="range"] {
+  .viz-speed input[type='range'] {
     width: 56px;
   }
 }
@@ -448,7 +448,7 @@
 }
 
 .viz-error-details {
-  font-family: "SF Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: 'SF Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 11.5px;
   line-height: 1.45;
   color: var(--viz-muted);
@@ -518,7 +518,7 @@ pre.mermaid:not([data-mermaid-status]) {
  * Dark mode: deep base with translucent white highlight for visible contrast.
  * The highlight band is narrow (10% width) to create a crisp "light sweep" effect. */
 pre.mermaid:not([data-mermaid-status])::after {
-  content: "";
+  content: '';
   visibility: visible;
   position: absolute;
   inset: 0;
@@ -558,8 +558,8 @@ pre.mermaid:not([data-mermaid-status])::after {
 }
 
 /* Once rendered (SVG injected) or explicitly marked — show */
-pre.mermaid[data-mermaid-status="rendered"],
-pre.mermaid[data-mermaid-status="error"] {
+pre.mermaid[data-mermaid-status='rendered'],
+pre.mermaid[data-mermaid-status='error'] {
   visibility: visible;
   min-height: auto;
 }

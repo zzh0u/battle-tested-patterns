@@ -26,26 +26,36 @@ function createNode(isLeaf: boolean): BNode {
 }
 
 const root = ref<BNode>(createNode(true));
-const message = ref(t(
-  'Insert values to build a B+ tree — the data structure behind every database index. MySQL InnoDB, PostgreSQL, and SQLite all use B+ trees.',
-  '插入值来构建 B+ Tree — 每个数据库索引背后的数据结构。MySQL InnoDB、PostgreSQL 和 SQLite 都使用 B+ 树。'
-));
+const message = ref(
+  t(
+    'Insert values to build a B+ tree — the data structure behind every database index. MySQL InnoDB, PostgreSQL, and SQLite all use B+ trees.',
+    '插入值来构建 B+ Tree — 每个数据库索引背后的数据结构。MySQL InnoDB、PostgreSQL 和 SQLite 都使用 B+ 树。',
+  ),
+);
 const highlightIds = ref<Set<number>>(new Set());
 const sorting = ref(false);
 let presetRunning = false;
 
-const history = useVizHistory<BNode>(
-  createNode(true),
-  { getMessage: () => message.value,
- onRestore: (s, msg) => { presetRunning = false; root.value = s; highlightIds.value = new Set(); sorting.value = false; if (msg !== undefined) message.value = msg; } },
-);
+const history = useVizHistory<BNode>(createNode(true), {
+  getMessage: () => message.value,
+  onRestore: (s, msg) => {
+    presetRunning = false;
+    root.value = s;
+    highlightIds.value = new Set();
+    sorting.value = false;
+    if (msg !== undefined) message.value = msg;
+  },
+});
 function commitSnapshot(label: string) {
   history.commit(root.value, label);
 }
 
-function insertKey(node: BNode, key: number): { split: boolean; midKey: number; left: BNode; right: BNode } | null {
+function insertKey(
+  node: BNode,
+  key: number,
+): { split: boolean; midKey: number; left: BNode; right: BNode } | null {
   if (node.isLeaf) {
-    const idx = node.keys.findIndex(k => k >= key);
+    const idx = node.keys.findIndex((k) => k >= key);
     if (idx >= 0 && node.keys[idx] === key) return null;
     if (idx === -1) node.keys.push(key);
     else node.keys.splice(idx, 0, key);
@@ -59,7 +69,7 @@ function insertKey(node: BNode, key: number): { split: boolean; midKey: number; 
     return null;
   }
 
-  let childIdx = node.keys.findIndex(k => key < k);
+  let childIdx = node.keys.findIndex((k) => key < k);
   if (childIdx === -1) childIdx = node.children.length - 1;
 
   const result = insertKey(node.children[childIdx], key);
@@ -105,7 +115,7 @@ function insert() {
   const depth = getDepth(root.value);
   message.value = t(
     `Inserted ${key} — tree depth: ${depth}. B+ trees maintain O(log n) height by splitting full nodes. With order ${ORDER}, each node holds 1-${ORDER} keys.`,
-    `已插入 ${key} — 树深度：${depth}。B+ 树通过分裂满节点维持 O(log n) 高度。阶为 ${ORDER} 时，每个节点持有 1-${ORDER} 个键。`
+    `已插入 ${key} — 树深度：${depth}。B+ 树通过分裂满节点维持 O(log n) 高度。阶为 ${ORDER} 时，每个节点持有 1-${ORDER} 个键。`,
   );
   log(message.value, 'info');
   commitSnapshot(`insert ${key}`);
@@ -113,7 +123,7 @@ function insert() {
 
 function collectKeys(node: BNode): number[] {
   if (node.isLeaf) return [...node.keys];
-  return node.children.flatMap(c => collectKeys(c));
+  return node.children.flatMap((c) => collectKeys(c));
 }
 
 function getDepth(node: BNode): number {
@@ -133,7 +143,7 @@ async function search() {
   highlightIds.value = new Set();
   message.value = t(
     `Searching for ${target}... traversing from root, comparing keys at each level. This is how SELECT * WHERE id = ${target} works in MySQL.`,
-    `正在搜索 ${target}... 从根遍历，在每层比较键。这就是 MySQL 中 SELECT * WHERE id = ${target} 的工作方式。`
+    `正在搜索 ${target}... 从根遍历，在每层比较键。这就是 MySQL 中 SELECT * WHERE id = ${target} 的工作方式。`,
   );
 
   let current = root.value;
@@ -142,25 +152,31 @@ async function search() {
     highlightIds.value = new Set([...highlightIds.value, current.id]);
     comparisons += current.keys.length;
     await delay(400);
-    if (isAborted()) { sorting.value = false; return; }
+    if (isAborted()) {
+      sorting.value = false;
+      return;
+    }
 
     if (current.isLeaf) {
       if (current.keys.includes(target)) {
         message.value = t(
           `Found ${target} in leaf after ${comparisons} comparisons. Tree depth: ${getDepth(root.value)}. A B+ tree with 1M records needs only ~20 comparisons.`,
-          `在 ${comparisons} 次比较后在叶节点找到 ${target}。树深度：${getDepth(root.value)}。100 万条记录的 B+ 树只需约 20 次比较。`
+          `在 ${comparisons} 次比较后在叶节点找到 ${target}。树深度：${getDepth(root.value)}。100 万条记录的 B+ 树只需约 20 次比较。`,
         );
         log(message.value, 'success');
       }
       break;
     }
 
-    let childIdx = current.keys.findIndex(k => target < k);
+    let childIdx = current.keys.findIndex((k) => target < k);
     if (childIdx === -1) childIdx = current.children.length - 1;
     current = current.children[childIdx];
   }
   await delay(800);
-  if (isAborted()) { sorting.value = false; return; }
+  if (isAborted()) {
+    sorting.value = false;
+    return;
+  }
   highlightIds.value = new Set();
   sorting.value = false;
 }
@@ -184,7 +200,7 @@ function loadDemo() {
   }
   message.value = t(
     'Demo loaded: 9 keys inserted. Notice the balanced structure — all leaves at the same depth. This is the B+ tree invariant.',
-    '示例已加载：已插入 9 个键。注意平衡结构 — 所有叶子在同一深度。这是 B+ 树的不变量。'
+    '示例已加载：已插入 9 个键。注意平衡结构 — 所有叶子在同一深度。这是 B+ 树的不变量。',
   );
 }
 
@@ -194,7 +210,7 @@ async function presetSplitDemo() {
   presetRunning = true;
   message.value = t(
     'Inserting keys one by one to show node splitting. When a node exceeds order (3 keys), it splits into two and promotes the middle key.',
-    '逐个插入键以展示节点分裂。当节点超过阶（3 个键）时，它分裂为两个并提升中间键。'
+    '逐个插入键以展示节点分裂。当节点超过阶（3 个键）时，它分裂为两个并提升中间键。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -207,12 +223,18 @@ async function presetSplitDemo() {
     log(t(`insert ${k} (depth ${depth})`, `插入 ${k}（深度 ${depth}）`), 'info');
     message.value = t(
       `Inserted ${k} — depth ${depth}. ${k === 40 ? 'Split happened! The root grew taller. This is the only way a B+ tree increases height — always balanced.' : 'Node not full yet, no split needed.'}`,
-      `已插入 ${k} — 深度 ${depth}。${k === 40 ? '发生分裂！根变高了。这是 B+ 树增加高度的唯一方式 — 始终平衡。' : '节点未满，无需分裂。'}`
+      `已插入 ${k} — 深度 ${depth}。${k === 40 ? '发生分裂！根变高了。这是 B+ 树增加高度的唯一方式 — 始终平衡。' : '节点未满，无需分裂。'}`,
     );
     await delay(800);
     if (!presetRunning || isAborted()) return;
   }
-  log(t('Node split: B+ tree grows from root — the only way height increases, guaranteeing balance', '节点分裂：B+ 树从根生长 — 高度增加的唯一方式，保证平衡'), 'highlight');
+  log(
+    t(
+      'Node split: B+ tree grows from root — the only way height increases, guaranteeing balance',
+      '节点分裂：B+ 树从根生长 — 高度增加的唯一方式，保证平衡',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -222,7 +244,7 @@ async function presetSequentialInsert() {
   presetRunning = true;
   message.value = t(
     'Sequential insert: keys 1-12 in order. This is the worst case for naive BSTs (O(n) depth), but B+ trees stay balanced via splits.',
-    '顺序插入：按顺序插入 1-12。这是朴素 BST 的最坏情况（O(n) 深度），但 B+ 树通过分裂保持平衡。'
+    '顺序插入：按顺序插入 1-12。这是朴素 BST 的最坏情况（O(n) 深度），但 B+ 树通过分裂保持平衡。',
   );
   await delay(800);
   for (let k = 1; k <= 12; k++) {
@@ -233,16 +255,22 @@ async function presetSequentialInsert() {
     log(t(`insert ${k} (depth ${depth})`, `插入 ${k}（深度 ${depth}）`), 'info');
     message.value = t(
       `Inserted ${k} — depth ${depth}. ${depth > 1 ? `${k} keys fit in ${depth} levels. A naive BST would need ${k} levels.` : 'Still fits in one node.'}`,
-      `已插入 ${k} — 深度 ${depth}。${depth > 1 ? `${k} 个键只需 ${depth} 层。朴素 BST 需要 ${k} 层。` : '仍在一个节点内。'}`
+      `已插入 ${k} — 深度 ${depth}。${depth > 1 ? `${k} 个键只需 ${depth} 层。朴素 BST 需要 ${k} 层。` : '仍在一个节点内。'}`,
     );
     await delay(500);
     if (!presetRunning || isAborted()) return;
   }
   message.value = t(
     `12 sequential keys in ${getDepth(root.value)} levels. A BST would be a linked list (depth 12). This is why databases use B+ trees, not BSTs.`,
-    `12 个顺序键只需 ${getDepth(root.value)} 层。BST 会退化为链表（深度 12）。这就是为什么数据库使用 B+ 树而非 BST。`
+    `12 个顺序键只需 ${getDepth(root.value)} 层。BST 会退化为链表（深度 12）。这就是为什么数据库使用 B+ 树而非 BST。`,
   );
-  log(t('B+ tree guarantees O(log n) height even with sequential inserts — BST degenerates to O(n)', 'B+ 树即使顺序插入也保证 O(log n) 高度 — BST 退化为 O(n)'), 'highlight');
+  log(
+    t(
+      'B+ tree guarantees O(log n) height even with sequential inserts — BST degenerates to O(n)',
+      'B+ 树即使顺序插入也保证 O(log n) 高度 — BST 退化为 O(n)',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -256,34 +284,42 @@ async function presetRangeQuery() {
   commitSnapshot('load range query data');
   message.value = t(
     'Range query: B+ tree leaf nodes form a linked list, enabling efficient range scans. SELECT * WHERE id BETWEEN 15 AND 35 traverses only the relevant leaves.',
-    '范围查询：B+ 树叶节点形成链表，支持高效范围扫描。SELECT * WHERE id BETWEEN 15 AND 35 只遍历相关叶子。'
+    '范围查询：B+ 树叶节点形成链表，支持高效范围扫描。SELECT * WHERE id BETWEEN 15 AND 35 只遍历相关叶子。',
   );
   await delay(1000);
   if (!presetRunning || isAborted()) return;
 
   sorting.value = true;
-  const rangeKeys = collectKeys(root.value).filter(k => k >= 15 && k <= 35).sort((a, b) => a - b);
+  const rangeKeys = collectKeys(root.value)
+    .filter((k) => k >= 15 && k <= 35)
+    .sort((a, b) => a - b);
   for (const k of rangeKeys) {
-    if (!presetRunning || isAborted()) { sorting.value = false; return; }
+    if (!presetRunning || isAborted()) {
+      sorting.value = false;
+      return;
+    }
     let current = root.value;
     while (current) {
       if (current.isLeaf && current.keys.includes(k)) {
         highlightIds.value = new Set([current.id]);
         break;
       }
-      let childIdx = current.keys.findIndex(ck => k < ck);
+      let childIdx = current.keys.findIndex((ck) => k < ck);
       if (childIdx === -1) childIdx = current.children.length - 1;
       current = current.children[childIdx];
     }
     message.value = t(`Range scan: found ${k}`, `范围扫描：找到 ${k}`);
     await delay(500);
-    if (!presetRunning || isAborted()) { sorting.value = false; return; }
+    if (!presetRunning || isAborted()) {
+      sorting.value = false;
+      return;
+    }
   }
   highlightIds.value = new Set();
   sorting.value = false;
   message.value = t(
     `Range scan complete: found ${rangeKeys.length} keys (${rangeKeys.join(', ')}). Leaf-level linked list makes this O(log n + k) where k = result count.`,
-    `范围扫描完成：找到 ${rangeKeys.length} 个键（${rangeKeys.join(', ')}）。叶级链表使其为 O(log n + k)，其中 k = 结果数量。`
+    `范围扫描完成：找到 ${rangeKeys.length} 个键（${rangeKeys.join(', ')}）。叶级链表使其为 O(log n + k)，其中 k = 结果数量。`,
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -324,12 +360,22 @@ const treeLayout = computed(() => {
 });
 
 function flattenLayout(layout: LayoutNode): LayoutNode[] {
-  return [layout, ...layout.children.flatMap(c => flattenLayout(c))];
+  return [layout, ...layout.children.flatMap((c) => flattenLayout(c))];
 }
 
 const allLayoutNodes = computed(() => flattenLayout(treeLayout.value));
-const svgW = computed(() => Math.max(300, allLayoutNodes.value.reduce((max, n) => Math.max(max, n.x + 60), 0)));
-const svgH = computed(() => Math.max(80, allLayoutNodes.value.reduce((max, n) => Math.max(max, n.y + 30), 0)));
+const svgW = computed(() =>
+  Math.max(
+    300,
+    allLayoutNodes.value.reduce((max, n) => Math.max(max, n.x + 60), 0),
+  ),
+);
+const svgH = computed(() =>
+  Math.max(
+    80,
+    allLayoutNodes.value.reduce((max, n) => Math.max(max, n.y + 30), 0),
+  ),
+);
 
 function getEdges(layout: LayoutNode): { from: LayoutNode; to: LayoutNode }[] {
   const edges: { from: LayoutNode; to: LayoutNode }[] = [];
@@ -345,9 +391,16 @@ const edges = computed(() => getEdges(treeLayout.value));
 
 <template>
   <div class="viz-container">
-    <div class="viz-title">{{ t('Interactive B+ Tree', '交互式 B+ Tree') }} (order={{ ORDER }})</div>
+    <div class="viz-title">
+      {{ t('Interactive B+ Tree', '交互式 B+ Tree') }} (order={{ ORDER }})
+    </div>
 
-    <svg :viewBox="`0 0 ${svgW} ${svgH}`" class="bptree-svg" role="img" :aria-label="t('B+ tree visualization', 'B+ 树可视化')">
+    <svg
+      :viewBox="`0 0 ${svgW} ${svgH}`"
+      class="bptree-svg"
+      role="img"
+      :aria-label="t('B+ tree visualization', 'B+ 树可视化')"
+    >
       <!-- Edges -->
       <line
         v-for="(e, i) in edges"
@@ -361,15 +414,25 @@ const edges = computed(() => getEdges(treeLayout.value));
       />
 
       <!-- Nodes -->
-      <g v-for="ln in allLayoutNodes" v-show="ln.node.keys.length > 0" :key="ln.node.id" :transform="`translate(${ln.x}, ${ln.y})`">
+      <g
+        v-for="ln in allLayoutNodes"
+        v-show="ln.node.keys.length > 0"
+        :key="ln.node.id"
+        :transform="`translate(${ln.x}, ${ln.y})`"
+      >
         <rect
           :x="-(ln.node.keys.length * 14 + 5)"
           y="-12"
           :width="ln.node.keys.length * 28 + 10"
           height="24"
           rx="4"
-          :fill="highlightIds.has(ln.node.id) ? 'var(--viz-warning)' :
-                 ln.node.isLeaf ? 'var(--viz-primary)' : 'var(--viz-muted)'"
+          :fill="
+            highlightIds.has(ln.node.id)
+              ? 'var(--viz-warning)'
+              : ln.node.isLeaf
+                ? 'var(--viz-primary)'
+                : 'var(--viz-muted)'
+          "
           stroke="var(--viz-border)"
           stroke-width="1"
         />
@@ -384,18 +447,31 @@ const edges = computed(() => getEdges(treeLayout.value));
           font-size="10"
           font-weight="700"
           font-family="var(--vp-font-family-mono)"
-        >{{ key }}</text>
+        >
+          {{ key }}
+        </text>
       </g>
 
       <!-- Empty state -->
-      <text v-if="root.keys.length === 0" :x="svgW / 2" :y="svgH / 2" text-anchor="middle" fill="var(--viz-muted)" font-size="13">
+      <text
+        v-if="root.keys.length === 0"
+        :x="svgW / 2"
+        :y="svgH / 2"
+        text-anchor="middle"
+        fill="var(--viz-muted)"
+        font-size="13"
+      >
         {{ t('Empty — insert keys to build the tree', '空 - 插入键来构建树') }}
       </text>
     </svg>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="insert" :disabled="sorting">{{ t('Insert Random', '随机插入') }}</button>
-      <button class="viz-btn" @click="search" :disabled="sorting">{{ t('Search Random', '随机搜索') }}</button>
+      <button class="viz-btn viz-btn--primary" @click="insert" :disabled="sorting">
+        {{ t('Insert Random', '随机插入') }}
+      </button>
+      <button class="viz-btn" @click="search" :disabled="sorting">
+        {{ t('Search Random', '随机搜索') }}
+      </button>
       <button class="viz-btn" @click="loadDemo" :disabled="sorting">{{ t('Demo', '示例') }}</button>
       <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
       <div class="viz-speed">
@@ -406,8 +482,12 @@ const edges = computed(() => getEdges(treeLayout.value));
 
     <div class="viz-presets">
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
-      <button class="viz-btn" @click="presetSplitDemo">{{ t('Node Splitting', '节点分裂') }}</button>
-      <button class="viz-btn" @click="presetSequentialInsert">{{ t('Sequential Insert', '顺序插入') }}</button>
+      <button class="viz-btn" @click="presetSplitDemo">
+        {{ t('Node Splitting', '节点分裂') }}
+      </button>
+      <button class="viz-btn" @click="presetSequentialInsert">
+        {{ t('Sequential Insert', '顺序插入') }}
+      </button>
       <button class="viz-btn" @click="presetRangeQuery">{{ t('Range Query', '范围查询') }}</button>
     </div>
 

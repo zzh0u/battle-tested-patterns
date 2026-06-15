@@ -18,7 +18,9 @@ class MinHeap<T> {
     return top;
   }
 
-  get size(): number { return this.data.length; }
+  get size(): number {
+    return this.data.length;
+  }
 
   private bubbleUp(i: number): void {
     while (i > 0) {
@@ -45,9 +47,7 @@ class MinHeap<T> {
 }
 
 function mergeKSorted(streams: number[][]): number[] {
-  const heap = new MinHeap<{ val: number; stream: number; index: number }>(
-    (a, b) => a.val - b.val,
-  );
+  const heap = new MinHeap<{ val: number; stream: number; index: number }>((a, b) => a.val - b.val);
 
   for (let s = 0; s < streams.length; s++) {
     if (streams[s]!.length > 0) {

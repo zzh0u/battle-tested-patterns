@@ -59,9 +59,7 @@ class MinHeap<T> {
 
 function mergeKSorted(streams: number[][]): number[] {
   // TODO: use MinHeap to merge K sorted arrays
-  const heap = new MinHeap<{ val: number; stream: number; index: number }>(
-    (a, b) => a.val - b.val,
-  );
+  const heap = new MinHeap<{ val: number; stream: number; index: number }>((a, b) => a.val - b.val);
 
   for (let s = 0; s < streams.length; s++) {
     if (streams[s]!.length > 0) {
@@ -85,12 +83,19 @@ function mergeKSorted(streams: number[][]): number[] {
 
 describe('Merge Iterator - Basic', () => {
   it('should merge two sorted arrays', () => {
-    const result = mergeKSorted([[1, 3, 5], [2, 4, 6]]);
+    const result = mergeKSorted([
+      [1, 3, 5],
+      [2, 4, 6],
+    ]);
     expect(result).toEqual([1, 2, 3, 4, 5, 6]);
   });
 
   it('should merge three sorted arrays', () => {
-    const result = mergeKSorted([[1, 5, 9], [2, 6, 7], [3, 4, 8]]);
+    const result = mergeKSorted([
+      [1, 5, 9],
+      [2, 6, 7],
+      [3, 4, 8],
+    ]);
     expect(result).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
   });
 
@@ -115,12 +120,19 @@ describe('Merge Iterator - Basic', () => {
   });
 
   it('should handle duplicate values across streams', () => {
-    const result = mergeKSorted([[1, 3, 5], [1, 3, 5], [2, 4, 6]]);
+    const result = mergeKSorted([
+      [1, 3, 5],
+      [1, 3, 5],
+      [2, 4, 6],
+    ]);
     expect(result).toEqual([1, 1, 2, 3, 3, 4, 5, 5, 6]);
   });
 
   it('should handle negative numbers', () => {
-    const result = mergeKSorted([[-5, -1, 3], [-3, 0, 2]]);
+    const result = mergeKSorted([
+      [-5, -1, 3],
+      [-3, 0, 2],
+    ]);
     expect(result).toEqual([-5, -3, -1, 0, 2, 3]);
   });
 });

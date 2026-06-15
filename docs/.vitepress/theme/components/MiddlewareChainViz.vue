@@ -90,7 +90,11 @@ interface MiddlewareSnapshot {
 
 function snapNow(): MiddlewareSnapshot {
   return {
-    middlewares: middlewares.map(x => ({ name: x.name, enabled: x.enabled, behavior: x.behavior })),
+    middlewares: middlewares.map((x) => ({
+      name: x.name,
+      enabled: x.enabled,
+      behavior: x.behavior,
+    })),
     requestCount: requestCount.value,
     activeIdx: activeIdx.value,
     phase: phase.value,
@@ -101,7 +105,11 @@ function snapNow(): MiddlewareSnapshot {
 
 const history = useVizHistory<MiddlewareSnapshot>(
   {
-    middlewares: middlewares.map(m => ({ name: m.name, enabled: m.enabled, behavior: m.behavior })),
+    middlewares: middlewares.map((m) => ({
+      name: m.name,
+      enabled: m.enabled,
+      behavior: m.behavior,
+    })),
     requestCount: 0,
     activeIdx: -1,
     phase: 'idle',
@@ -121,16 +129,20 @@ const history = useVizHistory<MiddlewareSnapshot>(
       phase.value = snap.phase;
       running.value = false;
       rejected.value = snap.rejected;
-      rejectAt.value = snap.rejectAt; if (msg !== undefined) message.value = msg; },
+      rejectAt.value = snap.rejectAt;
+      if (msg !== undefined) message.value = msg;
+    },
   },
 );
 
-const message = ref(t(
-  'Configure middleware and click "Send Request" — this is how Express, Koa, and ASP.NET Core process HTTP requests',
-  '配置 Middleware 后点击"发送请求" — Express、Koa 和 ASP.NET Core 就是这样处理 HTTP 请求的'
-));
+const message = ref(
+  t(
+    'Configure middleware and click "Send Request" — this is how Express, Koa, and ASP.NET Core process HTTP requests',
+    '配置 Middleware 后点击"发送请求" — Express、Koa 和 ASP.NET Core 就是这样处理 HTTP 请求的',
+  ),
+);
 
-const enabledCount = computed(() => middlewares.filter(m => m.enabled).length);
+const enabledCount = computed(() => middlewares.filter((m) => m.enabled).length);
 
 async function sendRequest() {
   if (running.value) return;
@@ -149,24 +161,15 @@ async function sendRequest() {
     if (!m.enabled) continue;
 
     activeIdx.value = i;
-    message.value = t(
-      `>> ${m.name}: processing request...`,
-      `>> ${m.name}: 正在处理请求...`
-    );
+    message.value = t(`>> ${m.name}: processing request...`, `>> ${m.name}: 正在处理请求...`);
     await delay(450);
     if (isAborted()) return;
 
     if (m.behavior === 'reject') {
       rejected.value = true;
       rejectAt.value = i;
-      vizLog(
-        t(`[#${reqNum}] ${m.name}: REJECTED`, `[#${reqNum}] ${m.name}: 已拒绝`),
-        'error'
-      );
-      message.value = t(
-        `X ${m.name}: REJECTED the request`,
-        `X ${m.name}: 拒绝了请求`
-      );
+      vizLog(t(`[#${reqNum}] ${m.name}: REJECTED`, `[#${reqNum}] ${m.name}: 已拒绝`), 'error');
+      message.value = t(`X ${m.name}: REJECTED the request`, `X ${m.name}: 拒绝了请求`);
       history.commit(snapNow(), `#${reqNum} ${m.name} rejected`);
       await delay(500);
       if (isAborted()) return;
@@ -176,13 +179,10 @@ async function sendRequest() {
     if (m.name === 'Logger') {
       vizLog(
         t(`[#${reqNum}] ${m.name}: logged request`, `[#${reqNum}] ${m.name}: 已记录请求`),
-        'warning'
+        'warning',
       );
     } else {
-      vizLog(
-        t(`[#${reqNum}] ${m.name}: passed`, `[#${reqNum}] ${m.name}: 通过`),
-        'success'
-      );
+      vizLog(t(`[#${reqNum}] ${m.name}: passed`, `[#${reqNum}] ${m.name}: 通过`), 'success');
     }
     history.commit(snapNow(), `#${reqNum} ${m.name} →`);
   }
@@ -191,7 +191,7 @@ async function sendRequest() {
   if (!rejected.value) {
     vizLog(
       t(`[#${reqNum}] Handler done — response flowing back`, `[#${reqNum}] 处理完成 — 响应返回中`),
-      'info'
+      'info',
     );
     message.value = t('Response flowing back through chain...', '响应正在沿链路返回...');
     history.commit(snapNow(), `#${reqNum} backward start`);
@@ -209,15 +209,15 @@ async function sendRequest() {
       vizLog(
         t(
           `[#${reqNum}] ${m.name}: logged response (${rejected.value ? 'error' : 'ok'})`,
-          `[#${reqNum}] ${m.name}: 已记录响应 (${rejected.value ? '错误' : '正常'})`
+          `[#${reqNum}] ${m.name}: 已记录响应 (${rejected.value ? '错误' : '正常'})`,
         ),
-        'warning'
+        'warning',
       );
     }
 
     message.value = t(
       `<< ${m.name}: ${rejected.value ? 'forwarding error' : 'adding headers'}...`,
-      `<< ${m.name}: ${rejected.value ? '转发错误' : '添加响应头'}...`
+      `<< ${m.name}: ${rejected.value ? '转发错误' : '添加响应头'}...`,
     );
     await delay(350);
     if (isAborted()) return;
@@ -230,21 +230,18 @@ async function sendRequest() {
     const rejectedName = middlewares[rejectAt.value].name;
     message.value = t(
       `Request #${reqNum} rejected by ${rejectedName}`,
-      `请求 #${reqNum} 被 ${rejectedName} 拒绝`
+      `请求 #${reqNum} 被 ${rejectedName} 拒绝`,
     );
     vizLog(
-      t(`[#${reqNum}] DONE — rejected by ${rejectedName}`, `[#${reqNum}] 完成 — 被 ${rejectedName} 拒绝`),
-      'error'
+      t(
+        `[#${reqNum}] DONE — rejected by ${rejectedName}`,
+        `[#${reqNum}] 完成 — 被 ${rejectedName} 拒绝`,
+      ),
+      'error',
     );
   } else {
-    message.value = t(
-      `Request #${reqNum} completed successfully`,
-      `请求 #${reqNum} 成功完成`
-    );
-    vizLog(
-      t(`[#${reqNum}] DONE — 200 OK`, `[#${reqNum}] 完成 — 200 OK`),
-      'success'
-    );
+    message.value = t(`Request #${reqNum} completed successfully`, `请求 #${reqNum} 成功完成`);
+    vizLog(t(`[#${reqNum}] DONE — 200 OK`, `[#${reqNum}] 完成 — 200 OK`), 'success');
   }
   running.value = false;
   history.commit(snapNow(), `#${reqNum} done`);
@@ -260,7 +257,7 @@ function toggleEnabled(idx: number) {
   m.enabled = !m.enabled;
   message.value = t(
     `${m.name} ${m.enabled ? 'enabled' : 'disabled'}`,
-    `${m.name} ${m.enabled ? '已启用' : '已禁用'}`
+    `${m.name} ${m.enabled ? '已启用' : '已禁用'}`,
   );
   history.commit(snapNow(), `toggle ${m.name}`);
 }
@@ -272,7 +269,7 @@ function toggleBehavior(idx: number) {
   m.behavior = m.behavior === 'pass' ? 'reject' : 'pass';
   message.value = t(
     `${m.name} will ${m.behavior === 'pass' ? 'PASS' : 'REJECT'} requests`,
-    `${m.name} 将${m.behavior === 'pass' ? '通过' : '拒绝'}请求`
+    `${m.name} 将${m.behavior === 'pass' ? '通过' : '拒绝'}请求`,
   );
   history.commit(snapNow(), `${m.name} -> ${m.behavior}`);
 }
@@ -287,14 +284,14 @@ function reset() {
   requestCount.value = 0;
   presetRunning = false;
   clearLog();
-  middlewares.forEach(m => {
+  middlewares.forEach((m) => {
     m.enabled = true;
     m.behavior = 'pass';
   });
   history.reset();
   message.value = t(
     'Reset — configure middleware and send a request',
-    '已重置 — 配置 Middleware 后发送请求'
+    '已重置 — 配置 Middleware 后发送请求',
   );
 }
 
@@ -304,13 +301,19 @@ async function presetHappyPath() {
   presetRunning = true;
   message.value = t(
     'Happy path: all middleware passes. Watch the request flow forward through Auth→RateLimit→Logger→Validator→Handler, then the response flows backward. This is the "onion model" used by Koa and ASP.NET Core.',
-    '正常路径：所有 Middleware 通过。观察请求向前流经 Auth→RateLimit→Logger→Validator→Handler，然后响应向后流。这是 Koa 和 ASP.NET Core 使用的"洋葱模型"。'
+    '正常路径：所有 Middleware 通过。观察请求向前流经 Auth→RateLimit→Logger→Validator→Handler，然后响应向后流。这是 Koa 和 ASP.NET Core 使用的"洋葱模型"。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
   await sendRequest();
   if (!presetRunning || isAborted()) return;
-  vizLog(t('Onion model: forward through chain, backward with response', '洋葱模型：正向通过链，反向携带响应'), 'highlight');
+  vizLog(
+    t(
+      'Onion model: forward through chain, backward with response',
+      '洋葱模型：正向通过链，反向携带响应',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -321,7 +324,7 @@ async function presetAuthReject() {
   middlewares[0].behavior = 'reject';
   message.value = t(
     'Auth rejection: the first middleware rejects — no downstream middleware runs at all. This is the "fail fast" principle: Auth check at the edge saves CPU for Validator and Handler.',
-    'Auth 拒绝：第一个 Middleware 拒绝 — 下游 Middleware 完全不执行。这是"快速失败"原则：在边缘进行 Auth 检查为 Validator 和 Handler 节省 CPU。'
+    'Auth 拒绝：第一个 Middleware 拒绝 — 下游 Middleware 完全不执行。这是"快速失败"原则：在边缘进行 Auth 检查为 Validator 和 Handler 节省 CPU。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -330,9 +333,12 @@ async function presetAuthReject() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'Only Auth ran — it rejected immediately. RateLimit, Logger, Validator, and Handler were never invoked — short-circuit saves resources. This is why API gateways put auth first.',
-    '只有 Auth 执行了 — 它立即拒绝。RateLimit、Logger、Validator 和 Handler 从未调用 — 短路节省资源。这就是 API 网关将 auth 放在最前面的原因。'
+    '只有 Auth 执行了 — 它立即拒绝。RateLimit、Logger、Validator 和 Handler 从未调用 — 短路节省资源。这就是 API 网关将 auth 放在最前面的原因。',
   );
-  vizLog(t('Fail fast: auth at the edge saves downstream CPU', '快速失败：边缘 auth 节省下游 CPU'), 'highlight');
+  vizLog(
+    t('Fail fast: auth at the edge saves downstream CPU', '快速失败：边缘 auth 节省下游 CPU'),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -344,7 +350,7 @@ async function presetSkipMiddleware() {
   middlewares[3].enabled = false;
   message.value = t(
     'Minimal pipeline: RateLimit and Validator disabled. Only Auth→Logger→Handler remain. This shows how middleware is composable — you pick what you need per route. Express uses app.use() for global and router.use() for per-route.',
-    '最小管道：RateLimit 和 Validator 已禁用。只剩 Auth→Logger→Handler。这展示了 Middleware 的可组合性 — 每个路由选择需要的。Express 使用 app.use() 全局和 router.use() 按路由。'
+    '最小管道：RateLimit 和 Validator 已禁用。只剩 Auth→Logger→Handler。这展示了 Middleware 的可组合性 — 每个路由选择需要的。Express 使用 app.use() 全局和 router.use() 按路由。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -353,9 +359,12 @@ async function presetSkipMiddleware() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'Only 3 middleware ran instead of 5. Per-route middleware selection is how frameworks keep internal APIs fast while public APIs get full auth + rate limiting + validation.',
-    '只有 3 个 Middleware 执行而不是 5 个。按路由选择 Middleware 是框架保持内部 API 快速而公共 API 获得完整 auth + 限流 + 验证的方式。'
+    '只有 3 个 Middleware 执行而不是 5 个。按路由选择 Middleware 是框架保持内部 API 快速而公共 API 获得完整 auth + 限流 + 验证的方式。',
   );
-  vizLog(t('Composable: per-route middleware selection', '可组合：按路由选择 Middleware'), 'highlight');
+  vizLog(
+    t('Composable: per-route middleware selection', '可组合：按路由选择 Middleware'),
+    'highlight',
+  );
   presetRunning = false;
 }
 </script>
@@ -368,7 +377,9 @@ async function presetSkipMiddleware() {
     <div class="mw-config-panel">
       <div class="mw-config-header">
         <span class="viz-label">{{ t('Middleware Pipeline', 'Middleware 管道') }}</span>
-        <span class="mw-config-count">{{ enabledCount }}/{{ middlewares.length }} {{ t('active', '启用') }}</span>
+        <span class="mw-config-count"
+          >{{ enabledCount }}/{{ middlewares.length }} {{ t('active', '启用') }}</span
+        >
       </div>
 
       <div class="mw-config-list">
@@ -378,7 +389,10 @@ async function presetSkipMiddleware() {
           class="mw-config-item"
           :class="{ 'mw-config-item-disabled': !m.enabled }"
         >
-          <label class="mw-toggle" :class="{ 'mw-toggle-disabled': running || m.name === 'Handler' }">
+          <label
+            class="mw-toggle"
+            :class="{ 'mw-toggle-disabled': running || m.name === 'Handler' }"
+          >
             <input
               type="checkbox"
               :checked="m.enabled"
@@ -421,7 +435,7 @@ async function presetSkipMiddleware() {
           class="mw-arrow"
           :class="{ 'mw-arrow-active': activeIdx === i, 'mw-arrow-dim': !m.enabled }"
         >
-          {{ !m.enabled ? '  ' : (phase === 'backward' && activeIdx <= i ? '<<' : '>>') }}
+          {{ !m.enabled ? '  ' : phase === 'backward' && activeIdx <= i ? '<<' : '>>' }}
         </div>
         <div
           class="mw-node"
@@ -437,7 +451,9 @@ async function presetSkipMiddleware() {
             {{ m.name }}
           </div>
           <div v-if="!m.enabled" class="mw-node-badge mw-node-skip">{{ t('OFF', '关') }}</div>
-          <div v-else-if="m.behavior === 'reject'" class="mw-node-badge mw-node-badge-reject">{{ t('DENY', '拒') }}</div>
+          <div v-else-if="m.behavior === 'reject'" class="mw-node-badge mw-node-badge-reject">
+            {{ t('DENY', '拒') }}
+          </div>
           <div v-else class="mw-node-badge mw-node-badge-pass">{{ t('OK', '通') }}</div>
         </div>
       </template>
@@ -767,8 +783,15 @@ async function presetSkipMiddleware() {
 }
 
 @keyframes mw-shake {
-  0%, 100% { transform: translateX(0) scale(1.08); }
-  25% { transform: translateX(-3px) scale(1.08); }
-  75% { transform: translateX(3px) scale(1.08); }
+  0%,
+  100% {
+    transform: translateX(0) scale(1.08);
+  }
+  25% {
+    transform: translateX(-3px) scale(1.08);
+  }
+  75% {
+    transform: translateX(3px) scale(1.08);
+  }
 }
 </style>

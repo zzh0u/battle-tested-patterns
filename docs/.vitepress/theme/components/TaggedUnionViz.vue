@@ -21,7 +21,9 @@ const vizHistory = useVizHistory<Tag>('Number', {
     presetRunning = false;
     currentTag.value = snapshot;
     matchHighlight.value = null;
-    showMatchResult.value = false; if (msg !== undefined) message.value = msg; },
+    showMatchResult.value = false;
+    if (msg !== undefined) message.value = msg;
+  },
 });
 
 interface TaggedValue {
@@ -31,16 +33,37 @@ interface TaggedValue {
 }
 
 const currentTag = ref<Tag>('Number');
-const message = ref(t('Click a type button to set the variable. Watch the tag and value change together.', '点击类型按钮设置变量。观察标签和值一起变化。'));
+const message = ref(
+  t(
+    'Click a type button to set the variable. Watch the tag and value change together.',
+    '点击类型按钮设置变量。观察标签和值一起变化。',
+  ),
+);
 const matchHighlight = ref<Tag | null>(null);
 const showMatchResult = ref(false);
 const matchResultText = ref('');
 
 const tagMeta: Record<Tag, { color: string; byte: string; description: string }> = {
-  Number: { color: 'var(--viz-primary)', byte: '0x01', description: t('IEEE 754 double', 'IEEE 754 双精度') },
-  String: { color: 'var(--viz-success)', byte: '0x02', description: t('UTF-8 pointer + length', 'UTF-8 指针 + 长度') },
-  Bool: { color: 'var(--viz-warning)', byte: '0x03', description: t('Single byte 0/1', '单字节 0/1') },
-  None: { color: 'var(--viz-muted)', byte: '0x00', description: t('No data (unit type)', '无数据（单元类型）') },
+  Number: {
+    color: 'var(--viz-primary)',
+    byte: '0x01',
+    description: t('IEEE 754 double', 'IEEE 754 双精度'),
+  },
+  String: {
+    color: 'var(--viz-success)',
+    byte: '0x02',
+    description: t('UTF-8 pointer + length', 'UTF-8 指针 + 长度'),
+  },
+  Bool: {
+    color: 'var(--viz-warning)',
+    byte: '0x03',
+    description: t('Single byte 0/1', '单字节 0/1'),
+  },
+  None: {
+    color: 'var(--viz-muted)',
+    byte: '0x00',
+    description: t('No data (unit type)', '无数据（单元类型）'),
+  },
 };
 
 const values: Record<Tag, TaggedValue> = {
@@ -87,7 +110,10 @@ function setTag(tag: Tag) {
   currentTag.value = tag;
   showMatchResult.value = false;
   matchHighlight.value = null;
-  message.value = t(`Variable set to ${tag}(${values[tag].display}). Tag byte = ${tagMeta[tag].byte}.`, `变量设置为 ${tag}(${values[tag].display})。标签字节 = ${tagMeta[tag].byte}。`);
+  message.value = t(
+    `Variable set to ${tag}(${values[tag].display}). Tag byte = ${tagMeta[tag].byte}.`,
+    `变量设置为 ${tag}(${values[tag].display})。标签字节 = ${tagMeta[tag].byte}。`,
+  );
   vizHistory.commit(tag, `set ${tag}`);
 }
 
@@ -95,8 +121,17 @@ function runMatch() {
   matchHighlight.value = currentTag.value;
   showMatchResult.value = true;
   matchResultText.value = matchOutputs[currentTag.value];
-  message.value = t(`match dispatched to ${currentTag.value} branch -> ${matchResultText.value}`, `match 分派到 ${currentTag.value} 分支 -> ${matchResultText.value}`);
-  log(t(`match ${currentTag.value} → ${matchResultText.value}`, `match ${currentTag.value} → ${matchResultText.value}`), 'info');
+  message.value = t(
+    `match dispatched to ${currentTag.value} branch -> ${matchResultText.value}`,
+    `match 分派到 ${currentTag.value} 分支 -> ${matchResultText.value}`,
+  );
+  log(
+    t(
+      `match ${currentTag.value} → ${matchResultText.value}`,
+      `match ${currentTag.value} → ${matchResultText.value}`,
+    ),
+    'info',
+  );
   vizHistory.commit(currentTag.value, `match ${currentTag.value}`);
 }
 
@@ -114,7 +149,10 @@ function reset() {
   matchResultText.value = '';
   clearLog();
   vizHistory.reset();
-  message.value = t('Click a type button to set the variable. Watch the tag and value change together.', '点击类型按钮设置变量。观察标签和值一起变化。');
+  message.value = t(
+    'Click a type button to set the variable. Watch the tag and value change together.',
+    '点击类型按钮设置变量。观察标签和值一起变化。',
+  );
 }
 
 const allTags: Tag[] = ['Number', 'String', 'Bool', 'None'];
@@ -124,8 +162,8 @@ async function presetMatchDispatch() {
   reset();
   presetRunning = true;
   message.value = t(
-    'Type Switch: Rust\'s match on enums guarantees exhaustiveness at compile time — you cannot forget a variant. Unlike C union + switch, the compiler enforces that every case is handled.',
-    '类型切换：Rust 的 match 对枚举做编译期穷尽检查——你不可能遗漏某个变体。不像 C 的 union + switch，编译器强制要求处理每个分支。'
+    "Type Switch: Rust's match on enums guarantees exhaustiveness at compile time — you cannot forget a variant. Unlike C union + switch, the compiler enforces that every case is handled.",
+    '类型切换：Rust 的 match 对枚举做编译期穷尽检查——你不可能遗漏某个变体。不像 C 的 union + switch，编译器强制要求处理每个分支。',
   );
   await delay(1200);
   if (!presetRunning || isAborted()) return;
@@ -139,9 +177,12 @@ async function presetMatchDispatch() {
   }
   message.value = t(
     'This is also how TypeScript discriminated unions work with switch(x.kind), and how Haskell/OCaml pattern matching dispatches on constructors. The compiler verifies all branches are covered.',
-    '这也是 TypeScript 可辨识联合通过 switch(x.kind) 工作的方式，以及 Haskell/OCaml 模式匹配在构造器上分派的方式。编译器验证所有分支都被覆盖。'
+    '这也是 TypeScript 可辨识联合通过 switch(x.kind) 工作的方式，以及 Haskell/OCaml 模式匹配在构造器上分派的方式。编译器验证所有分支都被覆盖。',
   );
-  log(t('Exhaustive match: compiler verifies all branches', '穷尽匹配：编译器验证所有分支'), 'highlight');
+  log(
+    t('Exhaustive match: compiler verifies all branches', '穷尽匹配：编译器验证所有分支'),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -151,24 +192,33 @@ async function presetMemoryLayout() {
   presetRunning = true;
   message.value = t(
     'Memory Layout: Tagged unions store a discriminant (tag byte) + payload. The tag tells the runtime how to interpret the payload bytes. This is how Rust enums, Protobuf oneof, and GraphQL unions work internally.',
-    '内存布局：Tagged Union 存储一个判别式（标签字节）+ 有效载荷。标签告诉运行时如何解释载荷字节。这是 Rust 枚举、Protobuf oneof 和 GraphQL union 的内部工作方式。'
+    '内存布局：Tagged Union 存储一个判别式（标签字节）+ 有效载荷。标签告诉运行时如何解释载荷字节。这是 Rust 枚举、Protobuf oneof 和 GraphQL union 的内部工作方式。',
   );
   await delay(1500);
   if (!presetRunning || isAborted()) return;
   for (const tag of allTags) {
     setTag(tag);
-    log(t(
-      `${tag}: tag byte ${tagMeta[tag].byte} — ${tagMeta[tag].description}`,
-      `${tag}：标签字节 ${tagMeta[tag].byte} — ${tagMeta[tag].description}`
-    ), 'info');
+    log(
+      t(
+        `${tag}: tag byte ${tagMeta[tag].byte} — ${tagMeta[tag].description}`,
+        `${tag}：标签字节 ${tagMeta[tag].byte} — ${tagMeta[tag].description}`,
+      ),
+      'info',
+    );
     await delay(1200);
     if (!presetRunning || isAborted()) return;
   }
   message.value = t(
-    'The total size equals max(variant sizes) + tag size. Rust\'s Option<&T> uses null-pointer optimization: None = 0x00 pointer, Some = non-null pointer, so no extra tag byte is needed — the same size as a raw pointer.',
-    '总大小 = max(各变体大小) + 标签大小。Rust 的 Option<&T> 使用空指针优化：None = 0x00 指针，Some = 非空指针，因此不需要额外的标签字节——与裸指针大小相同。'
+    "The total size equals max(variant sizes) + tag size. Rust's Option<&T> uses null-pointer optimization: None = 0x00 pointer, Some = non-null pointer, so no extra tag byte is needed — the same size as a raw pointer.",
+    '总大小 = max(各变体大小) + 标签大小。Rust 的 Option<&T> 使用空指针优化：None = 0x00 指针，Some = 非空指针，因此不需要额外的标签字节——与裸指针大小相同。',
   );
-  log(t('Size = max(variants) + tag; Option<&T> is zero-cost', '大小 = max(变体) + 标签; Option<&T> 零开销'), 'highlight');
+  log(
+    t(
+      'Size = max(variants) + tag; Option<&T> is zero-cost',
+      '大小 = max(变体) + 标签; Option<&T> 零开销',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 
@@ -177,8 +227,8 @@ async function presetExhaustiveness() {
   reset();
   presetRunning = true;
   message.value = t(
-    'Exhaustive Match: This is the key safety benefit. Rust, Haskell, and OCaml refuse to compile if you miss a case. TypeScript\'s never type achieves the same at compile time — an unhandled variant becomes type never, causing a type error.',
-    '穷尽匹配：这是关键的安全保障。Rust、Haskell 和 OCaml 会在你遗漏分支时拒绝编译。TypeScript 的 never 类型在编译期达成同样效果——未处理的变体变为 never 类型，产生类型错误。'
+    "Exhaustive Match: This is the key safety benefit. Rust, Haskell, and OCaml refuse to compile if you miss a case. TypeScript's never type achieves the same at compile time — an unhandled variant becomes type never, causing a type error.",
+    '穷尽匹配：这是关键的安全保障。Rust、Haskell 和 OCaml 会在你遗漏分支时拒绝编译。TypeScript 的 never 类型在编译期达成同样效果——未处理的变体变为 never 类型，产生类型错误。',
   );
   await delay(1500);
   if (!presetRunning || isAborted()) return;
@@ -192,9 +242,12 @@ async function presetExhaustiveness() {
   }
   message.value = t(
     'C/C++ unions with manual tag checking have none of this safety — reading the wrong union member is undefined behavior. Swift enums and Kotlin sealed classes also enforce exhaustiveness, making invalid states unrepresentable.',
-    'C/C++ 的 union 加手动标签检查没有这些安全保障——读取错误的 union 成员是未定义行为。Swift 枚举和 Kotlin 密封类同样强制穷尽性，使无效状态不可表达。'
+    'C/C++ 的 union 加手动标签检查没有这些安全保障——读取错误的 union 成员是未定义行为。Swift 枚举和 Kotlin 密封类同样强制穷尽性，使无效状态不可表达。',
   );
-  log(t('Exhaustiveness makes invalid states unrepresentable', '穷尽性使无效状态不可表达'), 'highlight');
+  log(
+    t('Exhaustiveness makes invalid states unrepresentable', '穷尽性使无效状态不可表达'),
+    'highlight',
+  );
   presetRunning = false;
 }
 </script>
@@ -208,11 +261,15 @@ async function presetExhaustiveness() {
       <div class="tu-selector-label">{{ t('Set variable to:', '设置变量为：') }}</div>
       <div class="tu-type-btns">
         <button
-          v-for="tag in (['Number', 'String', 'Bool', 'None'] as Tag[])"
+          v-for="tag in ['Number', 'String', 'Bool', 'None'] as Tag[]"
           :key="tag"
           class="tu-type-btn"
           :class="{ 'tu-type-btn--active': currentTag === tag }"
-          :style="currentTag === tag ? { borderColor: tagMeta[tag].color, background: tagMeta[tag].color } : {}"
+          :style="
+            currentTag === tag
+              ? { borderColor: tagMeta[tag].color, background: tagMeta[tag].color }
+              : {}
+          "
           @click="setTag(tag)"
         >
           {{ tag }}({{ values[tag].display }})
@@ -226,10 +283,7 @@ async function presetExhaustiveness() {
         <span class="tu-var-label">{{ t('Variable', '变量') }}</span>
       </div>
       <div class="tu-var-content">
-        <span
-          class="tu-tag-badge"
-          :style="{ background: meta.color }"
-        >{{ current.tag }}</span>
+        <span class="tu-tag-badge" :style="{ background: meta.color }">{{ current.tag }}</span>
         <span class="tu-var-value" :style="{ color: meta.color }">{{ current.display }}</span>
       </div>
       <div class="tu-var-meta">{{ meta.description }}</div>
@@ -237,7 +291,9 @@ async function presetExhaustiveness() {
 
     <!-- Memory layout -->
     <div class="tu-memory">
-      <div class="tu-memory-title">{{ t('Memory Layout (tag byte + value bytes)', '内存布局（标签字节 + 值字节）') }}</div>
+      <div class="tu-memory-title">
+        {{ t('Memory Layout (tag byte + value bytes)', '内存布局（标签字节 + 值字节）') }}
+      </div>
       <div class="tu-memory-cells">
         <div
           v-for="(byte, i) in current.rawBytes"
@@ -245,8 +301,10 @@ async function presetExhaustiveness() {
           class="tu-mem-cell"
           :class="{
             'tu-mem-cell--tag': i === 0,
-            'tu-mem-cell--data': i > 0 && !((currentTag === 'None' && i > 0) || (currentTag === 'Bool' && i > 1)),
-            'tu-mem-cell--unused': (currentTag === 'None' && i > 0) || (currentTag === 'Bool' && i > 1),
+            'tu-mem-cell--data':
+              i > 0 && !((currentTag === 'None' && i > 0) || (currentTag === 'Bool' && i > 1)),
+            'tu-mem-cell--unused':
+              (currentTag === 'None' && i > 0) || (currentTag === 'Bool' && i > 1),
           }"
           :style="i === 0 ? { borderColor: meta.color } : {}"
         >
@@ -270,9 +328,7 @@ async function presetExhaustiveness() {
 
     <!-- Match block -->
     <div class="tu-match">
-      <div class="tu-match-header">
-        <span class="tu-match-keyword">match</span> variable {
-      </div>
+      <div class="tu-match-header"><span class="tu-match-keyword">match</span> variable {</div>
       <div
         v-for="branch in matchBranches"
         :key="branch.tag"
@@ -288,7 +344,8 @@ async function presetExhaustiveness() {
           v-if="matchHighlight === branch.tag"
           class="tu-arm-indicator"
           :style="{ color: tagMeta[branch.tag].color }"
-        >&lt;-- {{ t('executes', '执行') }}</span>
+          >&lt;-- {{ t('executes', '执行') }}</span
+        >
       </div>
       <div class="tu-match-footer">}</div>
     </div>
@@ -300,7 +357,9 @@ async function presetExhaustiveness() {
     </div>
 
     <div class="viz-controls">
-      <button class="viz-btn viz-btn--primary" @click="runMatch">{{ t('Run match', '运行 match') }}</button>
+      <button class="viz-btn viz-btn--primary" @click="runMatch">
+        {{ t('Run match', '运行 match') }}
+      </button>
       <button class="viz-btn viz-btn--danger" @click="reset">{{ t('Reset', '重置') }}</button>
       <div class="viz-speed">
         <input type="range" min="0.5" max="3" step="0.5" v-model.number="speed" />
@@ -310,9 +369,15 @@ async function presetExhaustiveness() {
 
     <div class="viz-presets">
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
-      <button class="viz-btn" @click="presetMatchDispatch">{{ t('Type Switch', '类型切换') }}</button>
-      <button class="viz-btn" @click="presetMemoryLayout">{{ t('Memory Layout', '内存布局') }}</button>
-      <button class="viz-btn" @click="presetExhaustiveness">{{ t('Exhaustive Match', '穷尽匹配') }}</button>
+      <button class="viz-btn" @click="presetMatchDispatch">
+        {{ t('Type Switch', '类型切换') }}
+      </button>
+      <button class="viz-btn" @click="presetMemoryLayout">
+        {{ t('Memory Layout', '内存布局') }}
+      </button>
+      <button class="viz-btn" @click="presetExhaustiveness">
+        {{ t('Exhaustive Match', '穷尽匹配') }}
+      </button>
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>

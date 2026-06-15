@@ -24,7 +24,8 @@ class ConnectionPool {
 
   /** Acquire a connection — reuse idle or create new (up to maxSize) */
   acquire(): Connection | null {
-    if (this.idle.length > 0) { // TODO: implement
+    if (this.idle.length > 0) {
+      // TODO: implement
       const conn = this.idle.pop()!;
       conn.inUse = true;
       this.active.add(conn);
@@ -43,9 +44,15 @@ class ConnectionPool {
     this.idle.push(conn);
   }
 
-  get activeCount(): number { return this.active.size; }
-  get idleCount(): number { return this.idle.length; }
-  get totalCreated(): number { return this.nextId; }
+  get activeCount(): number {
+    return this.active.size;
+  }
+  get idleCount(): number {
+    return this.idle.length;
+  }
+  get totalCreated(): number {
+    return this.nextId;
+  }
 }
 
 // ─── Tests (do not modify below this line) ───────────────────────

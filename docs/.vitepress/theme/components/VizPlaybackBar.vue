@@ -77,7 +77,15 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeydown));
       :title="t('Skip to start', '跳到开头')"
       @click="history.goto(0)"
     >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
         <polygon points="19 20 9 12 19 4 19 20" fill="currentColor" stroke="none" />
         <line x1="5" y1="19" x2="5" y2="5" />
       </svg>
@@ -91,7 +99,15 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeydown));
       :title="t('Step back', '后退一步')"
       @click="history.undo()"
     >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
         <polyline points="15 18 9 12 15 6" />
       </svg>
     </button>
@@ -103,7 +119,13 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeydown));
       :title="history.isPlaying.value ? t('Pause', '暂停') : t('Play', '播放')"
       @click="history.isPlaying.value ? history.pause() : history.play()"
     >
-      <svg v-if="history.isPlaying.value" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
+      <svg
+        v-if="history.isPlaying.value"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        stroke="none"
+        aria-hidden="true"
+      >
         <rect x="6" y="5" width="4" height="14" rx="1" />
         <rect x="14" y="5" width="4" height="14" rx="1" />
       </svg>
@@ -120,7 +142,15 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeydown));
       :title="t('Step forward', '前进一步')"
       @click="history.redo()"
     >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
         <polyline points="9 18 15 12 9 6" />
       </svg>
     </button>
@@ -133,7 +163,15 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeydown));
       :title="t('Skip to end', '跳到末尾')"
       @click="history.goto(history.totalSteps.value - 1)"
     >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
         <polygon points="5 4 15 12 5 20 5 4" fill="currentColor" stroke="none" />
         <line x1="19" y1="5" x2="19" y2="19" />
       </svg>
@@ -155,10 +193,7 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeydown));
     />
 
     <!-- Step counter -->
-    <span
-      class="viz-playback__counter"
-      :title="t('Current step / total steps', '当前步 / 总步数')"
-    >
+    <span class="viz-playback__counter" :title="t('Current step / total steps', '当前步 / 总步数')">
       {{ history.currentIndex.value + 1 }}/{{ history.totalSteps.value }}
     </span>
   </div>

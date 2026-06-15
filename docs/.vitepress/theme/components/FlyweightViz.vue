@@ -60,7 +60,9 @@ const vizHistory = useVizHistory<FlyweightSnapshot>(
       cacheHits.value = snap.cacheHits;
       cacheMisses.value = snap.cacheMisses;
       lastAddedIds.value = new Set(snap.lastAddedIds);
-      selectedChar.value = null; if (msg !== undefined) message.value = msg; },
+      selectedChar.value = null;
+      if (msg !== undefined) message.value = msg;
+    },
   },
 );
 
@@ -70,8 +72,8 @@ const totalInstances = computed(() => instances.value.length);
 const uniqueCount = computed(() => flyweightPool.value.size);
 
 const memoryWithout = computed(() => totalInstances.value * (INTRINSIC_BYTES + EXTRINSIC_BYTES));
-const memoryWith = computed(() =>
-  uniqueCount.value * INTRINSIC_BYTES + totalInstances.value * EXTRINSIC_BYTES
+const memoryWith = computed(
+  () => uniqueCount.value * INTRINSIC_BYTES + totalInstances.value * EXTRINSIC_BYTES,
 );
 const memorySavedPct = computed(() => {
   if (memoryWithout.value === 0) return 0;
@@ -121,7 +123,9 @@ function processText(text: string) {
     newIds.add(id);
   }
   lastAddedIds.value = newIds;
-  safeTimeout(() => { lastAddedIds.value = new Set(); }, 500);
+  safeTimeout(() => {
+    lastAddedIds.value = new Set();
+  }, 500);
 }
 
 /* ── User actions ── */
@@ -145,16 +149,19 @@ function applyText() {
   const total = instances.value.length;
   message.value = t(
     `Processed ${total} characters with only ${unique} unique flyweight objects. Each glyph bitmap stored once — Java's String.intern() and Python's string interning work the same way.`,
-    `处理了 ${total} 个字符，仅使用 ${unique} 个唯一的 Flyweight 对象。每个字形位图只存储一次 — Java 的 String.intern() 和 Python 的字符串驻留原理相同。`
+    `处理了 ${total} 个字符，仅使用 ${unique} 个唯一的 Flyweight 对象。每个字形位图只存储一次 — Java 的 String.intern() 和 Python 的字符串驻留原理相同。`,
   );
   log(message.value, 'success');
-  vizHistory.commit({
-    pool: [...flyweightPool.value.entries()],
-    instances: instances.value,
-    cacheHits: cacheHits.value,
-    cacheMisses: cacheMisses.value,
-    lastAddedIds: [...lastAddedIds.value],
-  }, `setText "${text}"`);
+  vizHistory.commit(
+    {
+      pool: [...flyweightPool.value.entries()],
+      instances: instances.value,
+      cacheHits: cacheHits.value,
+      cacheMisses: cacheMisses.value,
+      lastAddedIds: [...lastAddedIds.value],
+    },
+    `setText "${text}"`,
+  );
 }
 
 function appendText() {
@@ -171,21 +178,24 @@ function appendText() {
   if (newFlyweights === 0) {
     message.value = t(
       `Appended ${text.length} instances. All characters already in pool — 100% cache hit! This is the steady-state behavior.`,
-      `追加了 ${text.length} 个实例。所有字符已在池中 — 100% 缓存命中！这是稳态行为。`
+      `追加了 ${text.length} 个实例。所有字符已在池中 — 100% 缓存命中！这是稳态行为。`,
     );
   } else {
     message.value = t(
       `Appended ${text.length} instances. ${newFlyweights} new flyweight(s) created, ${text.length - newFlyweights} reused.`,
-      `追加了 ${text.length} 个实例。创建了 ${newFlyweights} 个新 Flyweight，复用了 ${text.length - newFlyweights} 个。`
+      `追加了 ${text.length} 个实例。创建了 ${newFlyweights} 个新 Flyweight，复用了 ${text.length - newFlyweights} 个。`,
     );
   }
-  vizHistory.commit({
-    pool: [...flyweightPool.value.entries()],
-    instances: instances.value,
-    cacheHits: cacheHits.value,
-    cacheMisses: cacheMisses.value,
-    lastAddedIds: [...lastAddedIds.value],
-  }, `append "${text}"`);
+  vizHistory.commit(
+    {
+      pool: [...flyweightPool.value.entries()],
+      instances: instances.value,
+      cacheHits: cacheHits.value,
+      cacheMisses: cacheMisses.value,
+      lastAddedIds: [...lastAddedIds.value],
+    },
+    `append "${text}"`,
+  );
 }
 
 function selectChar(char: string) {
@@ -224,7 +234,7 @@ async function presetTextEditor() {
   inputText.value = 'AAABBBCCC';
   message.value = t(
     'Text editor scenario: "AAABBBCCC" — 9 characters but only 3 unique glyphs. This is how text editors like VS Code render millions of characters with shared glyph atlases.',
-    '文本编辑器场景："AAABBBCCC" — 9 个字符但只有 3 个唯一字形。VS Code 等文本编辑器就是用共享字形图集渲染数百万字符的。'
+    '文本编辑器场景："AAABBBCCC" — 9 个字符但只有 3 个唯一字形。VS Code 等文本编辑器就是用共享字形图集渲染数百万字符的。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -233,7 +243,7 @@ async function presetTextEditor() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     `3 flyweights store 768B of glyph data. Without sharing: 9 copies = 2,304B. Saved ${memorySavedPct.value}%. Game engines use this for particle systems — millions of particles share one texture.`,
-    `3 个 flyweight 存储 768B 字形数据。不共享：9 份 = 2,304B。节省 ${memorySavedPct.value}%。游戏引擎用此模式处理粒子系统 — 数百万粒子共享一个纹理。`
+    `3 个 flyweight 存储 768B 字形数据。不共享：9 份 = 2,304B。节省 ${memorySavedPct.value}%。游戏引擎用此模式处理粒子系统 — 数百万粒子共享一个纹理。`,
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -246,7 +256,7 @@ async function presetHighRedundancy() {
   inputText.value = 'aaaaaaaaaaaaaaaaaa';
   message.value = t(
     'Maximum redundancy: 18 instances of "a". One flyweight serves all 18 — this is the best case for flyweight pattern.',
-    '最大冗余：18 个 "a" 实例。一个 flyweight 服务全部 18 个 — 这是 flyweight 模式的最佳场景。'
+    '最大冗余：18 个 "a" 实例。一个 flyweight 服务全部 18 个 — 这是 flyweight 模式的最佳场景。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -255,7 +265,7 @@ async function presetHighRedundancy() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     `1 flyweight for 18 instances: ${memorySavedPct.value}% memory saved. CSS applies the same principle — one style rule shared across thousands of DOM elements.`,
-    `1 个 flyweight 服务 18 个实例：节省 ${memorySavedPct.value}% 内存。CSS 应用相同原则 — 一条样式规则在数千个 DOM 元素间共享。`
+    `1 个 flyweight 服务 18 个实例：节省 ${memorySavedPct.value}% 内存。CSS 应用相同原则 — 一条样式规则在数千个 DOM 元素间共享。`,
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -268,7 +278,7 @@ async function presetAppendDemo() {
   inputText.value = 'Hello';
   message.value = t(
     'Append demo: apply "Hello", then append it again. Second time = 100% cache hits. This models how a document grows — early chars build the pool, later chars reuse it.',
-    '追加演示：应用 "Hello"，然后再次追加。第二次 = 100% 缓存命中。这模拟文档增长 — 早期字符构建池，后续字符复用它。'
+    '追加演示：应用 "Hello"，然后再次追加。第二次 = 100% 缓存命中。这模拟文档增长 — 早期字符构建池，后续字符复用它。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -280,7 +290,7 @@ async function presetAppendDemo() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     `After appending: ${totalInstances.value} instances, ${uniqueCount.value} flyweights, ${hitRate.value}% hit rate. The pool amortizes creation cost over the document's lifetime.`,
-    `追加后：${totalInstances.value} 个实例，${uniqueCount.value} 个 flyweight，${hitRate.value}% 命中率。池在文档生命周期内摊销创建成本。`
+    `追加后：${totalInstances.value} 个实例，${uniqueCount.value} 个 flyweight，${hitRate.value}% 命中率。池在文档生命周期内摊销创建成本。`,
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -325,7 +335,9 @@ applyText();
         <div class="fw-stat-desc">{{ t('Memory Saved', '内存节省') }}</div>
       </div>
       <div class="fw-stat-card">
-        <div class="fw-stat-number" :class="hitRate >= 50 ? 'fw-stat-hit-good' : 'fw-stat-hit-low'">{{ hitRate }}%</div>
+        <div class="fw-stat-number" :class="hitRate >= 50 ? 'fw-stat-hit-good' : 'fw-stat-hit-low'">
+          {{ hitRate }}%
+        </div>
         <div class="fw-stat-desc">{{ t('Cache Hit Rate', '缓存命中率') }}</div>
       </div>
     </div>
@@ -338,29 +350,39 @@ applyText();
           <div class="fw-mem-bar fw-mem-bar--waste" :style="{ width: '100%' }"></div>
         </div>
         <div class="fw-mem-detail">
-          {{ totalInstances }} x ({{ INTRINSIC_BYTES }}+{{ EXTRINSIC_BYTES }}) = <strong>{{ formatBytes(memoryWithout) }}</strong>
+          {{ totalInstances }} x ({{ INTRINSIC_BYTES }}+{{ EXTRINSIC_BYTES }}) =
+          <strong>{{ formatBytes(memoryWithout) }}</strong>
         </div>
-        <div class="fw-mem-note">{{ t('Each instance stores its own glyph data', '每个实例存储自己的字形数据') }}</div>
+        <div class="fw-mem-note">
+          {{ t('Each instance stores its own glyph data', '每个实例存储自己的字形数据') }}
+        </div>
       </div>
       <div class="fw-mem-col fw-mem-with">
         <div class="fw-mem-header">{{ t('With Flyweight', '使用 Flyweight') }}</div>
         <div class="fw-mem-bar-track">
           <div
             class="fw-mem-bar fw-mem-bar--shared"
-            :style="{ width: memoryWithout > 0 ? (memoryWith / memoryWithout * 100) + '%' : '0%' }"
+            :style="{ width: memoryWithout > 0 ? (memoryWith / memoryWithout) * 100 + '%' : '0%' }"
           ></div>
         </div>
         <div class="fw-mem-detail">
-          {{ uniqueCount }} x {{ INTRINSIC_BYTES }} + {{ totalInstances }} x {{ EXTRINSIC_BYTES }} = <strong>{{ formatBytes(memoryWith) }}</strong>
+          {{ uniqueCount }} x {{ INTRINSIC_BYTES }} + {{ totalInstances }} x {{ EXTRINSIC_BYTES }} =
+          <strong>{{ formatBytes(memoryWith) }}</strong>
         </div>
-        <div class="fw-mem-note">{{ t('Shared intrinsic + tiny extrinsic per instance', '共享内在数据 + 每实例微量外在数据') }}</div>
+        <div class="fw-mem-note">
+          {{
+            t('Shared intrinsic + tiny extrinsic per instance', '共享内在数据 + 每实例微量外在数据')
+          }}
+        </div>
       </div>
     </div>
 
     <div class="fw-layout">
       <!-- Flyweight pool -->
       <div class="fw-pool">
-        <div class="fw-section-label">{{ t('Flyweight Pool (intrinsic)', 'Flyweight 池（内在状态）') }}</div>
+        <div class="fw-section-label">
+          {{ t('Flyweight Pool (intrinsic)', 'Flyweight 池（内在状态）') }}
+        </div>
         <div class="fw-pool-grid">
           <div
             v-for="[char] in flyweightPool"
@@ -377,7 +399,9 @@ applyText();
             @keydown.enter.prevent="selectChar(char)"
             @keydown.space.prevent="selectChar(char)"
           >
-            <span class="fw-chip-char" :style="{ color: charColor(char) }">{{ char === ' ' ? '␣' : char }}</span>
+            <span class="fw-chip-char" :style="{ color: charColor(char) }">{{
+              char === ' ' ? '␣' : char
+            }}</span>
             <span class="fw-chip-count">{{ usageCounts[char] || 0 }}x</span>
           </div>
           <div v-if="flyweightPool.size === 0" class="fw-pool-empty">
@@ -389,7 +413,12 @@ applyText();
       <!-- Instance grid -->
       <div class="fw-grid-section">
         <div class="fw-section-label">
-          {{ t(`Instances (extrinsic state) — click pool items to highlight`, `实例（外在状态）— 点击池中项目以高亮`) }}
+          {{
+            t(
+              `Instances (extrinsic state) — click pool items to highlight`,
+              `实例（外在状态）— 点击池中项目以高亮`,
+            )
+          }}
         </div>
         <div class="fw-grid">
           <div
@@ -415,17 +444,21 @@ applyText();
             {{ inst.char === ' ' ? '␣' : inst.char }}
           </div>
           <div v-if="instances.length === 0" class="fw-grid-empty">
-            {{ t('No instances yet. Type text and click Apply.', '暂无实例。输入文本并点击应用。') }}
+            {{
+              t('No instances yet. Type text and click Apply.', '暂无实例。输入文本并点击应用。')
+            }}
           </div>
         </div>
         <div v-if="selectedChar !== null" class="fw-highlight-info">
           <span class="fw-highlight-char" :style="{ color: charColor(selectedChar) }">
             {{ selectedChar === ' ' ? '␣' : selectedChar }}
           </span>
-          {{ t(
-            `${usageCounts[selectedChar] || 0} instances share 1 flyweight object (${INTRINSIC_BYTES} B shared, ${(usageCounts[selectedChar] || 0) * EXTRINSIC_BYTES} B extrinsic)`,
-            `${usageCounts[selectedChar] || 0} 个实例共享 1 个 Flyweight 对象（共享 ${INTRINSIC_BYTES} B，外在 ${(usageCounts[selectedChar] || 0) * EXTRINSIC_BYTES} B）`
-          ) }}
+          {{
+            t(
+              `${usageCounts[selectedChar] || 0} instances share 1 flyweight object (${INTRINSIC_BYTES} B shared, ${(usageCounts[selectedChar] || 0) * EXTRINSIC_BYTES} B extrinsic)`,
+              `${usageCounts[selectedChar] || 0} 个实例共享 1 个 Flyweight 对象（共享 ${INTRINSIC_BYTES} B，外在 ${(usageCounts[selectedChar] || 0) * EXTRINSIC_BYTES} B）`,
+            )
+          }}
         </div>
       </div>
     </div>
@@ -439,9 +472,15 @@ applyText();
 
     <div class="viz-presets">
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
-      <button class="viz-btn" @click="presetTextEditor">{{ t('Text Editor', '文本编辑器') }}</button>
-      <button class="viz-btn" @click="presetHighRedundancy">{{ t('Max Redundancy', '最大冗余') }}</button>
-      <button class="viz-btn" @click="presetAppendDemo">{{ t('Append Growth', '追加增长') }}</button>
+      <button class="viz-btn" @click="presetTextEditor">
+        {{ t('Text Editor', '文本编辑器') }}
+      </button>
+      <button class="viz-btn" @click="presetHighRedundancy">
+        {{ t('Max Redundancy', '最大冗余') }}
+      </button>
+      <button class="viz-btn" @click="presetAppendDemo">
+        {{ t('Append Growth', '追加增长') }}
+      </button>
     </div>
 
     <div class="viz-status" aria-live="polite">{{ message }}</div>

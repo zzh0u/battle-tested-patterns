@@ -25,10 +25,12 @@ interface VarRef {
 
 const pool = ref<InternEntry[]>([]);
 const variables = ref<VarRef[]>([]);
-const message = ref(t(
-  'Type a string and click "Intern" to add it to the pool — used by Java JVM, Python, and V8 for string deduplication',
-  '输入字符串并点击 "Intern" 将其添加到池中 — Java JVM、Python 和 V8 用此进行字符串去重',
-));
+const message = ref(
+  t(
+    'Type a string and click "Intern" to add it to the pool — used by Java JVM, Python, and V8 for string deduplication',
+    '输入字符串并点击 "Intern" 将其添加到池中 — Java JVM、Python 和 V8 用此进行字符串去重',
+  ),
+);
 const highlightValue = ref('');
 const highlightAction = ref<'new' | 'reuse' | 'remove' | 'gc' | ''>('');
 const inputText = ref('');
@@ -61,7 +63,9 @@ const vizHistory = useVizHistory<InterningSnapshot>(
       compareResult.value = '';
       compareSteps.length = 0;
       comparingCharIdx.value = -1;
-      isComparing.value = false; if (msg !== undefined) message.value = msg; },
+      isComparing.value = false;
+      if (msg !== undefined) message.value = msg;
+    },
   },
 );
 
@@ -108,7 +112,7 @@ const presetStrings = ['hello', 'world', 'foo', 'bar'];
 
 /* ── Core operations ─────────────────────────── */
 function intern(str?: string) {
-  const val = (str ?? inputText.value.trim());
+  const val = str ?? inputText.value.trim();
   if (!val) {
     message.value = t('Enter a string first', '请先输入一个字符串');
     return;
@@ -117,7 +121,7 @@ function intern(str?: string) {
   const varName = varNames[varNameCounter % varNames.length];
   varNameCounter++;
 
-  const existing = pool.value.find(e => e.value === val);
+  const existing = pool.value.find((e) => e.value === val);
   if (existing) {
     variables.value.push({
       name: varName,
@@ -147,12 +151,15 @@ function intern(str?: string) {
     log(message.value, 'info');
   }
   inputText.value = '';
-  safeTimeout(() => { highlightValue.value = ''; highlightAction.value = ''; }, 700);
+  safeTimeout(() => {
+    highlightValue.value = '';
+    highlightAction.value = '';
+  }, 700);
   vizHistory.commit({ pool: [...pool.value], variables: [...variables.value] }, `intern "${val}"`);
 }
 
 function removeVariable(v: VarRef) {
-  const idx = variables.value.findIndex(x => x.id === v.id);
+  const idx = variables.value.findIndex((x) => x.id === v.id);
   if (idx === -1) return;
   variables.value.splice(idx, 1);
 
@@ -164,7 +171,7 @@ function removeVariable(v: VarRef) {
   if (compareB.value?.id === v.id) compareB.value = null;
 
   if (remaining === 0) {
-    const poolIdx = pool.value.findIndex(e => e.value === v.targetValue);
+    const poolIdx = pool.value.findIndex((e) => e.value === v.targetValue);
     if (poolIdx !== -1) {
       pool.value.splice(poolIdx, 1);
       highlightAction.value = 'gc';
@@ -180,8 +187,14 @@ function removeVariable(v: VarRef) {
       `已移除 ${v.name}。refcount("${v.targetValue}") = ${remaining}`,
     );
   }
-  safeTimeout(() => { highlightValue.value = ''; highlightAction.value = ''; }, 700);
-  vizHistory.commit({ pool: [...pool.value], variables: [...variables.value] }, `release ${v.name}`);
+  safeTimeout(() => {
+    highlightValue.value = '';
+    highlightAction.value = '';
+  }, 700);
+  vizHistory.commit(
+    { pool: [...pool.value], variables: [...variables.value] },
+    `release ${v.name}`,
+  );
 }
 
 function reset() {
@@ -205,7 +218,7 @@ function reset() {
 }
 
 function refsForEntry(value: string): VarRef[] {
-  return variables.value.filter(v => v.targetValue === value);
+  return variables.value.filter((v) => v.targetValue === value);
 }
 
 /* ── Comparison demo ─────────────────────────── */
@@ -241,31 +254,39 @@ function runComparison() {
 
   const sameInterned = a.targetValue === b.targetValue;
 
-  compareSteps.push(t(
-    `Step 1: Pointer check — do ${a.name} and ${b.name} reference the same pool entry?`,
-    `步骤 1：指针检查 — ${a.name} 和 ${b.name} 是否引用同一池条目？`,
-  ));
+  compareSteps.push(
+    t(
+      `Step 1: Pointer check — do ${a.name} and ${b.name} reference the same pool entry?`,
+      `步骤 1：指针检查 — ${a.name} 和 ${b.name} 是否引用同一池条目？`,
+    ),
+  );
 
   safeTimeout(() => {
     if (sameInterned) {
-      compareSteps.push(t(
-        `-> YES! Both point to "${a.targetValue}" in pool. O(1) — done! Java's == operator on interned strings does exactly this.`,
-        `-> 是！两者均指向池中的 "${a.targetValue}"。O(1) — 完成！Java 对 interned 字符串的 == 运算符就是这样做的。`,
-      ));
+      compareSteps.push(
+        t(
+          `-> YES! Both point to "${a.targetValue}" in pool. O(1) — done! Java's == operator on interned strings does exactly this.`,
+          `-> 是！两者均指向池中的 "${a.targetValue}"。O(1) — 完成！Java 对 interned 字符串的 == 运算符就是这样做的。`,
+        ),
+      );
       compareResult.value = t(
         `${a.name} === ${b.name} is TRUE (same interned reference, O(1))`,
         `${a.name} === ${b.name} 为 TRUE（相同的 intern 引用，O(1)）`,
       );
       isComparing.value = false;
     } else {
-      compareSteps.push(t(
-        `-> NO. ${a.name} -> "${a.targetValue}", ${b.name} -> "${b.targetValue}". Different pool entries.`,
-        `-> 否。${a.name} -> "${a.targetValue}"，${b.name} -> "${b.targetValue}"。不同池条目。`,
-      ));
-      compareSteps.push(t(
-        `Step 2: Without interning, would need char-by-char comparison O(n):`,
-        `步骤 2：若无 interning，需逐字符比较 O(n)：`,
-      ));
+      compareSteps.push(
+        t(
+          `-> NO. ${a.name} -> "${a.targetValue}", ${b.name} -> "${b.targetValue}". Different pool entries.`,
+          `-> 否。${a.name} -> "${a.targetValue}"，${b.name} -> "${b.targetValue}"。不同池条目。`,
+        ),
+      );
+      compareSteps.push(
+        t(
+          `Step 2: Without interning, would need char-by-char comparison O(n):`,
+          `步骤 2：若无 interning，需逐字符比较 O(n)：`,
+        ),
+      );
 
       const maxLen = Math.max(a.targetValue.length, b.targetValue.length);
       let charIdx = 0;
@@ -283,10 +304,12 @@ function runComparison() {
         const chA = a.targetValue[charIdx] ?? '-';
         const chB = b.targetValue[charIdx] ?? '-';
         if (chA !== chB) {
-          compareSteps.push(t(
-            `  [${charIdx}] '${chA}' != '${chB}' -> mismatch found after ${charIdx + 1} comparison(s)`,
-            `  [${charIdx}] '${chA}' != '${chB}' -> 在 ${charIdx + 1} 次比较后发现不匹配`,
-          ));
+          compareSteps.push(
+            t(
+              `  [${charIdx}] '${chA}' != '${chB}' -> mismatch found after ${charIdx + 1} comparison(s)`,
+              `  [${charIdx}] '${chA}' != '${chB}' -> 在 ${charIdx + 1} 次比较后发现不匹配`,
+            ),
+          );
           comparingCharIdx.value = -1;
           compareResult.value = t(
             `${a.name} !== ${b.name} (mismatch at index ${charIdx}, O(n) without interning)`,
@@ -295,10 +318,12 @@ function runComparison() {
           isComparing.value = false;
           return;
         }
-        compareSteps.push(t(
-          `  [${charIdx}] '${chA}' == '${chB}' -> match, continue...`,
-          `  [${charIdx}] '${chA}' == '${chB}' -> 匹配，继续...`,
-        ));
+        compareSteps.push(
+          t(
+            `  [${charIdx}] '${chA}' == '${chB}' -> match, continue...`,
+            `  [${charIdx}] '${chA}' == '${chB}' -> 匹配，继续...`,
+          ),
+        );
         charIdx++;
       }, 350);
     }
@@ -320,7 +345,7 @@ async function presetDeduplication() {
   presetRunning = true;
   message.value = t(
     'String deduplication: intern "hello" twice. Second call reuses the pool entry — no new allocation. Java -XX:+UseStringDeduplication does this at GC time.',
-    '字符串去重：两次 intern "hello"。第二次调用复用池条目 — 无新分配。Java -XX:+UseStringDeduplication 在 GC 时做此操作。'
+    '字符串去重：两次 intern "hello"。第二次调用复用池条目 — 无新分配。Java -XX:+UseStringDeduplication 在 GC 时做此操作。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -338,7 +363,7 @@ async function presetDeduplication() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     '3 references to "hello" share 1 pool entry. Memory saved: 2 copies avoided. V8 interns all identifiers in JavaScript source code the same way.',
-    '3 个 "hello" 引用共享 1 个池条目。内存节省：避免了 2 份副本。V8 对 JavaScript 源代码中的所有标识符做同样的处理。'
+    '3 个 "hello" 引用共享 1 个池条目。内存节省：避免了 2 份副本。V8 对 JavaScript 源代码中的所有标识符做同样的处理。',
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -349,8 +374,8 @@ async function presetGarbageCollection() {
   reset();
   presetRunning = true;
   message.value = t(
-    'GC demo: intern strings, then remove all references. When refcount hits 0, the pool entry is garbage collected — like weak references in Java\'s WeakHashMap.',
-    'GC 演示：驻留字符串，然后移除所有引用。当引用计数为 0 时，池条目被垃圾回收 — 类似 Java WeakHashMap 中的弱引用。'
+    "GC demo: intern strings, then remove all references. When refcount hits 0, the pool entry is garbage collected — like weak references in Java's WeakHashMap.",
+    'GC 演示：驻留字符串，然后移除所有引用。当引用计数为 0 时，池条目被垃圾回收 — 类似 Java WeakHashMap 中的弱引用。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -363,7 +388,7 @@ async function presetGarbageCollection() {
   intern('keep');
   await delay(500);
   if (!presetRunning || isAborted()) return;
-  const tempVar = variables.value.find(v => v.targetValue === 'temp');
+  const tempVar = variables.value.find((v) => v.targetValue === 'temp');
   if (tempVar) {
     removeVariable(tempVar);
     await delay(800);
@@ -371,7 +396,7 @@ async function presetGarbageCollection() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     '"temp" removed from pool (refcount=0). "keep" stays (refcount=2). This prevents intern tables from growing unbounded — a real concern in long-running servers.',
-    '"temp" 从池中移除（refcount=0）。"keep" 保留（refcount=2）。这防止 intern 表无限增长 — 长时间运行的服务器的真实问题。'
+    '"temp" 从池中移除（refcount=0）。"keep" 保留（refcount=2）。这防止 intern 表无限增长 — 长时间运行的服务器的真实问题。',
   );
   log(message.value, 'highlight');
   presetRunning = false;
@@ -383,7 +408,7 @@ async function presetComparisonDemo() {
   presetRunning = true;
   message.value = t(
     'O(1) vs O(n) comparison: intern two identical strings, then compare. With interning: pointer equality O(1). Without: char-by-char O(n). Click == buttons after setup.',
-    'O(1) vs O(n) 比较：驻留两个相同字符串，然后比较。有 interning：指针相等 O(1)。没有：逐字符 O(n)。设置后点击 == 按钮。'
+    'O(1) vs O(n) 比较：驻留两个相同字符串，然后比较。有 interning：指针相等 O(1)。没有：逐字符 O(n)。设置后点击 == 按钮。',
   );
   await delay(800);
   if (!presetRunning || isAborted()) return;
@@ -398,12 +423,15 @@ async function presetComparisonDemo() {
   if (!presetRunning || isAborted()) return;
   message.value = t(
     'Setup complete. Click == on any variable to start comparison. Try comparing same strings (O(1)) vs different strings (O(n) fallback).',
-    '设置完成。点击任意变量上的 == 开始比较。试试比较相同字符串（O(1)）和不同字符串（O(n) 回退）。'
+    '设置完成。点击任意变量上的 == 开始比较。试试比较相同字符串（O(1)）和不同字符串（O(n) 回退）。',
   );
-  log(t(
-    'Interning trades insertion cost for O(1) equality checks via pointer comparison instead of O(n) string comparison.',
-    'Interning 以插入成本换取 O(1) 等值检查 — 通过指针比较而非 O(n) 字符串比较。'
-  ), 'highlight');
+  log(
+    t(
+      'Interning trades insertion cost for O(1) equality checks via pointer comparison instead of O(n) string comparison.',
+      'Interning 以插入成本换取 O(1) 等值检查 — 通过指针比较而非 O(n) 字符串比较。',
+    ),
+    'highlight',
+  );
   presetRunning = false;
 }
 </script>
@@ -464,15 +492,23 @@ async function presetComparisonDemo() {
             :key="v.id"
             class="in-var"
             :class="{
-              'in-var--highlight-new': highlightValue === v.targetValue && highlightAction === 'new',
-              'in-var--highlight-reuse': highlightValue === v.targetValue && highlightAction === 'reuse',
-              'in-var--highlight-remove': highlightValue === v.targetValue && highlightAction === 'remove',
+              'in-var--highlight-new':
+                highlightValue === v.targetValue && highlightAction === 'new',
+              'in-var--highlight-reuse':
+                highlightValue === v.targetValue && highlightAction === 'reuse',
+              'in-var--highlight-remove':
+                highlightValue === v.targetValue && highlightAction === 'remove',
               'in-var--compare-selected': compareA?.id === v.id || compareB?.id === v.id,
             }"
           >
             <span class="in-var-name">{{ v.name }}</span>
             <svg class="in-ref-arrow" viewBox="0 0 28 12" width="28" height="12" aria-hidden="true">
-              <path d="M0 6 L22 6 M18 2 L22 6 L18 10" stroke="var(--viz-primary)" stroke-width="1.5" fill="none"/>
+              <path
+                d="M0 6 L22 6 M18 2 L22 6 L18 10"
+                stroke="var(--viz-primary)"
+                stroke-width="1.5"
+                fill="none"
+              />
             </svg>
             <span class="in-var-target">"{{ v.targetValue }}"</span>
             <button
@@ -493,7 +529,9 @@ async function presetComparisonDemo() {
             </button>
           </div>
           <div v-if="variables.length === 0" class="in-empty">
-            {{ t('No variables yet — intern a string above', '暂无变量 — 请在上方 intern 一个字符串') }}
+            {{
+              t('No variables yet — intern a string above', '暂无变量 — 请在上方 intern 一个字符串')
+            }}
           </div>
         </div>
       </div>
@@ -507,16 +545,23 @@ async function presetComparisonDemo() {
             :key="entry.id"
             class="in-entry"
             :class="{
-              'in-entry--highlight-new': highlightValue === entry.value && highlightAction === 'new',
-              'in-entry--highlight-reuse': highlightValue === entry.value && highlightAction === 'reuse',
-              'in-entry--highlight-remove': highlightValue === entry.value && highlightAction === 'remove',
+              'in-entry--highlight-new':
+                highlightValue === entry.value && highlightAction === 'new',
+              'in-entry--highlight-reuse':
+                highlightValue === entry.value && highlightAction === 'reuse',
+              'in-entry--highlight-remove':
+                highlightValue === entry.value && highlightAction === 'remove',
             }"
           >
             <span class="in-entry-value">"{{ entry.value }}"</span>
-            <span class="in-entry-refs" :class="{
-              'in-entry-refs--warn': refsForEntry(entry.value).length === 1,
-            }">
-              {{ refsForEntry(entry.value).length }} {{ t(refsForEntry(entry.value).length !== 1 ? 'refs' : 'ref', '个引用') }}
+            <span
+              class="in-entry-refs"
+              :class="{
+                'in-entry-refs--warn': refsForEntry(entry.value).length === 1,
+              }"
+            >
+              {{ refsForEntry(entry.value).length }}
+              {{ t(refsForEntry(entry.value).length !== 1 ? 'refs' : 'ref', '个引用') }}
             </span>
           </div>
           <div v-if="pool.length === 0" class="in-empty">
@@ -532,8 +577,7 @@ async function presetComparisonDemo() {
       <div v-for="d in memorySavingsDetail" :key="d.value" class="in-savings-row">
         <span class="in-savings-label">"{{ d.value }}"</span>
         <span class="in-savings-detail">
-          {{ d.refs }} {{ t('refs', '个引用') }} &rarr;
-          {{ t('stored once', '存储一次') }},
+          {{ d.refs }} {{ t('refs', '个引用') }} &rarr; {{ t('stored once', '存储一次') }},
           {{ t(`saved ${d.refs - 1} copies`, `节省 ${d.refs - 1} 份副本`) }}
           <strong>({{ d.saved }}B)</strong>
         </span>
@@ -551,11 +595,19 @@ async function presetComparisonDemo() {
 
       <div class="in-compare-operands">
         <div class="in-compare-slot" :class="{ 'in-compare-slot--filled': compareA }">
-          {{ compareA ? `${compareA.name} = "${compareA.targetValue}"` : t('Click == on a variable', '点击变量上的 ==') }}
+          {{
+            compareA
+              ? `${compareA.name} = "${compareA.targetValue}"`
+              : t('Click == on a variable', '点击变量上的 ==')
+          }}
         </div>
         <span class="in-compare-vs">vs</span>
         <div class="in-compare-slot" :class="{ 'in-compare-slot--filled': compareB }">
-          {{ compareB ? `${compareB.name} = "${compareB.targetValue}"` : t('Click == on another', '点击另一个变量的 ==') }}
+          {{
+            compareB
+              ? `${compareB.name} = "${compareB.targetValue}"`
+              : t('Click == on another', '点击另一个变量的 ==')
+          }}
         </div>
       </div>
 
@@ -567,17 +619,24 @@ async function presetComparisonDemo() {
           :class="{
             'in-compare-step--heading': step.startsWith('Step') || step.startsWith('步骤'),
             'in-compare-step--match': step.includes('match') || step.includes('匹配'),
-            'in-compare-step--mismatch': step.includes('mismatch') || step.includes('不匹配') || step.includes('!='),
+            'in-compare-step--mismatch':
+              step.includes('mismatch') || step.includes('不匹配') || step.includes('!='),
             'in-compare-step--success': step.includes('YES') || step.includes('是！'),
             'in-compare-step--fail': step.includes('NO.') || step.includes('否。'),
           }"
-        >{{ step }}</div>
+        >
+          {{ step }}
+        </div>
       </div>
 
-      <div v-if="compareResult" class="in-compare-result" :class="{
-        'in-compare-result--equal': compareResult.includes('TRUE'),
-        'in-compare-result--not-equal': compareResult.includes('!=='),
-      }">
+      <div
+        v-if="compareResult"
+        class="in-compare-result"
+        :class="{
+          'in-compare-result--equal': compareResult.includes('TRUE'),
+          'in-compare-result--not-equal': compareResult.includes('!=='),
+        }"
+      >
         {{ compareResult }}
       </div>
     </div>
@@ -592,17 +651,27 @@ async function presetComparisonDemo() {
     <div class="viz-presets">
       <span class="viz-label">{{ t('Scenarios:', '场景：') }}</span>
       <button class="viz-btn" @click="presetDeduplication">{{ t('Deduplication', '去重') }}</button>
-      <button class="viz-btn" @click="presetGarbageCollection">{{ t('GC Cleanup', 'GC 清理') }}</button>
-      <button class="viz-btn" @click="presetComparisonDemo">{{ t('O(1) Compare', 'O(1) 比较') }}</button>
+      <button class="viz-btn" @click="presetGarbageCollection">
+        {{ t('GC Cleanup', 'GC 清理') }}
+      </button>
+      <button class="viz-btn" @click="presetComparisonDemo">
+        {{ t('O(1) Compare', 'O(1) 比较') }}
+      </button>
     </div>
 
     <!-- Status message -->
-    <div class="viz-status" aria-live="polite" :class="{
-      'in-status--new': highlightAction === 'new',
-      'in-status--reuse': highlightAction === 'reuse',
-      'in-status--remove': highlightAction === 'remove',
-      'in-status--gc': highlightAction === 'gc',
-    }">{{ message }}</div>
+    <div
+      class="viz-status"
+      aria-live="polite"
+      :class="{
+        'in-status--new': highlightAction === 'new',
+        'in-status--reuse': highlightAction === 'reuse',
+        'in-status--remove': highlightAction === 'remove',
+        'in-status--gc': highlightAction === 'gc',
+      }"
+    >
+      {{ message }}
+    </div>
     <VizPlaybackBar :history="vizHistory" :speed="speed" />
     <VizLog :entries="logEntries" @clear="clearLog" />
   </div>
@@ -1047,10 +1116,18 @@ async function presetComparisonDemo() {
 }
 
 /* ── Status modifiers ────────────────────── */
-.in-status--new { border-left: 3px solid var(--viz-primary); }
-.in-status--reuse { border-left: 3px solid var(--viz-success); }
-.in-status--remove { border-left: 3px solid var(--viz-warning); }
-.in-status--gc { border-left: 3px solid var(--viz-danger); }
+.in-status--new {
+  border-left: 3px solid var(--viz-primary);
+}
+.in-status--reuse {
+  border-left: 3px solid var(--viz-success);
+}
+.in-status--remove {
+  border-left: 3px solid var(--viz-warning);
+}
+.in-status--gc {
+  border-left: 3px solid var(--viz-danger);
+}
 
 /* ── Mobile ──────────────────────────────── */
 @media (max-width: 640px) {
