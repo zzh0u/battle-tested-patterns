@@ -37,9 +37,11 @@
     "check:exercises": "tsx scripts/check-exercises.ts",
     "check:relations": "tsx scripts/check-relations.ts",
     "check:content": "tsx scripts/check-structure.ts && tsx scripts/check-zh-parity.ts && tsx scripts/check-exercises.ts && tsx scripts/check-relations.ts",
-    "lint": "pnpm lint:md && pnpm lint:code",
+    "lint": "pnpm lint:md && pnpm lint:code && pnpm lint:css",
     "lint:md": "markdownlint 'docs/**/*.md' --ignore 'docs/node_modules' --config .markdownlint.json",
     "lint:code": "eslint .",
+    "lint:css": "stylelint 'docs/.vitepress/theme/custom.css' 'docs/.vitepress/**/*.vue'",
+    "lint:css:fix": "stylelint 'docs/.vitepress/theme/custom.css' 'docs/.vitepress/**/*.vue' --fix",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -63,7 +65,11 @@
     "jsdom": "^29.1.1",
     "lint-staged": "^17.0.7",
     "markdownlint-cli": "^0.48.0",
+    "postcss-html": "^1.8.1",
     "prettier": "^3.8.4",
+    "stylelint": "^17.13.0",
+    "stylelint-config-recommended-vue": "^1.6.1",
+    "stylelint-config-standard": "^40.0.0",
     "tsx": "^4.22.4",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.61.0",
@@ -75,11 +81,20 @@
     "pnpm": ">=9"
   },
   "lint-staged": {
-    "*.{ts,vue,js,mjs,cjs}": [
+    "*.{ts,js,mjs,cjs}": [
       "eslint --fix",
       "prettier --write"
     ],
-    "*.{json,yaml,yml,css}": "prettier --write",
+    "*.vue": [
+      "eslint --fix",
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "*.css": [
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "*.{json,yaml,yml}": "prettier --write",
     "*.md": "markdownlint --config .markdownlint.json"
   }
 }

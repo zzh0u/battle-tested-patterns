@@ -25,8 +25,8 @@
   --viz-radius-lg: 14px;
 
   /* Shadows — Apple dual-shadow style */
-  --viz-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.08);
-  --viz-shadow-md: 0 2px 4px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.1);
+  --viz-shadow-sm: 0 1px 2px rgb(0 0 0 / 6%), 0 1px 3px rgb(0 0 0 / 8%);
+  --viz-shadow-md: 0 2px 4px rgb(0 0 0 / 6%), 0 4px 12px rgb(0 0 0 / 10%);
 
   /* Motion — Apple HIG easing */
   --viz-ease: cubic-bezier(0, 0, 0.58, 1);
@@ -75,8 +75,8 @@
   --viz-muted: #a1a1a6;
   --viz-cell-empty: #2c2c2e;
   --viz-cell-filled: #64a9ff;
-  --viz-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.25);
-  --viz-shadow-md: 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.35);
+  --viz-shadow-sm: 0 1px 2px rgb(0 0 0 / 20%), 0 1px 3px rgb(0 0 0 / 25%);
+  --viz-shadow-md: 0 2px 4px rgb(0 0 0 / 20%), 0 4px 12px rgb(0 0 0 / 35%);
 }
 
 .viz-title {
@@ -171,6 +171,9 @@
   color: var(--viz-muted);
 }
 
+/* The earlier `.viz-container .viz-status` only sets cursor/user-select, so
+   there is no real property conflict with this lower-specificity rule. */
+/* stylelint-disable-next-line no-descending-specificity */
 .viz-status {
   margin-top: 0.75rem;
   padding: 0.5rem 0.75rem;
@@ -189,9 +192,11 @@
 .viz-status--hit {
   border-left: 3px solid var(--viz-success);
 }
+
 .viz-status--miss {
   border-left: 3px solid var(--viz-danger);
 }
+
 .viz-status--evict {
   border-left: 3px solid var(--viz-warning);
 }
@@ -246,6 +251,7 @@
   100% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.12);
   }
@@ -256,6 +262,7 @@
     opacity: 0;
     transform: translateY(-6px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -267,13 +274,14 @@
   100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.3;
   }
 }
 
 /* Responsive: Apple HIG touch targets on mobile */
-@media (max-width: 640px) {
+@media (width <= 640px) {
   .viz-container {
     padding: 0.75rem;
     margin: 1rem 0;
@@ -527,12 +535,12 @@ pre.mermaid:not([data-mermaid-status])::after {
   background-image: linear-gradient(
     110deg,
     transparent 25%,
-    rgba(255, 255, 255, 0.9) 37%,
+    rgb(255 255 255 / 90%) 37%,
     transparent 50%
   );
   background-size: 250% 100%;
   animation: mermaid-shimmer 2s ease-in-out infinite;
-  border: 1px solid var(--vp-c-divider, rgba(60, 60, 67, 0.12));
+  border: 1px solid var(--vp-c-divider, rgb(60 60 67 / 12%));
 }
 
 /* Dark mode: Apple-style translucent white highlight sweep over deep base */
@@ -541,17 +549,18 @@ pre.mermaid:not([data-mermaid-status])::after {
   background-image: linear-gradient(
     110deg,
     transparent 25%,
-    rgba(255, 255, 255, 0.08) 37%,
+    rgb(255 255 255 / 8%) 37%,
     transparent 50%
   );
   background-size: 250% 100%;
-  border-color: var(--vp-c-divider, rgba(84, 84, 88, 0.36));
+  border-color: var(--vp-c-divider, rgb(84 84 88 / 36%));
 }
 
 @keyframes mermaid-shimmer {
   0% {
     background-position: 200% 0;
   }
+
   100% {
     background-position: -200% 0;
   }
@@ -586,14 +595,15 @@ pre.mermaid[data-mermaid-status]::after {
   height: 44px;
   border: 1px solid var(--vp-c-divider);
   border-radius: 50%;
+
   /* Frosted surface + brand-tinted arrow: legible in both themes without the
      heavy "solid blue blob" look. The translucent bg picks up the page behind
      it, and the subtle ring keeps it defined against dark backgrounds. */
   background: var(--vp-c-bg-elv);
   color: var(--vp-c-brand-1);
   box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.08),
-    0 6px 16px rgba(0, 0, 0, 0.12);
+    0 1px 2px rgb(0 0 0 / 8%),
+    0 6px 16px rgb(0 0 0 / 12%);
   cursor: pointer;
   -webkit-backdrop-filter: saturate(180%) blur(12px);
   backdrop-filter: saturate(180%) blur(12px);
@@ -612,8 +622,8 @@ pre.mermaid[data-mermaid-status]::after {
     border-color: var(--vp-c-brand-1);
     background: var(--vp-c-brand-soft);
     box-shadow:
-      0 2px 4px rgba(0, 0, 0, 0.1),
-      0 10px 24px rgba(0, 0, 0, 0.16);
+      0 2px 4px rgb(0 0 0 / 10%),
+      0 10px 24px rgb(0 0 0 / 16%);
   }
 }
 
@@ -628,8 +638,8 @@ pre.mermaid[data-mermaid-status]::after {
 
 .dark .back-to-top {
   box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.4),
-    0 6px 16px rgba(0, 0, 0, 0.5);
+    0 1px 2px rgb(0 0 0 / 40%),
+    0 6px 16px rgb(0 0 0 / 50%);
 }
 
 /* Show on all viewports: VitePress only offers a "return to top" link inside
@@ -658,9 +668,11 @@ pre.mermaid[data-mermaid-status]::after {
   .back-to-top-fade-leave-active {
     transition: opacity 150ms linear;
   }
+
   .back-to-top:active {
     transform: none;
   }
+
   .back-to-top-fade-enter-from,
   .back-to-top-fade-leave-to {
     transform: none;
@@ -670,7 +682,7 @@ pre.mermaid[data-mermaid-status]::after {
 /* ── Mobile sticky navigation ──────────────────────────────────────────────
    Pin both the global nav (VPNav) and the local-nav (VPLocalNav) on mobile.
    `.Layout` raises specificity above VitePress' scoped `.VPNav[data-v-*]`. */
-@media (max-width: 959px) {
+@media (width <= 959px) {
   .Layout .VPNav {
     position: fixed;
     top: 0;
@@ -695,7 +707,7 @@ pre.mermaid[data-mermaid-status]::after {
 
 /* Align the mobile menu backdrop with our 960px layout breakpoint (VitePress
    only hides it at >=1280px, leaving it lingering in the 960-1279px band). */
-@media (min-width: 960px) {
+@media (width >= 960px) {
   .Layout .VPBackdrop {
     display: none;
   }
