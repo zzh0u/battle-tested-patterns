@@ -23,7 +23,7 @@ features:
       width: 100
       height: 100
     title: Interactive Visualizations
-    details: Every pattern has a hands-on SVG visualization. Click, drag, and experiment to build intuition — not just read about it.
+    details: Every pattern has a hands-on SVG visualization. Click, drag, and experiment to build intuition — then undo any step, replay, or scrub through the algorithm's history with the time-travel playback bar.
   - icon:
       src: /images/production_proof.png
       width: 100
@@ -58,7 +58,7 @@ features:
 
 ## Try It — Interactive Min Heap
 
-Every pattern page has a hands-on visualization like this one. Click **Insert Random** to watch the heap algorithm in action, or try the **React Scheduler** scenario:
+Every pattern page has a hands-on visualization like this one. Click **Insert Random** to watch the heap algorithm in action, or try the **React Scheduler** scenario. Use the playback bar below the visualization to undo any step, replay, or scrub through the algorithm's history:
 
 <MinHeapViz />
 

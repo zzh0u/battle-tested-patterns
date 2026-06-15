@@ -4,7 +4,7 @@
 
 **从顶级开源项目源码中提炼的代码级编程模式。**
 
-交互式可视化 · 精确到行号的源码链接 · 多语言实现 · 可运行练习
+交互式可视化（支持时间旅行回放）· 精确到行号的源码链接 · 多语言实现 · 可运行练习
 
 [📖 Documentation](https://totoro-jam.github.io/battle-tested-patterns/) · [📖 中文文档](https://totoro-jam.github.io/battle-tested-patterns/zh/)
 
@@ -210,7 +210,7 @@ const perms = READ | WRITE;            perms = READ | WRITE
 | 特性 | 详情 |
 |------|------|
 | 46 个模式 | Bitmask、LRU Cache、MVCC、Work Stealing、Actor Model 等 |
-| 46 个交互式可视化 | 可点击、可拖拽的 SVG 可视化，动手操作建立直觉 |
+| 46 个交互式可视化 | 可点击、可拖拽的 SVG 可视化，动手操作建立直觉，还能用播放栏撤销或回放任意步骤 |
 | 93 个 TS 练习 + 每语言 46 个 | 4 种语言（TS/Rust/Go/Python），共 1,073+ 个测试用例 |
 | 184 个挑战题 | "你猜会怎样"场景问答，验证真正理解 |
 | 9 个系统案例 | React、Linux、Go、Git、Node.js、Rust、游戏引擎、分布式系统如何组合模式 |

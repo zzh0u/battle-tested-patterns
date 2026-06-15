@@ -4,7 +4,7 @@
 
 **Code-level programming patterns extracted from production codebases.**
 
-Interactive visualizations · Precise source links · Multi-language · Runnable exercises
+Interactive visualizations with time-travel playback · Precise source links · Multi-language · Runnable exercises
 
 [📖 Documentation](https://totoro-jam.github.io/battle-tested-patterns/) · [📖 中文文档](https://totoro-jam.github.io/battle-tested-patterns/zh/)
 
@@ -210,7 +210,7 @@ Then exercises at 2 difficulty levels — all with tests you can run.
 | Feature | Details |
 |---------|---------|
 | 46 patterns | Bitmask, LRU Cache, MVCC, Work Stealing, Actor Model, and 41 more |
-| 46 interactive visualizations | Hands-on SVG visualizations — click, drag, experiment to build intuition |
+| 46 interactive visualizations | Hands-on SVG visualizations — click, drag, experiment, then undo or replay any step with the time-travel playback bar |
 | 93 TS exercises + 46 per lang | 4 languages (TS/Rust/Go/Python), 1,073+ tests across real-world scenarios |
 | 184 challenge questions | "Guess what happens" scenario Q&A to test understanding |
 | 9 system case studies | How React, Linux, Go, Git, Node.js, Rust, game engines, and distributed systems compose patterns |
