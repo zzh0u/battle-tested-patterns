@@ -668,19 +668,9 @@ pre.mermaid[data-mermaid-status]::after {
 }
 
 /* ── Mobile sticky navigation ──────────────────────────────────────────────
-   VitePress only pins the global nav (VPNav) on desktop (≥960px); on mobile it
-   is `position: relative` and scrolls away, leaving just the local-nav bar
-   (VPLocalNav). We want BOTH pinned on mobile so the brand/search/menu and the
-   page outline stay reachable. Implemented as a CSS override per VitePress'
-   "Extending the Default Theme" guidance, reusing the official --vp-nav-height
-   token so it tracks any theme change. */
+   Pin both the global nav (VPNav) and the local-nav (VPLocalNav) on mobile.
+   `.Layout` raises specificity above VitePress' scoped `.VPNav[data-v-*]`. */
 @media (max-width: 959px) {
-  /* VitePress ships these as <style scoped>, so its real selectors are
-     `.VPNav[data-v-xxxx]` (specificity 0,2,0). A bare `.VPNav` (0,1,0) here
-     loses the cascade and the override is silently dropped. We raise our
-     specificity to 0,2,0 via the `.Layout` ancestor so the mobile pin wins.
-     `position: fixed` also needs an explicit inset anchor (top/left/right),
-     since VitePress' mobile .VPNav is `position: relative` with no offsets. */
   .Layout .VPNav {
     position: fixed;
     top: 0;
@@ -688,26 +678,23 @@ pre.mermaid[data-mermaid-status]::after {
     right: 0;
   }
 
-  /* Push the local-nav below the now-fixed global nav so they stack instead of
-     overlapping. */
+  /* Pinned home navbar would otherwise be transparent and let the hero text
+     bleed through, so give it an opaque background. */
+  .Layout .VPNavBar {
+    background-color: var(--vp-nav-bg-color);
+  }
+
   .Layout .VPLocalNav {
     top: var(--vp-nav-height);
   }
 
-  /* Offset page content so the now-fixed global nav doesn't cover the first
-     headings. Applies to all pages (the mobile sidebar is a drawer overlay and
-     doesn't affect layout flow, so has-sidebar pages need this too). */
   .Layout .VPContent {
     padding-top: var(--vp-nav-height);
   }
 }
 
-/* Align the mobile menu backdrop with our 960px desktop layout breakpoint.
-   VitePress only hides .VPBackdrop at >=1280px, but our sidebar already expands
-   into the desktop layout at 960px. In the 960-1279px band the backdrop would
-   linger after a viewport widen, so hide it once we enter the desktop layout.
-   Pure presentation-layer alignment: no JS, no resize listener, no touching
-   VitePress' menu state. */
+/* Align the mobile menu backdrop with our 960px layout breakpoint (VitePress
+   only hides it at >=1280px, leaving it lingering in the 960-1279px band). */
 @media (min-width: 960px) {
   .Layout .VPBackdrop {
     display: none;
