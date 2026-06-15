@@ -105,6 +105,10 @@ export default defineConfig({
     ['meta', { name: 'twitter:image', content: OG_IMAGE }],
     ['meta', { name: 'author', content: 'Totoro-jam' }],
     ['meta', { name: 'keywords', content: 'programming patterns, design patterns, interactive visualizations, system design, data structures, concurrency patterns, algorithms, React, Linux, Go, Rust, TypeScript, Python, Redis, PostgreSQL, Kafka, production code, computer science, software engineering' }],
+    // Privacy-friendly analytics (Umami Cloud, no cookies, no PII). The
+    // website-id is a public identifier, not a secret. Loaded with `defer` so
+    // a failed fetch never blocks page rendering.
+    ['script', { defer: '', src: 'https://cloud.umami.is/script.js', 'data-website-id': 'b5a7c694-8975-4f11-a9c9-5982bf2a4248' }],
   ],
 
   locales: {
