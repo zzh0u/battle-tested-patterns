@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 See [commit history](https://github.com/Totoro-jam/battle-tested-patterns/commits/main) for detailed changes.
 
+## [1.14.1](https://github.com/Totoro-jam/battle-tested-patterns/compare/v1.14.0...v1.14.1) (2026-06-16)
+
+
+### Bug Fixes
+
+* **scripts:** retry verify-links on HTTP 429 rate limiting ([c255a9f](https://github.com/Totoro-jam/battle-tested-patterns/commit/c255a9f4b9deb1bba401da2234452739275d633d))
+* **scripts:** stop link extractor from eating HTML attribute quotes ([0d0302f](https://github.com/Totoro-jam/battle-tested-patterns/commit/0d0302f53c15514c1aebe1827282ce8a9f66dd6b))
+
 ## [1.14.0](https://github.com/Totoro-jam/battle-tested-patterns/compare/v1.13.0...v1.14.0) (2026-06-16)
 
 
