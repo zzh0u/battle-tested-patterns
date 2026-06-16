@@ -233,6 +233,14 @@ travel silently shows the wrong state, or the UI locks up after an undo.
   is restored; the log is preserved.
 - `isAborted()` is true ONLY during `onUnmounted`; committing in those branches
   is dead code (the history stack is being discarded). Don't add commits there.
+- **Per-step `commit` paired with a `log()` is intentional, NOT "intermediate-frame
+  pollution".** Many components commit once per animation step / per read step so
+  the playback bar can scrub the algorithm frame-by-frame (MinHeap bubble-up swaps,
+  MiddlewareChain hops, DoubleBuffering draw/swap, Registry lookup). The rule of
+  thumb: if a `commit` has a paired `log()`, the time-travel step count ≈ the log
+  entry count by design — do NOT collapse these into a single "final-state" commit.
+  Only commit a *mid-mutation state that violates the data structure's invariant*
+  (and has no paired log) counts as pollution.
 
 ### Audit Check
 

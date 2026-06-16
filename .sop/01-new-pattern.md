@@ -160,7 +160,7 @@ Add `## Challenge Questions` section at the end of the pattern doc:
 - [ ] Run `pnpm test` — all tests pass
 - [ ] Run `pnpm verify-code` — all code blocks compile (TS/Python/Rust/Go)
 - [ ] Run `pnpm verify-mermaid` — all Mermaid diagrams have valid syntax
-- [ ] Run `pnpm lint` — no markdown lint errors
+- [ ] Run `pnpm lint` — markdown + ESLint + Stylelint clean (see [SOP 14](14-lint-toolchain.md))
 - [ ] Run `pnpm check:content` — content quality checks pass (structure, parity, exercises, relations)
 - [ ] Run `pnpm build` — docs site builds
 - [ ] Run `pnpm verify-links` — source links alive
@@ -233,7 +233,7 @@ Before tagging a release, run a comprehensive multi-dimensional audit:
 - [ ] **TypeScript**: `pnpm typecheck` — strict mode clean
 - [ ] **Code blocks**: `pnpm verify-code` — all 4 languages compile
 - [ ] **Mermaid**: `pnpm verify-mermaid` — all diagrams valid syntax
-- [ ] **Lint**: `pnpm lint` — markdown clean
+- [ ] **Lint**: `pnpm lint` — markdown + ESLint + Stylelint clean
 - [ ] **Build**: `pnpm build` — VitePress builds, all pages in dist/
 - [ ] **ASCII alignment**: spot-check new pattern diagrams in monospace font
 - [ ] **ZH sync**: all new patterns have ZH docs with Chinese challenge questions
