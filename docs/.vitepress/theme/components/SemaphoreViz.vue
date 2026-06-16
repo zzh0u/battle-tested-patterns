@@ -37,16 +37,35 @@ interface WorkerSnapshot {
   totalMs: number;
 }
 
-const vizHistory = useVizHistory<WorkerSnapshot[]>([], {
-  getMessage: () => message.value,
-  onRestore(snapshot, msg) {
-    presetRunning = false;
-    clearAll();
-    // Restored workers are frozen snapshots — no timers running
-    workers.value = snapshot.map((w) => ({ ...w }));
-    if (msg !== undefined) message.value = msg;
+// MAX_PERMITS is a user-tunable structural parameter that the permit-slot
+// rendering depends on, so it must travel with the snapshot — otherwise
+// restoring an old step would mismatch slot count vs worker.permitIndex.
+interface SemaphoreSnapshot {
+  maxPermits: number;
+  workers: WorkerSnapshot[];
+}
+
+const vizHistory = useVizHistory<SemaphoreSnapshot>(
+  { maxPermits: MAX_PERMITS.value, workers: [] },
+  {
+    getMessage: () => message.value,
+    onRestore(snapshot, msg) {
+      presetRunning = false;
+      clearAll();
+      // Restored workers are frozen snapshots — no timers running
+      MAX_PERMITS.value = snapshot.maxPermits;
+      workers.value = snapshot.workers.map((w) => ({ ...w }));
+      if (msg !== undefined) message.value = msg;
+    },
   },
-});
+);
+
+function snapshotState(): SemaphoreSnapshot {
+  return {
+    maxPermits: MAX_PERMITS.value,
+    workers: workers.value.map((w) => ({ ...w })),
+  };
+}
 
 const activeWorkers = computed(() => workers.value.filter((w) => w.state === 'active'));
 const waitingWorkers = computed(() => workers.value.filter((w) => w.state === 'waiting'));
@@ -120,10 +139,7 @@ function releaseWorker(w: Worker) {
   w.state = 'done';
   workers.value = workers.value.filter((x) => x.id !== w.id);
   tryPromoteWaiting();
-  vizHistory.commit(
-    workers.value.map((x) => ({ ...x })),
-    `release #${w.id}`,
-  );
+  vizHistory.commit(snapshotState(), `release #${w.id}`);
 }
 
 function acquire() {
@@ -145,10 +161,7 @@ function acquire() {
     );
     log(t(`W#${id} acquired permit ${slot + 1}`, `W#${id} 获取许可 ${slot + 1}`), 'info');
     startWorkerTimer(w);
-    vizHistory.commit(
-      workers.value.map((x) => ({ ...x })),
-      `acquire #${id}`,
-    );
+    vizHistory.commit(snapshotState(), `acquire #${id}`);
   } else {
     const w: Worker = {
       id,
@@ -163,10 +176,7 @@ function acquire() {
       `无可用许可 — 工作线程 #${id} 正在队列中等待`,
     );
     log(t(`W#${id} waiting (no permits)`, `W#${id} 等待中（无许可）`), 'warning');
-    vizHistory.commit(
-      workers.value.map((x) => ({ ...x })),
-      `wait #${id}`,
-    );
+    vizHistory.commit(snapshotState(), `wait #${id}`);
   }
 }
 

@@ -42,10 +42,14 @@ interface CpSnapshot {
   log: LogEntry[];
   checkpoints: Checkpoint[];
   crashed: boolean;
+  // Recovery stats must travel with the snapshot, otherwise restoring a
+  // crash/recovery step shows a stats panel that mismatches the historical step.
+  replayedCount: number;
+  totalEntries: number;
 }
 
 const vizHistory = useVizHistory<CpSnapshot>(
-  { stateValue: 0, log: [], checkpoints: [], crashed: false },
+  { stateValue: 0, log: [], checkpoints: [], crashed: false, replayedCount: 0, totalEntries: 0 },
   {
     getMessage: () => message.value,
     onRestore(snapshot, msg) {
@@ -56,11 +60,24 @@ const vizHistory = useVizHistory<CpSnapshot>(
       log.value = snapshot.log;
       checkpoints.value = snapshot.checkpoints;
       crashed.value = snapshot.crashed;
+      replayedCount.value = snapshot.replayedCount;
+      totalEntries.value = snapshot.totalEntries;
       highlightedEntries.value = new Set();
       if (msg !== undefined) message.value = msg;
     },
   },
 );
+
+function snapshotState(): CpSnapshot {
+  return {
+    stateValue: stateValue.value,
+    log: log.value,
+    checkpoints: checkpoints.value,
+    crashed: crashed.value,
+    replayedCount: replayedCount.value,
+    totalEntries: totalEntries.value,
+  };
+}
 
 const message = ref(
   t(
@@ -111,15 +128,7 @@ function applyOp(op: (typeof ops)[0]) {
     `Op ${op.label}: ${before} -> ${stateValue.value} (entry #${entry.id}). Each operation is logged sequentially — the WAL is the source of truth, not the in-memory state.`,
     `操作 ${op.label}：${before} -> ${stateValue.value}（条目 #${entry.id}）。每个操作按顺序记录 — WAL 是真相来源，而非内存状态。`,
   );
-  vizHistory.commit(
-    {
-      stateValue: stateValue.value,
-      log: log.value,
-      checkpoints: checkpoints.value,
-      crashed: crashed.value,
-    },
-    `op ${op.label}`,
-  );
+  vizHistory.commit(snapshotState(), `op ${op.label}`);
 }
 
 function checkpoint() {
@@ -139,15 +148,7 @@ function checkpoint() {
     `Checkpoint #${cp.id} saved at state=${cp.stateValue}. Entries before this can be garbage collected. PostgreSQL's CHECKPOINT command does exactly this.`,
     `Checkpoint #${cp.id} 已保存，state=${cp.stateValue}。此前的条目可被垃圾回收。PostgreSQL 的 CHECKPOINT 命令正是这样做的。`,
   );
-  vizHistory.commit(
-    {
-      stateValue: stateValue.value,
-      log: log.value,
-      checkpoints: checkpoints.value,
-      crashed: crashed.value,
-    },
-    `checkpoint #${cp.id}`,
-  );
+  vizHistory.commit(snapshotState(), `checkpoint #${cp.id}`);
 }
 
 function crash() {
@@ -159,15 +160,7 @@ function crash() {
     'CRASH! In-memory state lost. But the WAL on disk is intact — recovery will restore from last checkpoint + replay. This is ARIES recovery protocol used by all major databases.',
     'CRASH！内存状态丢失。但磁盘上的 WAL 完好无损 — 恢复将从最后检查点 + 重放还原。这是所有主流数据库使用的 ARIES 恢复协议。',
   );
-  vizHistory.commit(
-    {
-      stateValue: stateValue.value,
-      log: log.value,
-      checkpoints: checkpoints.value,
-      crashed: crashed.value,
-    },
-    'crash',
-  );
+  vizHistory.commit(snapshotState(), 'crash');
 }
 
 function recover() {
@@ -181,15 +174,7 @@ function recover() {
     crashed.value = false;
     stateValue.value = 0;
     log.value = [];
-    vizHistory.commit(
-      {
-        stateValue: stateValue.value,
-        log: log.value,
-        checkpoints: checkpoints.value,
-        crashed: crashed.value,
-      },
-      'recover (data lost)',
-    );
+    vizHistory.commit(snapshotState(), 'recover (data lost)');
     return;
   }
 
@@ -216,15 +201,7 @@ function recover() {
         `Recovery complete! Replayed ${replayedCount.value} of ${totalEntries.value} entries. Checkpoint saved ${totalEntries.value - replayedCount.value} replays — the larger the WAL, the more checkpoints save.`,
         `恢复完成！重放了 ${totalEntries.value} 条中的 ${replayedCount.value} 条。检查点节省了 ${totalEntries.value - replayedCount.value} 次重放 — WAL 越大，检查点节省越多。`,
       );
-      vizHistory.commit(
-        {
-          stateValue: stateValue.value,
-          log: log.value,
-          checkpoints: checkpoints.value,
-          crashed: crashed.value,
-        },
-        'recover',
-      );
+      vizHistory.commit(snapshotState(), 'recover');
       return;
     }
     const entry = entriesAfterCp[replayIdx];

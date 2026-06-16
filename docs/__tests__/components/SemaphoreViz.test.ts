@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
-import { clickButton, clickReset } from '../helpers/viz-interactions';
+import { clickButton, clickReset, playbackStepBack } from '../helpers/viz-interactions';
 import SemaphoreViz from '../../.vitepress/theme/components/SemaphoreViz.vue';
 
 describe('SemaphoreViz', () => {
@@ -111,5 +111,22 @@ describe('SemaphoreViz', () => {
       expect(textEl.attributes('cy')).toBeUndefined();
       expect(textEl.attributes('y')).toBeDefined();
     }
+  });
+
+  it('time travel restores MAX_PERMITS with the snapshot (regression: S4)', async () => {
+    const wrapper = mount(SemaphoreViz);
+    // Shrink capacity to 1 permit (this resets history), then acquire once so
+    // the snapshot is taken while MAX_PERMITS === 1.
+    await wrapper.find('.sem-select').setValue(1);
+    await flushPromises();
+    expect(wrapper.findAll('circle[r="10"]')).toHaveLength(1);
+
+    await clickButton(wrapper, ['Acquire', '获取']); // commits snapshot {maxPermits:1,...}
+    await clickButton(wrapper, ['Acquire', '获取']); // second worker waits, commits again
+
+    // Step back through history; MAX_PERMITS must travel with the snapshot, so
+    // the permit-slot count stays 1 (before the fix it leaked the live value).
+    await playbackStepBack(wrapper);
+    expect(wrapper.findAll('circle[r="10"]')).toHaveLength(1);
   });
 });
