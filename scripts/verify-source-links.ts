@@ -64,7 +64,9 @@ async function checkUrl(
         signal: AbortSignal.timeout(15_000),
       });
       if (res.ok) return { status: res.status, ok: true };
-      if (res.status >= 500 && attempt < retries) {
+      // Retry on server errors AND 429 (GitHub rate-limits anonymous requests;
+      // a 429 is transient throttling, not a broken link).
+      if ((res.status >= 500 || res.status === 429) && attempt < retries) {
         await new Promise((r) => setTimeout(r, 3000 * (attempt + 1)));
         continue;
       }
