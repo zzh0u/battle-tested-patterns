@@ -92,7 +92,7 @@ function add(item?: string) {
     highlightBits.value = [];
     highlightType.value = '';
   }, 600);
-  commitSnapshot(`add("${item ?? inputText.value}")`);
+  commitSnapshot(`add("${val}")`);
 }
 
 function test(item?: string) {

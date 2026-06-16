@@ -45,6 +45,8 @@ const vizHistory = useVizHistory<Entry[]>([], {
     compacting.value = false;
     store.value = snapshot.map((e) => ({ ...e }));
     flashId.value = -1;
+    // Clear transient read result so a restored step shows no stale outcome.
+    readResult.value = null;
     if (msg !== undefined) message.value = msg;
   },
 });
